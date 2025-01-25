@@ -1,5 +1,6 @@
 <template>
 	<div id="app">
+        <Header />
 		<ul>
 			<li>
 				<router-link to="/">홈화면</router-link>
@@ -13,9 +14,13 @@
 </template>
 
 <script>
+import Header from "./components/common/Header.vue";
 
-export default{
-	name: 'App'
+export default {
+	name: "App",
+    components: {
+        Header
+    }
 }
 </script>
 
