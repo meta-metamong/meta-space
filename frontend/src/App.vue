@@ -8,6 +8,9 @@
 				<router-link to="/login">로그인</router-link>
 			</li>
 			<li>
+				<router-link to="/signup">회원가입</router-link>
+			</li>
+			<li>
 				<router-link to="/find">아이디/비밀번호 찾기</router-link>
 			</li>
 		</ul>
