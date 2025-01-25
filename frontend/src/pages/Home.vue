@@ -1,7 +1,5 @@
 <template>
-    <div>
-        홈 화면입니다!
-    </div>
+    <div>홈 화면입니다!</div>
 </template>
 
 <script>
