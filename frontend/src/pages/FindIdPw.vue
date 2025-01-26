@@ -1,8 +1,8 @@
 <template>
-	<div class="container mt-5">
-		<div class="d-flex justify-content-center">
-			<FindMember idOrPw="id" class="mx-2" />
-			<FindMember idOrPw="pw" class="mx-2" />
+	<div class="container mt-3 box">
+		<div class="d-flex flex-column gap-3 flex-md-row justify-content-center">
+			<FindMember idOrPw="id" />
+			<FindMember idOrPw="pw" />
 		</div>
 	</div>
 </template>
@@ -17,3 +17,9 @@ export default{
 	}
 }
 </script>
+
+<style scoped>
+.box {
+	width: 400px;
+}
+</style>
