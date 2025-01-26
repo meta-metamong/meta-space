@@ -1,5 +1,5 @@
 <template>
-	<div class="container mt-5 d-flex justify-content-center">
+	<div class="container mt-2 d-flex justify-content-center">
 		<div class="p-5 mx-3" style="width: 850px;">
 			<h3 class="mb-5"><strong>{{ $t('member.signUp') }}</strong></h3>
 			<form @submit.prevent="handleSubmit">

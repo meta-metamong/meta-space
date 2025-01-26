@@ -28,6 +28,11 @@
         "all": "all",
         "select": "select"
     },
+    "header": {
+        "findSpace": "Find Space",
+        "reservation": "Reservation",
+        "viewByRegion": "View by Region"
+    },
     "member": {
         "id": "ID",
         "password": "Password",
@@ -48,7 +53,8 @@
         "findId": "Find ID",
         "findPw": "Find Password",
         "update": "Update Member",
-        "exit": "Exit Member"
+        "exit": "Exit Member",
+        "reservation": "reservation"
     },
     "reservation": {
         "guestCount": "Number of Guests",
