@@ -1,5 +1,5 @@
 <template>
-	<div class="container mt-3 box">
+	<div class="container mt-4 box">
 		<div class="d-flex flex-column gap-3 flex-md-row justify-content-center">
 			<FindMember idOrPw="id" />
 			<FindMember idOrPw="pw" />

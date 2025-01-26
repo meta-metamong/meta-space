@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MetaSpace</a>
+            <router-link to="/" class="navbar-brand">Meta Space</router-link>
             <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
@@ -15,21 +15,22 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <!-- TODO: 현재 페이지에 해당하는 navbar만 active 클래스, 그리고 aria-current="page" -->
-                        <a class="nav-link active" aria-current="page" href="#">
-                            공간찾기
-                        </a>
+                        <router-link to="#" class="nav-link active" aria-current="page" href="#" v-text="$t('header.findSpace')" />
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">예약</a>
+                        <router-link to="#" class="nav-link" href="#" v-text="$t('header.viewByRegion')" />
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">지역별</a>
+                        <router-link to="#" class="nav-link" href="#" v-text="$t('header.reservation')" />
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">로그인</a>
+                        <router-link to="/login" class="nav-link" href="#" v-text="$t('member.login')" />
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">회원가입</a>
+                        <router-link to="/signup" class="nav-link" href="#" v-text="$t('member.signUp')" />
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link locale-btn" v-text="locale" @click="changeLocale" />
                     </li>
                 </ul>
             </div>
@@ -40,8 +41,22 @@
 <script>
 export default {
     name: "Header",
+    computed:{
+        locale(){
+            return this.$i18n.locale === 'ko' ? '영어로 변경' : 'Change to Korean';
+        }
+    },
+    methods:{
+        changeLocale(){
+            this.$i18n.locale = this.$i18n.locale === 'ko' ? 'en' : 'ko';
+        }
+    }
 }
 </script>
 
 <style scoped>
+.locale-btn{
+    width: 100%;
+    text-align: center;
+}
 </style>

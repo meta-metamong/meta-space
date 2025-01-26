@@ -28,6 +28,11 @@
         "all": "전체",
         "select": "선택"
     },
+    "header": {
+        "findSpace": "공간 찾기",
+        "reservation": "예약",
+        "viewByRegion": "지역별로 보기"
+    },
     "member": {
         "id": "아이디",
         "password": "비밀번호",
