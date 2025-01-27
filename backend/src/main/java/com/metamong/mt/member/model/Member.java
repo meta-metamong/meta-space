@@ -1,6 +1,6 @@
 package com.metamong.mt.member.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class Member {
     private String password;
     private String phone;
     private String email;
-    private Date birth;
+    private LocalDate birth;
     private String postal_code;
     private String detail_address;
     private String address;
