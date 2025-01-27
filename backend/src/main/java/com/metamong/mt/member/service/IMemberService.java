@@ -10,6 +10,6 @@ public interface IMemberService {
     void storeRefreshToken(Member member);
     LoginResponseDto selectLoginMember(String userid);
 	Member selectMemberEntity(String userId);
-	
+	void removeRefreshToken(String userId);
 	boolean findMember(FindMemberRequestDto request);
 }

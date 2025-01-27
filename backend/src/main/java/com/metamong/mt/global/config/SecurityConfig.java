@@ -33,9 +33,9 @@ public class SecurityConfig {
 				.requestMatchers("/file/**").hasRole("ADMIN")
 				.requestMatchers("/board/**").hasAnyRole("USER", "ADMIN")
 				.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-				.requestMatchers("/member/insert").permitAll()
-				.requestMatchers("/member/login").permitAll()
-				.requestMatchers("/**").permitAll());
+				.requestMatchers("/api/members/user", "/api/members/owner").permitAll() 
+				.requestMatchers("/api/members/login","/api/members/logout").permitAll() 
+				.anyRequest().authenticated());
 
 //		 Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 
 		// 세션 비활성화

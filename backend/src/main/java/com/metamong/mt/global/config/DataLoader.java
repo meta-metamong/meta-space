@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.repository.IMemberRepository;
+import com.metamong.mt.member.repository.mybatis.IMemberRepository;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -31,9 +31,9 @@ public class DataLoader implements CommandLineRunner {
                     .phone("000-0000-0000")
                     .email("admin@example.com")
                     .role("ROLE_ADMIN")
-                    .postal_code("00000")
+                    .postalCode("00000")
                     .address("서울시 예시구 예시동")
-                    .detail_address("상세 주소 예시")
+                    .detailAddress("상세 주소 예시")
                     .businessName(null)
                     .businessRegistrationNumber(null)
                     .birth(null)
