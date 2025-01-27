@@ -74,6 +74,11 @@ public class MemberService implements IMemberService {
 	@Override
 	public boolean findMember(FindMemberRequestDto request) {	
 		boolean requestSuccess = true;
+		
+		/*
+		 * idOrPw가 id인 경우 name, email 데이터만 오고, userid는 null값으로 온다.
+		 * idOrPw가 pw인 경우 userid, name, email 데이터 전부 온다.
+		 */
 		System.out.println("====================================");
 		System.out.println("idOrPw: " + request.getIdOrPw());
 		System.out.println("userid: " + request.getUserid());
