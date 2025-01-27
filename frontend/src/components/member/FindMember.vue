@@ -44,9 +44,7 @@ export default {
     },
     methods: {
         handleSubmit(e) {
-            console.log("아이디:", this.id);
-            console.log("이름:", this.name);
-            console.log("이메일:", this.email);
+            axios
         }
     }
 };
