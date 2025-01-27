@@ -1,66 +1,74 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:8080/api";
-axios.defaults.withCredentials = true;
+// Axios 기본 설정
+const apiClient = axios.create({
+    baseURL: "http://localhost:8080/api",
+    withCredentials: true,
+});
 
 // 엑세스 토큰 저장
 export const saveAccessToken = function(accessToken){
     sessionStorage.setItem("accessToken", accessToken);
 }
 
-// 엑세스 토큰 획득
-const getAccessToken = function(){
-    return sessionStorage.getItem("accessToken");
-}
+// 요청 인터셉터 추가
+apiClient.interceptors.request.use(
+    (config) => {
+        const accessToken = sessionStorage.getItem("accessToken");
 
-// 인증이 필요한 Get 요청
-export const authenticatedGet = async function(endpoint){
-    const accessToken = getAccessToken();
-    if(accessToken === null || accessToken === undefined) return "not login";
-    try {
-        const response = await axios.get(endpoint, {
-            headers: {
-                'X-AUTH-TOKEN': accessToken
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error:', error);
+        if(accessToken){
+            config.headers["X-AUTH-TOKEN"] = accessToken;
+        }
+
+        return config;
+    },
+    (error) => {
+        console.error("Request Error: ", error);
+        return Promise.reject(error);
+    }
+);
+
+export const login = async function(endpoint, loginDto){
+    try{
+        const response = await apiClient.post(endpoint, loginDto);
+        return response;
+    }catch(error){
+        return error
     }
 }
 
-// 인증이 필요하지 않은 Get 요청
-export const unauthenticatedGet = async function(endpoint){
-    try {
-        const response = await axios.get(endpoint);
+export const get = async function(endpoint){
+    try{
+        const response = await apiClient.get(endpoint);
         return response.data;
-    } catch (error) {
-        console.error('Error:', error);
+    }catch(error){
+        return error
     }
 }
 
-// 인증이 필요한 Post 요청
-export const authenticatedPost = async function(endpoint, requestData){
-    const accessToken = getAccessToken();
-    if(accessToken === null || accessToken === undefined) return "not login";
-    try {
-        const response = await axios.post(endpoint, {
-            headers: {
-                'X-AUTH-TOKEN': accessToken
-            }
-        },requestData);
+export const post = async function(endpoint, requestData){
+    try{
+        const response = await apiClient.post(endpoint, requestData);
         return response.data;
-    } catch (error) {
-        console.error('Error:', error);
+    }catch(error){
+        return error
     }
 }
 
-// 인증이 필요하지 않은 Post 요청
-export const unauthenticatedPost = async function(endpoint, requestData){
-    try {
-        const response = await axios.post(endpoint, requestData);
+export const put = async function(endpoint, requestData){
+    try{
+        const response = await apiClient.put(endpoint, requestData);
         return response.data;
-    } catch (error) {
-        console.error('Error:', error);
+    }catch(error){
+        return error
+    }
+}
+
+export const del = async function(endpoint){
+    try{
+        const response = await apiClient.delete(endpoint);
+        return response.data;
+    }catch(error){
+        return error
     }
 }

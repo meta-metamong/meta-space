@@ -20,7 +20,7 @@
     </div>  
 </template>
 <script>
-import { unauthenticatedPost } from "../../apis/axios"
+import { post } from "../../apis/axios"
 export default {
     name: "FindMember",
     data() {
@@ -51,7 +51,7 @@ export default {
                 "name": this.name,
                 "email": this.email
             }
-            const data = await unauthenticatedPost("/members/find-member", requestObject);
+            const data = await post("/members/find-member", requestObject);
             alert(data);
         }
     }

@@ -57,16 +57,22 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        try {
+        System.out.println("들어오나?");
+    	try {
             LoginResponseDto member = memberService.selectLoginMember(loginRequest.getUserid());
-
+            
             if (member == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                      .body(new ErrorResponse(ErrorCode.USER_NOT_FOUND));
             }
 
-            Member memberEntity = memberService.selectMemberEntity(member.getUserId()); 
-
+            Member memberEntity = memberService.selectMemberEntity(member.getUserId());
+            
+            System.out.println("======================================");
+            System.out.println(memberEntity.getPassword());
+            System.out.println(loginRequest.getPassword());
+            System.out.println("======================================");
+            
             if (!passwordEncoder.matches(loginRequest.getPassword(), memberEntity.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                      .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH));
