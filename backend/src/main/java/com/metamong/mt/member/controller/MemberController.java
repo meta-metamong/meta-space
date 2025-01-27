@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.metamong.mt.global.error.ErrorCode;
 import com.metamong.mt.global.error.ErrorResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
+import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
 import com.metamong.mt.member.dto.request.MemberRequestDto;
 import com.metamong.mt.member.dto.request.OwnerSignRequestDto;
@@ -215,5 +216,24 @@ public class MemberController {
 
         memberService.insertMember(member);
         return ResponseEntity.ok("업주 회원가입이 완료되었습니다.");
+    }
+    
+    /**
+     * 아이디 또는 비밀번호 찾기 메서드
+     * <p>
+     * 아이디 찾기 시엔 이름, 이메일, 비밀번호 찾기 시엔 아이디, 이름, 이메일을 입력받습니다.
+     * 둘은 idOrPw라는 데이터를 통해 구분됩니다.
+     * </p>
+     * 
+     * @param FindMemberRequestDto 회원 정보 찾기 요청 정보 (아이디-비밀번호 찾기, 이름, 이메일, 아이디 or 비밀번호 구분)
+     * @return 정보 찾기 요청 처리 성공 시 응답
+     */
+    @PostMapping("/members/find-member")
+    public ResponseEntity<String> findMember(@RequestBody FindMemberRequestDto requestDto){
+    	if(memberService.findMember(requestDto)) {
+    		return ResponseEntity.ok("요청하신 정보를 이메일로 전송했습니다.");    		
+    	}else {
+    		return ResponseEntity.ok("인증 요청을 실패했습니다.");
+    	}
     }
 }

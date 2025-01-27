@@ -5,7 +5,7 @@
             <h3 class="text-center mb-3">{{ title }}</h3>
             <form @submit.prevent="handleSubmit">
                 <div class="mb-2" v-if="idOrPw === 'pw'">
-                    <input type="text" class="form-control" :placeholder="$t('member.id')" name="id" v-model="id" required />
+                    <input type="text" class="form-control" :placeholder="$t('member.userid')" name="userid" v-model="userid" required />
                 </div>
                 <div class="mb-2">
                     <input type="text" class="form-control" :placeholder="$t('member.name')" name="name" v-model="name" required />
@@ -26,7 +26,7 @@ export default {
         return {
             name: "",
             email: "",
-            id: ""
+            userid: ""
         };
     },
     props: {
