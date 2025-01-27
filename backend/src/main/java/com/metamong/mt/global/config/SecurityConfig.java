@@ -26,15 +26,18 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf((csrfConfig) -> csrfConfig.disable());
+		http.csrf(csrfConfig -> csrfConfig.disable());
 		
 		// 토큰을 사용하는 경우 인가를 적용한 URI 설정
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/file/**").hasRole("ADMIN")
 				.requestMatchers("/board/**").hasAnyRole("USER", "ADMIN")
 				.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-				.requestMatchers("/api/members/user", "/api/members/owner").permitAll() 
-				.requestMatchers("/api/members/login","/api/members/logout", "/api/members/find-member").permitAll()
+				.requestMatchers("/api/members/user").permitAll()
+				.requestMatchers("/api/members/owner").permitAll()
+				.requestMatchers("/api/members/login").permitAll()
+				.requestMatchers("/api/members/logout").permitAll()
+				.requestMatchers("/api/members/find-member").permitAll()
 				.anyRequest().authenticated());
 
 //		 Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 

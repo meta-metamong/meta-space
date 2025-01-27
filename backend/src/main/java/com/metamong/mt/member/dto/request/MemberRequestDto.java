@@ -39,10 +39,10 @@ public class MemberRequestDto {
     private Date birth; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
-    private String postal_code;
+    private String postalCode;
 
     @NotEmpty(message = "상세 주소는 필수입니다.")
-    private String detail_address;
+    private String detailAddress;
 
     @NotEmpty(message = "주소는 필수입니다.")
     private String address;

@@ -57,16 +57,22 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        try {
+        System.out.println("들어오나?");
+    	try {
             LoginResponseDto member = memberService.selectLoginMember(loginRequest.getUserid());
-
+            
             if (member == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                      .body(new ErrorResponse(ErrorCode.USER_NOT_FOUND));
             }
 
-            Member memberEntity = memberService.selectMemberEntity(member.getUserId()); 
-
+            Member memberEntity = memberService.selectMemberEntity(member.getUserId());
+            
+            System.out.println("======================================");
+            System.out.println(memberEntity.getPassword());
+            System.out.println(loginRequest.getPassword());
+            System.out.println("======================================");
+            
             if (!passwordEncoder.matches(loginRequest.getPassword(), memberEntity.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                      .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH));
@@ -81,7 +87,7 @@ public class MemberController {
             Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
             refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);  // 쿠키 만료 시간 (7일)
             refreshTokenCookie.setHttpOnly(true);             // 자바스크립트 접근 불가
-            refreshTokenCookie.setSecure(true);               // HTTPS에서만 전송
+            //refreshTokenCookie.setSecure(true);               // HTTPS에서만 전송
             refreshTokenCookie.setPath("/");                  // 모든 경로에서 유효하도록 설정
             response.addCookie(refreshTokenCookie);           // 응답에 쿠키 추가
             
@@ -175,9 +181,9 @@ public class MemberController {
                 .address(registerUserRequest.getAddress())
                 .phone(registerUserRequest.getPhone())
                 .birth(registerUserRequest.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) 
-                .detailAddress(registerUserRequest.getDetail_address())
+                .detailAddress(registerUserRequest.getDetailAddress())
                 .role("ROLE_USER")
-                .postalCode(registerUserRequest.getPostal_code())
+                .postalCode(registerUserRequest.getPostalCode())
                 .build();
 
         try {

@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { login } from '../../apis/axios';
 export default {
 	name: 'LoginMember',
 	data() {
@@ -29,9 +30,17 @@ export default {
 		}
 	},
 	methods: {
-		handleSubmit() {
-			console.log(this.id, this.password);
-			this.errorMessage = this.$t('error.login');
+		async handleSubmit() {
+			const requestObject = {
+				"userid": this.id,
+				"password": this.password
+			}
+			const response = await login("/members/login", requestObject);
+			if(response.status === 401 || response.status === 403) {
+				this.errorMessage = this.$t('error.login');
+			}
+
+			// 로그인 후 받은 데이터 활용 코드 작성
 		},
 		route(page){
 			this.$router.push(page);
