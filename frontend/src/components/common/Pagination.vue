@@ -42,9 +42,16 @@ Pagination을 위한 공통 컴포넌트.
 
 <template>
     <div class="pagination-box">
-        <button :disabled="!isPreviousAvailable"
+        <button v-if="isPreviousAvailable === true"
                 class="btn-other-pageset"
-                @click="$emit('clickPrevious')">이전</button>
+                @click="$emit('clickPrevious')">
+            <
+        </button>
+        <button v-else
+                class="btn-other-pageset"
+                disabled>
+            <
+        </button>
         <ul class="page-box">
             <li :class="selectedPageNo === page ? 'selected-page' : ''" v-for="page in pageSet()" :key="page">
                 <button class="btn-page" @click="onPageClick(page)">
@@ -52,9 +59,12 @@ Pagination을 위한 공통 컴포넌트.
                 </button>
             </li>
         </ul>
-        <button :disabled="!isNextAvailable"
+        <button v-if="isNextAvailable === true"
                 class="btn-other-pageset"
-                @click="$emit('clickNext')">다음</button>
+                @click="$emit('clickNext')">></button>
+        <button v-else
+                class="btn-other-pageset"
+                disabled>></button>
     </div>
 </template>
 
@@ -114,21 +124,26 @@ li {
 }
 
 .pagination-box {
-    display: flex;
+    display: flex !important;
+    width: fit-content;
     align-items: center;
 }
 
 .page-box {
     display: flex;
     align-items: center;
-    
 }
 
-.btn-other-pageset {
+button:hover {
+    border: 1px solid #19319D;
+}
 
+button:disabled {
+    cursor: default;
+    border: none;
 }
 
 .selected-page * {
-    background-color: blue;
+    background-color: #19319D;
 }
 </style>
