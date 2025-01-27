@@ -174,9 +174,9 @@ public class MemberController {
                 .address(registerUserRequest.getAddress())
                 .phone(registerUserRequest.getPhone())
                 .birth(registerUserRequest.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) 
-                .detail_address(registerUserRequest.getDetail_address())
+                .detailAddress(registerUserRequest.getDetail_address())
                 .role("ROLE_USER")
-                .postal_code(registerUserRequest.getPostal_code())
+                .postalCode(registerUserRequest.getPostal_code())
                 .build();
 
         try {

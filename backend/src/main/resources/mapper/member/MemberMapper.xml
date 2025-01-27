@@ -20,7 +20,7 @@ WHERE user_id = #{userId}
 		INSERT INTO 
 			member (user_id, name, password, phone, email, birth, postal_code, address,detail_address,business_name, business_registration_number,role ) 
 		VALUES 
-			(#{userid}, #{name}, #{password}, #{phone}, #{email},#{birth, jdbcType=DATE},#{postal_code,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{detail_address,jdbcType=VARCHAR} , #{businessName, jdbcType=VARCHAR}, #{businessRegistrationNumber,jdbcType=VARCHAR},#{role})
+			(#{userid}, #{name}, #{password}, #{phone}, #{email},#{birth, jdbcType=DATE},#{postalCode,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{detailAddress,jdbcType=VARCHAR} , #{businessName, jdbcType=VARCHAR}, #{businessRegistrationNumber,jdbcType=VARCHAR},#{role})
 	]]>
 	</insert>
 	
@@ -29,7 +29,7 @@ WHERE user_id = #{userId}
 	<update id="updateMember" parameterType="com.metamong.mt.member.model.Member">
 	<![CDATA[
 		UPDATE member
-		SET refresh_token = #{refreshToken}
+		SET refresh_token = #{refreshToken,jdbcType=VARCHAR}
 		WHERE user_id = #{userid}
 	]]>
 	</update>
@@ -43,7 +43,7 @@ WHERE user_id = #{userId}
     </select>
     
 <select id="selectMember" resultType="com.metamong.mt.member.dto.response.LoginResponseDto">
-  SELECT user_id AS userId,
+  SELECT user_id,
          name,
          phone,
          email,
@@ -53,7 +53,7 @@ WHERE user_id = #{userId}
 </select>
 
 <select id="selectMemberEntity" resultType="com.metamong.mt.member.model.Member">
-SELECT user_id AS userid,
+SELECT user_id,
            name,
            password,
            phone,
