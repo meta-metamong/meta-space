@@ -11,6 +11,11 @@ export const saveAccessToken = function(accessToken){
     sessionStorage.setItem("accessToken", accessToken);
 }
 
+// 엑세스 토큰 삭제
+export const removeAccessToken = function(){
+    sessionStorage.removeItem("accessToken");
+}
+
 // 요청 인터셉터 추가
 apiClient.interceptors.request.use(
     (config) => {
