@@ -15,8 +15,8 @@ public class Member {
     private String phone;
     private String email;
     private LocalDate birth;
-    private String postal_code;
-    private String detail_address;
+    private String postalCode;
+    private String detailAddress;
     private String address;
     private String role;
     private String refreshToken;
