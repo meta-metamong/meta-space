@@ -1,6 +1,5 @@
 package com.metamong.mt.global.jwt;
 
-import java.security.Key;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -19,7 +18,7 @@ import com.metamong.mt.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -166,4 +165,23 @@ public class JwtTokenProvider {
         memberService.storeRefreshToken(member);
     }
 
+    public String resolveRefreshTokenFromCookie(HttpServletRequest request) {
+        // 쿠키 배열 가져오기
+        Cookie[] cookies = request.getCookies();
+
+        // 쿠키가 없으면 null 반환
+        if (cookies == null) {
+            return null;
+        }
+
+        // 쿠키 배열에서 refresh_token을 찾기
+        for (Cookie cookie : cookies) {
+            if ("refresh_token".equals(cookie.getName())) {
+                return cookie.getValue(); // refresh_token 쿠키 값 반환
+            }
+        }
+
+        // 해당 쿠키가 없으면 null 반환
+        return null;
+    }
 }

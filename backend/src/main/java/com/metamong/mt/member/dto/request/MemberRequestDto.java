@@ -35,11 +35,8 @@ public class MemberRequestDto {
     @NotEmpty(message = "전화번호는 필수입니다.")
     private String phone;
 
-    @NotEmpty(message = "역할은 필수입니다.")
-    private String role;
-
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    private Date birth; // 생일 필드는 과거 날짜만 가능하도록 설정
+    private Date birth; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String postal_code;

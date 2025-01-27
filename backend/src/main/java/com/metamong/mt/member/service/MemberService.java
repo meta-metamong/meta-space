@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.member.dto.response.LoginResponseDto;
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.repository.IMemberRepository;
+import com.metamong.mt.member.repository.mybatis.IMemberRepository;
 
 
 @Service
@@ -60,5 +60,17 @@ public class MemberService implements IMemberService {
         }
 		
 	}
+	
+	@Override
+    @Transactional
+    public void removeRefreshToken(String userId) {
+        Member member = memberDao.selectMemberEntity(userId);
+        if (member != null) {
+            member.setRefreshToken(null);  // 리프레시 토큰을 null로 설정
+            memberDao.updateMember(member);   // 리프레시 토큰 null을 DB에 반영
+        }
+    }
+	
+	
     
 }
