@@ -1,5 +1,6 @@
 package com.metamong.mt.member.service;
 
+import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.response.LoginResponseDto;
 import com.metamong.mt.member.model.Member;
 
@@ -9,4 +10,6 @@ public interface IMemberService {
     void storeRefreshToken(Member member);
     LoginResponseDto selectLoginMember(String userid);
 	Member selectMemberEntity(String userId);
+	
+	boolean findMember(FindMemberRequestDto request);
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.response.LoginResponseDto;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.repository.IMemberRepository;
@@ -59,6 +60,26 @@ public class MemberService implements IMemberService {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
 		
+	}
+
+	@Override
+	public boolean findMember(FindMemberRequestDto request) {	
+		boolean requestSuccess = true;
+		System.out.println("====================================");
+		System.out.println("idOrPw: " + request.getIdOrPw());
+		System.out.println("userid: " + request.getUserid());
+		System.out.println("name: " + request.getName());
+		System.out.println("email: " + request.getEmail());
+		// 이메일 인증 요청 성공 시
+		if(1 == 1){
+			requestSuccess = true;	
+		}
+		// 이메일 인증 요청 실패 시
+		else {
+			requestSuccess = false;
+		}
+		
+		return requestSuccess;
 	}
     
 }
