@@ -57,7 +57,6 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        System.out.println("들어오나?");
     	try {
             LoginResponseDto member = memberService.selectLoginMember(loginRequest.getUserid());
             
@@ -67,11 +66,6 @@ public class MemberController {
             }
 
             Member memberEntity = memberService.selectMemberEntity(member.getUserId());
-            
-            System.out.println("======================================");
-            System.out.println(memberEntity.getPassword());
-            System.out.println(loginRequest.getPassword());
-            System.out.println("======================================");
             
             if (!passwordEncoder.matches(loginRequest.getPassword(), memberEntity.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
