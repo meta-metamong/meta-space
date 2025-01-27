@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.repository.IMemberRepository;
+import com.metamong.mt.member.repository.mybatis.IMemberRepository;
 
 @Component
 public class DataLoader implements CommandLineRunner {
