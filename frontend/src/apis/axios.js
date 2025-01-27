@@ -15,10 +15,12 @@ const getAccessToken = function(){
 
 // 인증이 필요한 Get 요청
 export const authenticatedGet = async function(endpoint){
+    const accessToken = getAccessToken();
+    if(accessToken === null || accessToken === undefined) return "not login";
     try {
         const response = await axios.get(endpoint, {
             headers: {
-                'X-AUTH-TOKEN': getAccessToken()
+                'X-AUTH-TOKEN': accessToken
             }
         });
         return response.data;
@@ -39,10 +41,12 @@ export const unauthenticatedGet = async function(endpoint){
 
 // 인증이 필요한 Post 요청
 export const authenticatedPost = async function(endpoint, requestData){
+    const accessToken = getAccessToken();
+    if(accessToken === null || accessToken === undefined) return "not login";
     try {
         const response = await axios.post(endpoint, {
             headers: {
-                'X-AUTH-TOKEN': getAccessToken()
+                'X-AUTH-TOKEN': accessToken
             }
         },requestData);
         return response.data;
