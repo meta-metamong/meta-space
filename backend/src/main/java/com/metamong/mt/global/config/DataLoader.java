@@ -1,22 +1,22 @@
 package com.metamong.mt.global.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.model.Role;
+import com.metamong.mt.member.repository.jpa.MemberRepository;
 import com.metamong.mt.member.repository.mybatis.MemberMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
-
-    @Autowired
-    private MemberMapper memberMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -40,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
                     .birth(null)
                     .build();
 
-            memberMapper.insertMember(admin);
+            memberRepository.save(admin);
             System.out.println("Admin user has been created.");
         }
     }

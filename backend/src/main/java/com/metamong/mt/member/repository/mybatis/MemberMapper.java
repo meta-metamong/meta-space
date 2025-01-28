@@ -11,8 +11,6 @@ import com.metamong.mt.member.model.Member;
 @Mapper
 public interface MemberMapper {
 	LoginResponseDto selectMember(String userid);
-	void insertMember(Member member);
 	void updateMember(Member member);
 	boolean existsAdmin();
-	Member selectMemberEntity(String userid);
 }

@@ -1,26 +1,30 @@
 package com.metamong.mt.member.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.response.LoginResponseDto;
+import com.metamong.mt.member.exception.MemberNotFoundException;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.model.Role;
+import com.metamong.mt.member.repository.jpa.MemberRepository;
 import com.metamong.mt.member.repository.mybatis.MemberMapper;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Service
+@RequiredArgsConstructor
 public class DefaultMemberService implements MemberService {
+    private final MemberMapper memberMapper;
+    private final MemberRepository memberRepository;
     
-    @Autowired
-    private MemberMapper memberRepository;
     
     @Override
     @Transactional(readOnly = true)
     public LoginResponseDto selectLoginMember(String userid) {
-        return memberRepository.selectMember(userid);
+        return memberMapper.selectMember(userid);
     }
     
     @Override
@@ -31,7 +35,7 @@ public class DefaultMemberService implements MemberService {
                 throw new IllegalArgumentException("업주 회원가입 시 사업체명과 사업자등록번호는 필수입니다.");
             }
         }
-        memberRepository.insertMember(member);
+    	this.memberRepository.save(member);
     }
 
  
@@ -39,15 +43,9 @@ public class DefaultMemberService implements MemberService {
 	@Override
 	@Transactional(readOnly = true)
 	public Member selectMemberEntity(String userId) {
-    	Member  member = memberRepository.selectMemberEntity(userId);
-
-        if (member == null) {
-        	throw new RuntimeException("사용자를 찾을 수 없습니다.");
-        } 
-        
-		return member;
+	    return this.memberRepository.findById(userId)
+	            .orElseThrow(() -> new MemberNotFoundException(userId, "회원을 찾을 수 없습니다."));
 	}
-	   // Refresh Token을 DB에 저장하는 메서드 구현
 
 	@Override
 	@Transactional 
@@ -56,20 +54,18 @@ public class DefaultMemberService implements MemberService {
         // 사용자가 존재하는 경우, refreshToken을 저장
         if (member != null) {
         	member.setRefreshToken(member.getRefreshToken());  
-            memberRepository.updateMember(member);  
+            memberMapper.updateMember(member);  
         } else {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
 		
 	}
+	
 	@Override
     @Transactional
     public void removeRefreshToken(String userId) {
-        Member member = memberRepository.selectMemberEntity(userId);
-        if (member != null) {
-            member.setRefreshToken(null);  // 리프레시 토큰을 null로 설정
-            memberRepository.updateMember(member);   // 리프레시 토큰 null을 DB에 반영
-        }
+	    Member member = selectMemberEntity(userId);
+	    member.setRefreshToken(null);
     }
 	
 	@Override
