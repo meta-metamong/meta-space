@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.metamong.mt.global.error.ErrorCode;
 import com.metamong.mt.global.error.ErrorResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
+import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
 import com.metamong.mt.member.dto.request.MemberRequestDto;
 import com.metamong.mt.member.dto.request.OwnerSignRequestDto;
-import com.metamong.mt.member.dto.response.LoginResponseDto;
+import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.member.exception.MemberNotFoundException;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.model.Role;
 import com.metamong.mt.member.service.MemberService;
@@ -41,11 +44,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class MemberController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final CookieGenerator cookieGenerator;
 
     /**
      * 로그인 처리 메서드.
@@ -58,43 +60,20 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-    	try {
-            LoginResponseDto member = memberService.selectLoginMember(loginRequest.getUserid());
-            
-            if (member == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                     .body(new ErrorResponse(ErrorCode.USER_NOT_FOUND));
-            }
-
-            Member memberEntity = memberService.selectMemberEntity(member.getUserId());
-            
-            if (!passwordEncoder.matches(loginRequest.getPassword(), memberEntity.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                     .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH));
-            }
-
-            String accessToken = jwtTokenProvider.generateAccessToken(member);
-            String refreshToken = jwtTokenProvider.generateRefreshToken(member);
-
-            memberEntity.setRefreshToken(refreshToken);
-            memberService.storeRefreshToken(memberEntity); 
-
-            Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
-            refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);  // 쿠키 만료 시간 (7일)
-            refreshTokenCookie.setHttpOnly(true);             // 자바스크립트 접근 불가
-            //refreshTokenCookie.setSecure(true);               // HTTPS에서만 전송
-            refreshTokenCookie.setPath("/");                  // 모든 경로에서 유효하도록 설정
-            response.addCookie(refreshTokenCookie);           // 응답에 쿠키 추가
-            
-            return ResponseEntity.ok()
-                                 .header("Authorization", "Bearer " + accessToken)
-                                 .body("로그인 성공");
-
-        } catch (Exception e) {
-            log.error("로그인 처리 중 오류 발생: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ErrorResponse(ErrorCode.SERVER_ERROR));
-        }
+        LoginInfoResponseDto loginInfo = this.memberService.selectLoginMember(loginRequest);
+        
+        String accessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
+        String refreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
+        
+        this.memberService.updateRefreshToken(loginInfo.getUserId(), refreshToken);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("refresh_token", refreshToken).toString());
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body("로그인 성공");
     }
 
     /**

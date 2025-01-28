@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.metamong.mt.member.dto.response.LoginResponseDto;
+import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.service.DefaultMemberService;
 
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
      * @param member 사용자 정보를 저장한 객체, 클래임에 사용자 정보를 저장하기 위해 필요
      * @return 생성된 Access Token
      */
-    public String generateAccessToken(LoginResponseDto member) {
+    public String generateAccessToken(LoginInfoResponseDto member) {
         long now = System.currentTimeMillis();
         Claims claims = Jwts.claims()
                 .subject(member.getUserId())  // sub
@@ -73,7 +73,7 @@ public class JwtTokenProvider {
      * @param member 사용자 정보를 저장한 객체, 클래임에 사용자 정보를 저장하기 위해 필요
      * @return 생성된 Refresh Token
      */
-    public String generateRefreshToken(LoginResponseDto member) {
+    public String generateRefreshToken(LoginInfoResponseDto member) {
         long now = System.currentTimeMillis();
         Claims claims = Jwts.claims()
                 .subject(member.getUserId())  // sub

@@ -1,10 +1,14 @@
 package com.metamong.mt.member.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
-import com.metamong.mt.member.dto.response.LoginResponseDto;
+import com.metamong.mt.member.dto.request.LoginRequestDto;
+import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.member.exception.InvalidLoginRequestException;
+import com.metamong.mt.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.member.exception.MemberNotFoundException;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.model.Role;
@@ -15,20 +19,27 @@ import lombok.RequiredArgsConstructor;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DefaultMemberService implements MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
-    
+    private final PasswordEncoder passwordEncoder;
     
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto selectLoginMember(String userid) {
-        return memberMapper.selectMember(userid);
+    public LoginInfoResponseDto selectLoginMember(LoginRequestDto dto) {
+        LoginInfoResponseDto loginInfo = memberMapper.findLoginInfoByUserId(dto.getUserId())
+                .orElseThrow(() -> new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS));
+        
+        String encodedPassword = this.passwordEncoder.encode(dto.getPassword());
+        if (encodedPassword.equals(loginInfo.getPassword())) {
+            throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
+        }
+        return loginInfo;
     }
     
     @Override
-    @Transactional
     public void insertMember(Member member) {
     	if (member.getRole() == Role.ROLE_OWNER) {
             if (member.getBusinessName() == null || member.getBusinessRegistrationNumber() == null) {
@@ -46,9 +57,14 @@ public class DefaultMemberService implements MemberService {
 	    return this.memberRepository.findById(userId)
 	            .orElseThrow(() -> new MemberNotFoundException(userId, "회원을 찾을 수 없습니다."));
 	}
+	
+	@Override
+	public void updateRefreshToken(String userId, String refreshToken) {
+	    Member member = selectMemberEntity(userId);
+	    member.setRefreshToken(refreshToken);
+	}
 
 	@Override
-	@Transactional 
 	public void storeRefreshToken(Member member) {
 
         // 사용자가 존재하는 경우, refreshToken을 저장
@@ -62,7 +78,6 @@ public class DefaultMemberService implements MemberService {
 	}
 	
 	@Override
-    @Transactional
     public void removeRefreshToken(String userId) {
 	    Member member = selectMemberEntity(userId);
 	    member.setRefreshToken(null);
