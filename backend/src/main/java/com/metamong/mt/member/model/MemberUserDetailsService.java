@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.metamong.mt.member.service.MemberService;
 
+
 @Component
 public class MemberUserDetailsService implements UserDetailsService {
 

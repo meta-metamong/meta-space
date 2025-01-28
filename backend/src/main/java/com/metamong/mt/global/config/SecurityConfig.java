@@ -1,17 +1,13 @@
 package com.metamong.mt.global.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -35,6 +31,8 @@ public class SecurityConfig {
 				.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 				.requestMatchers("/api/members/user", "/api/members/owner").permitAll() 
 				.requestMatchers("/api/members/login","/api/members/logout").permitAll() 
+				.requestMatchers("/login").permitAll()
+				.requestMatchers("/ws/**").permitAll()  // WebSocket 엔드포인트는 인증 없이 접근 (별도 인증 필터를 WebSocket에서 처리할 예정)
 				.anyRequest().authenticated());
 
 //		 Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 
