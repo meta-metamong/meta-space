@@ -1,21 +1,22 @@
 package com.metamong.mt.global.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.repository.mybatis.IMemberRepository;
+import com.metamong.mt.member.model.Role;
+import com.metamong.mt.member.repository.jpa.MemberRepository;
+import com.metamong.mt.member.repository.mybatis.MemberMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
-
-    @Autowired
-    private IMemberRepository memberMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -25,12 +26,12 @@ public class DataLoader implements CommandLineRunner {
 
             // 빌더 패턴을 사용하여 admin 계정 생성
             Member admin = Member.builder()
-                    .userid("admin")
+                    .userId("admin")
                     .name("Admin")
                     .password(encodedPassword)
                     .phone("000-0000-0000")
                     .email("admin@example.com")
-                    .role("ROLE_ADMIN")
+                    .role(Role.ROLE_ADMIN)
                     .postalCode("00000")
                     .address("서울시 예시구 예시동")
                     .detailAddress("상세 주소 예시")
@@ -39,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
                     .birth(null)
                     .build();
 
-            memberMapper.insertMember(admin);
+            memberRepository.save(admin);
             System.out.println("Admin user has been created.");
         }
     }
