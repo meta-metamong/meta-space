@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.metamong.mt.member.dto.response.LoginResponseDto;
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.service.MemberService;
+import com.metamong.mt.member.service.DefaultMemberService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -46,7 +46,7 @@ public class JwtTokenProvider {
     private UserDetailsService userDetailsService;
     
     @Autowired
-    private MemberService memberService;
+    private DefaultMemberService memberService;
 
     /**
      * Access Token을 만들어 반환

@@ -26,7 +26,8 @@ import com.metamong.mt.member.dto.request.MemberRequestDto;
 import com.metamong.mt.member.dto.request.OwnerSignRequestDto;
 import com.metamong.mt.member.dto.response.LoginResponseDto;
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.service.IMemberService;
+import com.metamong.mt.member.model.Role;
+import com.metamong.mt.member.service.MemberService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final IMemberService memberService;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
@@ -168,7 +169,7 @@ public class MemberController {
         registerUserRequest.setPassword(encodedPw);
 
         Member member = Member.builder()
-                .userid(registerUserRequest.getUserid())
+                .userId(registerUserRequest.getUserid())
                 .password(encodedPw)
                 .name(registerUserRequest.getName())
                 .email(registerUserRequest.getEmail())
@@ -176,7 +177,7 @@ public class MemberController {
                 .phone(registerUserRequest.getPhone())
                 .birth(registerUserRequest.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) 
                 .detailAddress(registerUserRequest.getDetailAddress())
-                .role("ROLE_USER")
+                .role(Role.ROLE_USER)
                 .postalCode(registerUserRequest.getPostalCode())
                 .build();
 
@@ -204,11 +205,11 @@ public class MemberController {
     	
     	// 암호화 어떠케 됐지? 유효성, 비밀번호 확인, try catch
         Member member = Member.builder()
-                .userid(OwnerSignRequestrequest.getUserid())
+                .userId(OwnerSignRequestrequest.getUserid())
                 .password(passwordEncoder.encode(OwnerSignRequestrequest.getPassword()))
                 .name(OwnerSignRequestrequest.getName())
                 .email(OwnerSignRequestrequest.getEmail())
-                .role("ROLE_OWNER")
+                .role(Role.ROLE_OWNER)
                 .businessName(OwnerSignRequestrequest.getBusinessName())
                 .businessRegistrationNumber(OwnerSignRequestrequest.getBusinessRegistrationNumber())
                 .phone(OwnerSignRequestrequest.getPhone())

@@ -10,13 +10,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.metamong.mt.member.service.MemberService;
+import com.metamong.mt.member.service.DefaultMemberService;
 
 @Component
 public class MemberUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private MemberService memberService;
+    private DefaultMemberService memberService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,12 +28,12 @@ public class MemberUserDetailsService implements UserDetailsService {
         }
 
         // DB에서 가져온 역할 (role) 사용하여 권한 설정
-        String[] roles = { memberInfo.getRole() };  // DB에서 가져온 역할
+        String[] roles = { memberInfo.getRole().name() };  // DB에서 가져온 역할
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(roles);
 
         // MemberUserDetails 객체 생성
         return new MemberUserDetails(
-                memberInfo.getUserid(),     // 아이디
+                memberInfo.getUserId(),     // 아이디
                 memberInfo.getPassword(),   // 비밀번호
                 authorities,                // 권한
                 memberInfo.getEmail()       // 이메일

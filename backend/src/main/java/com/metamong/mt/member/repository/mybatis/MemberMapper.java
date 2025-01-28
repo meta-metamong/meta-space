@@ -9,7 +9,7 @@ import com.metamong.mt.member.model.Member;
 
 @Repository
 @Mapper
-public interface IMemberRepository {
+public interface MemberMapper {
 	LoginResponseDto selectMember(String userid);
 	void insertMember(Member member);
 	void updateMember(Member member);
