@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.metamong.mt.global.error.ErrorCode;
-import com.metamong.mt.global.error.ErrorResponse;
+import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
@@ -64,7 +63,7 @@ public class MemberController {
         
         return ResponseEntity.ok()
                 .headers(headers)
-                .body("로그인 성공");
+                .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
     }
 
     /**
@@ -90,14 +89,14 @@ public class MemberController {
     
                 removeRefreshTokenFromCookie(response);
 
-                return ResponseEntity.ok("로그아웃 성공");
+                return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("잘못된 토큰입니다.");
+                        .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("로그아웃 처리 중 오류가 발생했습니다.");
+                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
         }
     }
     
@@ -121,13 +120,13 @@ public class MemberController {
      * @return 회원가입 성공 시 응답 또는 실패 시 에러 응답
      */
     @PostMapping("/members/user")
-    public ResponseEntity<String> registerUser(@Validated @RequestBody UserSignUpRequestDto registerUserRequest, BindingResult result) {
+    public ResponseEntity<?> registerUser(@Validated @RequestBody UserSignUpRequestDto registerUserRequest, BindingResult result) {
     	
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
                                         .map(error -> error.getDefaultMessage())
                                         .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors.toString());
+            return ResponseEntity.badRequest().body(BaseResponse.of(HttpStatus.BAD_REQUEST, errors.toString()));
         }
         
         this.memberService.saveUser(registerUserRequest);
@@ -139,7 +138,7 @@ public class MemberController {
 //                                 .body(new ErrorResponse(ErrorCode.USER_ALREADY_EXISTS).getMessage());
 //        }
 
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원가입 성공"));
     }
 
     /**
@@ -152,9 +151,9 @@ public class MemberController {
      * @return 업주 회원가입 성공 시 응답
      */
     @PostMapping("/members/owner")
-    public ResponseEntity<String> registerOwner(@RequestBody OwnerSignUpRequestDto request) {
+    public ResponseEntity<?> registerOwner(@RequestBody OwnerSignUpRequestDto request) {
         memberService.saveOwner(request);
-        return ResponseEntity.ok("업주 회원가입이 완료되었습니다.");
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "업주 회원가입이 완료되었습니다."));
     }
     
     /**
@@ -168,11 +167,8 @@ public class MemberController {
      * @return 정보 찾기 요청 처리 성공 시 응답
      */
     @PostMapping("/members/find-member")
-    public ResponseEntity<String> findMember(@RequestBody FindMemberRequestDto requestDto){
-    	if(memberService.sendLoginInfoNotificationMail(requestDto)) {
-    		return ResponseEntity.ok("요청하신 정보를 이메일로 전송했습니다.");    		
-    	}else {
-    		return ResponseEntity.ok("인증 요청을 실패했습니다.");
-    	}
+    public ResponseEntity<?> findMember(@RequestBody FindMemberRequestDto requestDto){
+        this.memberService.sendLoginInfoNotificationMail(requestDto);
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
     }
 }
