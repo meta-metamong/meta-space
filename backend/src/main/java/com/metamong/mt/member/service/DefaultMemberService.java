@@ -13,7 +13,6 @@ import com.metamong.mt.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.member.exception.MemberNotFoundException;
 import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.model.Role;
 import com.metamong.mt.member.repository.jpa.MemberRepository;
 import com.metamong.mt.member.repository.mybatis.MemberMapper;
 
@@ -30,7 +29,7 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     @Transactional(readOnly = true)
-    public LoginInfoResponseDto selectLoginMember(LoginRequestDto dto) {
+    public LoginInfoResponseDto findLoginInfo(LoginRequestDto dto) {
         LoginInfoResponseDto loginInfo = memberMapper.findLoginInfoByUserId(dto.getUserId())
                 .orElseThrow(() -> new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS));
         
@@ -57,38 +56,38 @@ public class DefaultMemberService implements MemberService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Member selectMemberEntity(String userId) {
+	public Member findMember(String userId) {
 	    return this.memberRepository.findById(userId)
 	            .orElseThrow(() -> new MemberNotFoundException(userId, "회원을 찾을 수 없습니다."));
 	}
 	
 	@Override
 	public void updateRefreshToken(String userId, String refreshToken) {
-	    Member member = selectMemberEntity(userId);
+	    Member member = findMember(userId);
 	    member.setRefreshToken(refreshToken);
 	}
 
-	@Override
-	public void storeRefreshToken(Member member) {
-
-        // 사용자가 존재하는 경우, refreshToken을 저장
-        if (member != null) {
-        	member.setRefreshToken(member.getRefreshToken());  
-            memberMapper.updateMember(member);  
-        } else {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
-        }
-		
-	}
+//	@Override
+//	public void storeRefreshToken(Member member) {
+//
+//        // 사용자가 존재하는 경우, refreshToken을 저장
+//        if (member != null) {
+//        	member.setRefreshToken(member.getRefreshToken());  
+//            memberMapper.updateMember(member);  
+//        } else {
+//            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+//        }
+//		
+//	}
 	
 	@Override
-    public void removeRefreshToken(String userId) {
-	    Member member = selectMemberEntity(userId);
+    public void deleteRefreshToken(String userId) {
+	    Member member = findMember(userId);
 	    member.setRefreshToken(null);
     }
 	
 	@Override
-	public boolean findMember(FindMemberRequestDto request) {	
+	public boolean sendLoginInfoNotificationMail(FindMemberRequestDto request) {	
 		boolean requestSuccess = true;
 		
 		/*

@@ -51,7 +51,7 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        LoginInfoResponseDto loginInfo = this.memberService.selectLoginMember(loginRequest);
+        LoginInfoResponseDto loginInfo = this.memberService.findLoginInfo(loginRequest);
         
         String accessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
         String refreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
@@ -85,7 +85,7 @@ public class MemberController {
             if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
 
                 String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
-                memberService.removeRefreshToken(username);
+                memberService.deleteRefreshToken(username);
 
     
                 removeRefreshTokenFromCookie(response);
@@ -174,7 +174,7 @@ public class MemberController {
      */
     @PostMapping("/members/find-member")
     public ResponseEntity<String> findMember(@RequestBody FindMemberRequestDto requestDto){
-    	if(memberService.findMember(requestDto)) {
+    	if(memberService.sendLoginInfoNotificationMail(requestDto)) {
     		return ResponseEntity.ok("요청하신 정보를 이메일로 전송했습니다.");    		
     	}else {
     		return ResponseEntity.ok("인증 요청을 실패했습니다.");
