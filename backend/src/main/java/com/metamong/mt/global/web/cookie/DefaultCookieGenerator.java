@@ -1,16 +1,11 @@
 package com.metamong.mt.global.web.cookie;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.http.ResponseCookie;
-import org.springframework.stereotype.Component;
 
-@Component
-//@ConditionalOnMissingBean(CookieGenerator.class)
 public class DefaultCookieGenerator implements CookieGenerator {
     private final String clientDomain;
     
-    public DefaultCookieGenerator(@Value("${client.domain}") String clientDomain) {
+    public DefaultCookieGenerator(String clientDomain) {
         this.clientDomain = clientDomain;
     }
 
