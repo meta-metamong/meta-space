@@ -129,11 +129,6 @@ public class MemberController {
                                         .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors.toString());
         }
-
-        if (!registerUserRequest.getPassword().equals(registerUserRequest.getConfirmPassword())) {
-            return ResponseEntity.badRequest()
-                                 .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH).getMessage());
-        }
         
         this.memberService.saveUser(registerUserRequest);
 

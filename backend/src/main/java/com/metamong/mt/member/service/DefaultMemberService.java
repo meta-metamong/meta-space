@@ -12,6 +12,7 @@ import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.member.exception.MemberNotFoundException;
+import com.metamong.mt.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.repository.jpa.MemberRepository;
 import com.metamong.mt.member.repository.mybatis.MemberMapper;
@@ -42,6 +43,9 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     public void saveUser(UserSignUpRequestDto dto) {
+        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
+            throw new PasswordNotConfirmedException();
+        }
         Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
@@ -49,6 +53,9 @@ public class DefaultMemberService implements MemberService {
 
     @Override
     public void saveOwner(OwnerSignUpRequestDto dto) {
+        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
+            throw new PasswordNotConfirmedException();
+        }
         Member owner = dto.toEntity();
         owner.setPassword(this.passwordEncoder.encode(dto.getPassword()));
         this.memberRepository.save(owner);
