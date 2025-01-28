@@ -1,15 +1,11 @@
 package com.metamong.mt.member.controller;
 
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.metamong.mt.global.error.ErrorCode;
-import com.metamong.mt.global.error.ErrorResponse;
+import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
+import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
-import com.metamong.mt.member.dto.request.MemberRequestDto;
-import com.metamong.mt.member.dto.request.OwnerSignRequestDto;
-import com.metamong.mt.member.dto.response.LoginResponseDto;
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.model.Role;
+import com.metamong.mt.member.dto.request.UserSignUpRequestDto;
+import com.metamong.mt.member.dto.request.OwnerSignUpRequestDto;
+import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.member.service.MemberService;
 
 import jakarta.servlet.http.Cookie;
@@ -41,11 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class MemberController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
+    private final CookieGenerator cookieGenerator;
 
     /**
      * 로그인 처리 메서드.
@@ -58,43 +50,20 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-    	try {
-            LoginResponseDto member = memberService.selectLoginMember(loginRequest.getUserid());
-            
-            if (member == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                     .body(new ErrorResponse(ErrorCode.USER_NOT_FOUND));
-            }
-
-            Member memberEntity = memberService.selectMemberEntity(member.getUserId());
-            
-            if (!passwordEncoder.matches(loginRequest.getPassword(), memberEntity.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                     .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH));
-            }
-
-            String accessToken = jwtTokenProvider.generateAccessToken(member);
-            String refreshToken = jwtTokenProvider.generateRefreshToken(member);
-
-            memberEntity.setRefreshToken(refreshToken);
-            memberService.storeRefreshToken(memberEntity); 
-
-            Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
-            refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);  // 쿠키 만료 시간 (7일)
-            refreshTokenCookie.setHttpOnly(true);             // 자바스크립트 접근 불가
-            //refreshTokenCookie.setSecure(true);               // HTTPS에서만 전송
-            refreshTokenCookie.setPath("/");                  // 모든 경로에서 유효하도록 설정
-            response.addCookie(refreshTokenCookie);           // 응답에 쿠키 추가
-            
-            return ResponseEntity.ok()
-                                 .header("Authorization", "Bearer " + accessToken)
-                                 .body("로그인 성공");
-
-        } catch (Exception e) {
-            log.error("로그인 처리 중 오류 발생: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ErrorResponse(ErrorCode.SERVER_ERROR));
-        }
+        LoginInfoResponseDto loginInfo = this.memberService.findLoginInfo(loginRequest);
+        
+        String accessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
+        String refreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
+        
+        this.memberService.updateRefreshToken(loginInfo.getUserId(), refreshToken);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("refresh_token", refreshToken).toString());
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
     }
 
     /**
@@ -115,19 +84,19 @@ public class MemberController {
             if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
 
                 String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
-                memberService.removeRefreshToken(username);
+                memberService.deleteRefreshToken(username);
 
     
                 removeRefreshTokenFromCookie(response);
 
-                return ResponseEntity.ok("로그아웃 성공");
+                return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("잘못된 토큰입니다.");
+                        .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("로그아웃 처리 중 오류가 발생했습니다.");
+                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
         }
     }
     
@@ -151,44 +120,25 @@ public class MemberController {
      * @return 회원가입 성공 시 응답 또는 실패 시 에러 응답
      */
     @PostMapping("/members/user")
-    public ResponseEntity<String> registerUser(@Validated @RequestBody MemberRequestDto registerUserRequest, BindingResult result) {
+    public ResponseEntity<?> registerUser(@Validated @RequestBody UserSignUpRequestDto registerUserRequest, BindingResult result) {
     	
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
                                         .map(error -> error.getDefaultMessage())
                                         .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors.toString());
+            return ResponseEntity.badRequest().body(BaseResponse.of(HttpStatus.BAD_REQUEST, errors.toString()));
         }
+        
+        this.memberService.saveUser(registerUserRequest);
 
-        if (!registerUserRequest.getPassword().equals(registerUserRequest.getConfirmPassword())) {
-            return ResponseEntity.badRequest()
-                                 .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH).getMessage());
-        }
+//        try {
+//            memberService.saveUser(member);
+//        } catch (DuplicateKeyException e) {
+//            return ResponseEntity.badRequest()
+//                                 .body(new ErrorResponse(ErrorCode.USER_ALREADY_EXISTS).getMessage());
+//        }
 
-        String encodedPw = passwordEncoder.encode(registerUserRequest.getPassword());
-        registerUserRequest.setPassword(encodedPw);
-
-        Member member = Member.builder()
-                .userId(registerUserRequest.getUserid())
-                .password(encodedPw)
-                .name(registerUserRequest.getName())
-                .email(registerUserRequest.getEmail())
-                .address(registerUserRequest.getAddress())
-                .phone(registerUserRequest.getPhone())
-                .birth(registerUserRequest.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) 
-                .detailAddress(registerUserRequest.getDetailAddress())
-                .role(Role.ROLE_USER)
-                .postalCode(registerUserRequest.getPostalCode())
-                .build();
-
-        try {
-            memberService.insertMember(member);
-        } catch (DuplicateKeyException e) {
-            return ResponseEntity.badRequest()
-                                 .body(new ErrorResponse(ErrorCode.USER_ALREADY_EXISTS).getMessage());
-        }
-
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원가입 성공"));
     }
 
     /**
@@ -201,22 +151,9 @@ public class MemberController {
      * @return 업주 회원가입 성공 시 응답
      */
     @PostMapping("/members/owner")
-    public ResponseEntity<String> registerOwner(@RequestBody OwnerSignRequestDto OwnerSignRequestrequest) {
-    	
-    	// 암호화 어떠케 됐지? 유효성, 비밀번호 확인, try catch
-        Member member = Member.builder()
-                .userId(OwnerSignRequestrequest.getUserid())
-                .password(passwordEncoder.encode(OwnerSignRequestrequest.getPassword()))
-                .name(OwnerSignRequestrequest.getName())
-                .email(OwnerSignRequestrequest.getEmail())
-                .role(Role.ROLE_OWNER)
-                .businessName(OwnerSignRequestrequest.getBusinessName())
-                .businessRegistrationNumber(OwnerSignRequestrequest.getBusinessRegistrationNumber())
-                .phone(OwnerSignRequestrequest.getPhone())
-                .build();
-
-        memberService.insertMember(member);
-        return ResponseEntity.ok("업주 회원가입이 완료되었습니다.");
+    public ResponseEntity<?> registerOwner(@RequestBody OwnerSignUpRequestDto request) {
+        memberService.saveOwner(request);
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "업주 회원가입이 완료되었습니다."));
     }
     
     /**
@@ -230,11 +167,8 @@ public class MemberController {
      * @return 정보 찾기 요청 처리 성공 시 응답
      */
     @PostMapping("/members/find-member")
-    public ResponseEntity<String> findMember(@RequestBody FindMemberRequestDto requestDto){
-    	if(memberService.findMember(requestDto)) {
-    		return ResponseEntity.ok("요청하신 정보를 이메일로 전송했습니다.");    		
-    	}else {
-    		return ResponseEntity.ok("인증 요청을 실패했습니다.");
-    	}
+    public ResponseEntity<?> findMember(@RequestBody FindMemberRequestDto requestDto){
+        this.memberService.sendLoginInfoNotificationMail(requestDto);
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
     }
 }
