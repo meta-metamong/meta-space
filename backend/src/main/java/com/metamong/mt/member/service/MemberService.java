@@ -23,5 +23,5 @@ public interface MemberService {
 	
 	void deleteRefreshToken(String userId);
 	
-	boolean sendLoginInfoNotificationMail(FindMemberRequestDto request);
+	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
 }
