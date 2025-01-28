@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
+import com.metamong.mt.member.dto.request.OwnerSignUpRequestDto;
+import com.metamong.mt.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.member.exception.InvalidLoginRequestType;
@@ -40,16 +42,18 @@ public class DefaultMemberService implements MemberService {
     }
     
     @Override
-    public void insertMember(Member member) {
-    	if (member.getRole() == Role.ROLE_OWNER) {
-            if (member.getBusinessName() == null || member.getBusinessRegistrationNumber() == null) {
-                throw new IllegalArgumentException("업주 회원가입 시 사업체명과 사업자등록번호는 필수입니다.");
-            }
-        }
+    public void saveUser(UserSignUpRequestDto dto) {
+        Member member = dto.toEntity();
+        member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
     }
 
- 
+    @Override
+    public void saveOwner(OwnerSignUpRequestDto dto) {
+        Member owner = dto.toEntity();
+        owner.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+        this.memberRepository.save(owner);
+    }
 
 	@Override
 	@Transactional(readOnly = true)

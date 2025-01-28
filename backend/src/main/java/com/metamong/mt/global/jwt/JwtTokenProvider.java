@@ -45,8 +45,8 @@ public class JwtTokenProvider {
     @Autowired
     private UserDetailsService userDetailsService;
     
-    @Autowired
-    private DefaultMemberService memberService;
+//    @Autowired
+//    private DefaultMemberService memberService;
 
     /**
      * Access Token을 만들어 반환
@@ -156,14 +156,14 @@ public class JwtTokenProvider {
         }
     }
 
-    /**
-     * Refresh Token을 DB에 저장
-     * @param username 사용자 아이디
-     * @param refreshToken 생성된 Refresh Token
-     */
-    public void storeRefreshTokenInDb(Member member) {
-        memberService.storeRefreshToken(member);
-    }
+//    /**
+//     * Refresh Token을 DB에 저장
+//     * @param username 사용자 아이디
+//     * @param refreshToken 생성된 Refresh Token
+//     */
+//    public void storeRefreshTokenInDb(Member member) {
+//        memberService.storeRefreshToken(member);
+//    }
 
     public String resolveRefreshTokenFromCookie(HttpServletRequest request) {
         // 쿠키 배열 가져오기

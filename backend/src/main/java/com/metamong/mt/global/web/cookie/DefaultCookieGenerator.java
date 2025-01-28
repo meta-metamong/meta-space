@@ -6,7 +6,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnMissingBean(CookieGenerator.class)
+//@ConditionalOnMissingBean(CookieGenerator.class)
 public class DefaultCookieGenerator implements CookieGenerator {
     private final String clientDomain;
     

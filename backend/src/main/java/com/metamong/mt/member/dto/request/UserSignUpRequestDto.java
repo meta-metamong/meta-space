@@ -1,6 +1,9 @@
 package com.metamong.mt.member.dto.request;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import com.metamong.mt.member.model.Member;
+import com.metamong.mt.member.model.Role;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,10 +16,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MemberRequestDto {
+public class UserSignUpRequestDto {
 
     @NotEmpty(message = "아이디는 필수입니다.")
-    private String userid;
+    private String userId;
 
     @NotEmpty(message = "이름은 필수입니다.")
     private String name;
@@ -36,7 +39,7 @@ public class MemberRequestDto {
     private String phone;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    private Date birth; 
+    private LocalDate birth; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String postalCode;
@@ -46,4 +49,19 @@ public class MemberRequestDto {
 
     @NotEmpty(message = "주소는 필수입니다.")
     private String address;
+    
+    public Member toEntity() {
+        return Member.builder()
+                .userId(this.userId)
+                .password(this.password)
+                .name(this.name)
+                .email(this.email)
+                .address(this.address)
+                .phone(this.phone)
+                .birth(this.birth)
+                .detailAddress(this.detailAddress)
+                .role(Role.ROLE_USER)
+                .postalCode(this.postalCode)
+                .build();
+    }
 }

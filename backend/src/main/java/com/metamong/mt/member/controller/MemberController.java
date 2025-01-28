@@ -1,16 +1,11 @@
 package com.metamong.mt.member.controller;
 
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +19,9 @@ import com.metamong.mt.global.jwt.JwtTokenProvider;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
-import com.metamong.mt.member.dto.request.MemberRequestDto;
-import com.metamong.mt.member.dto.request.OwnerSignRequestDto;
+import com.metamong.mt.member.dto.request.UserSignUpRequestDto;
+import com.metamong.mt.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.member.exception.MemberNotFoundException;
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.model.Role;
 import com.metamong.mt.member.service.MemberService;
 
 import jakarta.servlet.http.Cookie;
@@ -46,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
     private final CookieGenerator cookieGenerator;
 
     /**
@@ -130,7 +121,7 @@ public class MemberController {
      * @return 회원가입 성공 시 응답 또는 실패 시 에러 응답
      */
     @PostMapping("/members/user")
-    public ResponseEntity<String> registerUser(@Validated @RequestBody MemberRequestDto registerUserRequest, BindingResult result) {
+    public ResponseEntity<String> registerUser(@Validated @RequestBody UserSignUpRequestDto registerUserRequest, BindingResult result) {
     	
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
@@ -143,29 +134,15 @@ public class MemberController {
             return ResponseEntity.badRequest()
                                  .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH).getMessage());
         }
+        
+        this.memberService.saveUser(registerUserRequest);
 
-        String encodedPw = passwordEncoder.encode(registerUserRequest.getPassword());
-        registerUserRequest.setPassword(encodedPw);
-
-        Member member = Member.builder()
-                .userId(registerUserRequest.getUserid())
-                .password(encodedPw)
-                .name(registerUserRequest.getName())
-                .email(registerUserRequest.getEmail())
-                .address(registerUserRequest.getAddress())
-                .phone(registerUserRequest.getPhone())
-                .birth(registerUserRequest.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) 
-                .detailAddress(registerUserRequest.getDetailAddress())
-                .role(Role.ROLE_USER)
-                .postalCode(registerUserRequest.getPostalCode())
-                .build();
-
-        try {
-            memberService.insertMember(member);
-        } catch (DuplicateKeyException e) {
-            return ResponseEntity.badRequest()
-                                 .body(new ErrorResponse(ErrorCode.USER_ALREADY_EXISTS).getMessage());
-        }
+//        try {
+//            memberService.saveUser(member);
+//        } catch (DuplicateKeyException e) {
+//            return ResponseEntity.badRequest()
+//                                 .body(new ErrorResponse(ErrorCode.USER_ALREADY_EXISTS).getMessage());
+//        }
 
         return ResponseEntity.ok("회원가입 성공");
     }
@@ -180,21 +157,8 @@ public class MemberController {
      * @return 업주 회원가입 성공 시 응답
      */
     @PostMapping("/members/owner")
-    public ResponseEntity<String> registerOwner(@RequestBody OwnerSignRequestDto OwnerSignRequestrequest) {
-    	
-    	// 암호화 어떠케 됐지? 유효성, 비밀번호 확인, try catch
-        Member member = Member.builder()
-                .userId(OwnerSignRequestrequest.getUserid())
-                .password(passwordEncoder.encode(OwnerSignRequestrequest.getPassword()))
-                .name(OwnerSignRequestrequest.getName())
-                .email(OwnerSignRequestrequest.getEmail())
-                .role(Role.ROLE_OWNER)
-                .businessName(OwnerSignRequestrequest.getBusinessName())
-                .businessRegistrationNumber(OwnerSignRequestrequest.getBusinessRegistrationNumber())
-                .phone(OwnerSignRequestrequest.getPhone())
-                .build();
-
-        memberService.insertMember(member);
+    public ResponseEntity<String> registerOwner(@RequestBody OwnerSignUpRequestDto request) {
+        memberService.saveOwner(request);
         return ResponseEntity.ok("업주 회원가입이 완료되었습니다.");
     }
     
