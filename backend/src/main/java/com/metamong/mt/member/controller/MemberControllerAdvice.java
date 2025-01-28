@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.metamong.mt.global.apispec.ErrorResponse;
 import com.metamong.mt.member.exception.InvalidLoginRequestException;
+import com.metamong.mt.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.member.exception.MemberErrorCode;
 import com.metamong.mt.member.exception.MemberNotFoundException;
 import com.metamong.mt.member.exception.PasswordNotConfirmedException;
@@ -29,5 +30,10 @@ public class MemberControllerAdvice {
     public ResponseEntity<ErrorResponse> passwordNotConfirmedException(PasswordNotConfirmedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                 .body(ErrorResponse.of(MemberErrorCode.PASSWORD_NOT_CONFIRMED));
+    }
+    
+    @ExceptionHandler(InvalidPasswordResetRequestException.class)
+    public ResponseEntity<ErrorResponse> invalidPasswordResetRequestException(InvalidPasswordResetRequestException e) {
+        return new ResponseEntity<>(ErrorResponse.of(MemberErrorCode.INVALID_PASSWORD_RESET_REQUEST), HttpStatus.BAD_REQUEST);
     }
 }
