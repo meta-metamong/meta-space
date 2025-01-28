@@ -19,7 +19,7 @@ public class OwnerSignRequestDto {
     private String businessName;
     private String businessRegistrationNumber;
     private Date birth;
-    private String postal_code;
-    private String detail_address;
+    private String postalCode;
+    private String detailAddress;
     private String address;
 }

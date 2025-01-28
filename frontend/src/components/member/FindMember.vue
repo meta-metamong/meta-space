@@ -5,7 +5,7 @@
             <h3 class="text-center mb-3">{{ title }}</h3>
             <form @submit.prevent="handleSubmit">
                 <div class="mb-2" v-if="idOrPw === 'pw'">
-                    <input type="text" class="form-control" :placeholder="$t('member.id')" name="id" v-model="id" required />
+                    <input type="text" class="form-control" :placeholder="$t('member.id')" name="userid" v-model="userid" required />
                 </div>
                 <div class="mb-2">
                     <input type="text" class="form-control" :placeholder="$t('member.name')" name="name" v-model="name" required />
@@ -20,13 +20,14 @@
     </div>  
 </template>
 <script>
+import { post } from "../../apis/axios"
 export default {
     name: "FindMember",
     data() {
         return {
             name: "",
             email: "",
-            id: ""
+            userid: ""
         };
     },
     props: {
@@ -43,10 +44,15 @@ export default {
         }
     },
     methods: {
-        handleSubmit(e) {
-            console.log("아이디:", this.id);
-            console.log("이름:", this.name);
-            console.log("이메일:", this.email);
+        async handleSubmit(e) {
+            const requestObject = {
+                "idOrPw": this.idOrPw,
+                "userid": this.userid,
+                "name": this.name,
+                "email": this.email
+            }
+            const data = await post("/members/find-member", requestObject);
+            alert(data);
         }
     }
 };

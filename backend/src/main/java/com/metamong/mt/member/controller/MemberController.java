@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.metamong.mt.global.error.ErrorCode;
 import com.metamong.mt.global.error.ErrorResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
+import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
 import com.metamong.mt.member.dto.request.MemberRequestDto;
 import com.metamong.mt.member.dto.request.OwnerSignRequestDto;
@@ -56,16 +57,16 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        try {
+    	try {
             LoginResponseDto member = memberService.selectLoginMember(loginRequest.getUserid());
-
+            
             if (member == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                      .body(new ErrorResponse(ErrorCode.USER_NOT_FOUND));
             }
 
-            Member memberEntity = memberService.selectMemberEntity(member.getUserId()); 
-
+            Member memberEntity = memberService.selectMemberEntity(member.getUserId());
+            
             if (!passwordEncoder.matches(loginRequest.getPassword(), memberEntity.getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                                      .body(new ErrorResponse(ErrorCode.PASSWORD_NOT_MATCH));
@@ -80,7 +81,7 @@ public class MemberController {
             Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
             refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);  // 쿠키 만료 시간 (7일)
             refreshTokenCookie.setHttpOnly(true);             // 자바스크립트 접근 불가
-            refreshTokenCookie.setSecure(true);               // HTTPS에서만 전송
+            //refreshTokenCookie.setSecure(true);               // HTTPS에서만 전송
             refreshTokenCookie.setPath("/");                  // 모든 경로에서 유효하도록 설정
             response.addCookie(refreshTokenCookie);           // 응답에 쿠키 추가
             
@@ -174,9 +175,9 @@ public class MemberController {
                 .address(registerUserRequest.getAddress())
                 .phone(registerUserRequest.getPhone())
                 .birth(registerUserRequest.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()) 
-                .detailAddress(registerUserRequest.getDetail_address())
+                .detailAddress(registerUserRequest.getDetailAddress())
                 .role("ROLE_USER")
-                .postalCode(registerUserRequest.getPostal_code())
+                .postalCode(registerUserRequest.getPostalCode())
                 .build();
 
         try {
@@ -215,5 +216,24 @@ public class MemberController {
 
         memberService.insertMember(member);
         return ResponseEntity.ok("업주 회원가입이 완료되었습니다.");
+    }
+    
+    /**
+     * 아이디 또는 비밀번호 찾기 메서드
+     * <p>
+     * 아이디 찾기 시엔 이름, 이메일, 비밀번호 찾기 시엔 아이디, 이름, 이메일을 입력받습니다.
+     * 둘은 idOrPw라는 데이터를 통해 구분됩니다.
+     * </p>
+     * 
+     * @param FindMemberRequestDto 회원 정보 찾기 요청 정보 (아이디-비밀번호 찾기, 이름, 이메일, 아이디 or 비밀번호 구분)
+     * @return 정보 찾기 요청 처리 성공 시 응답
+     */
+    @PostMapping("/members/find-member")
+    public ResponseEntity<String> findMember(@RequestBody FindMemberRequestDto requestDto){
+    	if(memberService.findMember(requestDto)) {
+    		return ResponseEntity.ok("요청하신 정보를 이메일로 전송했습니다.");    		
+    	}else {
+    		return ResponseEntity.ok("인증 요청을 실패했습니다.");
+    	}
     }
 }

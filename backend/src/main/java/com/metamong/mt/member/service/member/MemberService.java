@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.response.LoginResponseDto;
 import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.repository.mybatis.IMemberRepository;
@@ -61,6 +60,7 @@ public class MemberService implements IMemberService {
         }
 		
 	}
+	
 	@Override
     @Transactional
     public void removeRefreshToken(String userId) {
@@ -71,29 +71,6 @@ public class MemberService implements IMemberService {
         }
     }
 	
-	@Override
-	public boolean findMember(FindMemberRequestDto request) {	
-		boolean requestSuccess = true;
-		
-		/*
-		 * idOrPw가 id인 경우 name, email 데이터만 오고, userid는 null값으로 온다.
-		 * idOrPw가 pw인 경우 userid, name, email 데이터 전부 온다.
-		 */
-		System.out.println("====================================");
-		System.out.println("idOrPw: " + request.getIdOrPw());
-		System.out.println("userid: " + request.getUserid());
-		System.out.println("name: " + request.getName());
-		System.out.println("email: " + request.getEmail());
-		// 이메일 인증 요청 성공 시
-		if(1 == 1){
-			requestSuccess = true;	
-		}
-		// 이메일 인증 요청 실패 시
-		else {
-			requestSuccess = false;
-		}
-		
-		return requestSuccess;
-	}
+	
     
 }
