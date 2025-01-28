@@ -15,11 +15,13 @@ public interface MemberService {
     void updateRefreshToken(String userId, String refreshToken);
     
     // Refresh Token을 DB에 저장하는 메서드 추가
-    void storeRefreshToken(Member member);
-    LoginInfoResponseDto selectLoginMember(LoginRequestDto dto);
-	Member selectMemberEntity(String userId);
-	void removeRefreshToken(String userId);
-	boolean findMember(FindMemberRequestDto request);
+//    void storeRefreshToken(Member member);
+    
+    LoginInfoResponseDto findLoginInfo(LoginRequestDto dto);
+    
+	Member findMember(String userId);
 	
+	void deleteRefreshToken(String userId);
 	
+	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
 }
