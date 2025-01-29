@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.metamong.mt.domain.member.model.IdOrPw;
+import com.metamong.mt.global.jackson.role.IdOrPwDeserializer;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailAgentMock;
 import com.metamong.mt.global.mail.MailMessageFormatter;
-import com.metamong.mt.global.objectmapper.role.IdOrPwDeserializer;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.global.web.cookie.DefaultCookieGenerator;
-import com.metamong.mt.member.model.IdOrPw;
 
 @Configuration
 public class BeanConfig {

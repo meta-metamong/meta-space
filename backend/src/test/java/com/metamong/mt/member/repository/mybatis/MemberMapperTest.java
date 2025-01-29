@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.model.Role;
-import com.metamong.mt.member.repository.jpa.MemberRepository;
+import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.Role;
+import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
+import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.testutil.DummyEntityGenerator;
 
 import lombok.extern.slf4j.Slf4j;
