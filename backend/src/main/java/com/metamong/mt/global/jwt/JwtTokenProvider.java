@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -88,12 +89,12 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Request의 Header에서 token 값을 가져옴 "X-AUTH-TOKEN" : "TOKEN값"
+     * Request의 Authorization Header에서 token 값을 가져옴
      * @param request 요청 객체
      * @return 토큰
      */
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader(HttpHeaders.AUTHORIZATION).substring("Bearer ".length());
     }
 
     /**
