@@ -7,9 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
 import com.metamong.mt.global.file.FileUploader;
 
 import jakarta.annotation.PostConstruct;
@@ -19,12 +16,10 @@ import lombok.extern.slf4j.Slf4j;
  * <p>Spring Bean으로 등록된 FileUploader 구현체가 없을 경우 이 객체가
  * Spring Bean으로 등록된다.
  * <p>로컬, 테스트 환경에서는 이 객체를 사용한다.
+ * <p>BeanConfig 클래스에서 Spring Bean으로 등록된다.
  * 
  * @author pgd
  */
-// TODO: Config 파일에 등록
-@Component
-@Profile("!prod")
 @Slf4j
 public class LocalFileUploader implements FileUploader {
     private static final int BUFFER_SIZE = 1024;
@@ -58,6 +53,9 @@ public class LocalFileUploader implements FileUploader {
             int readSize;
             while ((readSize = bis.read(buffer)) != -1) {
                 bos.write(buffer, 0, readSize);
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("File has been stored: {}", this.fileSystemPath + filename);
             }
         }
     }
