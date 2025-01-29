@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class LocalFileUploaderTest {
-    private static final String TEST_FILENAME = "test-image.webp";
+    private static final String TEST_FILENAME = "/test-image.webp";
     
     private LocalFileUploader localFileUploader;
     private String fileSystemPath;
