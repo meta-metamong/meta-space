@@ -7,11 +7,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailAgentMock;
 import com.metamong.mt.global.mail.MailMessageFormatter;
+import com.metamong.mt.global.objectmapper.role.IdOrPwDeserializer;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.global.web.cookie.DefaultCookieGenerator;
+import com.metamong.mt.member.model.IdOrPw;
 
 @Configuration
 public class BeanConfig {
@@ -26,5 +33,19 @@ public class BeanConfig {
     @ConditionalOnMissingBean(MailAgent.class)
     public MailAgentMock mailAgentMock(List<MailMessageFormatter> mailMessageFormatters) {
         return new MailAgentMock(mailMessageFormatters);
+    }
+    
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
+
+        SimpleModule idOrPwDeserializerModule = new SimpleModule();
+        idOrPwDeserializerModule.addDeserializer(IdOrPw.class, new IdOrPwDeserializer());
+        objectMapper.registerModule(idOrPwDeserializerModule);
+
+        return objectMapper;
     }
 }
