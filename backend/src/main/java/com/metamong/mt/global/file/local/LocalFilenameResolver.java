@@ -1,14 +1,10 @@
 package com.metamong.mt.global.file.local;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.global.file.AbstractFilenameResolver;
-import com.metamong.mt.global.file.FileType;
-import com.metamong.mt.global.file.FilenameResolver;
 
 /**
  * <p>Spring Bean으로 등록된 FilenameResolver 구현체가 없을 경우 이 객체가
