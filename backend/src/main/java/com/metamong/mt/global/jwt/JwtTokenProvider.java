@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.service.DefaultMemberService;
+import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.service.DefaultMemberService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
