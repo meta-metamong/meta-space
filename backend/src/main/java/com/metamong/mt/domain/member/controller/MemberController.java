@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -55,21 +56,41 @@ public class MemberController {
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
         LoginInfoResponseDto loginInfo = this.memberService.findLoginInfo(loginRequest);
-        
+
+        // 액세스 토큰과 리프레시 토큰 생성
         String accessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
         String refreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
-        
+
+        // 리프레시 토큰을 DB에 저장
         this.memberService.updateRefreshToken(loginInfo.getUserId(), refreshToken);
-        
+
+        // 쿠키 생성
+        ResponseCookie accessTokenResponseCookie = this.cookieGenerator.generateCookie("Ws-Access-Token", accessToken);
+        ResponseCookie refreshTokenResponseCookie = this.cookieGenerator.generateCookie("Refresh-Token", refreshToken);
+
+        // ResponseCookie를 javax.servlet.http.Cookie로 변환
+        Cookie accessTokenCookie = new Cookie(accessTokenResponseCookie.getName(), accessTokenResponseCookie.getValue());
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge((int) accessTokenResponseCookie.getMaxAge().getSeconds());
+        accessTokenCookie.setPath("/");
+
+        Cookie refreshTokenCookie = new Cookie(refreshTokenResponseCookie.getName(), refreshTokenResponseCookie.getValue());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge((int) refreshTokenResponseCookie.getMaxAge().getSeconds());
+        refreshTokenCookie.setPath("/");
+
+        // 쿠키를 응답에 추가
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
+        // 액세스 토큰을 헤더에 추가 (일반 API 요청용)
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", refreshToken).toString());
         headers.set("X-Access-Token", "Bearer " + accessToken);
-        
+
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
     }
-
     /**
      * 로그아웃 처리 메서드.
      * <p>
