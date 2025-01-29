@@ -1,6 +1,8 @@
 package com.metamong.mt.member.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +21,10 @@ import com.metamong.mt.global.jwt.JwtTokenProvider;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 import com.metamong.mt.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.member.dto.request.LoginRequestDto;
-import com.metamong.mt.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.member.dto.request.OwnerSignUpRequestDto;
+import com.metamong.mt.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.member.model.Member;
 import com.metamong.mt.member.service.MemberService;
 
 import jakarta.servlet.http.Cookie;
@@ -49,21 +53,27 @@ public class MemberController {
      * @return 로그인 성공 시 액세스 토큰을 포함한 응답 또는 실패 시 에러 응답
      */
     @PostMapping("/members/login")
-    public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        LoginInfoResponseDto loginInfo = this.memberService.findLoginInfo(loginRequest);
-        
-        String accessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
-        String refreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
-        
-        this.memberService.updateRefreshToken(loginInfo.getUserId(), refreshToken);
-        
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("refresh_token", refreshToken).toString());
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
+    public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest) {
+    	try {
+    		LoginInfoResponseDto loginInfo = this.memberService.findLoginInfo(loginRequest);
+            
+            String accessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
+            String refreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
+            
+            this.memberService.updateRefreshToken(loginInfo.getUserId(), refreshToken);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", refreshToken).toString());
+            headers.set(HttpHeaders.AUTHORIZATION, accessToken);
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
+    	}catch(Exception e) {
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "로그인 실패"));
+    	}
+    	
     }
 
     /**
@@ -101,7 +111,7 @@ public class MemberController {
     }
     
     private void removeRefreshTokenFromCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("refresh_token", null);
+        Cookie cookie = new Cookie("Refresh-Token", null);
         cookie.setMaxAge(0); // 쿠키 만료
         cookie.setPath("/"); // 모든 경로에서 유효하도록 설정
         cookie.setHttpOnly(true); // 자바스크립트에서 접근할 수 없도록 설정
@@ -170,5 +180,64 @@ public class MemberController {
     public ResponseEntity<?> findMember(@RequestBody FindMemberRequestDto requestDto){
         this.memberService.sendLoginInfoNotificationMail(requestDto);
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
+    }
+    
+    /**
+     * 엑세스 및 리프레시 토큰 재발급 메서드
+     * <p>
+     * 헤더에 담겨있는 리프레시 토큰과 엑세스 토큰을 이용해 새로운 엑세스 및 리프레시 토큰을 재발급합니다.
+     * </p>
+     * 
+     * @return 엑세스 및 리프레시 토큰
+     */
+    @GetMapping("/members/reissue")
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
+    	 String refreshToken = this.jwtTokenProvider.resolveRefreshTokenFromCookie(request);
+    	 if(refreshToken != null && this.jwtTokenProvider.validateToken(refreshToken)) {    
+    		 removeRefreshTokenFromCookie(response);
+    		 Member member = this.memberService.findMember(this.jwtTokenProvider.getUserId(refreshToken));
+    		 LoginInfoResponseDto loginInfo = new LoginInfoResponseDto(
+    				 	member.getUserId(),
+    				 	member.getName(),
+    				 	member.getPassword(),
+    				 	member.getRole()
+    		 );
+    		 String reissuedAccessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);
+    		 String reissuedRefreshToken = this.jwtTokenProvider.generateRefreshToken(loginInfo);
+    		 this.memberService.updateRefreshToken(member.getUserId(), reissuedRefreshToken);
+    		 
+    		 HttpHeaders headers = new HttpHeaders();
+    	        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", reissuedRefreshToken).toString());
+    	        headers.set(HttpHeaders.AUTHORIZATION, reissuedAccessToken);
+    	        
+    	        return ResponseEntity.ok()
+    	                .headers(headers)
+    	                .body(BaseResponse.of(HttpStatus.OK, "토큰 재발급 성공"));
+    	 }
+         
+    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                 .body(BaseResponse.of(refreshToken, HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
+    }
+    
+    @GetMapping("/test")
+    public ResponseEntity<?> testApi(HttpServletRequest request){
+    	String accessToken = this.jwtTokenProvider.resolveToken(request);
+    	String refreshToken = this.jwtTokenProvider.resolveRefreshTokenFromCookie(request);
+    	if(accessToken != null && refreshToken != null) {
+    		if(!this.jwtTokenProvider.validateToken(accessToken)) {
+    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+    	                .body(BaseResponse.of(accessToken, HttpStatus.UNAUTHORIZED, "엑세스 토큰 만료입니다."));
+    		}else if(!this.jwtTokenProvider.validateToken(refreshToken)) {
+    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+    	                .body(BaseResponse.of(refreshToken, HttpStatus.UNAUTHORIZED, "리프레시 토큰 만료입니다."));
+    		}
+    		Map<String, String> token = new HashMap<>();
+        	token.put("access", accessToken);
+        	token.put("refresh", refreshToken);
+        	return ResponseEntity.ok()
+                    .body(BaseResponse.of(token, HttpStatus.OK, "테스트 성공"));
+    	}
+    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
     }
 }

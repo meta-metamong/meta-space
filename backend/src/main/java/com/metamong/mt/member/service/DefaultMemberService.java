@@ -38,8 +38,7 @@ public class DefaultMemberService implements MemberService {
         LoginInfoResponseDto loginInfo = memberMapper.findLoginInfoByUserId(dto.getUserId())
                 .orElseThrow(() -> new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS));
         
-        String encodedPassword = this.passwordEncoder.encode(dto.getPassword());
-        if (encodedPassword.equals(loginInfo.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), loginInfo.getPassword())) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
         return loginInfo;
