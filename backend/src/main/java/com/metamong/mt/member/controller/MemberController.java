@@ -58,8 +58,8 @@ public class MemberController {
         this.memberService.updateRefreshToken(loginInfo.getUserId(), refreshToken);
         
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("refresh_token", refreshToken).toString());
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", refreshToken).toString());
+        headers.set("X-Access-Token", "Bearer " + accessToken);
         
         return ResponseEntity.ok()
                 .headers(headers)
