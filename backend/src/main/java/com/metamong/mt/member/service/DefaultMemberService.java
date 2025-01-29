@@ -100,14 +100,11 @@ public class DefaultMemberService implements MemberService {
 	@Override
 	public void sendLoginInfoNotificationMail(FindMemberRequestDto request) {
 	    switch (request.getIdOrPw()) {
-	    case "id":
+	    case ID:
 	        sendMailForId(request.getEmail());
 	        break;
-	    case "pw":
-	        sendMailForPassword(request.getEmail(), request.getUserid());
-	        break;
-        default:
-            throw new RuntimeException();
+	    case PW:
+	        sendMailForPassword(request.getEmail(), request.getUserId());
 	    }
 	}
 	

@@ -1,5 +1,7 @@
 package com.metamong.mt.member.dto.request;
 
+import com.metamong.mt.member.model.IdOrPw;
+
 import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,9 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FindMemberRequestDto {
-	String idOrPw;
+	private IdOrPw idOrPw;
 	@Nullable
-	String userid;
-	String name;
-	String email;
+	private String userId;
+	private String name;
+	private String email;
 }
