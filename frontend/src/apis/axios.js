@@ -36,7 +36,8 @@ apiClient.interceptors.request.use(
 export const login = async function(endpoint, loginDto){
     try{
         const response = await apiClient.post(endpoint, loginDto);
-        if(response.data.statusCode === 200) saveAccessToken(response.headers.Authorization);
+        if(response.data.statusCode === 200) saveAccessToken(response.headers.x-access-token);
+        console.log(response.headers.x-access-token);
         return response.data;
     }catch(error){
         return error

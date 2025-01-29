@@ -1,10 +1,11 @@
 package com.metamong.mt.domain.member.controller;
 
-import org.springframework.http.HttpStatus;import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.metamong.mt.domain.member.exception.IdEmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
@@ -12,7 +13,7 @@ import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.domain.member.exception.errorcode.MemberErrorCode;
 import com.metamong.mt.global.apispec.ErrorResponse;
 
-@RestControllerAdvice(basePackages = "com.metamong.mt.member")
+@RestControllerAdvice(basePackages = "com.metamong.mt.domain")
 public class MemberControllerAdvice {
 
     @ExceptionHandler(InvalidLoginRequestException.class)
@@ -35,5 +36,11 @@ public class MemberControllerAdvice {
     @ExceptionHandler(InvalidPasswordResetRequestException.class)
     public ResponseEntity<ErrorResponse> invalidPasswordResetRequestException(InvalidPasswordResetRequestException e) {
         return new ResponseEntity<>(ErrorResponse.of(MemberErrorCode.INVALID_PASSWORD_RESET_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(IdEmailAleadyExistException.class)
+    public ResponseEntity<ErrorResponse> idEmailAleadyExistException(IdEmailAleadyExistException e) {
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                .body(ErrorResponse.of(MemberErrorCode.ID_EMAIL_ALEADY_EXIST));
     }
 }

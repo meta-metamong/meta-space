@@ -125,7 +125,6 @@ public class MemberController {
      */
     @PostMapping("/members/user")
     public ResponseEntity<?> registerUser(@Validated @RequestBody UserSignUpRequestDto registerUserRequest, BindingResult result) {
-    	
         if (result.hasErrors()) {
             List<String> errors = result.getAllErrors().stream()
                                         .map(error -> error.getDefaultMessage())

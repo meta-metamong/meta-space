@@ -40,14 +40,14 @@ export default {
 				this.errorMessage = this.$t('error.login');
 				return;
 			}
-
+			
 			// 로그인 후 받은 데이터 활용 코드 작성
 			alert(response.message);
 			location.href = "/";
 		},
 		route(page){
 			this.$router.push(page);
-		}
+		}		
 	}
 };
 </script>

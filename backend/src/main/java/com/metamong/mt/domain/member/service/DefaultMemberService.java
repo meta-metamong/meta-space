@@ -9,6 +9,7 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.exception.IdEmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
@@ -50,9 +51,16 @@ public class DefaultMemberService implements MemberService {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new PasswordNotConfirmedException();
         }
-        Member member = dto.toEntity();
+        if(memberRepository.existsByUserIdOrEmail(dto.getUserId(), dto.getEmail())) {
+        	throw new IdEmailAleadyExistException();
+        }
+        
+        System.out.println("\n\n\n 들어오나?");
+    	Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
+        
+	       
     }
 
     @Override
