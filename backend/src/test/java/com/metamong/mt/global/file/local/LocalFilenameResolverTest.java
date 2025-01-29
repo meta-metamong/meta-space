@@ -17,11 +17,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.metamong.mt.global.file.FileType;
 
 class LocalFilenameResolverTest {
+    static final int VIRTUAL_SERVER_PORT = 8080;
+    
     LocalFilenameResolver localFilenameResolver;
     
     @BeforeEach
     void beforeEach() {
-        this.localFilenameResolver = new LocalFilenameResolver();
+        this.localFilenameResolver = new LocalFilenameResolver(VIRTUAL_SERVER_PORT);
     }
     
     @Test
@@ -103,8 +105,23 @@ class LocalFilenameResolverTest {
         // Given
         final FileType fileType = null;
         
-        // When
+        // Then
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> this.localFilenameResolver.generateUuidFilename(fileType));
+    }
+    
+    @Test
+    @DisplayName("resolveFileUrl() - success")
+    void resolveFileUrl_success() {
+        // Given
+        final String filename = "originalfilename.jpg";
+        
+        // When
+        String result = this.localFilenameResolver.resolveFileUrl(filename);
+        
+        // Then
+        String expected = "http://localhost:" + VIRTUAL_SERVER_PORT
+                + "/resources/files/" + filename;
+        assertThat(result).isEqualTo(expected);
     }
 }

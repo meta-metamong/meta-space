@@ -2,6 +2,7 @@ package com.metamong.mt.global.file.local;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +20,16 @@ import com.metamong.mt.global.file.FilenameResolver;
 @Component
 @Profile("!prod")
 public class LocalFilenameResolver extends AbstractFilenameResolver {
+    private static final String COMMON_FILE_PATH = "/resources/files/";
+    
+    private final String commonFileUrlPrefix;
+    
+    public LocalFilenameResolver(@Value("server.port") int serverPort) {
+        this.commonFileUrlPrefix = "http://localhost:" + serverPort + COMMON_FILE_PATH;
+    }
 
     @Override
     public String resolveFileUrl(String filename) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.commonFileUrlPrefix + filename;
     }
 }

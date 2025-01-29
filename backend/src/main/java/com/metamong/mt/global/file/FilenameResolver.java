@@ -26,7 +26,7 @@ public interface FilenameResolver {
     /**
      * <p>외부에서 파일에 접근할 수 있도록 파일의 위치를 나타내는 URL을 만들어 반환한다.<br>
      * 
-     * @param filename URL을 생성할 파일명
+     * @param filename URL을 생성할 파일명. "/"로 시작해서는 안 된다.
      * @return 파일의 위치를 나타내는 URL
      */
     String resolveFileUrl(String filename);
