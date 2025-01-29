@@ -30,8 +30,8 @@ class LocalFileUploaderTest {
             fileSystemPath = fileSystemPath.substring("file:/".length());
         }
         log.info("filePath={}", fileSystemPath);
-        this.fileSystemPath = fileSystemPath;
-        this.localFileUploader = new LocalFileUploader(fileSystemPath);
+        this.fileSystemPath = fileSystemPath.startsWith("/") ? fileSystemPath : "/" + fileSystemPath;
+        this.localFileUploader = new LocalFileUploader(this.fileSystemPath);
         this.localFileUploader.init();
     }
     
