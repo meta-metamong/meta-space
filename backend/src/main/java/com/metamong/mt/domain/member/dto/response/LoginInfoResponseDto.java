@@ -1,6 +1,6 @@
 package com.metamong.mt.domain.member.dto.response;
 
-import com.metamong.mt.domain.member.model.Role;
+import com.metamong.mt.domain.member.model.constant.Role;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

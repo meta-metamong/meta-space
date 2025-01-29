@@ -2,6 +2,8 @@ package com.metamong.mt.domain.member.model;
 
 import java.time.LocalDate;
 
+import com.metamong.mt.domain.member.model.constant.Role;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

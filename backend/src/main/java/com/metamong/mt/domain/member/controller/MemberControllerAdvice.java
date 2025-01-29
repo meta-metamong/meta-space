@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
-import com.metamong.mt.domain.member.exception.MemberErrorCode;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
+import com.metamong.mt.domain.member.exception.errorcode.MemberErrorCode;
 import com.metamong.mt.global.apispec.ErrorResponse;
 
 @RestControllerAdvice(basePackages = "com.metamong.mt.member")

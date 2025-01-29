@@ -3,7 +3,7 @@ package com.metamong.mt.domain.member.dto.request;
 import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.model.Member;
-import com.metamong.mt.domain.member.model.Role;
+import com.metamong.mt.domain.member.model.constant.Role;
 
 import lombok.Getter;
 import lombok.Setter;

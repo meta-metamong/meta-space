@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.member.model;
+package com.metamong.mt.domain.member.model.constant;
 
 public enum Role {
     ROLE_USER,

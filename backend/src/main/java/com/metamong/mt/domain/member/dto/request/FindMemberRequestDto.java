@@ -1,6 +1,6 @@
 package com.metamong.mt.domain.member.dto.request;
 
-import com.metamong.mt.domain.member.model.IdOrPw;
+import com.metamong.mt.domain.member.model.constant.IdOrPw;
 
 import jakarta.annotation.Nullable;
 import lombok.Getter;

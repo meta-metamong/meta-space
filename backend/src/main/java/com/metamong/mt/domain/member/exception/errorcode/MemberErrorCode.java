@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.member.exception;
+package com.metamong.mt.domain.member.exception.errorcode;
 
 import com.metamong.mt.global.apispec.ErrorCodeSpecifiable;
 
