@@ -40,7 +40,7 @@ public class JwtTokenProvider {
      * 토큰 유효기간, 30분, 단위 밀리초
      */
     // private long accessTokenValidTime = 30 * 60 * 1000L;  // 30분
-    private long accessTokenValidTime = 5 * 60 * 1000L;  // 30분
+    private long accessTokenValidTime = 10 * 1000L;  // 30분
     private long refreshTokenValidTime = 30 * 24 * 60 * 60 * 1000L; // 30일
     //private final long refreshTokenValidity = 1000 * 60 * 60 * 24;  // 리프레시 토큰 만료 시간 (1일)
 
@@ -147,7 +147,7 @@ public class JwtTokenProvider {
      * @param token 토큰
      * @return 토큰이 유효한지 확인, 유효하면 true 반환
      */
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) {    	
         try {
             Jws<Claims> claims = Jwts.parser()
                     .verifyWith(key)

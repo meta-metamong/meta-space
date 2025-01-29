@@ -5,14 +5,15 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.GenericFilterBean;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends GenericFilterBean {
@@ -23,10 +24,22 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		
 		// 헤더에서 JWT를 받아음.
-		String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+		String token = jwtTokenProvider.resolveToken(httpRequest);
+		
 		// 유효한 토큰인지 확인.
-		if (token != null && jwtTokenProvider.validateToken(token)) {
+		if (token != null && !"/api/members/reissue".equals(httpRequest.getRequestURI())) {
+			if(!jwtTokenProvider.validateToken(token)) {
+				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				httpResponse.setCharacterEncoding("UTF-8");
+                httpResponse.setContentType("application/json");
+                httpResponse.getWriter().write("{\"message\": \"엑세스 토큰 만료\"}");
+                return;
+			}
+			
 			// 토큰이 유효하면 토큰으로부터 사용자 정보를 받아옴
 			Authentication authentication = jwtTokenProvider.getAuthentication(token);
 			// SecurityContext에 Authentication 객체를 저장.

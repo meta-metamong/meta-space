@@ -185,9 +185,14 @@ public class MemberController {
      */
     @GetMapping("/members/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
+    	 String accessToken = this.jwtTokenProvider.resolveToken(request);
     	 String refreshToken = this.jwtTokenProvider.resolveRefreshTokenFromCookie(request);
-    	 if(refreshToken != null && this.jwtTokenProvider.validateToken(refreshToken)) {    
+    	 boolean isAvailable = accessToken != null && refreshToken != null;
+    	 boolean isReissuable = !this.jwtTokenProvider.validateToken(accessToken) && this.jwtTokenProvider.validateToken(refreshToken);
+    	 
+    	 if(isAvailable && isReissuable) {    
     		 removeRefreshTokenFromCookie(response);
+    		 
     		 Member member = this.memberService.findMember(this.jwtTokenProvider.getUserId(refreshToken));
     		 LoginInfoResponseDto loginInfo = new LoginInfoResponseDto(
     				 	member.getUserId(),
@@ -201,7 +206,7 @@ public class MemberController {
     		 
     		 HttpHeaders headers = new HttpHeaders();
     	        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", reissuedRefreshToken).toString());
-    	        headers.set(HttpHeaders.AUTHORIZATION, reissuedAccessToken);
+    	        headers.set("X-Access-Token", "Bearer " + reissuedAccessToken);
     	        
     	        return ResponseEntity.ok()
     	                .headers(headers)
