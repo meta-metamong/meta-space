@@ -4,10 +4,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.model.Role;
-import com.metamong.mt.member.repository.jpa.MemberRepository;
-import com.metamong.mt.member.repository.mybatis.MemberMapper;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Role;
+import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
+import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 

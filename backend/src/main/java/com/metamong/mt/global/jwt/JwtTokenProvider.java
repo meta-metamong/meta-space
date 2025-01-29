@@ -5,15 +5,16 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.metamong.mt.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.service.DefaultMemberService;
+import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.service.DefaultMemberService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -89,7 +90,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Request의 Header에서 token 값을 가져옴 "Authorization" : "TOKEN값"
+     * Request의 Authorization Header에서 token 값을 가져옴
      * @param request 요청 객체
      * @return 토큰
      */

@@ -1,7 +1,7 @@
 package com.metamong.mt.testutil;
 
-import com.metamong.mt.member.model.Member;
-import com.metamong.mt.member.model.Role;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Role;
 
 /**
  * 테스트를 위한 더미 엔티티 객체 생성 helper 클래스
