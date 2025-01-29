@@ -8,7 +8,8 @@ public interface FilenameResolver {
      * originalFilename = "anyujin.jpg"일 경우, "8a463aa4-b1dc-4f27-9c3f-53b94dc45e74.jpg" 반환
      * 
      * @param originalFilename 기존 파일명
-     * @return UUID로 생성된 파일명. 파일 확장자가 붙어 있다.
+     * @return UUID로 생성된 파일명. 파일 확장자가 붙어 있다.<br>
+     *         만약 originalFilename에 확장자가 없을 경우, 확장자 없이 UUID 문자열만 반환한다. 
      */
     String generateUuidFilename(String originalFilename);
     

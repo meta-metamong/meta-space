@@ -1,6 +1,7 @@
 package com.metamong.mt.global.file;
 
 public enum FileType {
+    NONE, // 확장자가 없는 파일
     JPG,
     PNG,
     JPEG,
@@ -9,7 +10,7 @@ public enum FileType {
     private final String extension;
     
     FileType() {
-        this.extension = "." + super.name().toLowerCase();
+        this.extension = "NONE".equals(super.name()) ? "" : "." + super.name().toLowerCase();
     }
     
     /**
