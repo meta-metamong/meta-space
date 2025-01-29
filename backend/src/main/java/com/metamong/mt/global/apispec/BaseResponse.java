@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Builder(access = AccessLevel.PRIVATE)
 @Getter
 public class BaseResponse<T> {
-    private final int statudCode;
+    private final int statusCode;
     private final String message;
     private final LocalDateTime timestamp;
     private final T content;
@@ -36,7 +36,7 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> of(T content, int statusCode, String message) {
         return BaseResponse.<T>builder()
                 .content(content)
-                .statudCode(statusCode)
+                .statusCode(statusCode)
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .build();

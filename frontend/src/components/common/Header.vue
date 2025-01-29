@@ -20,17 +20,14 @@
                     <li class="nav-item">
                         <router-link to="#" class="nav-link" href="#" v-text="$t('header.viewByRegion')" />
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <router-link to="#" class="nav-link" href="#" v-text="$t('header.reservation')" />
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <router-link to="/login" class="nav-link" href="#" v-text="$t('member.login')" />
                     </li>
                     <li class="nav-item">
-                        <router-link to="/signup" class="nav-link" href="#" v-text="$t('member.signUp')" />
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link locale-btn" v-text="locale" @click="changeLocale" />
+                        <button class="nav-link locale-btn" v-text="locale" @click="changeLocale"></button>
                     </li>
                 </ul>
             </div>

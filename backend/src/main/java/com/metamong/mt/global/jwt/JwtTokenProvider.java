@@ -39,7 +39,8 @@ public class JwtTokenProvider {
     /**
      * 토큰 유효기간, 30분, 단위 밀리초
      */
-    private long accessTokenValidTime = 30 * 60 * 1000L;  // 30분
+    // private long accessTokenValidTime = 30 * 60 * 1000L;  // 30분
+    private long accessTokenValidTime = 5 * 60 * 1000L;  // 30분
     private long refreshTokenValidTime = 30 * 24 * 60 * 60 * 1000L; // 30일
     //private final long refreshTokenValidity = 1000 * 60 * 60 * 24;  // 리프레시 토큰 만료 시간 (1일)
 
@@ -94,7 +95,8 @@ public class JwtTokenProvider {
      * @return 토큰
      */
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(HttpHeaders.AUTHORIZATION).substring("Bearer ".length());
+    	String accessToken = request.getHeader("Authorization");
+    	return accessToken == null ? null : accessToken.substring(7);
     }
 
     /**
@@ -177,7 +179,7 @@ public class JwtTokenProvider {
 
         // 쿠키 배열에서 refresh_token을 찾기
         for (Cookie cookie : cookies) {
-            if ("refresh_token".equals(cookie.getName())) {
+            if ("Refresh-Token".equals(cookie.getName())) {
                 return cookie.getValue(); // refresh_token 쿠키 값 반환
             }
         }

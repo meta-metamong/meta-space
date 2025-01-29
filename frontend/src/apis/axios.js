@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
         const accessToken = sessionStorage.getItem("accessToken");
 
         if(accessToken){
-            config.headers["X-AUTH-TOKEN"] = accessToken;
+            config.headers["Authorization"] = accessToken;
         }
 
         return config;
@@ -36,7 +36,8 @@ apiClient.interceptors.request.use(
 export const login = async function(endpoint, loginDto){
     try{
         const response = await apiClient.post(endpoint, loginDto);
-        return response;
+        if(response.data.statusCode === 200) saveAccessToken(response.headers.Authorization);
+        return response.data;
     }catch(error){
         return error
     }
