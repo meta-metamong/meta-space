@@ -31,7 +31,6 @@ public class SecurityConfig {
 		// 토큰을 사용하는 경우 인가를 적용한 URI 설정
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/file/**").hasRole("ADMIN")
-				.requestMatchers("/board/**").hasAnyRole("USER", "ADMIN")
 				.requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 				.requestMatchers("/api/members/user").permitAll()
 				.requestMatchers("/api/members/owner").permitAll()
