@@ -17,24 +17,24 @@
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="mb-3"><strong>개인정보</strong></h5>
+                        <h5 class="mb-3"><strong>{{ $t('member.information') }}</strong></h5>
                         <div class="row mb-2">
-                            <div class="col-sm-4 info-label">이름</div>
+                            <div class="col-sm-4 info-label">{{ $t('member.name') }}</div>
                             <div class="col-sm-8">홍길동</div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col-sm-4 info-label">이메일</div>
+                            <div class="col-sm-4 info-label">{{ $t('member.email') }}</div>
                             <div class="col-sm-8">hong@example.com</div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col-sm-4 info-label">전화번호</div>
+                            <div class="col-sm-4 info-label">{{ $t('member.phoneNumber') }}</div>
                             <div class="col-sm-8">010-1234-5678</div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col-sm-4 info-label">주소</div>
+                            <div class="col-sm-4 info-label">{{ $t('member.address') }}</div>
                             <div class="col-sm-8">서울특별시 강남구 테헤란로 123</div>
                         </div>
-                        <button class="btn btn-primary mt-3">정보 수정</button>
+                        <button class="btn btn-primary mt-3">{{ $t('button.save') }}</button>
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
         <div class="row mt-5">
             <div class="col-md-12">
                 <div>
-                    <h5 class="mb-4"><strong>구매 내역</strong></h5>
+                    <h5 class="mb-4"><strong>예약 내역</strong></h5>
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
@@ -86,15 +86,15 @@
     </div>
 </template>
 <script>
-import {  } from "../../apis/axios"
+import { get } from "../../apis/axios"
 export default {
     name: "MyPageView",
-    props: {
-        userId: {
-            type: String,
-            required: true
-        }
+    data() {
+        return {
+            memberInfo: [],
+        };
     },
+    
 };
 </script>
 
