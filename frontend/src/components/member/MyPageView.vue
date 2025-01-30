@@ -57,7 +57,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>3</td>
+                                <td>1</td>
                                 <td>공유오피스 회의실</td>
                                 <td>2025.02.10 (토) 11시 ~ 16시, 5시간</td>
                                 <td>10,000원</td>
@@ -71,7 +71,7 @@
                                 <td><span class="badge bg-danger">예약취소</span></td>
                             </tr>
                             <tr>
-                                <td>1</td>
+                                <td>3</td>
                                 <td>스터디룸제이 1호점</td>
                                 <td>2025.02.04 (토) 12시 ~ 13시, 1시간</td>
                                 <td>3,000원</td>
@@ -94,7 +94,16 @@ export default {
             memberInfo: [],
         };
     },
-    
+    methods: {
+        async getMemberInfo() {
+            const data = await get("/members/info");
+            this.memberInfo = data;
+            console.log(this.memberInfo)
+        }
+    },
+    mounted() {
+        this.getMemberInfo();
+    },
 };
 </script>
 

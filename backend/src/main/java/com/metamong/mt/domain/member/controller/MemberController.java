@@ -22,6 +22,7 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.MyPageInfoResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
@@ -194,6 +195,28 @@ public class MemberController {
     public ResponseEntity<?> findMember(@RequestBody FindMemberRequestDto requestDto){
         this.memberService.sendLoginInfoNotificationMail(requestDto);
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
+    }
+    
+    /**
+     * 마이페이지 회원 정보를 조회하는 메서드
+     * <p>
+     * 요청 헤더에서 액세스 토큰을 가져와 회원 아이디를 추출한 후,  
+     * 해당 회원의 이름, 이메일, 주소 정보를 반환합니다.
+     * </p>
+     *
+     * @param request 클라이언트의 HTTP 요청 객체 (헤더에서 액세스 토큰을 추출)
+     * @return 회원 정보 조회 성공 시 회원 정보 반환, 실패 시 에러 반환
+     */
+    @GetMapping("/members/info")
+    public ResponseEntity<?> findMemberInfo(HttpServletRequest request){
+    	String accessToken = this.jwtTokenProvider.resolveToken(request);
+    	if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+    		String userId = this.jwtTokenProvider.getUserId(accessToken);
+    		return ResponseEntity.ok(this.memberService.findMyPageInfo(userId));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
+        }
     }
     
     /**

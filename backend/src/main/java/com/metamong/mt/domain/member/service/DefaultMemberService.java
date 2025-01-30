@@ -9,6 +9,7 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.MyPageInfoResponseDto;
 import com.metamong.mt.domain.member.exception.IdEmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
@@ -130,5 +131,12 @@ public class DefaultMemberService implements MemberService {
 	    }
 	    this.mailAgent.send(MailType.PASSWORD_RESET_LINK, "패스워드 재설정 링크", email, "링크"); // TODO: 패스워드 재설정 보내줘야 함.
 	}
-    
+
+	@Override
+	public MyPageInfoResponseDto findMyPageInfo(String userId) {
+		MyPageInfoResponseDto myPageInfo = memberRepository.findByUserId(userId)
+				.orElseThrow(() -> new MemberNotFoundException(userId));
+		return myPageInfo;
+	}
+	
 }
