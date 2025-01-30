@@ -17,4 +17,6 @@ public interface MemberMapper {
 	void updateMember(Member member);
 	
 	boolean existsAdmin();
+	
+	int countRoleUserMembers();
 }

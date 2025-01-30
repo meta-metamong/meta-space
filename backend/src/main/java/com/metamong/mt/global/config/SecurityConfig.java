@@ -39,6 +39,7 @@ public class SecurityConfig {
 		http.cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()));
 		
 		// 토큰을 사용하는 경우 인가를 적용한 URI 설정
+
 		http.authorizeHttpRequests(auth -> {
 				auth.requestMatchers("/file/**").hasRole("ADMIN");
 				auth.requestMatchers("/css/**", "/js/**", "/images.**").permitAll();
@@ -47,6 +48,7 @@ public class SecurityConfig {
 			});
 		
 		// Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 
+
 		// 세션 비활성화
 		http.sessionManagement((session) -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
