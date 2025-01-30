@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class LocalFileUploaderTest {
-    private static final String TEST_FILENAME = "test-image.webp";
+    private static final String TEST_FILENAME = "/test-image.webp";
     
     private LocalFileUploader localFileUploader;
     private String fileSystemPath;
@@ -30,8 +30,8 @@ class LocalFileUploaderTest {
             fileSystemPath = fileSystemPath.substring("file:/".length());
         }
         log.info("filePath={}", fileSystemPath);
-        this.fileSystemPath = fileSystemPath;
-        this.localFileUploader = new LocalFileUploader(fileSystemPath);
+        this.fileSystemPath = fileSystemPath.startsWith("/") ? fileSystemPath : "/" + fileSystemPath;
+        this.localFileUploader = new LocalFileUploader(this.fileSystemPath);
         this.localFileUploader.init();
     }
     
