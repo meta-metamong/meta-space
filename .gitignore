@@ -188,3 +188,4 @@ pnpm-debug.log*
 *.sw?
 
 Servers
+/frontend/build

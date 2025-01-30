@@ -31,7 +31,8 @@
     "header": {
         "findSpace": "공간 찾기",
         "reservation": "예약",
-        "viewByRegion": "지역별로 보기"
+        "viewByRegion": "지역별로 보기",
+        "myPage": "마이페이지"
     },
     "member": {
         "id": "아이디",
@@ -54,7 +55,11 @@
         "findPw": "비밀번호 찾기",
         "update": "회원정보 수정",
         "exit": "회원 탈퇴",
+
         "socket": "소켓"
+
+        "information": "개인정보"
+
     },
     "reservation": {
         "guestCount": "인원 수",
