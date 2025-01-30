@@ -9,6 +9,7 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.IdEmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
@@ -39,8 +40,7 @@ public class DefaultMemberService implements MemberService {
         LoginInfoResponseDto loginInfo = memberMapper.findLoginInfoByUserId(dto.getUserId())
                 .orElseThrow(() -> new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS));
         
-        String encodedPassword = this.passwordEncoder.encode(dto.getPassword());
-        if (encodedPassword.equals(loginInfo.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), loginInfo.getPassword())) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
         return loginInfo;
@@ -55,7 +55,6 @@ public class DefaultMemberService implements MemberService {
         	throw new IdEmailAleadyExistException();
         }
         
-        System.out.println("\n\n\n 들어오나?");
     	Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
@@ -68,6 +67,10 @@ public class DefaultMemberService implements MemberService {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             throw new PasswordNotConfirmedException();
         }
+        if(memberRepository.existsByUserIdOrEmail(dto.getUserId(), dto.getEmail())) {
+        	throw new IdEmailAleadyExistException();
+        }
+        
         Member owner = dto.toEntity();
         owner.setPassword(this.passwordEncoder.encode(dto.getPassword()));
         this.memberRepository.save(owner);
@@ -75,9 +78,27 @@ public class DefaultMemberService implements MemberService {
 
 	@Override
 	@Transactional(readOnly = true)
+	public MemberResponseDto getMember(String userId) {
+	    Member member = findMember(userId);
+	    return MemberResponseDto.builder()
+								.userId(member.getUserId())
+								.name(member.getName())
+								.email(member.getEmail())
+								.phone(member.getPhone())
+								.birth(member.getBirth())
+								.postalCode(member.getPostalCode())
+								.detailAddress(member.getDetailAddress())
+								.address(member.getAddress())
+								.businessName(member.getBusinessName())
+								.businessRegistrationNumber(member.getBusinessRegistrationNumber())
+								.build();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
 	public Member findMember(String userId) {
 	    return this.memberRepository.findById(userId)
-	            .orElseThrow(() -> new MemberNotFoundException(userId, "회원을 찾을 수 없습니다."));
+	    		.orElseThrow(() -> new MemberNotFoundException(userId, "회원을 찾을 수 없습니다."));
 	}
 	
 	@Override
