@@ -5,6 +5,7 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 
 public interface MemberService {
@@ -15,11 +16,13 @@ public interface MemberService {
     void updateRefreshToken(String userId, String refreshToken);
     
     // Refresh Token을 DB에 저장하는 메서드 추가
-//    void storeRefreshToken(Member member);
+    // void storeRefreshToken(Member member);
     
     LoginInfoResponseDto findLoginInfo(LoginRequestDto dto);
     
 	Member findMember(String userId);
+	
+	MemberResponseDto getMember(String userId);
 	
 	void deleteRefreshToken(String userId);
 	

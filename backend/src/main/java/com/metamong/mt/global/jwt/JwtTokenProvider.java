@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.domain.member.model.Member;
-import com.metamong.mt.domain.member.service.DefaultMemberService;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
@@ -47,9 +45,6 @@ public class JwtTokenProvider {
     @Autowired
     private UserDetailsService userDetailsService;
     
-//    @Autowired
-//    private DefaultMemberService memberService;
-
     /**
      * Access Token을 만들어 반환
      * @param member 사용자 정보를 저장한 객체, 클래임에 사용자 정보를 저장하기 위해 필요
