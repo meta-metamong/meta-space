@@ -31,7 +31,8 @@
     "header": {
         "findSpace": "Find Space",
         "reservation": "Reservation",
-        "viewByRegion": "View by Region"
+        "viewByRegion": "View by Region",
+        "myPage": "My Page"
     },
     "member": {
         "id": "ID",
