@@ -27,6 +27,9 @@
                         <router-link to="/login" class="nav-link" href="#" v-text="$t('member.login')" />
                     </li>
                     <li class="nav-item">
+                        <router-link to="/mypage" class="nav-link" href="#" v-text="$t('header.myPage')" />
+                    </li>
+                    <li class="nav-item">
                         <button class="nav-link locale-btn" v-text="locale" @click="changeLocale"></button>
                     </li>
                 </ul>
