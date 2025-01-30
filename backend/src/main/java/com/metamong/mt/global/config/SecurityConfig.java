@@ -38,6 +38,8 @@ public class SecurityConfig {
 				.requestMatchers("/api/members/logout").permitAll()
 				.requestMatchers("/api/members/find-member").permitAll()
 				.requestMatchers("/api/members/reissue").permitAll()
+				.requestMatchers("/api/api/answer").permitAll()
+				.requestMatchers("/api/members/roleUserCount").permitAll()
 		        .requestMatchers("/ws/**").permitAll()
 				.anyRequest().authenticated());
 //		 Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 

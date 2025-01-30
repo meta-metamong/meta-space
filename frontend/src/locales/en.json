@@ -54,7 +54,8 @@
         "findPw": "Find Password",
         "update": "Update Member",
         "exit": "Exit Member",
-        "reservation": "reservation"
+        "reservation": "reservation",
+        "socket":"socket"
     },
     "reservation": {
         "guestCount": "Number of Guests",
