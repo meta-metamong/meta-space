@@ -12,7 +12,7 @@
 				<div class="text-start error-message mt-1">{{ errorMessage }}</div>
 				<button class="btn btn-primary w-100 p-2 mt-3" type="submit" v-text="$t('member.login')" />
 				<button class="btn btn-primary w-50 p-2 mt-2" type="button" @click="route('/find')"> {{ $t('member.findId') }} / PW</button>
-				<button class="btn btn-primary w-50 p-2 mt-2" type="button" v-text="$t('member.signUp')" @click="route('/signup')" />
+				<button class="btn btn-primary w-50 p-2 mt-2" type="button" v-text="$t('member.signUp')" @click="route('/select-signup-role')" />
 			</form>
 		</div>
 	</div>

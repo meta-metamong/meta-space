@@ -9,13 +9,15 @@ import Socket  from '../pages/Socket.vue';
 
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
+import SelectSignupRole from '../components/member/SelectSignupRole.vue';
 
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/find', component: FindIdPw },
 	{ path: '/login', component: Login },
-	{ path: '/signup', component: SignUp },
+	{ path: '/signup/:role', component: SignUp },
+	{ path: '/select-signup-role', component: SelectSignupRole},
 
 	{ path: '/socket', component: Socket  },
 

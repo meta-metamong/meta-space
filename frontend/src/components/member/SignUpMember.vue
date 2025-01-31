@@ -4,9 +4,9 @@
 			<h3 class="mb-5"><strong>{{ $t('member.signUp') }}</strong></h3>
 			<form @submit.prevent="handleSubmit">
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="userid">{{ $t('member.id') }}</label>
+					<label class="col-form-label col-sm-2" for="userId">{{ $t('member.id') }}</label>
 					<div class="col-sm-8">
-						<input class="form-control" type="text" name="id" id="userid" :placeholder="$t('member.id')" v-model="id" required />
+						<input class="form-control" type="text" name="userId" id="userId" :placeholder="$t('member.id')" v-model="userId" required />
 					</div>
 					<div class="col-sm-2">
 						<button class="btn btn-secondary" type="button">{{ $t('button.check') }}</button>
@@ -19,9 +19,9 @@
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="password2">{{ $t('member.passwordRe') }}</label>
+					<label class="col-form-label col-sm-2" for="confirmPassword">{{ $t('member.passwordRe') }}</label>
 					<div class="col-sm-10">
-						<input class="form-control" type="password" name="password2" id="password2" :placeholder="$t('member.passwordRe')" v-model="password2" autocomplete="new-password" required />
+						<input class="form-control" type="password" name="confirmPassword" id="confirmPassword" :placeholder="$t('member.passwordRe')" v-model="confirmPassword" autocomplete="new-password" required />
 						<div class="error-message text-start mt-2" v-if="passwordMismatch">{{ $t('error.passwordConfirm') }}</div>
 					</div>
 				</div>
@@ -53,36 +53,48 @@
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="birthDate">{{ $t('member.birth') }}</label>
+					<label class="col-form-label col-sm-2" for="birth">{{ $t('member.birth') }}</label>
 					<div class="col-sm-10">
-						<input class="form-control" type="date" name="birthDate" id="birthDate" v-model="birthDate" required />
+						<input class="form-control" type="date" name="birth" id="birth" v-model="birth" required />
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="phoneNumber">{{ $t('member.phoneNumber') }}</label>
+					<label class="col-form-label col-sm-2" for="phone">{{ $t('member.phoneNumber') }}</label>
 					<div class="col-sm-10">
-						<input class="form-control" type="text" name="phoneNumber" id="phoneNumber" :placeholder="$t('member.phoneNumber')" v-model="phoneNumber" required />
+						<input class="form-control" type="text" name="phone" id="phone" :placeholder="$t('member.phoneNumber')" v-model="phone" required />
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="zipcode">{{ $t('member.zipcode') }}</label>
+					<label class="col-form-label col-sm-2" for="postalCode">{{ $t('member.zipcode') }}</label>
 					<div class="col-sm-5">
 						<div class="input-group">
-							<input type="text" class="form-control" id="zipcode" name="zipcode" :placeholder="$t('member.zipcode')" readonly />
-							<button type="button" class="btn btn-secondary" onclick="openPostcode()">{{ $t('button.search') }}</button>
+							<input type="text" class="form-control" id="postalCode" name="postalCode" v-model="postalCode" :placeholder="$t('member.zipcode')" readonly required/>
+							<button type="button" class="btn btn-secondary" @click="openPostCode">{{ $t('button.search') }}</button>
 						</div>
 					</div>
 				</div>
 				<div class="row mb-4">
 					<label class="col-form-label col-sm-2" for="address">{{ $t('member.address') }}</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" id="address" name="address" :placeholder="$t('member.address')" readonly />
+						<input type="text" class="form-control" id="address" name="address" v-model="address" :placeholder="$t('member.address')" readonly required />
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="addressDetail">{{ $t('member.addressDetail') }}</label>
+					<label class="col-form-label col-sm-2" for="detailAddress">{{ $t('member.addressDetail') }}</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" id="addressDetail" name="addressDetail" :placeholder="$t('member.addressDetail')" />
+						<input type="text" class="form-control" id="detailAddress" name="detailAddress" v-model="detailAddress" :placeholder="$t('member.addressDetail')" required />
+					</div>
+				</div>
+				<div class="row mb-4" v-if="role === 'owner'">
+					<label class="col-form-label col-sm-2" for="businessName">{{ $t('member.businessName') }}</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="businessName" name="businessName" v-model="businessName" :placeholder="$t('member.businessName')" required />
+					</div>
+				</div>
+				<div class="row mb-4" v-if="role === 'owner'">
+					<label class="col-form-label col-sm-2" for="businessRegistrationNumber">{{ $t('member.businessRegistrationNumber') }}</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="businessRegistrationNumber" name="businessRegistrationNumber" v-model="businessRegistrationNumber" :placeholder="$t('member.businessRegistrationNumber')" required />
 					</div>
 				</div>
 				<button class="btn btn-primary w-100 p-2 mt-3" type="submit">{{ $t('member.signUp') }}</button>
@@ -90,35 +102,82 @@
 		</div>
 	</div>
 </template>
-
 <script>
+import { post } from "../../apis/axios";
+
 export default {
 	name: 'SignUpMember',
 	data() {
 		return {
-			id: "",
+			userId: "",
 			password: "",
-			password2: "",
+			confirmPassword: "",
 			name: "",
 			email: "",
 			gender: "",
-			birthDate: "",
-			phoneNumber: "",
-			errorMessage: "",
+			birth: "",
+			phone: "",
+			postalCode: "",
+			address: "",
+			detailAddress: "",
+			businessName: "",
+			businessRegistrationNumber: "",
+			errorMessage: ""
 		}
 	},
 	computed: {
 		passwordMismatch() {
-			return this.password !== this.password2;
+			return this.password !== this.confirmPassword;
+		},
+		role() {
+			return this.$route.params.role;
 		}
 	},
 	methods: {
-		handleSubmit() {
-			if (!this.passwordMismatch) {
-				console.log(this.id, this.password, this.password2);
-				console.log(this.name, this.email);
-				console.log(this.gender, this.birthDate, this.phoneNumber);
+		async handleSubmit() {
+			if (this.passwordMismatch) {
+				alert("입력한 비밀번호가 다릅니다.");
+				return;
 			}
+			// gender 추가해야 함
+			let signupDto = {
+				userId: this.userId,
+				name: this.name,
+				email: this.email,
+				password: this.password,
+				confirmPassword: this.confirmPassword,
+				phone: this.phone,
+				birth: this.birth,
+				postalCode: this.postalCode,
+				address: this.address,
+				detailAddress: this.detailAddress
+			}
+
+			const requestUrl = this.role === 'user' ? "/members/user" : "/members/owner";
+
+			if(this.role === 'owner'){
+				signupDto = {
+					...signupDto,
+					businessName: this.businessName,
+					businessRegistrationNumber: this.businessRegistrationNumber
+				}
+			}
+
+			const response = await post(requestUrl, signupDto);
+			if(response.status === 201) {
+				alert(response.data.message);
+				location.href = "/login";
+			}else{
+				return;
+			}
+		},
+		openPostCode(){
+			new daum.Postcode({
+				oncomplete: (data) => {
+					this.postalCode = data.zonecode;
+					this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
+				}
+			}).open();
 		}
 	}
 };
