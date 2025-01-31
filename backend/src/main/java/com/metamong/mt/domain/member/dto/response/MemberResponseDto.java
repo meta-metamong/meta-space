@@ -2,8 +2,6 @@ package com.metamong.mt.domain.member.dto.response;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

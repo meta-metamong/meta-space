@@ -18,14 +18,5 @@ public class WebConfig implements WebMvcConfigurer {
 		registrationBean.addUrlPatterns("/api/*");
 		return registrationBean;
 	}
-	
-	@Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // 모든 경로에 대해
-                .allowedOriginPatterns("*") // 모든 Origin 허용
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
-                .allowedHeaders("*") // 모든 헤더 허용
-                .allowCredentials(true) // 쿠키 허용
-                .exposedHeaders("X-Access-Token"); // 헤더 노출 허용
-	}
+
 }
