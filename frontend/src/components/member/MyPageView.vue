@@ -20,19 +20,19 @@
                         <h5 class="mb-3"><strong>{{ $t('member.information') }}</strong></h5>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.name') }}</div>
-                            <div class="col-sm-8">홍길동</div>
+                            <div class="col-sm-8">{{ memberInfo.name }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.email') }}</div>
-                            <div class="col-sm-8">hong@example.com</div>
+                            <div class="col-sm-8">{{ memberInfo.email }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.phoneNumber') }}</div>
-                            <div class="col-sm-8">010-1234-5678</div>
+                            <div class="col-sm-8">{{ memberInfo.phone }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.address') }}</div>
-                            <div class="col-sm-8">서울특별시 강남구 테헤란로 123</div>
+                            <div class="col-sm-8">{{ memberInfo.address }}</div>
                         </div>
                         <button class="btn btn-primary mt-3">{{ $t('button.save') }}</button>
                     </div>
@@ -57,7 +57,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>3</td>
+                                <td>1</td>
                                 <td>공유오피스 회의실</td>
                                 <td>2025.02.10 (토) 11시 ~ 16시, 5시간</td>
                                 <td>10,000원</td>
@@ -71,7 +71,7 @@
                                 <td><span class="badge bg-danger">예약취소</span></td>
                             </tr>
                             <tr>
-                                <td>1</td>
+                                <td>3</td>
                                 <td>스터디룸제이 1호점</td>
                                 <td>2025.02.04 (토) 12시 ~ 13시, 1시간</td>
                                 <td>3,000원</td>
@@ -86,7 +86,8 @@
     </div>
 </template>
 <script>
-import { get } from "../../apis/axios"
+import { get } from "../../apis/axios";
+import { toRaw } from 'vue';
 export default {
     name: "MyPageView",
     data() {
@@ -94,7 +95,20 @@ export default {
             memberInfo: [],
         };
     },
-    
+    computed: {
+        user(){
+            return toRaw(this.$store.state.user);
+        },
+    },
+    methods: {
+        async getMemberInfo() {
+            const response = await get("/members/" + this.user.userId);
+            this.memberInfo = response.data.content;
+        }
+    },
+    mounted() {
+        this.getMemberInfo();
+    },
 };
 </script>
 
