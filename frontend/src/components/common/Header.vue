@@ -23,15 +23,14 @@
                     <!-- <li class="nav-item">
                         <router-link to="#" class="nav-link" href="#" v-text="$t('header.reservation')" />
                     </li> -->
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="user === null">
                         <router-link to="/login" class="nav-link" href="#" v-text="$t('member.login')" />
                     </li>
-                    <li class="nav-item">
-
-                        <router-link to="/socket" class="nav-link" href="#" v-text="$t('member.socket')" />
-
+                    <li class="nav-item" v-if="user !== null">
                         <router-link to="/mypage" class="nav-link" href="#" v-text="$t('header.myPage')" />
-
+                    </li>
+                    <li class="nav-item" v-if="user !== null">
+                        <button class="nav-link locale-btn" v-text="$t('member.logout')" @click="$store.dispatch('logoutRequest')"/>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link locale-btn" v-text="locale" @click="changeLocale"></button>
@@ -40,19 +39,29 @@
             </div>
         </div>
     </nav>
+    <button @click="test">테스트</button>
 </template>
 
 <script>
+import { toRaw } from 'vue';
 export default {
     name: "Header",
+    data(){
+    },
     computed:{
         locale(){
             return this.$i18n.locale === 'ko' ? '영어로 변경' : 'Change to Korean';
+        },
+        user(){
+            return toRaw(this.$store.state.user);
         }
     },
     methods:{
         changeLocale(){
             this.$i18n.locale = this.$i18n.locale === 'ko' ? 'en' : 'ko';
+        },
+        test(){
+            console.log(toRaw(this.$store.state.user));
         }
     }
 }

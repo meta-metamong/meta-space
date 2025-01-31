@@ -33,7 +33,6 @@ class MemberMapperTest {
         Member dummy = DummyEntityGenerator.generateMember();
         String dummyId = dummy.getUserId();
         String dummyName = dummy.getName();
-        String dummyPassword = dummy.getPassword();
         Role dummyRole = dummy.getRole();
         this.memberRepository.save(dummy);
         
@@ -44,6 +43,5 @@ class MemberMapperTest {
         assertThat(result.getUserId()).isEqualTo(dummyId);
         assertThat(result.getName()).isEqualTo(dummyName);
         assertThat(result.getRole()).isEqualTo(dummyRole);
-        assertThat(result.getPassword()).isEqualTo(dummyPassword);
     }
 }

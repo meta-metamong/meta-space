@@ -2,16 +2,15 @@ package com.metamong.mt.domain.member.dto.response;
 
 import com.metamong.mt.domain.member.model.constant.Role;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
-@Setter
+@Builder
 public class LoginInfoResponseDto {
     private final String userId;
     private final String name;
-    private final String password;
     private final Role role;
 }

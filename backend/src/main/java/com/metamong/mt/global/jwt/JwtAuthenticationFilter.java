@@ -33,25 +33,25 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		
-		if(permitAllEndpoints.contains(httpRequest.getRequestURI())) {
-			if(this.jwtTokenProvider.resolveToken(httpRequest) != null &&
-					!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
-				httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				httpResponse.setCharacterEncoding("UTF-8");
-                httpResponse.setContentType("application/json");
-                httpResponse.getWriter().write("{\"message\": \"토큰 존재\"}");
-                return;
-			}
-			
-			chain.doFilter(request, response);
-			return;
-		}
 		
 		// 헤더에서 JWT를 받아음.
 		String token = jwtTokenProvider.resolveToken(httpRequest);
 		
 		// 유효한 토큰인지 확인.
-		if (token != null) {			
+		if (token != null) {						
+			if(permitAllEndpoints.contains(httpRequest.getRequestURI())) {
+				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
+					httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					httpResponse.setCharacterEncoding("UTF-8");
+	                httpResponse.setContentType("application/json");
+	                httpResponse.getWriter().write("{\"message\": \"토큰 존재\"}");
+	                return;
+				}
+				
+				chain.doFilter(request, response);
+				return;
+			}
+			
 			if(!jwtTokenProvider.validateToken(token)) {
 				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				httpResponse.setCharacterEncoding("UTF-8");

@@ -98,7 +98,7 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
+                .body(BaseResponse.of(loginInfo, HttpStatus.OK, "로그인 성공"));
     }
     /**
      * 로그아웃 처리 메서드.
@@ -227,7 +227,6 @@ public class MemberController {
     		 LoginInfoResponseDto loginInfo = new LoginInfoResponseDto(
     				 	member.getUserId(),
     				 	member.getName(),
-    				 	member.getPassword(),
     				 	member.getRole()
     		 );
     		 String reissuedAccessToken = this.jwtTokenProvider.generateAccessToken(loginInfo);

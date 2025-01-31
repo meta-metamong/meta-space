@@ -44,12 +44,17 @@ public class DefaultMemberService implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public LoginInfoResponseDto findLoginInfo(LoginRequestDto dto) {
-        LoginInfoResponseDto loginInfo = memberMapper.findLoginInfoByUserId(dto.getUserId())
-                .orElseThrow(() -> new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS));
+        Member member = findMember(dto.getUserId());
         
-        if (!passwordEncoder.matches(dto.getPassword(), loginInfo.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
+        
+        LoginInfoResponseDto loginInfo = LoginInfoResponseDto.builder()
+        								.userId(member.getUserId())
+        								.name(member.getName())
+        								.role(member.getRole())
+        								.build();
         return loginInfo;
     }
     
