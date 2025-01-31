@@ -14,20 +14,16 @@
             <div class="collapse navbar-collapse" id="collapsed-container">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <!-- TODO: 현재 페이지에 해당하는 navbar만 active 클래스, 그리고 aria-current="page" -->
-                        <router-link to="#" class="nav-link active" aria-current="page" href="#" v-text="$t('header.findSpace')" />
+                        <router-link to="#" class="nav-link active" aria-current="page" v-text="$t('header.findSpace')" />
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link" href="#" v-text="$t('header.viewByRegion')" />
+                        <router-link to="#" class="nav-link" v-text="$t('header.viewByRegion')" />
                     </li>
-                    <!-- <li class="nav-item">
-                        <router-link to="#" class="nav-link" href="#" v-text="$t('header.reservation')" />
-                    </li> -->
                     <li class="nav-item" v-if="user === null">
-                        <router-link to="/login" class="nav-link" href="#" v-text="$t('member.login')" />
+                        <router-link to="/login" class="nav-link" v-text="$t('member.login')" />
                     </li>
                     <li class="nav-item" v-if="user !== null">
-                        <router-link to="/mypage" class="nav-link" href="#" v-text="$t('header.myPage')" />
+                        <router-link to="/mypage" class="nav-link"v-text="$t('header.myPage')" />
                     </li>
                     <li class="nav-item" v-if="user !== null">
                         <button class="nav-link locale-btn" v-text="$t('member.logout')" @click="$store.dispatch('logoutRequest')"/>
@@ -39,7 +35,6 @@
             </div>
         </div>
     </nav>
-    <button @click="test">테스트</button>
 </template>
 
 <script>

@@ -171,7 +171,7 @@ public class MemberController {
 //                                 .body(new ErrorResponse(ErrorCode.USER_ALREADY_EXISTS).getMessage());
 //        }
 
-        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원가입 성공"));
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "일반 회원가입이 완료되었습니다."));
     }
 
     /**
@@ -186,7 +186,7 @@ public class MemberController {
     @PostMapping("/members/owner")
     public ResponseEntity<?> registerOwner(@RequestBody OwnerSignUpRequestDto request) {
         memberService.saveOwner(request);
-        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "업주 회원가입이 완료되었습니다."));
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "업주 회원가입이 완료되었습니다."));
     }
     
     /**

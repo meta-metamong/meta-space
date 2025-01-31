@@ -48,6 +48,8 @@
         "zipcode": "우편번호",
         "address": "기본 주소",
         "addressDetail": "상세 주소",
+        "businessName": "사업자명",
+        "businessRegistrationNumber": "사업자 등록번호",
         "login": "로그인",
         "logout": "로그아웃",
         "signUp": "회원가입",
@@ -55,11 +57,10 @@
         "findPw": "비밀번호 찾기",
         "update": "회원정보 수정",
         "exit": "회원 탈퇴",
-
         "socket": "소켓",
-
-        "information": "개인정보"
-
+        "information": "개인정보",
+        "signupUser": "일반 회원가입",
+        "signupOwner": "업주 회원가입"
     },
     "reservation": {
         "guestCount": "인원 수",

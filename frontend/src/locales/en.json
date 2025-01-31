@@ -48,6 +48,8 @@
         "zipcode": "Zip Code",
         "address": "Address",
         "addressDetail": "Detail Address",
+        "businessName": "Business Name",
+        "businessRegistrationNumber": "Business Registration Number",
         "login": "Login",
         "logout": "Logout",
         "signUp": "Sign Up",
@@ -56,11 +58,10 @@
         "update": "Update Member",
         "exit": "Exit Member",
         "reservation": "reservation",
-
         "socket":"socket",
-
-        "information": "Information"
-
+        "information": "Information",
+        "signupUser": "Signup as a Member",
+        "signupOwner": "Signup as a Owner"
     },
     "reservation": {
         "guestCount": "Number of Guests",

@@ -57,7 +57,7 @@ apiClient.interceptors.response.use(
 // 토큰 재발행 함수
 export const reissue = async function(){
     try{
-        const response = await apiClient.get("/members/reissue");
+        const response = await get("/members/reissue");
         if(response.status === 200) {
             saveAccessToken(response);
         }
@@ -102,6 +102,7 @@ export const get = async function(endpoint){
 export const post = async function(endpoint, requestData){
     try{
         const response = await apiClient.post(endpoint, requestData);
+        console.log(response);
         return response;
     }catch(error){
         return error
