@@ -20,19 +20,19 @@
                         <h5 class="mb-3"><strong>{{ $t('member.information') }}</strong></h5>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.name') }}</div>
-                            <div class="col-sm-8">홍길동</div>
+                            <div class="col-sm-8">{{ memberInfo.name }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.email') }}</div>
-                            <div class="col-sm-8">hong@example.com</div>
+                            <div class="col-sm-8">{{ memberInfo.email }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.phoneNumber') }}</div>
-                            <div class="col-sm-8">010-1234-5678</div>
+                            <div class="col-sm-8">{{ memberInfo.phone }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.address') }}</div>
-                            <div class="col-sm-8">서울특별시 강남구 테헤란로 123</div>
+                            <div class="col-sm-8">{{ memberInfo.address }}</div>
                         </div>
                         <button class="btn btn-primary mt-3">{{ $t('button.save') }}</button>
                     </div>
@@ -86,7 +86,8 @@
     </div>
 </template>
 <script>
-import { get } from "../../apis/axios"
+import { get } from "../../apis/axios";
+import { toRaw } from 'vue';
 export default {
     name: "MyPageView",
     data() {
@@ -94,11 +95,15 @@ export default {
             memberInfo: [],
         };
     },
+    computed: {
+        user(){
+            return toRaw(this.$store.state.user);
+        },
+    },
     methods: {
         async getMemberInfo() {
-            const data = await get("/members/info");
-            this.memberInfo = data;
-            console.log(this.memberInfo)
+            const response = await get("/members/" + this.user.userId);
+            this.memberInfo = response.data.content;
         }
     },
     mounted() {

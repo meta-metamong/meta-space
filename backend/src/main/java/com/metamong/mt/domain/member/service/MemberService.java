@@ -5,7 +5,6 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.domain.member.dto.response.MyPageInfoResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 
@@ -29,7 +28,6 @@ public interface MemberService {
 	
 	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
 	
-	MyPageInfoResponseDto findMyPageInfo(String userId);
 	void registerAnswer();
 	
 

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.metamong.mt.domain.member.dto.response.MyPageInfoResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 
 
@@ -16,5 +15,4 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     
     boolean existsByUserIdOrEmail(String userId, String email);
     
-    Optional<MyPageInfoResponseDto> findByUserId(String userId);
 }
