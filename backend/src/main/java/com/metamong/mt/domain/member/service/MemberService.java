@@ -4,6 +4,7 @@ import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UserUpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
@@ -23,6 +24,8 @@ public interface MemberService {
 	Member findMember(String userId);
 	
 	MemberResponseDto getMember(String userId);
+	
+	void updateMember(String userId, UserUpdateRequestDto dto);
 	
 	void deleteRefreshToken(String userId);
 	

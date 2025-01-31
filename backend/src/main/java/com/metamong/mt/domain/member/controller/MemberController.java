@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UserUpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
@@ -262,6 +264,21 @@ public class MemberController {
     	return ResponseEntity.ok(BaseResponse.of(memberService.getMember(userId), HttpStatus.OK));
     }
     
+    /**
+     * 회원 데이터 수정 메서드
+     * 
+     * <p>
+     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
+     * </p>
+     * 
+     * @param userId 회원의 아이디, 수정 데이터
+     * @return 회원 수정 성공 시 응답
+     */
+    @PutMapping("/members/{userId}")
+    public ResponseEntity<?> updateMember(@PathVariable String userId, @RequestBody UserUpdateRequestDto dto){
+    	this.memberService.updateMember(userId, dto);
+    	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+    }
     
     @GetMapping("/test")
     public ResponseEntity<?> testApi(HttpServletRequest request){
