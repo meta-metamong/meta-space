@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.member.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,13 +10,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
@@ -23,11 +28,14 @@ import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.dto.response.MyPageInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
+import org.springframework.web.socket.TextMessage;
+
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +52,7 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieGenerator cookieGenerator;
+    private final List<WebSocketSession> sessions = new ArrayList<>(); // WebSocket 세션을 저장할 리스트
 
     /**
      * 로그인 처리 메서드.
@@ -192,7 +201,7 @@ public class MemberController {
      * @return 정보 찾기 요청 처리 성공 시 응답
      */
     @PostMapping("/members/find-member")
-    public ResponseEntity<?> findMember(@RequestBody FindMemberRequestDto requestDto){
+    public ResponseEntity<?> findIdPw(@RequestBody FindMemberRequestDto requestDto){
         this.memberService.sendLoginInfoNotificationMail(requestDto);
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
     }
@@ -229,9 +238,14 @@ public class MemberController {
      */
     @GetMapping("/members/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
+    	 String accessToken = this.jwtTokenProvider.resolveToken(request);
     	 String refreshToken = this.jwtTokenProvider.resolveRefreshTokenFromCookie(request);
-    	 if(refreshToken != null && this.jwtTokenProvider.validateToken(refreshToken)) {    
+    	 boolean isAvailable = accessToken != null && refreshToken != null;
+    	 boolean isReissuable = !this.jwtTokenProvider.validateToken(accessToken) && this.jwtTokenProvider.validateToken(refreshToken);
+    	 
+    	 if(isAvailable && isReissuable) {    
     		 removeRefreshTokenFromCookie(response);
+    		 
     		 Member member = this.memberService.findMember(this.jwtTokenProvider.getUserId(refreshToken));
     		 LoginInfoResponseDto loginInfo = new LoginInfoResponseDto(
     				 	member.getUserId(),
@@ -245,7 +259,7 @@ public class MemberController {
     		 
     		 HttpHeaders headers = new HttpHeaders();
     	        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", reissuedRefreshToken).toString());
-    	        headers.set(HttpHeaders.AUTHORIZATION, reissuedAccessToken);
+    	        headers.set("X-Access-Token", "Bearer " + reissuedAccessToken);
     	        
     	        return ResponseEntity.ok()
     	                .headers(headers)
@@ -255,6 +269,23 @@ public class MemberController {
     	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                  .body(BaseResponse.of(refreshToken, HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
     }
+    
+    /**
+     * 회원 데이터 조회 메서드
+     * 
+     * <p>
+     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
+     * </p>
+     * 
+     * @param userId 회원의 아이디
+     * @return 회원 데이터 (아이디, 이름, 이메일, 전화번호, 생일, 우편번호, 상세 주소, 주소)
+     * @return 조회 대상이 업주라면 사업자명이랑 사업자번호도 추가됩니다.
+     */
+    @GetMapping("/members/{userId}")
+    public ResponseEntity<?> getMember(@PathVariable String userId){
+    	return ResponseEntity.ok(BaseResponse.of(memberService.getMember(userId), HttpStatus.OK));
+    }
+    
     
     @GetMapping("/test")
     public ResponseEntity<?> testApi(HttpServletRequest request){
@@ -277,4 +308,34 @@ public class MemberController {
     	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
     }
+    
+
+    public void addSession(WebSocketSession session) {
+        sessions.add(session);
+    }
+    
+    @PostMapping("/api/answer")
+    public String test() {
+    	
+    	// 답변 등록하는 서비스 호출
+    	
+    	String notificationMessage = "새로운 글이 등록되었습니다: ";
+
+        for (WebSocketSession session : sessions) {
+            try {
+                session.sendMessage(new TextMessage(notificationMessage)); 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    	
+    	return "등록";
+    }
+    
+    @GetMapping("/members/roleUserCount")
+    public String getRoleUserCount() {
+        return memberService.view();
+    }
+    
+
 }

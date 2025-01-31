@@ -33,17 +33,18 @@ apiClient.interceptors.request.use(
     }
 );
 
+// 로그인 함수
 export const login = async function(endpoint, loginDto){
     try{
         const response = await apiClient.post(endpoint, loginDto);
-        if(response.data.statusCode === 200) saveAccessToken(response.headers.x-access-token);
-        console.log(response.headers.x-access-token);
+        if(response.data.statusCode === 200) saveAccessToken(response.headers['x-access-token']);
         return response.data;
     }catch(error){
         return error
     }
 }
 
+// get 요청
 export const get = async function(endpoint){
     try{
         const response = await apiClient.get(endpoint);
@@ -53,6 +54,7 @@ export const get = async function(endpoint){
     }
 }
 
+// post 요청
 export const post = async function(endpoint, requestData){
     try{
         const response = await apiClient.post(endpoint, requestData);
@@ -62,6 +64,7 @@ export const post = async function(endpoint, requestData){
     }
 }
 
+// put 요청
 export const put = async function(endpoint, requestData){
     try{
         const response = await apiClient.put(endpoint, requestData);
@@ -71,6 +74,7 @@ export const put = async function(endpoint, requestData){
     }
 }
 
+// delete 요청
 export const del = async function(endpoint){
     try{
         const response = await apiClient.delete(endpoint);

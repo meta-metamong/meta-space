@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.domain.member.model.Member;
-import com.metamong.mt.domain.member.service.DefaultMemberService;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
@@ -40,16 +38,13 @@ public class JwtTokenProvider {
      * 토큰 유효기간, 30분, 단위 밀리초
      */
     // private long accessTokenValidTime = 30 * 60 * 1000L;  // 30분
-    private long accessTokenValidTime = 5 * 60 * 1000L;  // 30분
+    private long accessTokenValidTime = 10 * 1000L;  // 30분
     private long refreshTokenValidTime = 30 * 24 * 60 * 60 * 1000L; // 30일
     //private final long refreshTokenValidity = 1000 * 60 * 60 * 24;  // 리프레시 토큰 만료 시간 (1일)
 
     @Autowired
     private UserDetailsService userDetailsService;
     
-//    @Autowired
-//    private DefaultMemberService memberService;
-
     /**
      * Access Token을 만들어 반환
      * @param member 사용자 정보를 저장한 객체, 클래임에 사용자 정보를 저장하기 위해 필요
@@ -147,7 +142,7 @@ public class JwtTokenProvider {
      * @param token 토큰
      * @return 토큰이 유효한지 확인, 유효하면 true 반환
      */
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) {    	
         try {
             Jws<Claims> claims = Jwts.parser()
                     .verifyWith(key)

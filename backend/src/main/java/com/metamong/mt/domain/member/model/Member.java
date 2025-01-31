@@ -2,6 +2,7 @@ package com.metamong.mt.domain.member.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.metamong.mt.domain.member.model.constant.Role;
 
 import jakarta.persistence.Entity;
