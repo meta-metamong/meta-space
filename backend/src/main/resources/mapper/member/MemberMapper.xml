@@ -33,4 +33,10 @@
         WHERE user_id = 'admin'
     ]]>
     </select>
+    
+    <select id="countRoleUserMembers" resultType="int">
+        SELECT COUNT(*) FROM member WHERE role = 'ROLE_USER'
+    </select>
+
+
 </mapper>

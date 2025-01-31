@@ -27,4 +27,11 @@ public interface MemberService {
 	void deleteRefreshToken(String userId);
 	
 	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
+	
+	void registerAnswer();
+	
+
+	void getRoleUserCount();
+	
+	String view();
 }

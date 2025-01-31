@@ -56,7 +56,11 @@
         "update": "Update Member",
         "exit": "Exit Member",
         "reservation": "reservation",
+
+        "socket":"socket"
+
         "information": "Information"
+
     },
     "reservation": {
         "guestCount": "Number of Guests",
