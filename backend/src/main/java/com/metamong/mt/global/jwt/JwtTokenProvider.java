@@ -38,7 +38,7 @@ public class JwtTokenProvider {
      * 토큰 유효기간, 30분, 단위 밀리초
      */
     // private long accessTokenValidTime = 30 * 60 * 1000L;  // 30분
-    private long accessTokenValidTime = 10 * 1000L;  // 30분
+    private long accessTokenValidTime = 10 * 60 * 1000L;  // 30분
     private long refreshTokenValidTime = 30 * 24 * 60 * 60 * 1000L; // 30일
     //private final long refreshTokenValidity = 1000 * 60 * 60 * 24;  // 리프레시 토큰 만료 시간 (1일)
 
@@ -90,7 +90,7 @@ public class JwtTokenProvider {
      * @return 토큰
      */
     public String resolveToken(HttpServletRequest request) {
-    	String accessToken = request.getHeader("Authorization");
+    	String accessToken = request.getHeader("X-Access-Token");
     	return accessToken == null ? null : accessToken.substring(7);
     }
 

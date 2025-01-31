@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.metamong.mt.domain.member.model.Member;
 
+
 public interface MemberRepository extends JpaRepository<Member, String> {
     
     Optional<Member> findByEmail(String email);
@@ -13,4 +14,5 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     boolean existsByUserIdAndEmail(String userId, String email);
     
     boolean existsByUserIdOrEmail(String userId, String email);
+    
 }

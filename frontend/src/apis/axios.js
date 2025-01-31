@@ -49,7 +49,7 @@ apiClient.interceptors.response.use(
         }else{
             await reissue();
         }
-
+        
         return apiClient(config);
     }
 );
@@ -77,7 +77,7 @@ export const login = async function(loginDto){
     }
 }
 
-// 로그아웃 함수수
+// 로그아웃 함수
 export const logout = async function(){
     try{
         const response = await post("/members/logout");
