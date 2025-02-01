@@ -19,8 +19,9 @@ export default {
   methods: {
     // WebSocket 연결 설정
     connectWebSocket() {
-      this.socket = new WebSocket('ws://localhost:8081/ws'); // WebSocket 엔드포인트
-
+      this.socket = new WebSocket('ws://localhost:8080/ws'); // WebSocket 엔드포인트
+      this.socket.withCredentials = true;
+      
       // WebSocket 연결 성공 시
       this.socket.onopen = () => {
         console.log('WebSocket 연결 성공');
