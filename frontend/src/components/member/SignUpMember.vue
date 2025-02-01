@@ -6,10 +6,10 @@
 				<div class="row mb-4">
 					<label class="col-form-label col-sm-2" for="userId">{{ $t('member.id') }}</label>
 					<div class="col-sm-8">
-						<input class="form-control" type="text" name="userId" id="userId" :placeholder="$t('member.id')" v-model="userId" required />
+						<input class="form-control" :disabled="!idDuplicated" type="text" name="userId" id="userId" :placeholder="$t('member.id')" v-model="userId" required />
 					</div>
 					<div class="col-sm-2">
-						<button class="btn btn-secondary" type="button">{{ $t('button.check') }}</button>
+						<button class="btn btn-secondary" :disabled="!idDuplicated" type="button" @click="checkDuplicated('id')">{{ $t('button.check') }}</button>
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -33,8 +33,11 @@
 				</div>
 				<div class="row mb-4">
 					<label class="col-form-label col-sm-2" for="email">{{ $t('member.email') }}</label>
-					<div class="col-sm-10">
-						<input class="form-control" type="email" name="email" id="email" :placeholder="$t('member.email')" v-model="email" required />
+					<div class="col-sm-8">
+						<input class="form-control" type="email" :disabled="!emailDuplicated" name="email" id="email"  :placeholder="$t('member.email')" v-model="email" required />
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-secondary" type="button" :disabled="!emailDuplicated"  @click="checkDuplicated('email')">{{ $t('button.check') }}</button>
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -103,7 +106,7 @@
 	</div>
 </template>
 <script>
-import { post } from "../../apis/axios";
+import { get, post } from "../../apis/axios";
 
 export default {
 	name: 'SignUpMember',
@@ -122,7 +125,8 @@ export default {
 			detailAddress: "",
 			businessName: "",
 			businessRegistrationNumber: "",
-			errorMessage: ""
+			idDuplicated: true,
+			emailDuplicated: true,
 		}
 	},
 	computed: {
@@ -137,6 +141,9 @@ export default {
 		async handleSubmit() {
 			if (this.passwordMismatch) {
 				alert("입력한 비밀번호가 다릅니다.");
+				return;
+			}else if(!this.idDuplicated && !this.emailDuplicated){
+				alert("아이디와 이메일을 확인해주세요.");
 				return;
 			}
 			// gender 추가해야 함
@@ -178,9 +185,37 @@ export default {
 					this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
 				}
 			}).open();
+		},
+		async checkDuplicated(type){
+			if(type === 'id'){
+				const response = await get(`/members/dup-id/${this.userId}`);
+				if(response.status === 200) {
+						if(response.data.content){
+							alert("이미 존재하는 아이디입니다.");
+						}else{
+							alert("사용 가능한 아이디입니다");
+							this.idDuplicated = false;
+						}
+					}
+					
+				
+			}else{
+				const requestDto = {
+					email: this.email
+				};
+				const response = await post('/members/dup-email', requestDto);
+				if(response.status === 200) {
+					if(response.data.content){
+						alert("이미 존재하는 이메일입니다.");
+					}else{
+						alert("사용 가능한 이메일입니다");
+						this.emailDuplicated = false;
+					}
+				}
+			}
 		}
 	}
-};
+}
 </script>
 
 <style scoped>

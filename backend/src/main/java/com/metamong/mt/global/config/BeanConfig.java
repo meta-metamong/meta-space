@@ -75,6 +75,8 @@ public class BeanConfig {
 				"/api/members/find-member",
 				"/api/members/reissue",
 				"/api/members/{id}",
+				"/api/members/dup-id/{userId}",
+				"/api/members/dup-email",
 				"/ws/**"
 			);
 	}

@@ -4,10 +4,10 @@ import com.metamong.mt.domain.member.model.constant.IdOrPw;
 
 import jakarta.annotation.Nullable;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Setter
+@ToString
 public class FindMemberRequestDto {
 	private IdOrPw idOrPw;
 	@Nullable

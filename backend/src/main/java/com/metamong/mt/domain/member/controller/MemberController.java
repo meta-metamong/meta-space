@@ -2,6 +2,7 @@ package com.metamong.mt.domain.member.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
@@ -93,7 +95,7 @@ public class MemberController {
 
         // 액세스 토큰을 헤더에 추가 (일반 API 요청용)
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Access-Token", "Bearer " + accessToken);
+        headers.set("X-Access-Token", accessToken);
 
         return ResponseEntity.ok()
                 .headers(headers)
@@ -261,6 +263,33 @@ public class MemberController {
     	return ResponseEntity.ok(BaseResponse.of(memberService.getMember(userId), HttpStatus.OK));
     }
     
+    /**
+     * 아이디 중복 체크
+     * <p>
+     * 아이디를 파라미터로 입력받아, 해당 아이디를 사용하는 회원이 있으면 false를 반환하고, 아니면 true를 반환한다.
+     * </p>
+     * @param userId 회원 아이디
+     * @return isDuplicated 중복 여부
+     */
+    @GetMapping("/members/dup-id/{userId}")
+    public ResponseEntity<?> checkIdDuplicated(@PathVariable String userId){
+    	boolean isDuplicated = this.memberService.isDuplicatedIdOrEmail(userId, "user");
+    	return ResponseEntity.ok(BaseResponse.of(isDuplicated, HttpStatus.OK));
+    }
+    
+    /**
+     * 이메일 중복 체크
+     * <p>
+     * 이메일을 파라미터로 입력받아, 해당 이메일을 사용하는 회원이 있으면 false를 반환하고, 아니면 true를 반환한다.
+     * </p>
+     * @param userId 회원 아이디
+     * @return isDuplicated 중복 여부
+     */
+    @PostMapping("/members/dup-email")
+    public ResponseEntity<?> checkEmailDuplicated(@RequestBody Map<String, String> request){
+    	boolean isDuplicated = this.memberService.isDuplicatedIdOrEmail(request.get("email"), "email");
+    	return ResponseEntity.ok(BaseResponse.of(isDuplicated, HttpStatus.OK));
+    }
     
     @GetMapping("/test")
     public ResponseEntity<?> testApi(HttpServletRequest request){

@@ -20,11 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
-
-	@Autowired
 	private final JwtTokenProvider jwtTokenProvider;
-	
-	@Autowired
 	private final List<String> permitAllEndpoints;
 
 	@Override

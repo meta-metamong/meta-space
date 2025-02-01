@@ -7,14 +7,27 @@ import com.metamong.mt.domain.member.model.constant.Role;
  * 테스트를 위한 더미 엔티티 객체 생성 helper 클래스
  */
 public class DummyEntityGenerator {
-
-    public static Member generateMember(String userId) {
+    
+    public static Member generateMember(String userId, String name, String password, String email, Role role) {
         return Member.builder()
                 .userId(userId)
-                .name("김더미")
-                .password("asdf1234")
-                .role(Role.ROLE_USER)
+                .name(name)
+                .password(password)
+                .email(email)
+                .role(role)
                 .build();
+    }
+    
+    public static Member generateMemberNormalUser(String userId, String name, String password, String email) {
+        return generateMember(userId, name, password, email, Role.ROLE_USER);
+    }
+    
+    public static Member generateMember(String userId, String password) {
+        return generateMember(userId, "김더미", password, userId + "@gmail.com", Role.ROLE_USER);
+    }
+
+    public static Member generateMember(String userId) {
+        return generateMember(userId, "1q2w3e4r");
     }
     
     public static Member generateMember() {
