@@ -4,6 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.metamong.mt.global.commons.HttpMethodOverrideFilter;
@@ -28,4 +29,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true) // 쿠키 허용
                 .exposedHeaders("X-Access-Token"); // 헤더 노출 허용
 	}
+	
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    	registry.addResourceHandler("/download/**")
+        .addResourceLocations("file:///C:/Users/KOSA/Downloads/");
+    }
 }
