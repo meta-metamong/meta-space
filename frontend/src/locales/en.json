@@ -59,6 +59,7 @@
         "exit": "Exit Member",
         "reservation": "reservation",
         "socket":"socket",
+        "download":"download",
         "information": "Information",
         "signupUser": "Signup as a Member",
         "signupOwner": "Signup as a Owner"
