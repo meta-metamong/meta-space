@@ -77,6 +77,7 @@ public class BeanConfig {
 				"/api/members/{id}",
 				"/api/members/dup-id/{userId}",
 				"/api/members/dup-email",
+				"/actuator/health",
 				"/ws/**"
 			);
 	}
