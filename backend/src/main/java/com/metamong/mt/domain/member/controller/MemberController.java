@@ -91,7 +91,7 @@ public class MemberController {
 
         // 액세스 토큰을 헤더에 추가 (일반 API 요청용)
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Access-Token", "Bearer " + accessToken);
+        headers.set("X-Access-Token", accessToken);
 
         return ResponseEntity.ok()
                 .headers(headers)
