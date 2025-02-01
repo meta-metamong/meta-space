@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.member.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -314,28 +318,26 @@ public class MemberController {
         sessions.add(session);
     }
     
-    @PostMapping("/api/answer")
-    public String test() {
-    	
-    	// 답변 등록하는 서비스 호출
-    	
-    	String notificationMessage = "새로운 글이 등록되었습니다: ";
-
-        for (WebSocketSession session : sessions) {
-            try {
-                session.sendMessage(new TextMessage(notificationMessage)); 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    	
-    	return "등록";
-    }
-    
     @GetMapping("/members/roleUserCount")
     public String getRoleUserCount() {
         return memberService.view();
     }
     
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+    	
+        String fileDirectory = "C:/Users/KOSA/Downloads/";
+        File file = new File(fileDirectory + filename);
+        
+        if (!file.exists()) {
+            return ResponseEntity.notFound().build();  // 파일이 없을 때 처리해놓깅
+        }
 
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")  
+                .contentType(MediaType.parseMediaType("application/octet-stream"))  
+                .body(resource);
+    }
 }

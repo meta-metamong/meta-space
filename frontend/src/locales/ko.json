@@ -58,6 +58,7 @@
         "update": "회원정보 수정",
         "exit": "회원 탈퇴",
         "socket": "소켓",
+        "download":"다운로드",
         "information": "개인정보",
         "signupUser": "일반 회원가입",
         "signupOwner": "업주 회원가입"
