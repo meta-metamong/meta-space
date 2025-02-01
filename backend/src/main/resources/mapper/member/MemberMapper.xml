@@ -34,9 +34,11 @@
     ]]>
     </select>
     
-    <select id="countRoleUserMembers" resultType="int">
+	<select id="countRoleUserMembers" resultType="int">
+    <![CDATA[
         SELECT COUNT(*) FROM member WHERE role = 'ROLE_USER'
-    </select>
+    ]]>
+	</select>
 
 
 </mapper>

@@ -28,9 +28,6 @@ public interface MemberService {
 	
 	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
 	
-	void registerAnswer();
-	
-
 	void getRoleUserCount();
 	
 	String view();
