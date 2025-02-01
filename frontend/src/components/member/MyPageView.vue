@@ -34,7 +34,7 @@
                             <div class="col-sm-4 info-label">{{ $t('member.address') }}</div>
                             <div class="col-sm-8">{{ memberInfo.address }}</div>
                         </div>
-                        <button class="btn btn-primary mt-3">{{ $t('button.save') }}</button>
+                        <button class="btn btn-primary mt-3" @click="route('/update')">{{ $t('button.save') }}</button>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,10 @@ export default {
         async getMemberInfo() {
             const response = await get("/members/" + this.user.userId);
             this.memberInfo = response.data.content;
-        }
+        },
+        route(page){
+			this.$router.push(page);
+		},
     },
     mounted() {
         this.getMemberInfo();
