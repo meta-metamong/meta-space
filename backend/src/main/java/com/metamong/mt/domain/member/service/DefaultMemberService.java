@@ -179,5 +179,14 @@ public class DefaultMemberService implements MemberService {
     public String view() {
     	return "개수"+roleUserCount;
     }
+
+	@Override
+	public boolean isDuplicatedIdOrEmail(String data, String type) {
+		if("user".equals(type)) {
+			return memberRepository.existsById(data);
+		}else {
+			return memberRepository.existsByEmail(data);
+		}
+	}
     
 }
