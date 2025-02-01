@@ -50,10 +50,5 @@ public class Member {
         this.postalCode = dto.getPostalCode();
         this.address = dto.getAddress();
         this.detailAddress = dto.getDetailAddress();
-
-        // 비밀번호 변경이 있을 경우만 업데이트
-        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            this.password = dto.getPassword();
-        }
     }
 }

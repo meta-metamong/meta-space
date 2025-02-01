@@ -38,6 +38,8 @@
         "id": "아이디",
         "password": "비밀번호",
         "passwordRe": "비밀번호 확인",
+        "newPassword": "새 비밀번호",
+        "newPasswordRe": "새 비밀번호 확인",
         "name": "이름",
         "email": "이메일",
         "phoneNumber": "전화번호",

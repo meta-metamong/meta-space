@@ -38,6 +38,8 @@
         "id": "ID",
         "password": "Password",
         "passwordRe": "Password Confirm",
+        "newPassword": "New Password",
+        "newPasswordRe": "New Password Confirm",
         "name": "Name",
         "email": "Email",
         "phoneNumber": "Phone Number",

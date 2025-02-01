@@ -110,6 +110,7 @@ public class DefaultMemberService implements MemberService {
 	@Transactional
 	public void updateMember(String userId, UserUpdateRequestDto dto) {
 		Member member = findMember(userId);
+		member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 	    member.updateInfo(dto);
 	}
 	

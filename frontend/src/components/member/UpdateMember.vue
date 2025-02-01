@@ -6,19 +6,19 @@
 				<div class="row mb-4">
 					<label class="col-form-label col-sm-2" for="userId">{{ $t('member.id') }}</label>
 					<div class="col-sm-10">
-						<input class="form-control" type="text" name="userId" id="userId" v-model="memberInfo.userId" readonly required />
+						<input class="form-control" type="text" name="userId" id="userId" v-model="memberInfo.userId" disabled required />
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="password">{{ $t('member.password') }}</label>
+					<label class="col-form-label col-sm-2" for="password">{{ $t('member.newPassword') }}</label>
 					<div class="col-sm-10">
-						<input class="form-control" type="password" name="password" id="password" :placeholder="$t('member.password')" v-model="password" autocomplete="new-password" required />
+						<input class="form-control" type="password" name="password" id="password" :placeholder="$t('member.newPassword')" v-model="password" autocomplete="new-password" />
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="confirmPassword">{{ $t('member.passwordRe') }}</label>
+					<label class="col-form-label col-sm-2" for="confirmPassword">{{ $t('member.newPasswordRe') }}</label>
 					<div class="col-sm-10">
-						<input class="form-control" type="password" name="confirmPassword" id="confirmPassword" :placeholder="$t('member.passwordRe')" v-model="confirmPassword" autocomplete="new-password" required />
+						<input class="form-control" type="password" name="confirmPassword" id="confirmPassword" :placeholder="$t('member.newPasswordRe')" v-model="confirmPassword" autocomplete="new-password" />
 						<div class="error-message text-start mt-2" v-if="passwordMismatch">{{ $t('error.passwordConfirm') }}</div>
 					</div>
 				</div>
@@ -38,13 +38,13 @@
 					<label class="col-form-label col-sm-2" for="gender">{{ $t('member.gender') }}</label>
 					<div class="col-sm-2 d-flex align-items-center">
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="gender" required />
+							<input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="memberInfo.gender" required />
 							<label class="form-check-label" for="male">{{ $t('member.male') }}</label>
 						</div>
 					</div>
 					<div class="col-sm-2 d-flex align-items-center">
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="gender" required />
+							<input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="memberInfo.gender" required />
 							<label class="form-check-label" for="female">{{ $t('member.female') }}</label>
 						</div>
 					</div>
@@ -107,6 +107,8 @@ export default {
 	data() {
 		return {
 			memberInfo: [],
+			password: "",
+			confirmPassword: "",
 			errorMessage: ""
 		}
 	},
@@ -130,14 +132,14 @@ export default {
 			// gender 추가해야 함
 			let updateDto = {
 				name: this.memberInfo.name,
+				password: this.password || undefined,
 				email: this.memberInfo.email,
-				password: this.memberInfo.password,
 				confirmPassword: this.memberInfo.confirmPassword,
 				phone: this.memberInfo.phone,
 				birth: this.memberInfo.birth,
 				postalCode: this.memberInfo.postalCode,
 				address: this.memberInfo.address,
-				detailAddress: this.memberInfo.detailAddress
+				detailAddress: this.memberInfo.detailAddress,
 			}
 
 			const requestUrl = "/members/" + this.user.userId;
@@ -150,7 +152,7 @@ export default {
 					businessRegistrationNumber: this.memberInfo.businessRegistrationNumber
 				}
 			}
-
+			console.log(updateDto);
 			const response = await put(requestUrl, updateDto);
 			if (response.status === 200) {
 				alert(response.data.message);
