@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  was-container-blue:
+    profiles:
+      - blue
+    image: hansoo0614/metamong-backend:latest
+    container_name: backend-blue
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - CLIENT_DOMAIN=${CLIENT_DOMAIN}
+      - CLIENT_ORIGIN=${CLEINT_ORIGIN}
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_USERNAME=${JDBC_USERNAME}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+    networks:
+      - metamong-net
+    healthcheck:
+      test: ["CMD", "curl", "-X", "HEAD", "-i", "http://localhost:8080/actuator/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  was-container-green:
+    profiles:
+      - green
+    image: hansoo0614/metamong-backend:latest
+    container_name: backend-blue
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - CLIENT_DOMAIN=${CLIENT_DOMAIN}
+      - CLIENT_ORIGIN=${CLEINT_ORIGIN}
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_USERNAME=${JDBC_USERNAME}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+    networks:
+      - metamong-net
+    healthcheck:
+      test: ["CMD", "curl", "-X", "HEAD", "-i", "http://localhost:8080/actuator/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  
+
+networks:
+  metamong-net:
+    driver: bridge
