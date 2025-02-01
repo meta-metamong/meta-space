@@ -43,7 +43,12 @@ public class DefaultMemberService implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public LoginInfoResponseDto findLoginInfo(LoginRequestDto dto) {
-        Member member = findMember(dto.getUserId());
+        Member member; 
+        try {
+            member = findMember(dto.getUserId());
+        } catch (MemberNotFoundException e) {
+            throw new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS, e);
+        }
         
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);

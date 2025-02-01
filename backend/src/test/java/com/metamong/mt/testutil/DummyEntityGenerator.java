@@ -21,9 +21,13 @@ public class DummyEntityGenerator {
     public static Member generateMemberNormalUser(String userId, String name, String password, String email) {
         return generateMember(userId, name, password, email, Role.ROLE_USER);
     }
+    
+    public static Member generateMember(String userId, String password) {
+        return generateMember(userId, "김더미", password, userId + "@gmail.com", Role.ROLE_USER);
+    }
 
     public static Member generateMember(String userId) {
-        return generateMember(userId, "김더미", "asdf1234", userId + "@gmail.com", Role.ROLE_USER);
+        return generateMember(userId, "1q2w3e4r");
     }
     
     public static Member generateMember() {
