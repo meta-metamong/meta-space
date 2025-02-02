@@ -49,6 +49,7 @@
         "birth": "Birth Date",
         "zipcode": "Zip Code",
         "address": "Address",
+        "addressBasic": "Address",
         "addressDetail": "Detail Address",
         "businessName": "Business Name",
         "businessRegistrationNumber": "Business Registration Number",

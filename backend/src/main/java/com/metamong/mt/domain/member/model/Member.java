@@ -2,7 +2,7 @@ package com.metamong.mt.domain.member.model;
 
 import java.time.LocalDate;
 
-import com.metamong.mt.domain.member.dto.request.UserUpdateRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.model.constant.Role;
 
 import jakarta.persistence.Entity;
@@ -42,7 +42,7 @@ public class Member {
     private String businessName;
     private String businessRegistrationNumber;
     
-    public void updateInfo(UserUpdateRequestDto dto) {
+    public void updateInfo(UpdateRequestDto dto) {
         this.name = dto.getName();
         this.phone = dto.getPhone();
         this.email = dto.getEmail();

@@ -31,7 +31,7 @@ import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.request.UserUpdateRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -42,6 +42,7 @@ import com.metamong.mt.global.web.cookie.CookieGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -250,17 +251,19 @@ public class MemberController {
     }
     
     /**
-     * 회원 데이터 수정 메서드
+     * 회원 정보를 수정하는 메서드
      * 
      * <p>
-     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
+     * 회원의 아이디를 통해 해당 회원의 정보를 수정합니다. 
+     * 수정하려는 데이터는 요청 본문에서 전달되며, 유효성 검사를 거쳐 데이터가 처리됩니다.
      * </p>
      * 
-     * @param userId 회원의 아이디, 수정 데이터
-     * @return 회원 수정 성공 시 응답
+     * @param userId 회원의 아이디 (수정하려는 회원의 고유 식별자)
+     * @param dto 수정할 회원 정보가 담긴 데이터 전송 객체 (UserUpdateRequestDto)
+     * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
      */
     @PutMapping("/members/{userId}")
-    public ResponseEntity<?> updateMember(@PathVariable String userId, @RequestBody UserUpdateRequestDto dto){
+    public ResponseEntity<?> updateMember(@PathVariable String userId, @Valid @RequestBody UpdateRequestDto dto) {
     	this.memberService.updateMember(userId, dto);
     	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
     }

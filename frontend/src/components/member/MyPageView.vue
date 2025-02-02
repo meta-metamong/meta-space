@@ -32,7 +32,7 @@
                         </div>
                         <div class="row mb-2">
                             <div class="col-sm-4 info-label">{{ $t('member.address') }}</div>
-                            <div class="col-sm-8">{{ memberInfo.address }}</div>
+                            <div class="col-sm-8">{{ address }}</div>
                         </div>
                         <button class="btn btn-primary mt-3" @click="route('/update')">{{ $t('button.save') }}</button>
                     </div>
@@ -96,13 +96,16 @@ export default {
         };
     },
     computed: {
-        user(){
+        user() {
             return toRaw(this.$store.state.user);
         },
+        address() {
+            return `(${this.memberInfo.postalCode}) ${this.memberInfo.address} ${this.memberInfo.detailAddress}`;
+        }
     },
     methods: {
         async getMemberInfo() {
-            const response = await get("/members/" + this.user.userId);
+            const response = await get(`/members/${this.user.userId}`);
             this.memberInfo = response.data.content;
         },
         route(page){

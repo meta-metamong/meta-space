@@ -71,7 +71,7 @@
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="address">{{ $t('member.address') }}</label>
+					<label class="col-form-label col-sm-2" for="address">{{ $t('member.addressBasic') }}</label>
 					<div class="col-sm-10">
 						<input type="text" class="form-control" id="address" name="address" v-model="memberInfo.address" readonly required />
 					</div>
@@ -82,13 +82,13 @@
 						<input type="text" class="form-control" id="detailAddress" name="detailAddress" v-model="memberInfo.detailAddress" required />
 					</div>
 				</div>
-				<div class="row mb-4" v-if="role === 'owner'">
+				<div class="row mb-4" v-if="role === 'ROLE_OWNER'">
 					<label class="col-form-label col-sm-2" for="businessName">{{ $t('member.businessName') }}</label>
 					<div class="col-sm-10">
 						<input type="text" class="form-control" id="businessName" name="businessName" v-model="memberInfo.businessName" required />
 					</div>
 				</div>
-				<div class="row mb-4" v-if="role === 'owner'">
+				<div class="row mb-4" v-if="role === 'ROLE_OWNER'">
 					<label class="col-form-label col-sm-2" for="businessRegistrationNumber">{{ $t('member.businessRegistrationNumber') }}</label>
 					<div class="col-sm-10">
 						<input type="text" class="form-control" id="businessRegistrationNumber" name="businessRegistrationNumber" v-model="memberInfo.businessRegistrationNumber" required />
@@ -116,11 +116,11 @@ export default {
 		passwordMismatch() {
 			return this.password !== this.confirmPassword;
 		},
-		role() {
-			return toRaw(this.$store.state.role);
-		},
 		user(){
             return toRaw(this.$store.state.user);
+        },
+		role(){
+            return toRaw(this.$store.state.user.role);
         },
 	},
 	methods: {
@@ -142,21 +142,20 @@ export default {
 				detailAddress: this.memberInfo.detailAddress,
 			}
 
-			const requestUrl = "/members/" + this.user.userId;
-			// const requestUrl = this.role === 'user' ? "/members/user" : "/members/owner";
-
-			if(this.role === 'owner'){
+			if(this.role === 'ROLE_OWNER'){
 				updateDto = {
 					...updateDto,
 					businessName: this.memberInfo.businessName,
 					businessRegistrationNumber: this.memberInfo.businessRegistrationNumber
 				}
 			}
-			console.log(updateDto);
-			const response = await put(requestUrl, updateDto);
+
+			const response = await put(`/members/${this.user.userId}`, updateDto);
 			if (response.status === 200) {
 				alert(response.data.message);
 				this.$router.push("/mypage")
+			} else if (response.status === 400) {
+				alert("회원정보 수정 오류 " + response.response.data.message);
 			} else {
 				return;
 			}
@@ -172,7 +171,7 @@ export default {
 					this.memberInfo.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
 				}
 			}).open();
-		}
+		},
 	},
 	mounted() {
 		this.getMemberInfo();

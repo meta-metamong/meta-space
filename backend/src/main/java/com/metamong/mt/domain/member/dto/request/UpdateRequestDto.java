@@ -2,9 +2,6 @@ package com.metamong.mt.domain.member.dto.request;
 
 import java.time.LocalDate;
 
-import com.metamong.mt.domain.member.model.Member;
-import com.metamong.mt.domain.member.model.constant.Role;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
@@ -16,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserUpdateRequestDto {
+public class UpdateRequestDto {
 
     @NotEmpty(message = "이름은 필수입니다.")
     private String name;
@@ -43,4 +40,7 @@ public class UserUpdateRequestDto {
 
     @NotEmpty(message = "주소는 필수입니다.")
     private String address;
+    
+    private String businessName;
+    private String businessRegistrationNumber;
 }
