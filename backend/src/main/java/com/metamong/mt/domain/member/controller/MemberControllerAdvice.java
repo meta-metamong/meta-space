@@ -1,7 +1,11 @@
 package com.metamong.mt.domain.member.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,6 +15,7 @@ import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestExcept
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.domain.member.exception.errorcode.MemberErrorCode;
+import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.apispec.ErrorResponse;
 
 @RestControllerAdvice(basePackages = "com.metamong.mt.domain")
@@ -42,5 +47,14 @@ public class MemberControllerAdvice {
     public ResponseEntity<ErrorResponse> idEmailAleadyExistException(IdEmailAleadyExistException e) {
     	return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                 .body(ErrorResponse.of(MemberErrorCode.ID_EMAIL_ALEADY_EXIST));
+    }
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        List<String> errors = ex.getBindingResult().getAllErrors().stream()
+                                .map(error -> error.getDefaultMessage())
+                                .collect(Collectors.toList());
+        System.out.println(errors.toString());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(BaseResponse.of(HttpStatus.BAD_REQUEST, errors.toString()));
     }
 }

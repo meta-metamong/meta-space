@@ -11,6 +11,7 @@ import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.IdEmailAleadyExistException;
@@ -108,6 +109,16 @@ public class DefaultMemberService implements MemberService {
 								.businessName(member.getBusinessName())
 								.businessRegistrationNumber(member.getBusinessRegistrationNumber())
 								.build();
+	}
+	
+	@Override
+	@Transactional
+	public void updateMember(String userId, UpdateRequestDto dto) {
+		Member member = findMember(userId);
+		if (dto.getPassword() != null) {
+			member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+		}
+	    member.updateInfo(dto);
 	}
 	
 	@Override

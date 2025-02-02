@@ -10,8 +10,8 @@ import Socket  from '../pages/Socket.vue';
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
 import SelectSignupRole from '../components/member/SelectSignupRole.vue';
+import UpdateMember from '../components/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
-
 
 const routes = [
 	{ path: '/', component: Home },
@@ -24,6 +24,7 @@ const routes = [
 	{ path: '/download', component: Download  },
 
 	{ path: '/mypage', component: MyPage },
+	{ path: '/update', component: UpdateMember },
 	{ path: '/statistics', component: UserStatistics },
 
 ];
