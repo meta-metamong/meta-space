@@ -100,7 +100,7 @@
 						<input type="text" class="form-control" id="businessRegistrationNumber" name="businessRegistrationNumber" v-model="businessRegistrationNumber" :placeholder="$t('member.businessRegistrationNumber')" required />
 					</div>
 				</div>
-				<button class="btn btn-primary w-100 p-2 mt-3" type="submit">{{ $t('member.signUp') }}</button>
+				<button class="btn btn-primary w-100 mt-3 border-0 border-secondary py-3 px-4 rounded-pill text-white" type="submit">{{ $t('member.signUp') }}</button>
 			</form>
 		</div>
 	</div>
@@ -219,11 +219,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-primary {
-	background-color: #19319D;
-	border: #19319D;
-}
-
 .error-message {
 	font-size: 14px;
 	color: #ff0101;
