@@ -3,7 +3,6 @@ package com.metamong.mt.global.config;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -19,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
 import com.metamong.mt.global.jwt.JwtAuthenticationFilter;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
 
@@ -34,12 +34,12 @@ public class SecurityConfig {
 	private final List<String> permitAllEndpoints;
 	
 	@Bean
-	@Profile("no-auth")
+	@Profile("no-auth & !prod")
 	SecurityFilterChain noAuthFilterChain(HttpSecurity http) throws Exception {
 	    http = commonConfiguration(http);
 	    http.cors((corsConfig) -> corsConfig.configurationSource(cors("http://localhost:3000")));
 	    http.authorizeHttpRequests((request) -> {
-            request.requestMatchers("/**").permitAll();
+            request.requestMatchers("/api/**").permitAll();
         });
 	    return http.build();
 	}
@@ -48,11 +48,16 @@ public class SecurityConfig {
 	@Profile("prod")
 	SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
 	    http = commonConfiguration(http);
+	    
+	    http.authorizeHttpRequests((registry) -> {
+            HttpRequestAuthorizationDefinition.defineRequestMatcher(registry);
+        });
+	    
 	    return http.build();
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(SecurityFilterChain.class)
+	@Profile("!no-auth & !prod")
 	SecurityFilterChain localDevSecurityFilterChain(HttpSecurity http) throws Exception {
 		http = commonConfiguration(http);
 		
@@ -60,12 +65,9 @@ public class SecurityConfig {
 		
 		// 토큰을 사용하는 경우 인가를 적용한 URI 설정
 
-		http.authorizeHttpRequests(auth -> {
-				auth.requestMatchers("/file/**").hasRole("ADMIN");
-				auth.requestMatchers("/css/**", "/js/**", "/images.**").permitAll();
-				permitAllEndpoints.forEach(endpoint -> auth.requestMatchers(endpoint).permitAll());
-				auth.anyRequest().authenticated();
-			});
+		http.authorizeHttpRequests((registry) -> {
+		    HttpRequestAuthorizationDefinition.defineRequestMatcher(registry);
+		});
 
 		// Spring Security JWT 필터 로드
 		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, permitAllEndpoints),
@@ -75,6 +77,7 @@ public class SecurityConfig {
 	}
 	
 	private HttpSecurity commonConfiguration(HttpSecurity http) throws Exception {
+	    http.securityMatcher("/api/**", "/ws/**");
 	    http.csrf(csrfConfig -> csrfConfig.disable());
 	    
 	    // Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 
