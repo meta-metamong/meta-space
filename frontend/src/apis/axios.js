@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
         const accessToken = sessionStorage.getItem("accessToken");
 
         if(accessToken){
-            config.headers["x-access-token"] = accessToken;
+            config.headers["Authorization"] = accessToken;
         }
 
         return config;
