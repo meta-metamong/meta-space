@@ -9,7 +9,6 @@
     },
     "validation": {
         "confirmed": "The {field} field confirmation does not match",
-        "email": "The field must be a valid email",
         "ext": "The {field} field is not a valid file",
         "length": "The {field} field must be {length} long",
         "max_value": "The {field} field must be {max} or less",
@@ -18,7 +17,11 @@
         "min": "The {field} field must be at least {length} characters",
         "regex": "The {field} field format is invalid",
         "required": "The {field} field is required",
-        "url": "The {field} field is not a valid URL"
+        "url": "The {field} field is not a valid URL",
+        "id": "Must start with a letter and be 6 to 20 characters long, including letters and numbers.",
+        "password": "Must be 8 to 16 characters long and include at least one letter, one number, and one special character.",
+        "email": "Invalid email format.",
+        "phone": "Must follow the format 010-123-1234 or 010-1234-1234."
     },
     "error": {
         "login": "Invalid id or password.",

@@ -9,7 +9,7 @@ import Socket  from '../pages/Socket.vue';
 
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
-import SelectSignupRole from '../components/member/SelectSignupRole.vue';
+import SelectSignupRole from "../pages/SelectSignupRole.vue";
 
 
 const routes = [
