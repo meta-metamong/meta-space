@@ -25,6 +25,12 @@
                     <li class="nav-item" v-if="user !== null">
                         <router-link to="/mypage" class="nav-link"v-text="$t('header.myPage')" />
                     </li>
+                    <li class="nav-item">
+                        <router-link to="/socket" class="nav-link" href="#" v-text="$t('member.socket')" />
+                    </li>
+                    <li class="nav-item">
+                        <router-link to="/download" class="nav-link" href="#" v-text="$t('member.download')" />
+                    </li>
                     <li class="nav-item" v-if="user !== null">
                         <button class="nav-link locale-btn" v-text="$t('member.logout')" @click="$store.dispatch('logoutRequest')"/>
                     </li>

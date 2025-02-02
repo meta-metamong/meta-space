@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios 기본 설정
 const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api",
+    baseURL: `${import.meta.env.VITE_API_URL}/api`,
     withCredentials: true
 });
 
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
         const accessToken = sessionStorage.getItem("accessToken");
 
         if(accessToken){
-            config.headers["Authorization"] = accessToken;
+            config.headers["x-access-token"] = accessToken;
         }
 
         return config;

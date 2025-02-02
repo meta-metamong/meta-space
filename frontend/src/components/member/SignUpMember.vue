@@ -81,9 +81,9 @@
 					</div>
 				</div>
 				<div class="row mb-4">
-					<label class="col-form-label col-sm-2" for="address">{{ $t('member.address') }}</label>
+					<label class="col-form-label col-sm-2" for="address">{{ $t('member.addressBasic') }}</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" id="address" name="address" v-model="address" :placeholder="$t('member.address')" readonly required />
+						<input type="text" class="form-control" id="address" name="address" v-model="address" :placeholder="$t('member.addressBasic')" readonly required />
 					</div>
 				</div>
 				<div class="row mb-4">

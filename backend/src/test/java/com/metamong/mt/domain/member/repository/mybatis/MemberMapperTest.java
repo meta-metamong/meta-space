@@ -1,4 +1,4 @@
-package com.metamong.mt.member.repository.mybatis;
+package com.metamong.mt.domain.member.repository.mybatis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

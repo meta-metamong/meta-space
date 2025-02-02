@@ -7,4 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class InvalidLoginRequestException extends RuntimeException {
     private final InvalidLoginRequestType invalidLoginRequestType;
+    
+    public InvalidLoginRequestException(InvalidLoginRequestType invalidLoginRequestType, Throwable e) {
+        super(e);
+        this.invalidLoginRequestType = invalidLoginRequestType;
+    }
 }
