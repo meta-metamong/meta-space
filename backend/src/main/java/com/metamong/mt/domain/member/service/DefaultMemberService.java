@@ -186,5 +186,12 @@ public class DefaultMemberService implements MemberService {
 			return memberRepository.existsByEmail(data);
 		}
 	}
+
+	@Override
+	public Member selectAllUsers() {
+		return memberMapper.selectAllUsers();
+	}
+	
+	
     
 }

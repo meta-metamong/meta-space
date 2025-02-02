@@ -40,4 +40,6 @@ public interface MemberService {
 	
 	// 회원 중복 여부 조회
 	boolean isDuplicatedIdOrEmail(String data, String type);
+	
+	Member selectAllUsers();
 }

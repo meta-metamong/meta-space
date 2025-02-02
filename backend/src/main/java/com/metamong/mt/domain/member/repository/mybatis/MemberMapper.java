@@ -19,4 +19,6 @@ public interface MemberMapper {
 	boolean existsAdmin();
 	
 	int countRoleUserMembers();
+	
+	Member selectAllUsers();
 }

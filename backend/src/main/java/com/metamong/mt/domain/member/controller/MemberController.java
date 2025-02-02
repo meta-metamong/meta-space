@@ -340,4 +340,9 @@ public class MemberController {
                 .contentType(MediaType.parseMediaType("application/octet-stream"))  
                 .body(resource);
     }
+    
+    @GetMapping("/item")
+    public ResponseEntity<?> getGrid1() {
+    	return ResponseEntity.ok(BaseResponse.of(memberService.selectAllUsers(), HttpStatus.OK));
+    }
 }

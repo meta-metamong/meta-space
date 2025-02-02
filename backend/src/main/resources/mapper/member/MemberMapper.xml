@@ -39,6 +39,11 @@
         SELECT COUNT(*) FROM member WHERE role = 'ROLE_USER'
     ]]>
 	</select>
-
+	
+	<select id="selectAllUsers" resultType="com.metamong.mt.domain.member.model.Member">
+    <![CDATA[
+        SELECT * FROM member
+    ]]>
+	</select>
 
 </mapper>
