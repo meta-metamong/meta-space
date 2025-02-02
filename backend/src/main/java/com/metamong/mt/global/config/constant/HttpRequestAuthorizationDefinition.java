@@ -38,6 +38,7 @@ public class HttpRequestAuthorizationDefinition {
     );
     
     private static final Map<Role, String[]> AUTHORIZATION_LIST_FOR_ALL_METHOD = Map.of(
+            Role.ROLE_ADMIN, new String[] { "/file/**" } // TODO: what?
     );
     
     public static final void defineRequestMatcher(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
@@ -57,5 +58,7 @@ public class HttpRequestAuthorizationDefinition {
         AUTHORIZATION_LIST_FOR_ALL_METHOD.forEach((role, paths) -> {
             registry.requestMatchers(paths).hasAnyRole(role.role());
         });
+        
+        registry.anyRequest().authenticated();
     }
 }
