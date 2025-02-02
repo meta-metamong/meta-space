@@ -1,17 +1,20 @@
 package com.metamong.mt.domain.member.controller;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
@@ -29,14 +33,11 @@ import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserUpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.jwt.JwtTokenProvider;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
-import org.springframework.web.socket.TextMessage;
-
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -96,7 +97,7 @@ public class MemberController {
 
         // 액세스 토큰을 헤더에 추가 (일반 API 요청용)
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Access-Token", "Bearer " + accessToken);
+        headers.set("X-Access-Token", accessToken);
 
         return ResponseEntity.ok()
                 .headers(headers)
@@ -249,6 +250,22 @@ public class MemberController {
     }
     
     /**
+     * 회원 데이터 수정 메서드
+     * 
+     * <p>
+     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
+     * </p>
+     * 
+     * @param userId 회원의 아이디, 수정 데이터
+     * @return 회원 수정 성공 시 응답
+     */
+    @PutMapping("/members/{userId}")
+    public ResponseEntity<?> updateMember(@PathVariable String userId, @RequestBody UserUpdateRequestDto dto){
+    	this.memberService.updateMember(userId, dto);
+    	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+    }
+    
+    /**
      * 회원 데이터 조회 메서드
      * 
      * <p>
@@ -265,19 +282,31 @@ public class MemberController {
     }
     
     /**
-     * 회원 데이터 수정 메서드
-     * 
+     * 아이디 중복 체크
      * <p>
-     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
+     * 아이디를 파라미터로 입력받아, 해당 아이디를 사용하는 회원이 있으면 false를 반환하고, 아니면 true를 반환한다.
      * </p>
-     * 
-     * @param userId 회원의 아이디, 수정 데이터
-     * @return 회원 수정 성공 시 응답
+     * @param userId 회원 아이디
+     * @return isDuplicated 중복 여부
      */
-    @PutMapping("/members/{userId}")
-    public ResponseEntity<?> updateMember(@PathVariable String userId, @RequestBody UserUpdateRequestDto dto){
-    	this.memberService.updateMember(userId, dto);
-    	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+    @GetMapping("/members/dup-id/{userId}")
+    public ResponseEntity<?> checkIdDuplicated(@PathVariable String userId){
+    	boolean isDuplicated = this.memberService.isDuplicatedIdOrEmail(userId, "user");
+    	return ResponseEntity.ok(BaseResponse.of(isDuplicated, HttpStatus.OK));
+    }
+    
+    /**
+     * 이메일 중복 체크
+     * <p>
+     * 이메일을 파라미터로 입력받아, 해당 이메일을 사용하는 회원이 있으면 false를 반환하고, 아니면 true를 반환한다.
+     * </p>
+     * @param userId 회원 아이디
+     * @return isDuplicated 중복 여부
+     */
+    @PostMapping("/members/dup-email")
+    public ResponseEntity<?> checkEmailDuplicated(@RequestBody Map<String, String> request){
+    	boolean isDuplicated = this.memberService.isDuplicatedIdOrEmail(request.get("email"), "email");
+    	return ResponseEntity.ok(BaseResponse.of(isDuplicated, HttpStatus.OK));
     }
     
     @GetMapping("/test")
@@ -307,28 +336,26 @@ public class MemberController {
         sessions.add(session);
     }
     
-    @PostMapping("/api/answer")
-    public String test() {
-    	
-    	// 답변 등록하는 서비스 호출
-    	
-    	String notificationMessage = "새로운 글이 등록되었습니다: ";
-
-        for (WebSocketSession session : sessions) {
-            try {
-                session.sendMessage(new TextMessage(notificationMessage)); 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    	
-    	return "등록";
-    }
-    
     @GetMapping("/members/roleUserCount")
     public String getRoleUserCount() {
         return memberService.view();
     }
     
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+    	
+        String fileDirectory = "C:/Users/KOSA/Downloads/";
+        File file = new File(fileDirectory + filename);
+        
+        if (!file.exists()) {
+            return ResponseEntity.notFound().build();  // 파일이 없을 때 처리해놓깅
+        }
 
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")  
+                .contentType(MediaType.parseMediaType("application/octet-stream"))  
+                .body(resource);
+    }
 }

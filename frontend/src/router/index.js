@@ -10,7 +10,11 @@ import Socket  from '../pages/Socket.vue';
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
 import SelectSignupRole from '../components/member/SelectSignupRole.vue';
+<<<<<<< HEAD
 import UpdateMember from '../components/member/UpdateMember.vue';
+=======
+import Download from '../pages/Download.vue';
+>>>>>>> branch 'develop' of https://github.com/meta-metamong/meta-space.git
 
 
 const routes = [
@@ -21,6 +25,7 @@ const routes = [
 	{ path: '/select-signup-role', component: SelectSignupRole},
 
 	{ path: '/socket', component: Socket  },
+	{ path: '/download', component: Download  },
 
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },

@@ -44,7 +44,12 @@ public class DefaultMemberService implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public LoginInfoResponseDto findLoginInfo(LoginRequestDto dto) {
-        Member member = findMember(dto.getUserId());
+        Member member; 
+        try {
+            member = findMember(dto.getUserId());
+        } catch (MemberNotFoundException e) {
+            throw new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS, e);
+        }
         
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
@@ -172,14 +177,7 @@ public class DefaultMemberService implements MemberService {
 	    this.mailAgent.send(MailType.PASSWORD_RESET_LINK, "패스워드 재설정 링크", email, "링크"); // TODO: 패스워드 재설정 보내줘야 함.
 	}
 
-	public void registerAnswer() {
-        // 답변 등록 완료 후, 클라이언트에 메시지 전송
-        //messagingTemplate.convertAndSend("/topic/answer-registered", "답변이 등록되었습니다");
-    }
-	
-	
-
-	@Scheduled(cron = "0 0/1 * * * ?") // 매 1분마다 실행
+	@Scheduled(cron = "0 0/1 * * * ?")
     public void getRoleUserCount() {
         roleUserCount = memberMapper.countRoleUserMembers();
         lastExecutionTime = new Date(); 
@@ -188,5 +186,14 @@ public class DefaultMemberService implements MemberService {
     public String view() {
     	return "개수"+roleUserCount;
     }
+
+	@Override
+	public boolean isDuplicatedIdOrEmail(String data, String type) {
+		if("user".equals(type)) {
+			return memberRepository.existsById(data);
+		}else {
+			return memberRepository.existsByEmail(data);
+		}
+	}
     
 }

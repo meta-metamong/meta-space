@@ -2,7 +2,6 @@ package com.metamong.mt.global.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +16,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.metamong.mt.global.jwt.JwtAuthenticationFilter;
+import com.metamong.mt.global.jwt.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,13 +24,8 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-	@Autowired
-	private final JwtAuthenticationFilter authenticationFilter;
-	
-	@Autowired
+    private final JwtTokenProvider jwtTokenProvider;
 	private final List<String> permitAllEndpoints;
-	
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -54,7 +49,8 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		// Spring Security JWT 필터 로드
-		http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, permitAllEndpoints),
+		        UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();
 	}
