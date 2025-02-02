@@ -8,17 +8,20 @@
         "check": "확인"
     },
     "validation": {
-        "confirmed": "{field} 항목의 값이 일치하지 않습니다",
-        "email": "유효한 이메일 형식이어야 합니다",
-        "ext": "{field} 항목은 유효한 파일이 아닙니다",
-        "length": "{field} 항목의 길이는 {length}글자여야 합니다",
-        "max_value": "{field} 항목의 값은 {max} 이하여야 합니다",
-        "max": "{field} 항목은 최대 {length}글자 이하여야 합니다",
-        "min_value": "{field} 항목의 값은 {min} 이상이어야 합니다",
-        "min": "{field} 항목은 최소 {length}글자 이상이어야 합니다",
-        "regex": "{field} 항목은 형식에 맞지 않습니다",
-        "required": "{field} 항목은 필수 입력 항목입니다",
-        "url": "{field} 항목은 유효한 URL이 아닙니다"
+        "confirmed": "{field} 항목의 값이 일치하지 않습니다.",
+        "ext": "{field} 항목은 유효한 파일이 아닙니다.",
+        "length": "{field} 항목의 길이는 {length}글자여야 합니다.",
+        "max_value": "{field} 항목의 값은 {max} 이하여야 합니다.",
+        "max": "{field} 항목은 최대 {length}글자 이하여야 합니다.",
+        "min_value": "{field} 항목의 값은 {min} 이상이어야 합니다.",
+        "min": "{field} 항목은 최소 {length}글자 이상이어야 합니다.",
+        "regex": "{field} 항목은 형식에 맞지 않습니다.",
+        "required": "{field} 항목은 필수 입력 항목입니다.",
+        "url": "{field} 항목은 유효한 URL이 아닙니다.",
+        "id": "영어로 시작해야 하고, 영어 및 숫자를 포함해서 6~20자가 되어야 합니다.",
+        "password": "영어, 숫자, 특수문자를 최소 하나씩 포함해서 8~16자가 되어야 합니다.",
+        "email": "이메일 형식이 올바르지 않습니다.",
+        "phone": "010-123-1234 또는 010-1234-1234 와 같은 양식이어야 합니다."
     },
     "error": {
         "login": "아이디 또는 비밀번호가 잘못되었습니다.",

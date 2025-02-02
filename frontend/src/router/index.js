@@ -9,7 +9,7 @@ import Socket  from '../pages/Socket.vue';
 
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
-import SelectSignupRole from '../components/member/SelectSignupRole.vue';
+import SelectSignupRole from "../pages/SelectSignupRole.vue";
 import UpdateMember from '../components/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Error from '../pages/Error.vue';

@@ -7,6 +7,7 @@
 					<label class="col-form-label col-sm-2" for="userId">{{ $t('member.id') }}</label>
 					<div class="col-sm-8">
 						<input class="form-control" :disabled="!idDuplicated" type="text" name="userId" id="userId" :placeholder="$t('member.id')" v-model="userId" required />
+						<div class="error-message text-start mt-2" v-if="userId !== '' && !idValidation">{{ $t('validation.id') }}</div>
 					</div>
 					<div class="col-sm-2">
 						<button class="btn btn-secondary" :disabled="!idDuplicated" type="button" @click="checkDuplicated('id')">{{ $t('button.check') }}</button>
@@ -16,6 +17,7 @@
 					<label class="col-form-label col-sm-2" for="password">{{ $t('member.password') }}</label>
 					<div class="col-sm-10">
 						<input class="form-control" type="password" name="password" id="password" :placeholder="$t('member.password')" v-model="password" autocomplete="new-password" required />
+						<div class="error-message text-start mt-2" v-if="password !== '' && !passwordValidation">{{ $t('validation.password') }}</div>
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -35,6 +37,7 @@
 					<label class="col-form-label col-sm-2" for="email">{{ $t('member.email') }}</label>
 					<div class="col-sm-8">
 						<input class="form-control" type="email" :disabled="!emailDuplicated" name="email" id="email"  :placeholder="$t('member.email')" v-model="email" required />
+						<div class="error-message text-start mt-2" v-if="email !== '' && !emailValidation">{{ $t('validation.email') }}</div>
 					</div>
 					<div class="col-sm-2">
 						<button class="btn btn-secondary" type="button" :disabled="!emailDuplicated"  @click="checkDuplicated('email')">{{ $t('button.check') }}</button>
@@ -65,6 +68,7 @@
 					<label class="col-form-label col-sm-2" for="phone">{{ $t('member.phoneNumber') }}</label>
 					<div class="col-sm-10">
 						<input class="form-control" type="text" name="phone" id="phone" :placeholder="$t('member.phoneNumber')" v-model="phone" required />
+						<div class="error-message text-start mt-2" v-if="phone !== '' && !phoneValidation">{{ $t('validation.phone') }}</div>
 					</div>
 				</div>
 				<div class="row mb-4">
@@ -131,11 +135,23 @@ export default {
 	},
 	computed: {
 		passwordMismatch() {
-			return this.password !== this.confirmPassword;
+			return this.password !== "" && this.confirmPassword !== "" && this.password !== this.confirmPassword;
 		},
 		role() {
 			return this.$route.params.role;
-		}
+		},
+		idValidation(){
+			return /^[a-z]+[a-z0-9]{5,19}$/.test(this.userId);
+		},
+		passwordValidation(){
+			return /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/.test(this.password);
+		},
+		emailValidation(){
+			return /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i.test(this.email);
+		},
+		phoneValidation(){
+			return /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/.test(this.phone);
+		}		
 	},
 	methods: {
 		async handleSubmit() {
@@ -160,8 +176,6 @@ export default {
 				detailAddress: this.detailAddress
 			}
 
-			const requestUrl = this.role === 'user' ? "/members/user" : "/members/owner";
-
 			if(this.role === 'owner'){
 				signupDto = {
 					...signupDto,
@@ -169,6 +183,7 @@ export default {
 					businessRegistrationNumber: this.businessRegistrationNumber
 				}
 			}
+			const requestUrl = this.role === 'user' ? "/members/user" : "/members/owner";
 
 			const response = await post(requestUrl, signupDto);
 			if(response.status === 201) {
@@ -190,15 +205,13 @@ export default {
 			if(type === 'id'){
 				const response = await get(`/members/dup-id/${this.userId}`);
 				if(response.status === 200) {
-						if(response.data.content){
-							alert("이미 존재하는 아이디입니다.");
-						}else{
-							alert("사용 가능한 아이디입니다");
-							this.idDuplicated = false;
-						}
+					if(response.data.content){
+						alert("이미 존재하는 아이디입니다.");
+					}else{
+						alert("사용 가능한 아이디입니다");
+						this.idDuplicated = false;
 					}
-					
-				
+				}
 			}else{
 				const requestDto = {
 					email: this.email
