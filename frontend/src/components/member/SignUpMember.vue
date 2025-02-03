@@ -104,6 +104,18 @@
 						<input type="text" class="form-control" id="businessRegistrationNumber" name="businessRegistrationNumber" v-model="businessRegistrationNumber" :placeholder="$t('member.businessRegistrationNumber')" required />
 					</div>
 				</div>
+				<div class="row mb-4">
+					<label class="col-form-label col-sm-2" for="account">{{ $t('member.account') }}</label>
+					<div class="col-sm-7">
+						<input class="form-control" :disabled="accountValidated" type="text" name="account" id="account" :placeholder="$t('member.account')" v-model="account" required />
+					</div>
+					<div class="col-sm-3">
+						<select class="form-select">
+							<option value="" selected disabled>선택하세요.</option>
+							<option v-for="bank in banks" :key="bank" :value="bank">{{ bank }}</option>
+						</select>
+					</div>
+				</div>
 				<button class="btn btn-primary w-100 p-2 mt-3" type="submit">{{ $t('member.signUp') }}</button>
 			</form>
 		</div>
@@ -111,6 +123,7 @@
 </template>
 <script>
 import { get, post } from "../../apis/axios";
+import { bankList } from "../../assets/banks";
 
 export default {
 	name: 'SignUpMember',
@@ -129,6 +142,7 @@ export default {
 			detailAddress: "",
 			businessName: "",
 			businessRegistrationNumber: "",
+			account: "",
 			idDuplicated: true,
 			emailDuplicated: true,
 		}
@@ -151,6 +165,9 @@ export default {
 		},
 		phoneValidation(){
 			return /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/.test(this.phone);
+		},
+		banks(){
+			return bankList;
 		}		
 	},
 	methods: {

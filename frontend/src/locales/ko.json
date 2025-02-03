@@ -67,7 +67,8 @@
         "download":"다운로드",
         "information": "개인정보",
         "signupUser": "일반 회원가입",
-        "signupOwner": "업주 회원가입"
+        "signupOwner": "업주 회원가입",
+        "account": "계좌번호"
     },
     "reservation": {
         "guestCount": "인원 수",
