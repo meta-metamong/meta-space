@@ -24,7 +24,7 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/dup-email"
             },
             HttpMethod.GET, new String[] {
-                    "/api/reissue",
+                    "/api/members/reissue",
                     "/api/members/*",
                     "/api/members/dup-id/*"
             }

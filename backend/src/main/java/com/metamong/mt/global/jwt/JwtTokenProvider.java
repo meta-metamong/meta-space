@@ -91,7 +91,7 @@ public class JwtTokenProvider {
      */
     public String resolveToken(HttpServletRequest request) {
     	String accessToken = request.getHeader("X-Access-Token");
-    	return accessToken == null ? null : accessToken.substring(7);
+    	return accessToken == null ? null : accessToken;
     }
 
     /**
