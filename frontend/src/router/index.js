@@ -12,6 +12,7 @@ import MyPage from '../pages/MyPage.vue';
 import SelectSignupRole from "../pages/SelectSignupRole.vue";
 import UpdateMember from '../components/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
+import Admin from '../pages/AdminHome.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -26,6 +27,8 @@ const routes = [
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/statistics', component: UserStatistics },
+
+	{ path: '/admin', component: Admin },
 
 ];
 
