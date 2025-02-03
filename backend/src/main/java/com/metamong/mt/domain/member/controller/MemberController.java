@@ -221,6 +221,7 @@ public class MemberController {
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
     	 String accessToken = this.jwtTokenProvider.resolveToken(request);
     	 String refreshToken = this.jwtTokenProvider.resolveRefreshTokenFromCookie(request);
+    	 System.out.println(accessToken);
     	 boolean isAvailable = accessToken != null && refreshToken != null;
     	 boolean isReissuable = !this.jwtTokenProvider.validateToken(accessToken) && this.jwtTokenProvider.validateToken(refreshToken);
     	 

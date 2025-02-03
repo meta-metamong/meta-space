@@ -1,13 +1,15 @@
 package com.metamong.mt.global.jwt;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
+
+import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,21 +23,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 	private final JwtTokenProvider jwtTokenProvider;
-	private final List<String> permitAllEndpoints;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		
+		HttpServletResponse httpResponse = (HttpServletResponse) response;		
 		
 		// 헤더에서 JWT를 받아음.
 		String token = jwtTokenProvider.resolveToken(httpRequest);
 		
 		// 유효한 토큰인지 확인.
-		if (token != null) {						
-			if(permitAllEndpoints.contains(httpRequest.getRequestURI())) {
+		if (token != null) {					
+			if(HttpRequestAuthorizationDefinition.WHITE_LIST.contains(httpRequest.getRequestURI())) {
 				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
 					httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					httpResponse.setCharacterEncoding("UTF-8");
