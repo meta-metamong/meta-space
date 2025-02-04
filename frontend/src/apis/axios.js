@@ -128,18 +128,3 @@ export const del = async function(endpoint){
         return error
     }
 }
-
-// JWT 토큰에서 사용자 ID 추출
-export const getUserIdFromToken = function() {
-    const token = sessionStorage.getItem("accessToken");
-    if (token) {
-        try {
-            const decodedToken = jwtDecode(token);
-            return decodedToken.sub;
-        } catch (error) {
-            console.error("토큰 디코딩 오류", error);
-            return null;
-        }
-    }
-    return null;
-};

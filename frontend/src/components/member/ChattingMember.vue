@@ -14,8 +14,7 @@
 </template>
 
 <script>
-import { getUserIdFromToken } from  "../../apis/axios";  // api.js 파일 경로에 맞게 수정
-
+import { toRaw } from 'vue';
 export default {
   data() {
     return {
@@ -28,9 +27,12 @@ export default {
   },
   created() {
     this.connect();  // 컴포넌트 생성 시 WebSocket 연결
-    this.userId = getUserIdFromToken();  // 토큰에서 사용자 ID 추출
-    console.log("사용자 ID:", this.userId);  // 디코딩 결과 출력
   },
+  computed: {
+        user() {
+            return toRaw(this.$store.state.user);
+        },
+    },
   methods: {
     // WebSocket 연결 설정
     connect() {
@@ -68,10 +70,11 @@ export default {
     // 사용자 입력 메시지를 서버로 전송
     sendMessage() {
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        console.log("이름"+this.user.userId);
         const message = {
           from: this.username,
           text: this.messageText,
-          userId: this.userId,
+          //userId: this.userId,
         };
         this.socket.send(JSON.stringify(message));  // JSON 형식으로 메시지 전송
         console.log('Message sent:', message);
