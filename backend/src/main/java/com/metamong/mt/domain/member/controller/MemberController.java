@@ -2,10 +2,12 @@ package com.metamong.mt.domain.member.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.FileSystemResource;
@@ -24,14 +26,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -55,8 +56,8 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieGenerator cookieGenerator;
-    private final List<WebSocketSession> sessions = new ArrayList<>(); // WebSocket 세션을 저장할 리스트
-
+    //private final List<WebSocketSession> sessions = new ArrayList<>(); // WebSocket 세션을 저장할 리스트
+    private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
     /**
      * 로그인 처리 메서드.
      * <p>
@@ -337,6 +338,10 @@ public class MemberController {
 
     public void addSession(WebSocketSession session) {
         sessions.add(session);
+    }
+    
+    public Set<WebSocketSession> getAllSessions() {
+        return sessions;
     }
     
     @GetMapping("/members/roleUserCount")
