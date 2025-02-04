@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import WebSocket from '../components/member/WebSocket.vue';
+import WebSocket from '../components/member/WebSocketMember.vue';
 
 export default{
     name: "Answer",
