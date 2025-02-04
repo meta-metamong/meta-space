@@ -240,7 +240,7 @@ public class MemberController {
     		 
     		 HttpHeaders headers = new HttpHeaders();
     	        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", reissuedRefreshToken).toString());
-    	        headers.set("X-Access-Token", "Bearer " + reissuedAccessToken);
+    	        headers.set("X-Access-Token", reissuedAccessToken);
     	        
     	        return ResponseEntity.ok()
     	                .headers(headers)

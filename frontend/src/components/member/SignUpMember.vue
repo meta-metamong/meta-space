@@ -249,11 +249,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-primary {
-	background-color: #19319D;
-	border: #19319D;
-}
-
 .error-message {
 	font-size: 14px;
 	color: #ff0101;
