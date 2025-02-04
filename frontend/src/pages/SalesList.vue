@@ -1,18 +1,18 @@
 <template>
 	<div class="container mt-4">
 		<div class="d-flex justify-content-center">
-			<WebSocket />
+			<SalesExport />
 		</div>
 	</div>
 </template>
 
 <script>
-import WebSocket from '../components/admin/ChattingMember.vue';
+import SalesExport from '../components/admin/SalesExport.vue';
 
 export default{
-    name: "Answer",
+    name: "Download",
     components:{
-        WebSocket
+        SalesExport
 	}
 }
 </script>

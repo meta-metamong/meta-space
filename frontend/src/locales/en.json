@@ -70,6 +70,10 @@
         "signupUser": "Signup as a Member",
         "signupOwner": "Signup as a Owner"
     },
+    "admin" : {
+        "socket":"socket",
+        "salesList":"salesList"
+    },
     "reservation": {
         "guestCount": "Number of Guests",
         "specialRequests": "Special Requests",

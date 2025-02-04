@@ -14,7 +14,10 @@
             <div class="collapse navbar-collapse" id="collapsed-container">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link to="/admin/socket" class="nav-link" href="#" v-text="$t('member.socket')" />
+                        <router-link to="/admin/socket" class="nav-link" href="#" v-text="$t('admin.socket')" />
+                    </li>
+                    <li class="nav-item">
+                        <router-link to="/admin/salesList" class="nav-link" href="#" v-text="$t('admin.salesList')" />
                     </li>
                     <li class="nav-item" v-if="user !== null">
                         <button class="nav-link locale-btn" v-text="$t('member.logout')" @click="$store.dispatch('logoutRequest')"/>
