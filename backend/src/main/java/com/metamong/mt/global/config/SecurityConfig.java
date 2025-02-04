@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
-	private final List<String> permitAllEndpoints;
 	
 	@Bean
 	@Profile("no-auth & !prod")
@@ -70,7 +69,7 @@ public class SecurityConfig {
 		});
 
 		// Spring Security JWT 필터 로드
-		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, permitAllEndpoints),
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
 		        UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();
