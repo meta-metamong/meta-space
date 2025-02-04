@@ -1,5 +1,6 @@
 package com.metamong.mt.global.config.constant;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 public class HttpRequestAuthorizationDefinition {
+	public static final List<String> NO_AUTH_REQUIRED_LIST = List.of(
+				"/api/members/user",
+	            "/api/members/owner",
+	            "/api/members/login",
+	            "/api/members/find-member",
+	            "/api/members/dup-email",
+	            "/api/members/reissue",
+                "/api/members/dup-id/*"
+			);
+	
     private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
             HttpMethod.POST, new String[] {
                     "/api/members/user",
