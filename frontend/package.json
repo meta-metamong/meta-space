@@ -16,6 +16,7 @@
         "bootstrap-vue-3": "^0.5.1",
         "frontend": "file:",
         "highcharts": "^12.1.2",
+        "jwt-decode": "^4.0.0",
         "socket.io-client": "^4.8.1",
         "sockjs-client": "^1.6.1",
         "stompjs": "^2.3.3",

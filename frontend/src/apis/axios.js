@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from 'jwt-decode';
 
 // Axios 기본 설정
 const apiClient = axios.create({
@@ -22,7 +23,7 @@ apiClient.interceptors.request.use(
         const accessToken = sessionStorage.getItem("accessToken");
 
         if(accessToken){
-            config.headers["x-access-token"] = accessToken;
+            config.headers["Authorization"] = accessToken;
         }
 
         return config;
@@ -127,3 +128,18 @@ export const del = async function(endpoint){
         return error
     }
 }
+
+// JWT 토큰에서 사용자 ID 추출
+export const getUserIdFromToken = function() {
+    const token = sessionStorage.getItem("accessToken");
+    if (token) {
+        try {
+            const decodedToken = jwtDecode(token);
+            return decodedToken.sub;
+        } catch (error) {
+            console.error("토큰 디코딩 오류", error);
+            return null;
+        }
+    }
+    return null;
+};
