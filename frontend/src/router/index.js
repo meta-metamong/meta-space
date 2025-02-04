@@ -9,8 +9,10 @@ import Socket  from '../pages/Socket.vue';
 
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
-import SelectSignupRole from '../components/member/SelectSignupRole.vue';
-
+import SelectSignupRole from "../pages/SelectSignupRole.vue";
+import UpdateMember from '../components/member/UpdateMember.vue';
+import Download from '../pages/Download.vue';
+import Error from '../pages/Error.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -20,9 +22,12 @@ const routes = [
 	{ path: '/select-signup-role', component: SelectSignupRole},
 
 	{ path: '/socket', component: Socket  },
+	{ path: '/download', component: Download  },
 
 	{ path: '/mypage', component: MyPage },
+	{ path: '/update', component: UpdateMember },
 	{ path: '/statistics', component: UserStatistics },
+	{ path: '/error', component: Error },
 
 ];
 

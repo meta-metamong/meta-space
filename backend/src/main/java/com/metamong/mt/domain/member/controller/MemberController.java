@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.member.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +31,7 @@ import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -36,6 +42,7 @@ import com.metamong.mt.global.web.cookie.CookieGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -232,7 +239,7 @@ public class MemberController {
     		 
     		 HttpHeaders headers = new HttpHeaders();
     	        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", reissuedRefreshToken).toString());
-    	        headers.set("X-Access-Token", "Bearer " + reissuedAccessToken);
+    	        headers.set("X-Access-Token", reissuedAccessToken);
     	        
     	        return ResponseEntity.ok()
     	                .headers(headers)
@@ -241,6 +248,24 @@ public class MemberController {
          
     	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                  .body(BaseResponse.of(refreshToken, HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
+    }
+    
+    /**
+     * 회원 정보를 수정하는 메서드
+     * 
+     * <p>
+     * 회원의 아이디를 통해 해당 회원의 정보를 수정합니다. 
+     * 수정하려는 데이터는 요청 본문에서 전달되며, 유효성 검사를 거쳐 데이터가 처리됩니다.
+     * </p>
+     * 
+     * @param userId 회원의 아이디 (수정하려는 회원의 고유 식별자)
+     * @param dto 수정할 회원 정보가 담긴 데이터 전송 객체 (UserUpdateRequestDto)
+     * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
+     */
+    @PutMapping("/members/{userId}")
+    public ResponseEntity<?> updateMember(@PathVariable String userId, @Valid @RequestBody UpdateRequestDto dto) {
+    	this.memberService.updateMember(userId, dto);
+    	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
     }
     
     /**
@@ -314,28 +339,26 @@ public class MemberController {
         sessions.add(session);
     }
     
-    @PostMapping("/api/answer")
-    public String test() {
-    	
-    	// 답변 등록하는 서비스 호출
-    	
-    	String notificationMessage = "새로운 글이 등록되었습니다: ";
-
-        for (WebSocketSession session : sessions) {
-            try {
-                session.sendMessage(new TextMessage(notificationMessage)); 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    	
-    	return "등록";
-    }
-    
     @GetMapping("/members/roleUserCount")
     public String getRoleUserCount() {
         return memberService.view();
     }
     
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+    	
+        String fileDirectory = "C:/Users/KOSA/Downloads/";
+        File file = new File(fileDirectory + filename);
+        
+        if (!file.exists()) {
+            return ResponseEntity.notFound().build();  // 파일이 없을 때 처리해놓깅
+        }
 
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")  
+                .contentType(MediaType.parseMediaType("application/octet-stream"))  
+                .body(resource);
+    }
 }

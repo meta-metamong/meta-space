@@ -65,21 +65,4 @@ public class BeanConfig {
         log.debug("local file upload root path = {}", rootPath);
         return new LocalFileUploader(rootPath);
     }
-
-    @Bean
-    List<String> permitAllEndpoints(){
-		return List.of(
-				"/api/members/user",
-				"/api/members/owner",
-				"/api/members/login",
-				"/api/members/find-member",
-				"/api/members/reissue",
-				"/api/members/{id}",
-				"/api/members/dup-id/{userId}",
-				"/api/members/dup-email",
-				"/actuator/health",
-				"/ws/**"
-			);
-	}
-    
 }
