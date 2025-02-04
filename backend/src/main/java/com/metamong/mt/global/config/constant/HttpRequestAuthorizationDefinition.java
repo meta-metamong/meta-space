@@ -16,14 +16,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 public class HttpRequestAuthorizationDefinition {
-    public static final List<String> WHITE_LIST = List.of(
+	public static final List<String> NO_AUTH_REQUIRED_LIST = List.of(
+			"/api/members/user",
+            "/api/members/owner",
+            "/api/members/login",
+            "/api/members/find-member",
+            "/api/members/dup-email"
+		);
+	
+    private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
+            HttpMethod.POST, new String[] {
                     "/api/members/user",
                     "/api/members/owner",
                     "/api/members/login",
                     "/api/members/find-member",
-                    "/api/members/dup-email",
+                    "/api/members/dup-email"
+            },
+            HttpMethod.GET, new String[] {
                     "/api/members/reissue",
+                    "/api/members/*",
                     "/api/members/dup-id/*"
+            }
     );
     
     private static final String[] WHITE_LIST_FOR_ALL_METHOD = {
@@ -38,8 +51,9 @@ public class HttpRequestAuthorizationDefinition {
     );
     
     public static final void defineRequestMatcher(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-        WHITE_LIST.forEach(path -> registry.requestMatchers(path));
-        registry.requestMatchers(HttpMethod.GET, "/api/members/*");
+        WHITE_LIST.forEach((method, paths) -> {
+            registry.requestMatchers(method, paths).permitAll();
+        });
         registry.requestMatchers(WHITE_LIST_FOR_ALL_METHOD).permitAll();
         
         // TODO: hasAnyRole을 사용할지 hasRole을 사용할지 케이스에 따라 다르게 선택하기

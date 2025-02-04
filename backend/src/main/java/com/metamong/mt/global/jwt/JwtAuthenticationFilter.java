@@ -34,8 +34,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		String token = jwtTokenProvider.resolveToken(httpRequest);
 		
 		// 유효한 토큰인지 확인.
-		if (token != null) {					
-			if(HttpRequestAuthorizationDefinition.WHITE_LIST.contains(httpRequest.getRequestURI())) {
+		if (token != null) {						
+			if(HttpRequestAuthorizationDefinition.NO_AUTH_REQUIRED_LIST.contains(httpRequest.getRequestURI())) {
 				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
 					httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					httpResponse.setCharacterEncoding("UTF-8");
