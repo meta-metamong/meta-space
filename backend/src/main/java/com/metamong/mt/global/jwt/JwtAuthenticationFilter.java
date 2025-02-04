@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -21,8 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 	private final JwtTokenProvider jwtTokenProvider;
-	private final List<String> permitAllEndpoints;
-
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
@@ -35,7 +36,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		
 		// 유효한 토큰인지 확인.
 		if (token != null) {						
-			if(permitAllEndpoints.contains(httpRequest.getRequestURI())) {
+			if(HttpRequestAuthorizationDefinition.NO_AUTH_REQUIRED_LIST.contains(httpRequest.getRequestURI())) {
 				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
 					httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					httpResponse.setCharacterEncoding("UTF-8");
