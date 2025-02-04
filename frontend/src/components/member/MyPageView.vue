@@ -119,10 +119,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-primary {
-    background: #19319D;
-}
-
 .profile-img {
     width: 100px;
     height: 100px;
