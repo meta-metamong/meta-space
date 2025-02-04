@@ -1,5 +1,4 @@
 import axios from "axios";
-import { jwtDecode } from 'jwt-decode';
 
 // Axios 기본 설정
 const apiClient = axios.create({

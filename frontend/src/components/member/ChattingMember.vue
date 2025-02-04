@@ -93,7 +93,6 @@ export default {
 </script>
 
 <style scoped>
-/* 스타일을 추가하여 입력창과 메시지 출력 영역 꾸미기 */
 div {
   margin-bottom: 15px;
 }
