@@ -4,14 +4,15 @@ import Home from '../pages/Home.vue';
 import Login from '../pages/Login.vue';
 import SignUp from '../pages/SignUp.vue';
 
-import Socket  from '../pages/Socket.vue';
-
+import Socket  from '../pages/ChatMember.vue';
+import ChatAdmin  from '../pages/ChatAdmin.vue';
 
 import UserStatistics from '../pages/UserStatistics.vue';
 import MyPage from '../pages/MyPage.vue';
 import SelectSignupRole from "../pages/SelectSignupRole.vue";
 import UpdateMember from '../components/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
+import Admin from '../pages/AdminHome.vue';
 import Error from '../pages/Error.vue';
 
 const routes = [
@@ -28,6 +29,9 @@ const routes = [
 	{ path: '/update', component: UpdateMember },
 	{ path: '/statistics', component: UserStatistics },
 	{ path: '/error', component: Error },
+
+	{ path: '/admin', component: Admin },
+	{ path: '/admin/socket', component: ChatAdmin },
 
 ];
 

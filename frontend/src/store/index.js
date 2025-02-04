@@ -23,7 +23,11 @@ const store = createStore({
     mutations: {
         saveUser(state, payload){
             state.user = payload;
-            router.push("/");
+            if(state.user && state.user.userId === "admin") {
+                router.push("/admin");
+            } else {
+                router.push("/"); 
+            }
         },
         removeUser(state){
             state.user = null;
