@@ -5,12 +5,24 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
+    environment {
+        MAIL_HOST='smtp.gmail.com'
+        MAIL_USERNAME=credentials('mail_username')
+        MAIL_PASSWORD=credentials('mail_password')
+        JDBC_URL=credentials('jdbc_url')
+        JDBC_USERNAME=credentials('jdbc_username')
+        JDBC_PASSWORD=credentials('jdbc_password')
+        CLIENT_DOMAIN=credentials('client_domain')
+        CLIENT_ORIGIN=credentials('client_origin')
+    }
+
     stages {
         stage('Prepare workspace') {
             steps {
                 cleanWs()
                 checkout scm
                 sh "ls"
+                sh "pwd"
             }
         }
 
@@ -19,11 +31,23 @@ pipeline {
                 script {
                     env.BACKEND_WORKDIR="${WORKSPACE}/backend"
                 }
-                // withCredentials([file(credentialsId: 'application-secret', variable: 'prodCredentials')]) {
-                //     script {
-                //         sh 'sudo cp $prodCredentials ./src/main/resources/application-secret.yml'
-                //     }
+                // withCredentials([string(credentialsId: 'mail_username', variable: 'mailUsername'),
+                //         string(credentialsId: 'mail_password', variable: 'mailPassword'),
+                //         string(credentialsId: 'jdbc_url', variable: 'jdbcUrl'),
+                //         string(credentialsId: 'jdbc_username', variable: 'jdbcUsername'),
+                //         string(credentialsId: 'jdbc_password', variable: 'jdbcPassword'),
+                //         string(credentialsId: 'client_domain', variable: 'clientDomain'),
+                //         string(credentialsId: 'client_origin', variable: 'clientOrigin')]) {
+                //     sh "export MAIL_USERNAME=${mailUsername}"
+                //     sh "export MAIL_PASSWORD=${mailPassword}"
+                //     sh "export MAIL_HOST=smtp.gmail.com"
+                //     sh "export JDBC_URL=${jdbcUrl}"
+                //     sh "export JDBC_USERNAME=${jdbcUsername}"
+                //     sh "export JDBC_PASSWORD=${jdbcPassword}"
+                //     sh "export CLIENT_DOMAIN=${clientDomain}"
+                //     sh "export CLIENT_ORIGIN=${clientOrigin}"
                 // }
+                sh "env"
                 sh "echo work directory is ${env.BACKEND_WORKDIR}"
             }
         }
@@ -34,13 +58,13 @@ pipeline {
             }
         }
 
-        // stage('Run test db container') {
-        //     steps {
-        //         sh "docker stop test-db | true"
-        //         sh "docker pull rudeh1253/meta-metamong-oracle-db"
-        //         sh "docker run --name test-db -p 1521:1521 -dit --rm rudeh1253/meta-metamong-oracle-db"
-        //     }
-        // }
+        stage('Run test db container') {
+            steps {
+                sh "docker stop test-db | true"
+                sh "docker pull rudeh1253/meta-metamong-oracle-db:latest-schema"
+                sh "docker run --name test-db -p 1521:1521 -dit --rm rudeh1253/meta-metamong-oracle-db:latest-schema"
+            }
+        }
         
         stage('Test') {
             steps {
@@ -48,6 +72,7 @@ pipeline {
                     sh "ls"
                     sh "chmod 755 ./mvnw"
                     sh "sudo ./mvnw clean test"
+                    sh "docker container stop test-db"
                 }
             }
         }
@@ -78,37 +103,46 @@ pipeline {
         stage('Dockerize') {
             steps {
                 dir('backend') {
-                    sh "sudo docker image build -t metamong-backend:${env.BUILD_ID} ."
-                    sh "sudo docker tag metamong-backend:${env.BUILD_ID} hansoo0614/metamong-backend:${env.BUILD_ID}"
+                    sh "sudo docker image build -t metamong-backend ."
+                    sh "sudo docker tag metamong-backend hansoo0614/metamong-backend:${env.BUILD_ID}"
+                    sh "sudo docker tag metamong-backend hansoo0614/metamong-backend:latest"
                 }
             }
         }
 
-        // stage('Docker Push') {
-        //     steps {
-        //         withCredentials([string(credentialsId: 'docker_hub_access_token', variable: 'dockerHubAccesstoken')]) {
-        //             sh "echo ${dockerHubAccesstoken} | sudo docker login --username rudeh1253 --password-stdin"
-        //             sh "sudo docker push rudeh1253/sample-hub:${env.BUILD_ID}"
-        //         }
-        //     }
-        // }
-
-        // stage('Deploy') {
-        //     steps {
-        //         withCredentials([file(credentialsId: 'node_credential', variable: 'nodeInfo'),
-        //                 file(credentialsId: 'docker_shell_script', variable: 'deployShellFile')]) {
-        //             sh "sudo chown jenkins ${deployShellFile}"
-        //             sh "sudo chown jenkins ${nodeInfo}"
-        //             sh "sh ${deployShellFile} \$(cat ${nodeInfo}) ${env.BUILD_ID}"
-        //         }
-        //     }
-        // }
-
-        stage('Health Check') {
+        stage('Docker Push') {
             steps {
-                echo "Health Check new deployment"
+                withCredentials([string(credentialsId: 'docker_hub_access_token', variable: 'dockerHubAccesstoken')]) {
+                    sh "echo ${dockerHubAccesstoken} | sudo docker login --username hansoo0614 --password-stdin"
+                    sh "sudo docker push hansoo0614/metamong-backend:${env.BUILD_ID}"
+                    sh "sudo docker push hansoo0614/metamong-backend:latest"
+                }
             }
         }
+
+        stage('Deploy') {
+            steps {
+                withCredentials([string(credentialsId: 'worker_node_ip', variable: 'workerNodeIp'),
+                        file(credentialsId: 'docker-compose-env-file', variable: 'envFile'),
+                        string(credentialsId: 'docker_hub_access_token', variable: 'dockerHubAccesstoken')]) {
+                    sh "scp docker-compose.yml ubuntu@${workerNodeIp}:~"
+                    sh "ssh ubuntu@${workerNodeIp} \"env\""
+                    sh "ssh ubuntu@${workerNodeIp} \"echo ${dockerHubAccesstoken} | sudo docker login --username hansoo0614 --password-stdin\""
+                    sh "ssh ubuntu@${workerNodeIp} \"sudo docker pull hansoo0614/metamong-backend:latest\""
+                    sh "ssh ubuntu@${workerNodeIp} \"sudo docker-compose --profile blue --env-file ~/envs up\""
+                    // sh "docker-compose -H 'ssh://ubuntu@${workerNodeIp}' up"
+                }
+                withCredentials([]) {
+    // some block
+}
+            }
+        }
+
+        // stage('Health Check') {
+        //     steps {
+        //         echo "Health Check new deployment"
+        //     }
+        // }
 
         stage('Convert Blue or Green') {
             steps {
@@ -119,7 +153,7 @@ pipeline {
 
         stage('Clear') {
             steps {
-                echo "Clear old images"
+                sh "docker image prune"
             }
         }
     }
