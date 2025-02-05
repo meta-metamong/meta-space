@@ -1,6 +1,6 @@
 <template>
      <!-- 하단 네비게이션 바 -->
-     <nav class="navbar fixed-bottom navbar-light bg-white border-top shadow-sm">
+     <nav class="navbar sticky-bottom navbar-light bg-white border-top shadow-sm">
         <div class="container-fluid d-flex justify-content-around">
           <router-link to="/" class="nav-link text-center">
             <i class="bi bi-search text-primary"></i><br>{{ $t('footer.search') }}
@@ -45,7 +45,7 @@
   cursor: not-allowed; /* 마우스 커서 변경 */
 }
 
-.navbar.fixed-bottom {
+.navbar.sticky-bottom {
   padding: 10px 0;
 }
 
