@@ -17,15 +17,19 @@ CREATE TABLE member (
     password                     VARCHAR2(80)   NOT NULL,
     mem_phone                    VARCHAR2(11)   NOT NULL,
     birth_date                   DATE           NOT NULL,
-    postal_code                  CHAR(5)        NOT NULL,
+    gender                       CHAR(1)        NOT NULL,
+    mem_postal_code              CHAR(5)        NOT NULL,
     mem_address                  VARCHAR2(40)   NOT NULL,
     mem_detail_address           VARCHAR2(30)   NOT NULL,
     role                         CHAR(9)        NOT NULL,
     refresh_token                VARCHAR2(1000) NOT NULL,
     created_at                   DATE           DEFAULT SYSDATE,
     updated_at                   DATE           DEFAULT SYSDATE,
+    mem_banned_until             DATE,
     
-    CONSTRAINT pk_member PRIMARY KEY (mem_id)  
+    CONSTRAINT pk_member PRIMARY KEY (mem_id),
+    CONSTRAINT member_gender_domain CHECK (gender IN ('M', 'W')),
+    CONSTRAINT member_role_domain CHECK (role IN ('ROLE_PROV', 'ROLE_CONS', 'ROLE_ADMN'))
 );
 
 CREATE TABLE notification (
@@ -39,15 +43,26 @@ CREATE TABLE notification (
         REFERENCES member (mem_id)
 );
 
+CREATE TABLE bank (
+    bank_code CHAR(3),
+    bank_name VARCHAR2(15) NOT NULL,
+    
+    CONSTRAINT pk_bank PRIMARY KEY (bank_code)
+);
+
 CREATE TABLE fct_provider (
-    prov_id       NUMBER(4, 0),
-    biz_name      VARCHAR2(30) NOT NULL,
-    biz_reg_name  VARCHAR2(12) NOT NULL,
-    prov_account  VARCHAR2(20) NOT NULL,
+    prov_id            NUMBER(4, 0),
+    biz_name           VARCHAR2(30) NOT NULL,
+    biz_reg_name       VARCHAR2(12) NOT NULL,
+    bank_code          CHAR(3) NOT NULL,
+    prov_account       VARCHAR2(20) NOT NULL,
+    prov_account_owner VARCHAR2(30) NOT NULL,
 
     CONSTRAINT pk_fct_provider PRIMARY KEY (prov_id),
     CONSTRAINT fk_fct_provider_prov_id FOREIGN KEY (prov_id)
-        REFERENCES member (mem_id)
+        REFERENCES member (mem_id),
+    CONSTRAINT fk_fct_provider_bank_code FOREIGN KEY (bank_code)
+        REFERENCES bank (bank_code)
 );
 
 CREATE TABLE report (
@@ -118,7 +133,7 @@ CREATE TABLE zone (
     fct_id             NUMBER(4, 0)  NOT NULL,
     zone_name          VARCHAR2(30)  NOT NULL,
     max_user_count     NUMBER(4, 0)  NOT NULL,
-    is_shared_zone     NUMBER(1, 0)       NOT NULL,
+    is_shared_zone     NUMBER(1, 0)  NOT NULL,
     hourly_rate        NUMBER(5, 0)  NOT NULL,
     created_at         DATE          DEFAULT SYSDATE,
     updated_at         DATE          DEFAULT SYSDATE,
@@ -149,14 +164,15 @@ CREATE TABLE image (
 );
 
 CREATE TABLE reservation (
-    rvt_id            NUMBER(4, 0),
-    cons_id           NUMBER(4, 0)  NOT NULL,
-    zone_id           NUMBER(4, 0)  NOT NULL,
-    rvt_date          DATE          NOT NULL,
-    usage_start_time  DATE          NOT NULL,
-    usage_end_time    DATE          NOT NULL,
-    usage_count       NUMBER(4, 0)  NOT NULL,
-    created_at        DATE          DEFAULT SYSDATE,
+    rvt_id                 NUMBER(4, 0),
+    cons_id                NUMBER(4, 0)  NOT NULL,
+    zone_id                NUMBER(4, 0)  NOT NULL,
+    rvt_date               DATE          NOT NULL,
+    usage_start_time       DATE          NOT NULL,
+    usage_end_time         DATE          NOT NULL,
+    usage_count            NUMBER(4, 0)  NOT NULL,
+    created_at             DATE          DEFAULT SYSDATE,
+    rvt_cancelation_reason VARCHAR2(8),
 
     CONSTRAINT pk_reservation PRIMARY KEY (rvt_id),
     CONSTRAINT fk_rvt_cons_id FOREIGN KEY (cons_id)
@@ -166,11 +182,20 @@ CREATE TABLE reservation (
 );
 
 CREATE TABLE payment (
-    rvt_id      NUMBER(4, 0),
-    pay_price   NUMBER(6, 0)  NOT NULL,
-    is_canceled NUMBER(1, 0)  DEFAULT 0,
+    rvt_id                NUMBER(4, 0),
+    pay_price             NUMBER(6, 0)  NOT NULL,
+    pay_state             CHAR(1)       DEFAULT 'P',
+    pay_method            VARCHAR2(10)  NOT NULL,
+    pay_date              DATE          DEFAULT SYSDATE,
+    cancel_date           DATE,
+    refund_account        VARCHAR2(20),
+    refund_bank_code      CHAR(3),
+    refund_account_owner  VARCHAR2(30),
 
     CONSTRAINT pk_payment PRIMARY KEY (rvt_id),
     CONSTRAINT fk_payment_rvt_id FOREIGN KEY (rvt_id)
-        REFERENCES reservation (rvt_id)
+        REFERENCES reservation (rvt_id),
+    CONSTRAINT payment_pay_state_domain CHECK (pay_state IN ('P', 'Q', 'R')),
+    CONSTRAINT fk_payment_refund_bank_code FOREIGN KEY (refund_bank_code)
+        REFERENCES bank (bank_code)
 );
