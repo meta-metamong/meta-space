@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { toRaw } from 'vue';
 export default {
   data() {
     return {
@@ -22,6 +23,11 @@ export default {
   },
   created() {
     this.connect();  // 컴포넌트 생성 시 WebSocket 연결
+  },
+  computed: {
+    user() {
+      return toRaw(this.$store.state.user);
+    },
   },
   methods: {
     // WebSocket 연결 설정
@@ -60,7 +66,8 @@ export default {
     sendMessage() {
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
         const message = {
-          from: this.username,
+          //from: this.username,
+          userId: this.user.userId,
           text: this.messageText,
         };
         this.socket.send(JSON.stringify(message));  // JSON 형식으로 메시지 전송
