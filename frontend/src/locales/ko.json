@@ -17,15 +17,10 @@
         "min": "{field} 항목은 최소 {length}글자 이상이어야 합니다.",
         "regex": "{field} 항목은 형식에 맞지 않습니다.",
         "required": "{field} 항목은 필수 입력 항목입니다.",
-        "url": "{field} 항목은 유효한 URL이 아닙니다.",
-        "id": "영어로 시작해야 하고, 영어 및 숫자를 포함해서 6~20자가 되어야 합니다.",
-        "password": "영어, 숫자, 특수문자를 최소 하나씩 포함해서 8~16자가 되어야 합니다.",
-        "email": "이메일 형식이 올바르지 않습니다.",
-        "phone": "010-123-1234 또는 010-1234-1234 와 같은 양식이어야 합니다."
+        "url": "{field} 항목은 유효한 URL이 아닙니다."
     },
     "error": {
-        "login": "아이디 또는 비밀번호가 잘못되었습니다.",
-        "passwordConfirm": "비밀번호가 일치하지 않습니다."
+        "login": "아이디 또는 비밀번호가 잘못되었습니다."
     },
     "label": {
         "all": "전체",
@@ -37,6 +32,35 @@
         "viewByRegion": "지역별로 보기",
         "myPage": "마이페이지"
     },
+    "footer": {
+        "search": "검색",
+        "map": "지도",
+        "home": "홈",
+        "chat": "채팅",
+        "profile": "프로필"
+    },
+    "signup":{
+        "signup": "회원가입",
+        "next": "다음",
+        "preInfo": "사전정보",
+        "isConsumer": "시설을 이용하러 오셨나요?",
+        "isProvider": "시설을 제공하러 오셨나요?",
+        "ConsumerSignup": "시설 이용자로 회원가입",
+        "ProviderSignup": "시설 제공자로 회원가입",
+        "checkEmail": "인증번호 전송",
+        "inputCode": "인증번호 6자리",
+        "additionalInfo": "추가 정보",
+        "selectBank": "은행을 선택하세요"
+    },
+    "signupError":{
+        "notValidatedEmail": "이메일 형식이 올바르지 않습니다.",
+        "notValidatedCode": "인증코드는 6자리입니다.",
+        "notValidatedPassword": "영어, 숫자, 특수문자를 최소 하나씩 포함해서 8~16자가 되어야 합니다.",
+        "passwordNotMatched": "비밀번호가 일치하지 않습니다.",
+        "notValidatedName": "영어와 한글만 입력 가능합니다.",
+        "notValidatedPhone": "[010-1234-1234]와 동일한 양식이어야 합니다.",
+        "emptyInput": "값을 모두 입력해야 합니다."
+    },
     "member": {
         "id": "아이디",
         "password": "비밀번호",
@@ -45,7 +69,7 @@
         "newPasswordRe": "새 비밀번호 확인",
         "name": "이름",
         "email": "이메일",
-        "phoneNumber": "전화번호",
+        "phone": "전화번호",
         "gender": "성별",
         "male": "남성",
         "female": "여성",
@@ -53,12 +77,15 @@
         "zipcode": "우편번호",
         "address": "주소",
         "addressBasic": "기본 주소",
-        "addressDetail": "상세 주소",
+        "detailAddress": "상세 주소",
         "businessName": "사업자명",
-        "businessRegistrationNumber": "사업자 등록번호",
+        "businessNumber": "사업자 등록번호",
+        "bank": "은행",
+        "account": "계좌번호",
+        "accountOwner": "예금주",
         "login": "로그인",
         "logout": "로그아웃",
-        "signUp": "회원가입",
+        "signup": "회원가입",
         "findId": "아이디 찾기",
         "findPw": "비밀번호 찾기",
         "update": "회원정보 수정",
@@ -66,8 +93,10 @@
         "socket":"소켓",
         "download":"다운로드",
         "information": "개인정보",
+        "profile": "프로필",
         "signupUser": "일반 회원가입",
-        "signupOwner": "업주 회원가입"
+        "signupOwner": "업주 회원가입",
+        "membershipDate": "가입일"
     },
     "admin": {
         "socket":"소켓",
@@ -75,6 +104,11 @@
         "chatlist":"채팅하기"
     },
     "reservation": {
+        "list": "예약 목록",
+        "id": "예약 아이디",
+        "dateTime": "예약 일시",
+        "cancelableDate": "취소 가능 날짜",
+        "state": "상태",
         "guestCount": "인원 수",
         "specialRequests": "특별 요청 사항",
         "totalPrice": "총 금액",
