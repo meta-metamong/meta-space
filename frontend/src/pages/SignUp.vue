@@ -82,13 +82,11 @@ export default{
 	methods:{
 		setUserInfo(data = [{}]){
 			data.forEach(input => {
-				console.log(input);
 				this.user[input.key] = input.value;
 			});
 
 
 			try{
-				console.log(toRaw(this.user));
 				this.step++;
 				if (this.step === this.maxStep) {
 					alert("가입 완료!");
@@ -103,3 +101,11 @@ export default{
 	}
 }
 </script>
+
+<style>
+.custom-btn {
+  height: 45px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+</style>

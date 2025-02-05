@@ -47,7 +47,11 @@
     "signup":{
         "preInfoInput": "사전정보 입력",
         "isConsumer": "시설을 이용하러 오셨나요?",
-        "isProvider": "시설을 제공하러 오셨나요?"
+        "isProvider": "시설을 제공하러 오셨나요?",
+        "checkEmail": "이메일 인증하기"
+    },
+    "signupError":{
+        "notValidatedEmail": "이메일 형식이 올바르지 않습니다."
     },
     "member": {
         "id": "아이디",

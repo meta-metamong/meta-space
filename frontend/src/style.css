@@ -1,3 +1,4 @@
+/* 공통 */
 body {
     color: #333;
     font-family: 'Noto Sans KR', sans-serif;
@@ -7,4 +8,18 @@ button{
   background: #19319D;
   color: #fff;
   border-radius: 30px;
+}
+
+
+/* 커스터마이징 */
+.custom-btn {
+  height: 45px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.error-message {
+	font-size: 14px;
+	color: #ff0101;
 }

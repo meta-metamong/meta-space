@@ -11,7 +11,8 @@
 			<!-- 비밀번호 입력 -->
 			<div class="mb-4">
 				<input type="password" id="password" name="userId" class="form-control" v-model="password" :placeholder="$t('member.password')">
-			</div>
+				<h3 class="error-message mt-2" v-if="!isValidated" v-text="$t('error.login')" />
+			</div>	
 	
 			<!-- 로그인 버튼 -->
 			<button type="submit" class="w-100 custom-btn" @click="" v-text="$t('member.login')" />
@@ -33,6 +34,7 @@ export default {
 		return {
 			email: "",
 			password: "",
+			isValidated: true
 		}
 	},
 	methods: {
@@ -54,21 +56,10 @@ export default {
 </script>
 
 <style scoped>
-.error-message {
-	font-size: 14px;
-	color: #ff0101;
-}
-
 input{
 	border: none;
 	border-radius: 0px;
 	border-bottom: 1px solid #999;
 }
 
-.custom-btn {
-  height: 45px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 8px;
-}
 </style>

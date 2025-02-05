@@ -47,7 +47,11 @@
     "signup":{
         "preInfoInput": "Input Pre-Information",
         "isConsumer": "Want to explore a Zone?",
-        "isProvider": "Want to register a Zone?"
+        "isProvider": "Want to register a Zone?",
+        "checkEmail": "Check Email"
+    },
+    "signupError":{
+        "notValidatedEmail": "this email format is not available"
     },
     "member": {
         "id": "ID",
