@@ -9,6 +9,4 @@ public class MessageRequestDto {
 	private String from;
     private String text;
     private String userId;
-    private String type;
-    private String to;
 }
