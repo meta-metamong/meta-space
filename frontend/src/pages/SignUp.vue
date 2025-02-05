@@ -66,14 +66,14 @@ export default{
 				account: "",
 				accountOwner: ""
 			},
-			step: 4,
+			step: 0,
 			steps: [
 				InputRole,
 				InputEmail,
 				InputPassword,
 				InputDetail,
 				InputAdditional
-		]
+			]
 		}
 	},
 	computed:{
