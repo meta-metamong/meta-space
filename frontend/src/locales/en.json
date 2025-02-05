@@ -94,8 +94,11 @@
         "socket":"socket",
         "download":"download",
         "information": "Information",
+        "profile": "Profile",
         "signupUser": "Signup as a Member",
-        "signupOwner": "Signup as a Owner"
+        "signupOwner": "Signup as a Owner",
+        "account": "account",
+        "membershipDate": "Membership Date"
     },
     "reservation": {
         "guestCount": "Number of Guests",

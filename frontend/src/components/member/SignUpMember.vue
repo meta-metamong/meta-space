@@ -104,6 +104,7 @@
 						<input type="text" class="form-control" id="businessRegistrationNumber" name="businessRegistrationNumber" v-model="businessRegistrationNumber" :placeholder="$t('member.businessRegistrationNumber')" required />
 					</div>
 				</div>
+				<button class="btn btn-primary w-100 mt-3 border-0 border-secondary py-3 px-4 rounded-pill text-white" type="submit">{{ $t('member.signUp') }}</button>
 				<div class="row mb-4">
 					<label class="col-form-label col-sm-2" for="account">{{ $t('member.account') }}</label>
 					<div class="col-sm-7">

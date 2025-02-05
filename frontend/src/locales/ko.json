@@ -93,6 +93,7 @@
         "socket": "소켓",
         "download":"다운로드",
         "information": "개인정보",
+        "profile": "프로필",
         "signupUser": "일반 회원가입",
         "signupOwner": "업주 회원가입"
     },
