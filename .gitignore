@@ -189,3 +189,5 @@ pnpm-debug.log*
 
 Servers
 /frontend/build
+
+application-priv.properties
