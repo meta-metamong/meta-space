@@ -95,9 +95,15 @@
         "information": "개인정보",
         "profile": "프로필",
         "signupUser": "일반 회원가입",
-        "signupOwner": "업주 회원가입"
+        "signupOwner": "업주 회원가입",
+        "membershipDate": "가입일"
     },
     "reservation": {
+        "list": "예약 목록",
+        "id": "예약 아이디",
+        "dateTime": "예약 일시",
+        "cancelableDate": "취소 가능 날짜",
+        "state": "상태",
         "guestCount": "인원 수",
         "specialRequests": "특별 요청 사항",
         "totalPrice": "총 금액",

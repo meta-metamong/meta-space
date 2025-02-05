@@ -2,7 +2,9 @@
 	<div id="app">
         <Component :is="headerComponent" />
 		<hr />
-		<router-view />
+		<div class="routed">
+			<router-view />
+		</div>
 		<Footer />
 	</div>
 </template>
