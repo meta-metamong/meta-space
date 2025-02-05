@@ -44,9 +44,10 @@ public class DefaultMemberService implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public LoginInfoResponseDto findLoginInfo(LoginRequestDto dto) {
-        Member member; 
+        Member member = null; 
         try {
-            member = findMember(dto.getUserId());
+            member = memberRepository.findByEmail(dto.getEmail())
+            		.orElseThrow(() -> new MemberNotFoundException(dto.getEmail(), "회원을 찾을 수 없습니다."));
         } catch (MemberNotFoundException e) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS, e);
         }
