@@ -4,6 +4,7 @@ import Login from '../pages/Login.vue';
 import SignUp from '../pages/SignUp.vue';
 import MyPage from '../pages/MyPage.vue';
 import UpdateMember from '../components/member/UpdateMember.vue';
+import Reservation from '../pages/Reservation.vue';
 
 
 const routes = [
@@ -12,6 +13,8 @@ const routes = [
 	{ path: '/signup', component: SignUp},
 	{ path: '/mypage', component: MyPage},
 	{ path: '/update', component: UpdateMember},
+
+	{ path: '/reservation', component: Reservation},
 ];
 
 const router = createRouter({
