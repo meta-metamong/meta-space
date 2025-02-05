@@ -5,17 +5,17 @@
 		<form @submit.prevent="handleLogin">
 			<!-- 이메일 입력 -->
 			<div class="mb-3">
-				<input type="email" id="email" name="email" class="form-control" v-model="email" :placeholder="$t(('member.email'))">
+				<input type="email" id="email" name="email" class="form-control signup-input" v-model="email" :placeholder="$t(('member.email'))" required />
 			</div>
 	
 			<!-- 비밀번호 입력 -->
 			<div class="mb-4">
-				<input type="password" id="password" name="userId" class="form-control" v-model="password" :placeholder="$t('member.password')">
+				<input type="password" id="password" name="userId" class="form-control signup-input" v-model="password" :placeholder="$t('member.password')" required />
 				<h3 class="error-message mt-2" v-if="!isValidated" v-text="$t('error.login')" />
 			</div>	
 	
 			<!-- 로그인 버튼 -->
-			<button type="submit" class="w-100 custom-btn" @click="" v-text="$t('member.login')" />
+			<button type="submit" class="w-100 signup-btn" @click="" v-text="$t('member.login')" />
 	
 			<!-- 하단 링크 (회원가입 / 비밀번호 찾기) -->
 			<div class="text-center mt-3">
@@ -43,7 +43,6 @@ export default {
 				"email": this.email,
 				"password": this.password
 			}
-			console.log(loginDto);
 			this.$store.commit('setLogin', true);
 
 			// await this.$store.dispatch("loginRequest", loginDto);

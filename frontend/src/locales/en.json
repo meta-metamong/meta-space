@@ -17,16 +17,10 @@
         "min": "The {field} field must be at least {length} characters",
         "regex": "The {field} field format is invalid",
         "required": "The {field} field is required",
-        "url": "The {field} field is not a valid URL",
-        "id": "Must start with a letter and be 6 to 20 characters long, including letters and numbers.",
-        "password": "Must be 8 to 16 characters long and include at least one letter, one number, and one special character.",
-        "email": "Invalid email format.",
-        "phone": "Must follow the format 010-123-1234 or 010-1234-1234.",
-        "birth": "Date of birth can only be in the past."
+        "url": "The {field} field is not a valid URL"
     },
     "error": {
-        "login": "Invalid id or password.",
-        "passwordConfirm": "Please enter the same Password as above."
+        "login": "Invalid id or password."
     },
     "label": {
         "all": "all",
@@ -46,23 +40,36 @@
         "profile": "Profile"
     },
     "signup":{
-        "preInfoInput": "Input Pre-Information",
+        "signup": "Signup",
+        "next": "Next",
+        "preInfo": "Pre-Information",
         "isConsumer": "Want to explore a Zone?",
         "isProvider": "Want to register a Zone?",
-        "checkEmail": "Check Email"
+        "ConsumerSignup": "Signup as Consumer",
+        "ProviderSignup": "Signup as Provider",
+        "checkEmail": "Send Code",
+        "inputCode": "Code has a length of 6",
+        "additionalInfo": "Additional Information",
+        "selectBank": "Select Bank"
     },
     "signupError":{
-        "notValidatedEmail": "this email format is not available"
+        "notValidatedEmail": "This email format is not available",
+        "notValidatedCode": "Code must be 6 characters long",
+        "notValidatedPassword": "Must be 8 to 16 characters long and include at least one letter, one number, and one special character.",
+        "passwordNotMatched": "Passwords do not match",
+        "notValidatedName": "Only English and Korean characters are allowed",
+        "notValidatedPhone": "Must follow the format 010-1234-1234.",
+        "emptyInput": "Empty Input is not allowed"
     },
     "member": {
         "id": "ID",
         "password": "Password",
         "passwordRe": "Password Confirm",
         "newPassword": "New Password",
-        "newPasswordRe": "New Password Confirm",
+        "newPasswordRe": "Confirm New Password",
         "name": "Name",
         "email": "Email",
-        "phoneNumber": "Phone Number",
+        "phone": "Phone Number",
         "gender": "Gender",
         "male": "male",
         "female": "female",
@@ -70,9 +77,12 @@
         "zipcode": "Zip Code",
         "address": "Address",
         "addressBasic": "Address",
-        "addressDetail": "Detail Address",
+        "detailAddress": "Detail Address",
         "businessName": "Business Name",
-        "businessRegistrationNumber": "Business Registration Number",
+        "businessNumber": "Business Registration Number",
+        "bank": "bank",
+        "account": "account",
+        "accountOwner": "account owner",
         "login": "Login",
         "logout": "Logout",
         "signup": "Sign Up",
