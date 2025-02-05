@@ -1,18 +1,74 @@
 <template>
-	<div class="container mt-4">
-		<div class="d-flex justify-content-center">
-			<LoginMember />
-		</div>
-	</div>
-</template>
+	  <div class="container w-100 mt-4">
+		<h2 class="text-center mb-3" v-text="$t('member.login')"></h2>
+  
+		<form @submit.prevent="handleLogin">
+			<!-- 이메일 입력 -->
+			<div class="mb-3">
+				<input type="email" id="email" name="email" class="form-control" v-model="email" :placeholder="$t(('member.email'))">
+			</div>
+	
+			<!-- 비밀번호 입력 -->
+			<div class="mb-4">
+				<input type="password" id="password" name="userId" class="form-control" v-model="password" :placeholder="$t('member.password')">
+			</div>
+	
+			<!-- 로그인 버튼 -->
+			<button type="submit" class="w-100 custom-btn" @click="" v-text="$t('member.login')" />
+	
+			<!-- 하단 링크 (회원가입 / 비밀번호 찾기) -->
+			<div class="text-center mt-3">
+				<router-link to="/signup" class="text-muted text-decoration-none">{{ $t('member.signup') }}</router-link>
+				<span class="mx-4">|</span>
+				<router-link to="/find-password" class="text-muted text-decoration-none">{{ $t('member.findPw') }}</router-link>
+			</div>
+		</form>
+	  </div>
+  </template>
 
 <script>
-import LoginMember from '../components/member/LoginMember.vue';
+export default {
+	name: 'Login',
+	data() {
+		return {
+			email: "",
+			password: "",
+		}
+	},
+	methods: {
+		async handleLogin() {
+			const loginDto = {
+				"email": this.email,
+				"password": this.password
+			}
+			console.log(loginDto);
+			this.$store.commit('setLogin', true);
 
-export default{
-    name: "Login",
-    components:{
-        LoginMember
+			// await this.$store.dispatch("loginRequest", loginDto);
+		},
+		route(page){
+			this.$router.push(page);
+		}		
 	}
-}
+};
 </script>
+
+<style scoped>
+.error-message {
+	font-size: 14px;
+	color: #ff0101;
+}
+
+input{
+	border: none;
+	border-radius: 0px;
+	border-bottom: 1px solid #999;
+}
+
+.custom-btn {
+  height: 45px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+}
+</style>

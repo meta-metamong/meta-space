@@ -37,6 +37,18 @@
         "viewByRegion": "View by Region",
         "myPage": "My Page"
     },
+    "footer": {
+        "search": "Search",
+        "map": "Map",
+        "home": "Home",
+        "chat": "Chat",
+        "profile": "Profile"
+    },
+    "signup":{
+        "preInfoInput": "Input Pre-Information",
+        "isConsumer": "Want to explore a Zone?",
+        "isProvider": "Want to register a Zone?"
+    },
     "member": {
         "id": "ID",
         "password": "Password",
@@ -58,7 +70,7 @@
         "businessRegistrationNumber": "Business Registration Number",
         "login": "Login",
         "logout": "Logout",
-        "signUp": "Sign Up",
+        "signup": "Sign Up",
         "findId": "Find ID",
         "findPw": "Find Password",
         "update": "Update Member",

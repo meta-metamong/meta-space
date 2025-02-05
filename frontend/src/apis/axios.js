@@ -44,7 +44,7 @@ apiClient.interceptors.response.use(
         if(!isReissuable) return error;
 
         if(error.status === 400){
-            delete config.headers["x-access-token"];
+            delete config.headers["Authorization"];
             removeAccessToken();
         }else{
             await reissue();
