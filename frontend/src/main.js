@@ -8,6 +8,8 @@ import router from './router'
 import i18n from './i18n';
 import store from './store';
 
+console.warn = console.error = () => {};
+
 const app = createApp(App);
 app.use(router);
 app.use(i18n);

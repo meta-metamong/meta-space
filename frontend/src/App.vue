@@ -10,7 +10,7 @@
 <script>
 import Header from "./components/common/Header.vue";
 import AdminHeader from "./components/common/AdminHeader.vue";
-import Footer from "./components/common/Footer.vue";
+import Footer from "./components/common/Footer.vue"
 
 export default {
 	name: "App",
@@ -28,7 +28,4 @@ export default {
 </script>
 
 <style scoped>
-	ul li{
-		list-style: none;
-	}
 </style>
