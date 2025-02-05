@@ -17,7 +17,8 @@ const removeUserInLocal = function() {
 const store = createStore({
     // 공동 상태
     state: {
-        user: null
+        user: null,
+        isLogin: false
     },
     // 동기적 로직 - 주로 state 변경
     mutations: {
@@ -32,7 +33,11 @@ const store = createStore({
         removeUser(state){
             state.user = null;
             location.href = "/";
-        }
+        },
+        setLogin(state, payload){
+            state.isLogin = payload;
+            router.push("/");
+        },
     },
     // state 값을 계산한 후 state로 저장
     getters:{

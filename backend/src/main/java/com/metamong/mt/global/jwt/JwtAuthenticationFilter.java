@@ -1,9 +1,9 @@
 package com.metamong.mt.global.jwt;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -23,13 +23,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 	private final JwtTokenProvider jwtTokenProvider;
-	
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		
+		HttpServletResponse httpResponse = (HttpServletResponse) response;		
 		
 		// 헤더에서 JWT를 받아음.
 		String token = jwtTokenProvider.resolveToken(httpRequest);

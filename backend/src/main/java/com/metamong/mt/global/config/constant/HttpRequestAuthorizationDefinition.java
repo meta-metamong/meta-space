@@ -17,14 +17,12 @@ import lombok.RequiredArgsConstructor;
 @Builder(access = AccessLevel.PRIVATE)
 public class HttpRequestAuthorizationDefinition {
 	public static final List<String> NO_AUTH_REQUIRED_LIST = List.of(
-				"/api/members/user",
-	            "/api/members/owner",
-	            "/api/members/login",
-	            "/api/members/find-member",
-	            "/api/members/dup-email",
-	            "/api/members/reissue",
-                "/api/members/dup-id/*"
-			);
+			"/api/members/user",
+            "/api/members/owner",
+            "/api/members/login",
+            "/api/members/find-member",
+            "/api/members/dup-email"
+		);
 	
     private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
             HttpMethod.POST, new String[] {

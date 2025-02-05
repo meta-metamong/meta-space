@@ -1,76 +1,73 @@
-<template>
-    <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-            <router-link to="/" class="navbar-brand">Meta Space</router-link>
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapsed-container"
-                    aria-controls="collapsed-container"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+<template>      
+      <!-- 상단 네비게이션 -->
+      <nav class="navbar navbar-light bg-white border-bottom shadow-sm">
+        <div class="container-fluid d-flex justify-content-between">          
+          <!-- 중앙 로고 -->
+          <router-link to="/" class="text-center me-5">
+            <img src="../../resource/image/logo.png" alt="MetaSpace Logo" class="navbar-logo">
+          </router-link>
+  
+          <!-- 우측 알림 아이콘 & 로그아웃 버튼 -->
+          <div class="d-flex align-items-center" v-if="isLogin" >
+            <button class="btn me-2">
+              <i class="bi bi-bell"></i> <!-- 부트스트랩 아이콘 -->
             </button>
-            <div class="collapse navbar-collapse" id="collapsed-container">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <router-link to="#" class="nav-link active" aria-current="page" v-text="$t('header.findSpace')" />
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="#" class="nav-link" v-text="$t('header.viewByRegion')" />
-                    </li>
-                    <li class="nav-item" v-if="user === null">
-                        <router-link to="/login" class="nav-link" v-text="$t('member.login')" />
-                    </li>
-                    <li class="nav-item" v-if="user !== null">
-                        <router-link to="/mypage" class="nav-link"v-text="$t('header.myPage')" />
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/socket" class="nav-link" href="#" v-text="$t('member.socket')" />
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/download" class="nav-link" href="#" v-text="$t('member.download')" />
-                    </li>
-                    <li class="nav-item" v-if="user !== null">
-                        <button class="nav-link locale-btn" v-text="$t('member.logout')" @click="$store.dispatch('logoutRequest')"/>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link locale-btn" v-text="locale" @click="changeLocale"></button>
-                    </li>
-                </ul>
-            </div>
+            <button class="btn" @click="logout" v-text="$t('member.logout')" />
+          </div>
+          <div>
+            <select class="custom-select" @change="handleLanguageChange">
+              <option value="ko">KO</option>
+              <option value="en">EN</option>
+            </select>
+          </div>
         </div>
-    </nav>
-</template>
+      </nav>
+  </template>
 
 <script>
-import { toRaw } from 'vue';
-export default {
-    name: "Header",
-    data(){
-    },
-    computed:{
-        locale(){
-            return this.$i18n.locale === 'ko' ? '영어로 변경' : 'Change to Korean';
+
+export default{
+    name: 'Header',
+    methods: {
+        logout(){
+            this.$store.commit('setLogin', false);
         },
-        user(){
-            return toRaw(this.$store.state.user);
+        handleLanguageChange(event){
+          this.$i18n.locale = event.target.value;
         }
     },
-    methods:{
-        changeLocale(){
-            this.$i18n.locale = this.$i18n.locale === 'ko' ? 'en' : 'ko';
-        },
-        test(){
-            console.log(toRaw(this.$store.state.user));
+    computed: {
+        isLogin(){
+            return this.$store.state.isLogin;
         }
     }
 }
 </script>
 
 <style scoped>
-.locale-btn{
-    width: 100%;
-    text-align: center;
+button{
+  color: #19319D;
+  border: 1px solid #19319D;
+}
+
+.navbar{
+    height: 55px;
+}
+
+.navbar-logo {
+  height: 25px; /* 로고 크기 조절 */
+}
+
+.custom-select {
+  width: 50px; /* 적당한 너비 */
+  height: 30px; /* 네비게이션 바 높이에 맞춤 */
+  border: 1px solid #19319D; /* 부드러운 테두리 */
+  padding-left: 5px;
+  border-radius: 5px; /* 둥근 모서리 */
+  background-color: white;
+  font-size: 14px;
+  color: #19319D;
+  cursor: pointer;
+  outline: none;
 }
 </style>

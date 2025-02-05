@@ -21,7 +21,8 @@
         "id": "Must start with a letter and be 6 to 20 characters long, including letters and numbers.",
         "password": "Must be 8 to 16 characters long and include at least one letter, one number, and one special character.",
         "email": "Invalid email format.",
-        "phone": "Must follow the format 010-123-1234 or 010-1234-1234."
+        "phone": "Must follow the format 010-123-1234 or 010-1234-1234.",
+        "birth": "Date of birth can only be in the past."
     },
     "error": {
         "login": "Invalid id or password.",
@@ -36,6 +37,22 @@
         "reservation": "Reservation",
         "viewByRegion": "View by Region",
         "myPage": "My Page"
+    },
+    "footer": {
+        "search": "Search",
+        "map": "Map",
+        "home": "Home",
+        "chat": "Chat",
+        "profile": "Profile"
+    },
+    "signup":{
+        "preInfoInput": "Input Pre-Information",
+        "isConsumer": "Want to explore a Zone?",
+        "isProvider": "Want to register a Zone?",
+        "checkEmail": "Check Email"
+    },
+    "signupError":{
+        "notValidatedEmail": "this email format is not available"
     },
     "member": {
         "id": "ID",
@@ -58,7 +75,7 @@
         "businessRegistrationNumber": "Business Registration Number",
         "login": "Login",
         "logout": "Logout",
-        "signUp": "Sign Up",
+        "signup": "Sign Up",
         "findId": "Find ID",
         "findPw": "Find Password",
         "update": "Update Member",
@@ -67,8 +84,11 @@
         "socket":"socket",
         "download":"download",
         "information": "Information",
+        "profile": "Profile",
         "signupUser": "Signup as a Member",
-        "signupOwner": "Signup as a Owner"
+        "signupOwner": "Signup as a Owner",
+        "account": "account",
+        "membershipDate": "Membership Date"
     },
     "reservation": {
         "guestCount": "Number of Guests",
