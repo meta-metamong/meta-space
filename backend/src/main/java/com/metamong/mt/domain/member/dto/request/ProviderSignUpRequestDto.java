@@ -45,7 +45,7 @@ public class ProviderSignUpRequestDto {
     private String detailAddress;
     
     private String businessName;
-    private String businessRegistrationNumber;
+    private String businessNumber;
     private String bankCode;
     private String account;
     private String accountOwner;
@@ -63,7 +63,7 @@ public class ProviderSignUpRequestDto {
                 .detailAddress(this.detailAddress)
                 .address(this.address)
                 .businessName(this.businessName)
-                .businessNumber(this.businessRegistrationNumber)
+                .businessNumber(this.businessNumber)
                 .bankCode(this.bankCode)
                 .account(this.account)
                 .accountOwner(this.accountOwner)

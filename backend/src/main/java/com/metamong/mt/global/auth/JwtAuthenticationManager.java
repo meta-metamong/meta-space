@@ -29,7 +29,7 @@ public class JwtAuthenticationManager implements AuthenticationManager{
 		if(!this.validateToken(token)) {
 			return null;
 		}
-		UserDetails userDetails = userDetailsService.loadUserByUsername(jwtTokenProvider.getUserId(token));
+		UserDetails userDetails = userDetailsService.loadUserByUsername(jwtTokenProvider.getMemberId(token));
 		
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}

@@ -1,9 +1,7 @@
 package com.metamong.mt.domain.member.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -15,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -138,6 +137,14 @@ public class MemberController {
 	      return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "시설제공자 회원가입이 완료되었습니다."));
 	  }
 	  
+	  /**
+       * 엑세스 및 리프레시 토큰 재발급 메서드
+       * <p>
+       * 헤더에 담겨있는 리프레시 토큰과 엑세스 토큰을 이용해 새로운 엑세스 및 리프레시 토큰을 재발급합니다.
+       * </p>
+       * 
+       * @return 엑세스 및 리프레시 토큰
+       */
 	  @GetMapping("/members/reissue")
       public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
     	 String accessToken = this.jwtTokenProvider.resolveToken(request);
@@ -149,7 +156,7 @@ public class MemberController {
     	 
     	 if(isAvailable && isReissuable) {    
     		 removeRefreshTokenFromCookie(response);
-    		 String memberId = jwtTokenProvider.getUserId(refreshToken);
+    		 String memberId = jwtTokenProvider.getMemberId(refreshToken);
     		 UserDetails userDetails = userDetailsService.loadUserByUsername(memberId);
 
     		 String reissuedAccessToken = this.jwtTokenProvider.generateAccessToken(userDetails);
@@ -201,7 +208,7 @@ public class MemberController {
 
             if (refreshToken != null && jwtAuthenticationManager.validateToken(refreshToken)) {
 
-                String memberId = jwtTokenProvider.getUserId(refreshToken);
+                String memberId = jwtTokenProvider.getMemberId(refreshToken);
                 
                 memberService.deleteRefreshToken(memberId);
                 removeRefreshTokenFromCookie(response);
@@ -215,6 +222,23 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
         }
+    }
+    
+
+    /**
+     * 회원 데이터 조회 메서드
+     * 
+     * <p>
+     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
+     * </p>
+     * 
+     * @param userId 회원의 아이디
+     * @return 회원 데이터 (아이디, 이름, 이메일, 전화번호, 생일, 우편번호, 상세 주소, 주소)
+     * @return 조회 대상이 업주라면 사업자명이랑 사업자번호도 추가됩니다.
+     */
+    @GetMapping("/members/{userId}")
+    public ResponseEntity<?> getMember(@PathVariable Long userId){
+    	return ResponseEntity.ok(BaseResponse.of(memberService.searchMember(userId), HttpStatus.OK));
     }
     
  
@@ -234,14 +258,7 @@ public class MemberController {
 //        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
 //    }
 //    
-//    /**
-//     * 엑세스 및 리프레시 토큰 재발급 메서드
-//     * <p>
-//     * 헤더에 담겨있는 리프레시 토큰과 엑세스 토큰을 이용해 새로운 엑세스 및 리프레시 토큰을 재발급합니다.
-//     * </p>
-//     * 
-//     * @return 엑세스 및 리프레시 토큰
-//     */
+//    
 //    
 //    
 //    /**
@@ -262,21 +279,6 @@ public class MemberController {
 //    	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
 //    }
 //    
-//    /**
-//     * 회원 데이터 조회 메서드
-//     * 
-//     * <p>
-//     * 	회원의 아이디를 통해 회원 정보를 조회하고, 데이터 필터링 후 응답합니다.
-//     * </p>
-//     * 
-//     * @param userId 회원의 아이디
-//     * @return 회원 데이터 (아이디, 이름, 이메일, 전화번호, 생일, 우편번호, 상세 주소, 주소)
-//     * @return 조회 대상이 업주라면 사업자명이랑 사업자번호도 추가됩니다.
-//     */
-//    @GetMapping("/members/{userId}")
-//    public ResponseEntity<?> getMember(@PathVariable String userId){
-//    	return ResponseEntity.ok(BaseResponse.of(memberService.getMember(userId), HttpStatus.OK));
-//    }
 //    
 //    /**
 //     * 아이디 중복 체크

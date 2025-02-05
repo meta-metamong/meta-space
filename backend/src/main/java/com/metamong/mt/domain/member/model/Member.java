@@ -27,7 +27,7 @@ public class Member {
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long userId;
+    private Long memberId;
     
     private String email;
     private String name;

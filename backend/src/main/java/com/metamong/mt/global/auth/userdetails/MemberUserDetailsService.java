@@ -23,9 +23,9 @@ public class MemberUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
         // 로그인 시 사용하는 DTO (username으로 조회)
-        Member memberInfo = this.memberRepository.findById(Long.parseLong(userId))
+        Member memberInfo = this.memberRepository.findById(Long.parseLong(memberId))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         // DB에서 가져온 역할 (role) 사용하여 권한 설정
@@ -34,7 +34,7 @@ public class MemberUserDetailsService implements UserDetailsService {
 
         // MemberUserDetails 객체 생성
         return new MemberUserDetails(
-                String.valueOf(memberInfo.getUserId()),     // 아이디
+                String.valueOf(memberInfo.getMemberId()),     // 아이디
                 memberInfo.getPassword(),   // 비밀번호
                 authorities,                // 권한
                 memberInfo.getName()       // 이메일

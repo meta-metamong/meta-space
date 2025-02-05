@@ -14,6 +14,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UpdateRequestDto {
+	
+	private Long memberId;
 
     @NotEmpty(message = "이름은 필수입니다.")
     private String name;

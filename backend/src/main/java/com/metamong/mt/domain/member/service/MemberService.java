@@ -3,6 +3,7 @@ package com.metamong.mt.domain.member.service;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 
 public interface MemberService {
@@ -22,8 +23,11 @@ public interface MemberService {
     
     // 리프레시 토큰 삭제
     void deleteRefreshToken(String userId);
-
+    
     // 회원 정보 조회
+ 	MemberResponseDto searchMember(Long userId);
+
+    // DB에서 회원 데이터 조회	
     <T> Member getMember(T userId);
     
     /*
@@ -34,9 +38,6 @@ public interface MemberService {
     // void storeRefreshToken(Member member);
     
     // 회원 전체 조회
-	
-	// 회원 정보 조회
-	MemberResponseDto getMember(String userId);
 	
 	void updateMember(String userId, UpdateRequestDto dto);
 	

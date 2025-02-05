@@ -91,7 +91,7 @@ public class JwtTokenProvider {
      * @param token 토큰
      * @return 토큰에서 사용자 아이디를 추출해서 반환
      */
-    public String getUserId(String token) {
+    public String getMemberId(String token) {
         return this.getClaims(token).getSubject(); // generateToken()에서 subject에 userid를 담았었음
     }
     
