@@ -1,14 +1,21 @@
 package com.metamong.mt.domain.member.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MessageResponseDto {
-    private final String from;
-    private final String text;
-    private final String userId;
+    private String from;
+    private String text;
+    private String userId;
+    private String type;
+    
+    @Override
+    public String toString() {
+        return "MessageResponseDto [from=" + from + ", text=" + text + ", userId=" + userId + ", type=" + type + "]";
+    }
+
 }
