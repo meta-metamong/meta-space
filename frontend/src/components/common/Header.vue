@@ -1,6 +1,6 @@
 <template>      
       <!-- 상단 네비게이션 -->
-      <nav class="navbar navbar-light bg-white border-bottom shadow-sm">
+      <nav class="navbar fixed-top navbar-light bg-white border-bottom shadow-sm">
         <div class="container-fluid d-flex justify-content-between">          
           <!-- 중앙 로고 -->
           <router-link to="/" class="text-center me-5">

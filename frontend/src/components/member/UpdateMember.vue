@@ -1,5 +1,5 @@
 <template>
-	<div class="container mt-4 mb-4">
+	<div class="container mb-4">
 		<h2 class="text-center mb-3" v-text="$t('member.update')"></h2>
 		<form @submit.prevent="handleSubmit">
 			<div class="row mb-3">
