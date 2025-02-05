@@ -71,7 +71,8 @@
     },
     "admin": {
         "socket":"소켓",
-        "salesList":"매출현황조회"
+        "salesList":"매출현황조회",
+        "chatlist":"채팅하기"
     },
     "reservation": {
         "guestCount": "인원 수",

@@ -72,7 +72,8 @@
     },
     "admin" : {
         "socket":"socket",
-        "salesList":"salesList"
+        "salesList":"salesList",
+        "chatlist":"chatlist"
     },
     "reservation": {
         "guestCount": "Number of Guests",

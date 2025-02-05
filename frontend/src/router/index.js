@@ -14,7 +14,7 @@ import UpdateMember from '../components/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import Error from '../pages/Error.vue';
-import SalesList from '../pages/SalesList.vue';
+import ChatList  from '../pages/ChatList.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -33,7 +33,7 @@ const routes = [
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/socket', component: ChatAdmin },
-	{ path: '/admin/salesList', component: SalesList },
+	{ path: '/admin/chatlist', component: ChatList },
 
 ];
 

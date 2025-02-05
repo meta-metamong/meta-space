@@ -19,6 +19,9 @@
                     <li class="nav-item">
                         <router-link to="/admin/salesList" class="nav-link" href="#" v-text="$t('admin.salesList')" />
                     </li>
+                    <li class="nav-item">
+                        <router-link to="/admin/chatlist" class="nav-link" href="#" v-text="$t('admin.chatlist')" />
+                    </li>
                     <li class="nav-item" v-if="user !== null">
                         <button class="nav-link locale-btn" v-text="$t('member.logout')" @click="$store.dispatch('logoutRequest')"/>
                     </li>

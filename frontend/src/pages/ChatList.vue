@@ -1,18 +1,18 @@
 <template>
 	<div class="container mt-4">
 		<div class="d-flex justify-content-center">
-			<SalesExport />
+			<OnlineMemberList />
 		</div>
 	</div>
 </template>
 
 <script>
-import SalesExport from '../components/admin/SalesExport.vue';
+import OnlineMemberList from '../components/admin/OnlineMemberList.vue';
 
 export default{
-    name: "Download",
+    name: "Answer",
     components:{
-        SalesExport
+        OnlineMemberList
 	}
 }
 </script>
