@@ -28,7 +28,8 @@ public class ReservationResponseDto {
 	private String fctDetailAddress;
 	private int usageCount;
 	
-	public void setCancelableTime(LocalTime cancelableTime) {
+	public void setUsageStartTime(LocalTime usageStartTime) {
+        this.usageStartTime = usageStartTime;
         this.cancelableTime = usageStartTime.minusHours(1);
     }
 }

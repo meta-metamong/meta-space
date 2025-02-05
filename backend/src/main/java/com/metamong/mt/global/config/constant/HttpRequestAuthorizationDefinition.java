@@ -36,7 +36,8 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/reissue",
                     "/api/members/*",
                     "/api/members/dup-id/*",
-                    "/api/members/*/reservations"
+                    "/api/members/*/reservations",
+                    "/api/reservations/*"
             }
     );
     
