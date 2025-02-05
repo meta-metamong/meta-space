@@ -154,7 +154,7 @@ public class MemberController {
 
     		 String reissuedAccessToken = this.jwtTokenProvider.generateAccessToken(userDetails);
     		 String reissuedRefreshToken = this.jwtTokenProvider.generateRefreshToken(userDetails);
-    		 this.memberService.updateRefreshToken(Long.parseLong(memberId), reissuedRefreshToken);
+    		 this.memberService.updateRefreshToken(Long.valueOf(memberId), reissuedRefreshToken);
     		 
     		 HttpHeaders headers = new HttpHeaders();
     	        headers.set(HttpHeaders.SET_COOKIE, this.cookieGenerator.generateCookie("Refresh-Token", reissuedRefreshToken).toString());
@@ -176,54 +176,48 @@ public class MemberController {
 	  }
 	  
 	private void removeRefreshTokenFromCookie(HttpServletResponse response) {
-		  Cookie cookie = new Cookie("refresh_token", null);
+		  Cookie cookie = new Cookie("Refresh-Token", null);
 		  cookie.setMaxAge(0); // 쿠키 만료
 		  cookie.setPath("/"); // 모든 경로에서 유효하도록 설정
 		  cookie.setHttpOnly(true); // 자바스크립트에서 접근할 수 없도록 설정
 		  cookie.setSecure(true); // HTTPS에서만 전송되도록 설정
 		  response.addCookie(cookie); // 응답에 쿠키 추가
 	  }
-    
-    
-//     
-//    /**
-//     * 로그아웃 처리 메서드.
-//     * <p>
-//     * 사용자가 액세스 토큰을 이용해 로그아웃을 요청하며, 성공 시 리프레시 토큰을 삭제하거나 갱신합니다.
-//     * </p>
-//     * 
-//     * @param request HTTP 요청 객체 (액세스 토큰을 추출하기 위해 사용)
-//     * @return 로그아웃 성공 시 응답 또는 실패 시 에러 응답
-//     */
-//    @PostMapping("/members/logout")
-//    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-//    	try {
-//
-//            String refreshToken = jwtTokenProvider.resolveRefreshTokenFromCookie(request);
-//
-//            if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-//
-//                String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
-//                memberService.deleteRefreshToken(username);
-//
-//    
-//                removeRefreshTokenFromCookie(response);
-//
-//                return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                        .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
-//        }
-//    }
-//    
+	  
+    /**
+     * 로그아웃 처리 메서드.
+     * <p>
+     * 사용자가 액세스 토큰을 이용해 로그아웃을 요청하며, 성공 시 리프레시 토큰을 삭제하거나 갱신합니다.
+     * </p>
+     * 
+     * @param request HTTP 요청 객체 (액세스 토큰을 추출하기 위해 사용)
+     * @return 로그아웃 성공 시 응답 또는 실패 시 에러 응답
+     */
+    @PostMapping("/members/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    	try {
 
-//
-//    
-//    
+            String refreshToken = jwtTokenProvider.resolveRefreshTokenFromCookie(request);
+
+            if (refreshToken != null && jwtAuthenticationManager.validateToken(refreshToken)) {
+
+                String memberId = jwtTokenProvider.getUserId(refreshToken);
+                
+                memberService.deleteRefreshToken(memberId);
+                removeRefreshTokenFromCookie(response);
+
+                return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
+        }
+    }
+    
+ 
 //    /**
 //     * 아이디 또는 비밀번호 찾기 메서드
 //     * <p>

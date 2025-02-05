@@ -19,13 +19,15 @@ public interface MemberService {
     
     // 리프레시 토큰 업데이트
     void updateRefreshToken(Long userId, String refreshToken);
-
-    Member getMember(Long userId);
-    
-    /*
     
     // 리프레시 토큰 삭제
     void deleteRefreshToken(String userId);
+
+    // 회원 정보 조회
+    <T> Member getMember(T userId);
+    
+    /*
+    
     
     // Refresh Token을 DB에 저장하는 메서드 추가
     

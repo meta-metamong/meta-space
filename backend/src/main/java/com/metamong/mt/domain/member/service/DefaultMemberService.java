@@ -85,9 +85,16 @@ public class DefaultMemberService implements MemberService {
 	}
     
     @Override
+    public void deleteRefreshToken(String userId) {
+	    Member member = getMember(userId);
+	    member.setRefreshToken(null);
+    }
+    
+    @Override
 	@Transactional(readOnly = true)
-	public Member getMember(Long userId) {
-	    return this.memberRepository.findById(userId)
+	public <T> Member getMember(T userId) {
+    	Long id = userId instanceof Long ? (Long)userId : Long.valueOf((String)userId);
+	    return this.memberRepository.findById(id)
 	    		.orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
 	}
     
@@ -136,11 +143,6 @@ public class DefaultMemberService implements MemberService {
 //		
 //	}
 	
-	@Override
-    public void deleteRefreshToken(String userId) {
-	    Member member = findMember(userId);
-	    member.setRefreshToken(null);
-    }
 	
 	@Override
 	public void sendLoginInfoNotificationMail(FindMemberRequestDto request) {

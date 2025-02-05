@@ -41,7 +41,7 @@ public class JwtAuthenticationManager implements AuthenticationManager{
      */
     public boolean validateToken(String token) {    	
         try {
-        	Claims claim = jwtTokenProvider.getClaimsFromToken(token);
+        	Claims claim = jwtTokenProvider.getClaims(token);
         	UserDetails userDetails = userDetailsService.loadUserByUsername(claim.getSubject());
             return claim.getSubject().equals(userDetails.getUsername()) && !claim.getExpiration().before(new Date());
         } catch (Exception e) {

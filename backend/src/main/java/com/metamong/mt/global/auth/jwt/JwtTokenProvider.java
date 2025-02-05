@@ -92,15 +92,15 @@ public class JwtTokenProvider {
      * @return 토큰에서 사용자 아이디를 추출해서 반환
      */
     public String getUserId(String token) {
-        return this.getClaimsFromToken(token).getSubject(); // generateToken()에서 subject에 userid를 담았었음
+        return this.getClaims(token).getSubject(); // generateToken()에서 subject에 userid를 담았었음
     }
     
     // 토큰에서 username 추출
-    public String getUsernameFromToken(String token) {
-        return this.getClaimsFromToken(token).getIssuer();  // Subject로 저장된 username 반환
+    public String getUsername(String token) {
+        return this.getClaims(token).getIssuer();  // Subject로 저장된 username 반환
     }
     
-    public Claims getClaimsFromToken(String token) {
+    public Claims getClaims(String token) {
         // 서명 검증을 위한 비밀키를 사용하여 토큰을 파싱
         return Jwts.parser()
                 .verifyWith(key)
