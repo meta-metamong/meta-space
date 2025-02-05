@@ -99,6 +99,11 @@
         "signupOwner": "Signup as a Owner",
         "membershipDate": "Membership Date"
     },
+    "admin" : {
+        "socket":"socket",
+        "salesList":"salesList",
+        "chatlist":"chatlist"
+    },
     "reservation": {
         "list": "Reservation List",
         "id": "ID",

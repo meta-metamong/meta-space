@@ -4,15 +4,25 @@ import Login from '../pages/Login.vue';
 import SignUp from '../pages/SignUp.vue';
 import MyPage from '../pages/MyPage.vue';
 import UpdateMember from '../components/member/UpdateMember.vue';
+import Download from '../pages/Download.vue';
+import Admin from '../pages/AdminHome.vue';
+import ChatList  from '../pages/ChatList.vue';
 import Reservation from '../pages/Reservation.vue';
-
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
+
+	{ path: '/socket', component: Socket  },
+	{ path: '/download', component: Download  },
+
+	{ path: '/mypage', component: MyPage },
+	{ path: '/update', component: UpdateMember },
+
+	{ path: '/admin', component: Admin },
+	{ path: '/admin/socket', component: ChatAdmin },
+	{ path: '/admin/chatlist', component: ChatList },
 	{ path: '/signup', component: SignUp},
-	{ path: '/mypage', component: MyPage},
-	{ path: '/update', component: UpdateMember},
 
 	{ path: '/reservation', component: Reservation},
 ];
