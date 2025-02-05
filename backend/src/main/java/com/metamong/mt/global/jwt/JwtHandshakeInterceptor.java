@@ -28,6 +28,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 
         String token = null;
+        System.out.println("연결시도");
         if (servletRequest.getServletRequest().getCookies() != null) {
             for (Cookie cookie : servletRequest.getServletRequest().getCookies()) {
                 if ("Ws-Access-Token".equals(cookie.getName())) {
@@ -42,8 +43,8 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         }
 
         if (jwtTokenProvider.validateToken(token)) {
-            String username = jwtTokenProvider.getUsernameFromToken(token);
-            attributes.put("username", username);  
+            String userId = jwtTokenProvider.getUserIdFromToken(token);
+            attributes.put("userId", userId);  
             return true;
         }
 

@@ -109,10 +109,10 @@ public class JwtTokenProvider {
                 .getSubject(); // generateToken()에서 subject에 userid를 담았었음
     }
     
-    // 토큰에서 username 추출
-    public String getUsernameFromToken(String token) {
+    // 토큰에서 userId 추출
+    public String getUserIdFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
-        return claims.getSubject();  // Subject로 저장된 username 반환
+        return claims.getSubject();  // Subject로 저장된 userId 반환
     }
     
     private Claims getClaimsFromToken(String token) {

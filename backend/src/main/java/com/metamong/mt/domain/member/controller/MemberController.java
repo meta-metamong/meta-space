@@ -56,8 +56,8 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieGenerator cookieGenerator;
-    //private final List<WebSocketSession> sessions = new ArrayList<>(); // WebSocket 세션을 저장할 리스트
     private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
+    
     /**
      * 로그인 처리 메서드.
      * <p>
@@ -122,8 +122,8 @@ public class MemberController {
 
             if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
 
-                String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
-                memberService.deleteRefreshToken(username);
+                String userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
+                memberService.deleteRefreshToken(userId);
 
     
                 removeRefreshTokenFromCookie(response);
@@ -335,7 +335,6 @@ public class MemberController {
                 .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
     }
     
-
     public void addSession(WebSocketSession session) {
         sessions.add(session);
     }
@@ -343,6 +342,12 @@ public class MemberController {
     public Set<WebSocketSession> getAllSessions() {
         return sessions;
     }
+    
+    public void removeSession(WebSocketSession session) {
+        sessions.remove(session);
+        System.out.println("WebSocket 세션 제거됨: " + session.getId());
+    }
+
     
     @GetMapping("/members/roleUserCount")
     public String getRoleUserCount() {
