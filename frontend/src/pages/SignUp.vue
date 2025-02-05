@@ -62,16 +62,18 @@ export default{
 				detailAddress: "",
 				businessName: "",
 				businessNumber: "",
-				account: ""
+				bank: "",
+				account: "",
+				accountOwner: ""
 			},
-			step: 0,
-			steps: {
-				0: InputRole,
-				1: InputEmail,
-				2: InputPassword,
-				3: InputDetail,
-				4: InputAdditional
-			}
+			step: 4,
+			steps: [
+				InputRole,
+				InputEmail,
+				InputPassword,
+				InputDetail,
+				InputAdditional
+		]
 		}
 	},
 	computed:{
