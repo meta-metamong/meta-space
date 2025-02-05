@@ -2,29 +2,22 @@ package com.metamong.mt.domain.member.service;
 
 import java.util.Date;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.metamong.mt.domain.member.dto.request.FindMemberRequestDto;
+import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
-import com.metamong.mt.domain.member.dto.request.OwnerSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.request.UserSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
-import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
-import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
-import com.metamong.mt.domain.member.exception.IdEmailAleadyExistException;
+import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
+import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
-import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.mail.MailAgent;
-import com.metamong.mt.global.mail.MailType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +36,7 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     @Transactional(readOnly = true)
-    public LoginInfoResponseDto findLoginInfo(LoginRequestDto dto) {
+    public Long login(LoginRequestDto dto) {
         Member member = null; 
         try {
             member = memberRepository.findByEmail(dto.getEmail())
@@ -56,21 +49,14 @@ public class DefaultMemberService implements MemberService {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
         
-        LoginInfoResponseDto loginInfo = LoginInfoResponseDto.builder()
-        								.userId(member.getUserId())
-        								.name(member.getName())
-        								.role(member.getRole())
-        								.build();
-        return loginInfo;
+        return member.getUserId();
     }
     
     @Override
-    public void saveUser(UserSignUpRequestDto dto) {
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new PasswordNotConfirmedException();
-        }
-        if(memberRepository.existsByUserIdOrEmail(dto.getUserId(), dto.getEmail())) {
-        	throw new IdEmailAleadyExistException();
+    public void saveConsumer(ConsumerSignUpRequestDto dto) {
+
+        if(memberRepository.existsByEmail(dto.getEmail())) {
+        	throw new EmailAleadyExistException();
         }
         
     	Member member = dto.toEntity();
@@ -81,18 +67,31 @@ public class DefaultMemberService implements MemberService {
     }
 
     @Override
-    public void saveOwner(OwnerSignUpRequestDto dto) {
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new PasswordNotConfirmedException();
-        }
-        if(memberRepository.existsByUserIdOrEmail(dto.getUserId(), dto.getEmail())) {
-        	throw new IdEmailAleadyExistException();
+    public void saveProvider(ProviderSignUpRequestDto dto) {
+
+        if(memberRepository.existsByEmail(dto.getEmail())) {
+        	throw new EmailAleadyExistException();
         }
         
         Member owner = dto.toEntity();
         owner.setPassword(this.passwordEncoder.encode(dto.getPassword()));
         this.memberRepository.save(owner);
     }
+    
+    @Override
+	public void updateRefreshToken(Long userId, String refreshToken) {
+	    Member member = getMember(userId);
+	    member.setRefreshToken(refreshToken);
+	}
+    
+    @Override
+	@Transactional(readOnly = true)
+	public Member getMember(Long userId) {
+	    return this.memberRepository.findById(userId)
+	    		.orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+	}
+    
+    /*
 
 	@Override
 	@Transactional(readOnly = true)
@@ -122,18 +121,7 @@ public class DefaultMemberService implements MemberService {
 	    member.updateInfo(dto);
 	}
 	
-	@Override
-	@Transactional(readOnly = true)
-	public Member findMember(String userId) {
-	    return this.memberRepository.findById(userId)
-	    		.orElseThrow(() -> new MemberNotFoundException(userId, "회원을 찾을 수 없습니다."));
-	}
 	
-	@Override
-	public void updateRefreshToken(String userId, String refreshToken) {
-	    Member member = findMember(userId);
-	    member.setRefreshToken(refreshToken);
-	}
 
 //	@Override
 //	public void storeRefreshToken(Member member) {
@@ -198,5 +186,5 @@ public class DefaultMemberService implements MemberService {
 			return memberRepository.existsByEmail(data);
 		}
 	}
-    
+    */
 }

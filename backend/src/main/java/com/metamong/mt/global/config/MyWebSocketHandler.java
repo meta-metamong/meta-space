@@ -19,7 +19,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     // WebSocket 연결 시 세션을 추가
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        boardController.addSession(session); // WebSocket 세션을 BoardController에 추가
+        //boardController.addSession(session); // WebSocket 세션을 BoardController에 추가
     }
 
     // 클라이언트로부터 받은 메시지를 처리하고, 클라이언트에게 응답을 보냄

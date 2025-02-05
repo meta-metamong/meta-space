@@ -1,9 +1,10 @@
-package com.metamong.mt.global.jwt;
+package com.metamong.mt.global.auth.jwt;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
+
+	@Autowired
+	private final AuthenticationManager jwtAuthenticationManager;
+	
+	@Autowired
 	private final JwtTokenProvider jwtTokenProvider;
 
 	@Override
@@ -48,15 +54,17 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				return;
 			}
 			
-			if(!jwtTokenProvider.validateToken(token)) {
+			// 토큰이 유효하면 토큰으로부터 사용자 정보를 받아옴
+			Authentication authentication = jwtAuthenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(null, token));
+			
+			if(authentication == null) {
 				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				httpResponse.setCharacterEncoding("UTF-8");
                 httpResponse.setContentType("application/json");
-                httpResponse.getWriter().write("{\"message\": \"엑세스 토큰 만료\"}");
+                httpResponse.getWriter().write("{\"message\": \"유효하지 않은 토큰\"}");
                 return;
 			}
-			// 토큰이 유효하면 토큰으로부터 사용자 정보를 받아옴
-			Authentication authentication = jwtTokenProvider.getAuthentication(token);
 			// SecurityContext에 Authentication 객체를 저장.
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}

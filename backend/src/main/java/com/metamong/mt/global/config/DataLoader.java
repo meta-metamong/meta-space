@@ -26,18 +26,17 @@ public class DataLoader implements CommandLineRunner {
 
             // 빌더 패턴을 사용하여 admin 계정 생성
             Member admin = Member.builder()
-                    .userId("admin")
                     .name("Admin")
                     .password(encodedPassword)
                     .phone("000-0000-0000")
                     .email("admin@example.com")
-                    .role(Role.ROLE_ADMIN)
+                    .role(Role.ROLE_ADMN)
                     .postalCode("00000")
                     .address("서울시 예시구 예시동")
                     .detailAddress("상세 주소 예시")
                     .businessName(null)
-                    .businessRegistrationNumber(null)
-                    .birth(null)
+                    .businessNumber(null)
+                    .birthDate(null)
                     .build();
 
             memberRepository.save(admin);

@@ -17,17 +17,16 @@ import lombok.RequiredArgsConstructor;
 @Builder(access = AccessLevel.PRIVATE)
 public class HttpRequestAuthorizationDefinition {
 	public static final List<String> NO_AUTH_REQUIRED_LIST = List.of(
-			"/api/members/user",
-            "/api/members/owner",
+			"/api/members/consumer",
+            "/api/members/provider",
             "/api/members/login",
-            "/api/members/find-member",
-            "/api/members/dup-email"
+            "/api/members/reissue"
 		);
 	
     private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
             HttpMethod.POST, new String[] {
-                    "/api/members/user",
-                    "/api/members/owner",
+                    "/api/members/consumer",
+                    "/api/members/provider",
                     "/api/members/login",
                     "/api/members/find-member",
                     "/api/members/dup-email"
@@ -47,7 +46,7 @@ public class HttpRequestAuthorizationDefinition {
     );
     
     private static final Map<Role, String[]> AUTHORIZATION_LIST_FOR_ALL_METHOD = Map.of(
-            Role.ROLE_ADMIN, new String[] { "/file/**" } // TODO: what?
+            Role.ROLE_ADMN, new String[] { "/file/**" } // TODO: what?
     );
     
     public static final void defineRequestMatcher(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {

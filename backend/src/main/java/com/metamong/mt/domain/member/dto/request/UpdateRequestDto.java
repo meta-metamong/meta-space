@@ -24,13 +24,15 @@ public class UpdateRequestDto {
 
     @Size(min = 6, message = "비밀번호는 6자리 이상이어야 합니다.")
     private String password;
-    private String confirmPassword;
 
     @NotEmpty(message = "전화번호는 필수입니다.")
     private String phone;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    private LocalDate birth; 
+    private LocalDate birthDate; 
+    
+    @NotEmpty(message = "성별은 필수입니다.")
+    private String gender;
 
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String postalCode;
@@ -42,5 +44,9 @@ public class UpdateRequestDto {
     private String address;
     
     private String businessName;
-    private String businessRegistrationNumber;
+    private String businessNumber;
+    
+    private String bankCode;
+    private String account;
+    private String accountOwner;
 }

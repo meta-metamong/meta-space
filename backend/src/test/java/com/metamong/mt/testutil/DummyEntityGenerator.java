@@ -10,7 +10,6 @@ public class DummyEntityGenerator {
     
     public static Member generateMember(String userId, String name, String password, String email, Role role) {
         return Member.builder()
-                .userId(userId)
                 .name(name)
                 .password(password)
                 .email(email)
@@ -19,11 +18,11 @@ public class DummyEntityGenerator {
     }
     
     public static Member generateMemberNormalUser(String userId, String name, String password, String email) {
-        return generateMember(userId, name, password, email, Role.ROLE_USER);
+        return generateMember(userId, name, password, email, Role.ROLE_CONS);
     }
     
     public static Member generateMember(String userId, String password) {
-        return generateMember(userId, "김더미", password, userId + "@gmail.com", Role.ROLE_USER);
+        return generateMember(userId, "김더미", password, userId + "@gmail.com", Role.ROLE_CONS);
     }
 
     public static Member generateMember(String userId) {

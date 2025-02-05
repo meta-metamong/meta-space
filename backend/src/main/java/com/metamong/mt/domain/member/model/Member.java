@@ -8,6 +8,8 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,13 +26,15 @@ import lombok.Setter;
 public class Member {
     
     @Id
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long userId;
     
+    private String email;
     private String name;
     private String password;
     private String phone;
-    private String email;
-    private LocalDate birth;
+    private String gender;
+    private LocalDate birthDate;
     private String postalCode;
     private String detailAddress;
     private String address;
@@ -39,16 +43,29 @@ public class Member {
     private Role role;
     
     private String refreshToken;
+    
     private String businessName;
-    private String businessRegistrationNumber;
+    private String businessNumber;
+    private String bankCode;
+    private String account;
+    private String accountOwner;
     
     public void updateInfo(UpdateRequestDto dto) {
+    	this.email = dto.getEmail();
         this.name = dto.getName();
         this.phone = dto.getPhone();
-        this.email = dto.getEmail();
-        this.birth = dto.getBirth();
+        this.gender = dto.getGender();
+        this.birthDate = dto.getBirthDate();
         this.postalCode = dto.getPostalCode();
         this.address = dto.getAddress();
         this.detailAddress = dto.getDetailAddress();
+        
+        if(this.role.equals(Role.ROLE_PROV)) {
+        	this.businessName = dto.getBusinessName();
+        	this.businessNumber = dto.getBusinessNumber();
+        	this.bankCode = dto.getBankCode();
+        	this.account = dto.getAccount();
+        	this.accountOwner = dto.getAccountOwner();
+        }
     }
 }

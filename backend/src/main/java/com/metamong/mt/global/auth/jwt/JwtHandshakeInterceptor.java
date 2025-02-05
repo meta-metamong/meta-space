@@ -1,4 +1,4 @@
-package com.metamong.mt.global.jwt;
+package com.metamong.mt.global.auth.jwt;
 
 import java.util.Map;
 
@@ -8,15 +8,16 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
-import jakarta.servlet.http.Cookie;
+import com.metamong.mt.global.auth.JwtAuthenticationManager;
 
+import jakarta.servlet.http.Cookie;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    public JwtHandshakeInterceptor(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtAuthenticationManager jwtAuthenticationManager;
 
     @Override
     public boolean beforeHandshake(
@@ -41,7 +42,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             return false;  
         }
 
-        if (jwtTokenProvider.validateToken(token)) {
+        if (jwtAuthenticationManager.validateToken(token)) {
             String username = jwtTokenProvider.getUsernameFromToken(token);
             attributes.put("username", username);  
             return true;
