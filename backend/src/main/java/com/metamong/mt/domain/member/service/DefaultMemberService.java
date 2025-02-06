@@ -19,7 +19,10 @@ import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
+import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Role;
+import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.mail.MailAgent;
@@ -34,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class DefaultMemberService implements MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
+    private final FctProviderRepository providerRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
     //private final SimpMessagingTemplate messagingTemplate; 
@@ -73,15 +77,21 @@ public class DefaultMemberService implements MemberService {
     }
 
     @Override
+    @Transactional
     public void saveProvider(ProviderSignUpRequestDto dto) {
 
         if(memberRepository.existsByEmail(dto.getEmail())) {
         	throw new EmailAleadyExistException();
         }
         
-        Member owner = dto.toEntity();
-        owner.setPassword(this.passwordEncoder.encode(dto.getPassword()));
-        this.memberRepository.save(owner);
+        Member member = dto.toEntity();
+        member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+        
+        FctProvider provider = dto.toProvider();
+        member.setFctProvider(provider);
+        provider.setMember(member);
+        
+        this.memberRepository.save(member);
     }
     
     @Override
@@ -109,18 +119,28 @@ public class DefaultMemberService implements MemberService {
 	@Transactional(readOnly = true)
 	public MemberResponseDto searchMember(Long userId) {
 	    Member member = getMember(userId);
-	    return MemberResponseDto.builder()
-								.memId(member.getMemId())
-								.memName(member.getMemName())
-								.email(member.getEmail())
-								.memPhone(member.getMemPhone())
-								.gender(member.getGender())
-								.birthDate(member.getBirthDate())
-								.memPostalCode(member.getMemPostalCode())
-								.memDetailAddress(member.getMemDetailAddress())
-								.memAddress(member.getMemAddress())
-								.role(member.getRole())
-								.build();
+	    FctProvider provider = null;
+	    if(member.getRole().equals(Role.ROLE_PROV)) {
+	        provider = providerRepository.findById(userId).orElseThrow(
+	                () -> new MemberNotFoundException(member.getMemName(), "회원을 찾을 수 없습니다."));
+	    }
+        return MemberResponseDto.builder()
+                                .memId(member.getMemId())
+                                .memName(member.getMemName())
+                                .email(member.getEmail())
+                                .memPhone(member.getMemPhone())
+                                .gender(member.getGender())
+                                .birthDate(member.getBirthDate())
+                                .memPostalCode(member.getMemPostalCode())
+                                .memDetailAddress(member.getMemDetailAddress())
+                                .memAddress(member.getMemAddress())
+                                .role(member.getRole())
+                                .bizName(provider == null ? null : provider.getBizName())
+                                .bizRegNum(provider == null ? null : provider.getBizName())
+                                .bankCode(provider == null ? null : provider.getBankCode())
+                                .provAccount(provider == null ? null : provider.getProvAccount())
+                                .provAccountOwner(provider == null ? null : provider.getProvAccountOwner())
+                                .build();	   
 	}
 	
 	
