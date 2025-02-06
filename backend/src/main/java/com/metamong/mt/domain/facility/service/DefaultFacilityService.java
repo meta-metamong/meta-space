@@ -82,6 +82,6 @@ public class DefaultFacilityService implements FacilityService {
     
     @Override
     public FacilityResponseDto getFacility(Long facilityId) {
-        throw new UnsupportedOperationException();
+        return this.facilityMapper.findFacilityById(facilityId);
     }
 }
