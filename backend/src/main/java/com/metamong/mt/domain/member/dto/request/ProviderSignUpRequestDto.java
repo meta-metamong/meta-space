@@ -1,9 +1,6 @@
 package com.metamong.mt.domain.member.dto.request;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
 import com.metamong.mt.domain.member.model.Member;
@@ -17,7 +14,6 @@ import jakarta.validation.constraints.Past;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -43,8 +39,7 @@ public class ProviderSignUpRequestDto {
     private String gender;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime birthDate; 
+    private LocalDate birthDate; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String memPostalCode;
@@ -55,11 +50,11 @@ public class ProviderSignUpRequestDto {
     @NotEmpty(message = "상세 주소는 필수입니다.")
     private String memDetailAddress;
     
-    private String businessName;
-    private String businessNumber;
+    private String bizName;
+    private String bizRegNum;
     private String bankCode;
-    private String account;
-    private String accountOwner;
+    private String provAccount;
+    private String provAccountOwner;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);

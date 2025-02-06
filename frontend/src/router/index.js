@@ -17,10 +17,9 @@ const routes = [
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
 
-	//{ path: '/socket', component: Socket  },
 	{ path: '/download', component: Download  },
-
-
+	
+	//{ path: '/socket', component: Socket  },
 	//{ path: '/admin', component: Admin },
 	//{ path: '/admin/socket', component: ChatAdmin },
 	//{ path: '/admin/chatlist', component: ChatList },

@@ -1,8 +1,6 @@
 package com.metamong.mt.domain.member.dto.response;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
@@ -22,8 +20,7 @@ public class MemberResponseDto {
 	private final String memPhone;
 	private final Gender gender;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private final LocalDateTime birthDate;
+	private final LocalDate birthDate;
 	private final String memPostalCode;
 	private final String memAddress;
 	private final String memDetailAddress;

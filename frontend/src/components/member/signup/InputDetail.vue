@@ -9,11 +9,11 @@
 
         <div class="d-flex gap-4 mb-4">
             <div>
-                <input class="form-check-input" type="radio" value="male" v-model="gender" />
+                <input class="form-check-input" type="radio" value="M" v-model="gender" />
                 <label class="form-check-label" for="male">{{ $t('member.male') }}</label>
             </div>
             <div>
-                <input class="form-check-input" type="radio" value="female" v-model="gender" />
+                <input class="form-check-input" type="radio" value="W" v-model="gender" />
                 <label class="form-check-label" for="female">{{ $t('member.female') }}</label>
             </div>
         </div>
@@ -66,7 +66,7 @@ export default{
                 return;
             }
             this.setUserInfo([{
-                key: 'name',
+                key: 'memName',
                 value: this.name
             },{
                 key: 'gender',
@@ -75,13 +75,16 @@ export default{
                 key: 'birthDate',
                 value: this.birthDate
             },{
-                key: 'postalCode',
+                key: 'memPhone',
+                value: this.phone
+            },{
+                key: 'memPostalCode',
                 value: this.postalCode,
             },{
-                key: 'address',
+                key: 'memAddress',
                 value: this.address,
             },{
-                key: 'detailAddress',
+                key: 'memDetailAddress',
                 value: this.detailAddress
             }]);
 		},
