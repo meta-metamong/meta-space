@@ -2,8 +2,9 @@ package com.metamong.mt.domain.reservation.service;
 
 import java.util.List;
 
-import com.metamong.mt.domain.reservation.model.Reservation;
+import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 
 public interface ReservationService {
-	List<Reservation> findReservationByConsId(int consId);
+	List<ReservationResponseDto> findReservationByConsId(Long consId);
+	ReservationResponseDto findReservationByRvtId(Long rvtId);
 }
