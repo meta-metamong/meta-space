@@ -223,7 +223,6 @@ public class MemberController {
      */
     @PostMapping("/members/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("\n\n\n\n\n\n\n들어오나요~~~~~~~~~~~~~~");
     	try {
             String refreshToken = jwtTokenProvider.resolveRefreshTokenFromCookie(request);
     
