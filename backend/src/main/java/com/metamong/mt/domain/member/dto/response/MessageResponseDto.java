@@ -12,10 +12,5 @@ public class MessageResponseDto {
     private String text;
     private String userId;
     private String type;
-    
-    @Override
-    public String toString() {
-        return "MessageResponseDto [from=" + from + ", text=" + text + ", userId=" + userId + ", type=" + type + "]";
-    }
 
 }
