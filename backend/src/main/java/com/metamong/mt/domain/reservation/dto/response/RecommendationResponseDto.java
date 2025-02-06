@@ -10,9 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RecommendationResponseDto {
-	@JsonProperty("mem_id")
+    @JsonProperty("mem_id")
     private Long memberId;
-	
-	@JsonProperty("recommended_facilities")
+
+    @JsonProperty("recommended_facilities")
     private List<Integer> recommendedFacilities;
 }

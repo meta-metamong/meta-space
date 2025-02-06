@@ -6,7 +6,9 @@ import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDt
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 
 public interface ReservationService {
-	List<ReservationResponseDto> findReservationByConsId(Long consId);
-	ReservationResponseDto findReservationByRvtId(Long rvtId);
-	List<ReservationInfoResponseDto> getTotalCount();
+    List<ReservationResponseDto> findReservationByConsId(Long consId);
+
+    ReservationResponseDto findReservationByRvtId(Long rvtId);
+
+    List<ReservationInfoResponseDto> getTotalCount();
 }
