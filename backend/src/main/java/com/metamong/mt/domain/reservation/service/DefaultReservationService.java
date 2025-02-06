@@ -1,12 +1,12 @@
 package com.metamong.mt.domain.reservation.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 import com.metamong.mt.domain.reservation.model.Reservation;
@@ -38,8 +38,8 @@ public class DefaultReservationService implements ReservationService {
     }
 
     @Override
-    public Reservation saveReservation(Reservation reservation) {
-        return this.reservationRepository.save(reservation);
+    public Reservation saveReservation(ReservationRequestDto dto) {
+        return this.reservationRepository.save(dto.toEntity());
     }
 
     @Override
