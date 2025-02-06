@@ -5,16 +5,17 @@ import java.time.LocalDateTime;
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
 import com.metamong.mt.domain.member.model.constant.Gender;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UpdateRequestDto {
     @NotEmpty(message = "이름은 필수입니다.")
     private String memName;

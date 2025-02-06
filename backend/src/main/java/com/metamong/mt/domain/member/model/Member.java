@@ -53,6 +53,7 @@ public class Member {
     private LocalDateTime createdAt = null;
     private LocalDateTime updatedAt = null;
     private LocalDateTime memBannedUntil = null;
+    private Character isDeleted = 'N';
     
     public void updateInfo(UpdateRequestDto dto) {
         this.memName = dto.getMemName();

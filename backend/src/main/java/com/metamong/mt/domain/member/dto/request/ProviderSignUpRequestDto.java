@@ -14,13 +14,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProviderSignUpRequestDto {
 
 	@NotEmpty(message = "이메일은 필수입니다.")
