@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
@@ -64,7 +63,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(name="gender", length=1)
     private Gender gender;
-    
+
     @Column(name="birth_date")
     private LocalDate birthDate;
     
