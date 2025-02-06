@@ -26,10 +26,12 @@ CREATE TABLE member (
     created_at                   DATE           DEFAULT SYSDATE,
     updated_at                   DATE           DEFAULT SYSDATE,
     mem_banned_until             DATE,
+    is_del                       CHAR(1)        DEFAULT 'N',
     
     CONSTRAINT pk_member PRIMARY KEY (mem_id),
     CONSTRAINT member_gender_domain CHECK (gender IN ('M', 'W')),
-    CONSTRAINT member_role_domain CHECK (role IN ('ROLE_PROV', 'ROLE_CONS', 'ROLE_ADMN'))
+    CONSTRAINT member_role_domain CHECK (role IN ('ROLE_PROV', 'ROLE_CONS', 'ROLE_ADMN')),
+    CONSTRAINT member_is_del_domain CHECK (is_del IN ('Y', 'N'))
 );
 
 CREATE TABLE notification (
@@ -37,10 +39,12 @@ CREATE TABLE notification (
     receiver_id   NUMBER(4, 0)   NOT NULL,
     noti_msg      VARCHAR2(150)  NOT NULL,
     created_at    DATE           DEFAULT SYSDATE,
+    is_read       CHAR(1)        DEFAULT 'N',
 
     CONSTRAINT pk_notification PRIMARY KEY (noti_id),
     CONSTRAINT fk_noti_receiver_id FOREIGN KEY (receiver_id)
-        REFERENCES member (mem_id)
+        REFERENCES member (mem_id),
+    CONSTRAINT noti_is_read_domain CHECK (is_read IN ('Y', 'N'))
 );
 
 CREATE TABLE bank (
@@ -72,12 +76,14 @@ CREATE TABLE report (
     report_msg     VARCHAR2(255)    NOT NULL,
     report_date    DATE             DEFAULT SYSDATE,
     report_type    VARCHAR2(50)     NOT NULL,
+    is_processed   CHAR(1)          DEFAULT 'N',
     
     CONSTRAINT pk_report PRIMARY KEY (report_id),
     CONSTRAINT fk_report_reporter_id FOREIGN KEY (reporter_id)
         REFERENCES member (mem_id),
     CONSTRAINT fk_report_reported_id FOREIGN KEY (reported_id)
-        REFERENCES member (mem_id)
+        REFERENCES member (mem_id),
+    CONSTRAINT report_is_processed_domain CHECK(is_processed IN ('Y', 'N'))
 );
 
 CREATE TABLE category (
