@@ -1,7 +1,13 @@
 package com.metamong.mt.domain.facility.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.metamong.mt.global.image.model.FacilityImage;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -46,7 +53,10 @@ public class Facility {
     private String fctDetailAddress;
     private String fctTel;
     private String fctGuide;
-    private boolean isOpenOnHolidays;
+    
+    @Column(name = "is_open_on_holidays")
+    private boolean openOnHolidays;
+    
     private LocalDateTime fctOpenTime;
     private LocalDateTime fctCloseTime;
     private int unitUsageTime;
@@ -62,4 +72,12 @@ public class Facility {
     
     private double fctLatitude;
     private double fctLongitude;
+    
+    @OneToMany(mappedBy = "fct", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @Builder.Default
+    private List<FacilityImage> fctImages = new ArrayList<>();
+    
+    public void addFctImage(FacilityImage fctImage) {
+        this.fctImages.add(fctImage);
+    }
 }

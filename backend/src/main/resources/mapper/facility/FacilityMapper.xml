@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.metamong.mt.domain.facility.repository.mybatis.FacilityMapper">
+
+    <insert id="saveZone" parameterType="com.metamong.mt.domain.facility.model.Zone">
+        <![CDATA[
+            INSERT INTO zone (
+                zone_id,
+                fct_id,
+                zone_name,
+                max_user_count,
+                is_shared_zone,
+                hourly_rate
+            ) VALUES (
+                zone_pk_seq.NEXTVAL,
+                #{zone.fctId: NUMBER},
+                #{zone.zoneName: VARCHAR},
+                #{zone.maxUserCount: NUMBER},
+                #{zone.sharedZone: NUMBER},
+                #{zone.hourlyRate: NUMBER}
+            )
+        ]]>
+    </insert>
+    
+    <insert id="saveAdditionalInfo" parameterType="com.metamong.mt.domain.facility.model.AdditionalInfo">
+        <![CDATA[
+            INSERT INTO additional_info (
+                addinfo_id,
+                fct_id,
+                addinfo_desc
+            ) VALUES (
+                addinfo_pk_seq.NEXTVAL,
+                #{addinfo.fctId},
+                #{addinfo.addinfoDesc}
+            )
+        ]]>
+    </insert>
+    
+    <insert id="saveCategory" parameterType="com.metamong.mt.domain.facility.model.Category">
+        <![CDATA[
+            INSERT INTO category (
+                cat_id,
+                parent_cat_id,
+                cat_name
+            ) VALUES (
+                cat_pk_seq.NEXTVAL,
+                <if test="cat.parentCat == null">
+                    NULL,
+                </if>
+                <if test="cat.parentCat != null">
+                    #{cat.parentCat.catId: NUMBER},
+                </if>
+                #{cat.catName}
+            )
+        ]]>
+    </insert>
+</mapper>
