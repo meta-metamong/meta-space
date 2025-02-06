@@ -32,8 +32,8 @@
         },
         computed:{
             isLogin(){
-                return this.$store.state.isLogin;
-            }
+              return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
+             }
         }
     }
 </script>

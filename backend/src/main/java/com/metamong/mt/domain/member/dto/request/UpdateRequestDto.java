@@ -48,4 +48,8 @@ public class UpdateRequestDto {
     private String bankCode;
     private String account;
     private String accountOwner;
+    
+    public Gender getGender() {
+        return Gender.valueOf(this.gender);
+    }
 }

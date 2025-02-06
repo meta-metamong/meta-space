@@ -2,39 +2,42 @@ import { createStore } from "vuex";
 import { login, logout } from "../apis/axios";
 import router from "../router/index";
 
-const saveUserInLocal = function (user) {
-  sessionStorage.setItem("user", JSON.stringify(user));
+const saveUserIdInLocal = function (userId) {
+  sessionStorage.setItem("userId", userId);
 };
 
-const getUserInLocal = function () {
+export const getUserIdInLocal = function () {
   return JSON.parse(sessionStorage.getItem("user"));
 };
 
-const removeUserInLocal = function () {
-  sessionStorage.removeItem("user");
+const removeUserIdInLocal = function () {
+  sessionStorage.removeItem("userId");
 };
 
 const store = createStore({
   state: {
-    user: null,
+    userId: null,
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
     messages: []  // WebSocket으로 받은 메시지를 저장
   },
   mutations: {
-    saveUser(state, payload) {
-      state.user = payload;
-      saveUserInLocal(payload);
-      if (state.user && state.user.userId === "admin") {
+    saveUserId(state, payload) {
+      state.userId = payload;
+      saveUserIdInLocal(payload);
+      if (state.userId === "admin") {
         router.push("/admin");
       } else {
         router.push("/");
       }
     },
-    removeUser(state) {
-      state.user = null;
-      removeUserInLocal();
+    removeUserId(state) {
+      state.userId = null;
+      removeUserIdInLocal();
       location.href = "/";
+    },
+    initUserId(state, payload){
+      state.userId = payload;
     },
     setOnlineSocket(state, socket) {
       state.onlineSocket = socket;
@@ -59,15 +62,15 @@ const store = createStore({
     async loginRequest(context, payload) {
       const response = await login(payload);
       if (response.status === 200) {
-        context.commit("saveUser", response.data.content);
+        context.commit("saveUserId", response.data.content);
         context.dispatch("connectOnlineStatus");
       }
     },
     async logoutRequest(context) {
       const response = await logout();
       if (response.status === 200) {
+        context.commit("removeUserId");
         context.commit("closeOnlineSocket");
-        context.commit("removeUser");
       }
     },
     connectOnlineStatus(context) {

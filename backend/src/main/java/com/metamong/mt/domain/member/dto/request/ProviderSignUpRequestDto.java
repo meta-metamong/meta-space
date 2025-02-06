@@ -61,6 +61,9 @@ public class ProviderSignUpRequestDto {
     private String account;
     private String accountOwner;
     
+    public Gender getGender() {
+        return Gender.valueOf(this.gender);
+    }
     
     public Member toEntity() {
         return Member.builder()
@@ -68,7 +71,7 @@ public class ProviderSignUpRequestDto {
 			 .memName(this.memName)
 			 .email(this.email)
 			 .memPhone(this.memPhone)
-			 .gender(Gender.valueOf(this.gender))
+			 .gender(this.getGender())
 			 .birthDate(this.birthDate)
 			 .memPostalCode(this.memPostalCode)
 			 .memAddress(this.memAddress)
