@@ -8,7 +8,7 @@ const apiClient = axios.create({
 
 // 엑세스 토큰 저장
 export const saveAccessToken = function(response){
-    sessionStorage.setItem("accessToken", response.headers['Authorization']);
+    sessionStorage.setItem("accessToken", response.headers['x-access-token']);
 }
 
 // 엑세스 토큰 삭제
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
         const accessToken = sessionStorage.getItem("accessToken");
 
         if(accessToken){
-            config.headers["Authorization"] = accessToken;
+            config.headers["Authorization"] = 'bearer ' + accessToken;
         }
 
         return config;
@@ -43,7 +43,7 @@ apiClient.interceptors.response.use(
         const isReissuable = (error.status === 401 && (response.data?.message === "토큰 존재" || response.data?.message === "만료된 토큰"));
         if(!isReissuable) return error;
 
-        if(error.status === 400){
+        if(response.data.message === "토큰 존재"){
             delete config.headers["Authorization"];
             removeAccessToken();
         }else{
@@ -80,7 +80,7 @@ export const login = async function(loginDto){
 // 로그아웃 함수
 export const logout = async function(){
     try{
-        const response = await post("/members/logout");
+        const response = await post("/members/logout", null);
         if(response.status === 200) removeAccessToken();
         return response;
     }catch(error){
@@ -102,8 +102,10 @@ export const get = async function(endpoint){
 export const post = async function(endpoint, requestData){
     try{
         const response = await apiClient.post(endpoint, requestData);
+        console.log(response);
         return response;
     }catch(error){
+        console.log(response);
         return error
     }
 }
