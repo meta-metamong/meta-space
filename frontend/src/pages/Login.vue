@@ -43,6 +43,10 @@ export default {
 			}
 
 			await this.$store.dispatch("loginRequest", loginDto);
+
+			if(this.$store.state.userId === 1) {
+				this.$router.push("/admin");
+			}
 		},
 		route(page){
 			this.$router.push(page);
