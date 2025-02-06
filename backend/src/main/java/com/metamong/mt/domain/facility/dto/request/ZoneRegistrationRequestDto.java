@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ZoneRegistrationRequestDto {
+    private int zoneNo;
     private String zoneName;
     private int maxUserCount;
     private int isSharedZone;
