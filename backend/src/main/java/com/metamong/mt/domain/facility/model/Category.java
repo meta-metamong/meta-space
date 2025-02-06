@@ -5,13 +5,10 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,19 +16,12 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "category")
-@SequenceGenerator(
-        name = "cat_pk_generator",
-        sequenceName = "cat_pk_seq",
-        initialValue = 1,
-        allocationSize = 1
-)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cat_pk_generator")
-    private Long catId;
+    private String catId;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_cat_id")
@@ -42,15 +32,17 @@ public class Category {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentCat")
     private List<Category> children = new ArrayList<>();
     
-    public Category(Long catId) {
+    public Category(String catId) {
         this.catId = catId;
     }
     
-    public Category(String catName) {
+    public Category(String catId, String catName) {
+        this.catId = catId;
         this.catName = catName;
     }
     
-    public Category(Category parentCat, String catName) {
+    public Category(String catId, String catName, Category parentCat) {
+        this.catId = catId;
         this.parentCat = parentCat;
         this.catName = catName;
     }
