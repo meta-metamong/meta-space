@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,9 +19,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.metamong.mt.global.auth.jwt.JwtAuthenticationFilter;
+import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
 import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
-import com.metamong.mt.global.jwt.JwtAuthenticationFilter;
-import com.metamong.mt.global.jwt.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    
+    private final AuthenticationManager jwtAuthenticationManager;
 	
 	@Bean
 	@Profile("no-auth & !prod")
@@ -69,7 +72,7 @@ public class SecurityConfig {
 		});
 
 		// Spring Security JWT 필터 로드
-		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
 		        UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();

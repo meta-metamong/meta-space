@@ -39,6 +39,6 @@ public class ReservationResponseDto {
 	
 	public void setPayState(String payState) {
 	    this.payState = PayState.fromCode(payState);
-	    this.rvtState = this.payState.getReservationState(this.rvtDate).getDescription(); // 예약 상태 자동 설정
+	    this.rvtState = this.payState.getReservationState(this.rvtDate).getDescription(); // 예약 상태 설정
 	}
 }

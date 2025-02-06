@@ -22,6 +22,7 @@ public class ReservationController {
 	
 	@GetMapping("/members/{memberId}/reservations")
 	public ResponseEntity<?> findReservationByConsId(@PathVariable Long memberId) {
+		System.out.println(reservationService.findReservationByConsId(memberId));
 		return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByConsId(memberId), HttpStatus.OK, "예약 목록 조회 성공"));
 	}
 	
