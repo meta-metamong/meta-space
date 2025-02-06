@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ReservationInfoResponseDto {
-	private Long rvtId;
+	private Long consId;
 	private Long fctId;
 	private int totalCount;
 }

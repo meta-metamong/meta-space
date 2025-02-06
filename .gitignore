@@ -191,3 +191,7 @@ Servers
 /frontend/build
 
 application-priv.properties
+
+# python
+__pycache__/
+*.pyc

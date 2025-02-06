@@ -32,7 +32,7 @@
     </select>
 
     <!-- 예약 내역 개수 조회 -->
-    <select id="getTotalCount" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto">
+    <select id="getTotalCount" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto">
         <![CDATA[
             SELECT r.cons_id AS "consId", f.fct_id AS "fctId", count(*) AS "totalCount"
 			FROM reservation r

@@ -13,6 +13,6 @@ public class RecommendationResponseDto {
 	@JsonProperty("mem_id")
     private Long memberId;
 	
-	@JsonProperty("recommended_products")
-    private List<Integer> recommendedProducts;
+	@JsonProperty("recommended_facilities")
+    private List<Integer> recommendedFacilities;
 }

@@ -1,8 +1,11 @@
 package com.metamong.mt.domain.reservation.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,13 +41,17 @@ public class ReservationController {
 	@PostMapping("/recommends/{memberId}")
 	public Mono<RecommendationResponseDto> getRecommendations(@PathVariable int memberId) throws JsonProcessingException {
 	    List<ReservationInfoResponseDto> rvtInfo = reservationService.getTotalCount();
-//	    PurchaseHistoryList purchaseHistoryList = new PurchaseHistoryList(purchase);
+	    
+	    Map<String, Object> rvtInfoList = new HashMap<>();
+	    rvtInfoList.put("reservation_info", rvtInfo);
+	    
 	    ObjectMapper objectMapper = new ObjectMapper();
-	    System.out.println("Sending request with body: " + objectMapper.writeValueAsString(rvtInfo));
+	    log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
 
 	    return webClient.post()
-	            .uri(uriBuilder -> uriBuilder.path("/recommend/" + memberId).build()) // memberId를 URL 경로에 포함
-	            .bodyValue(rvtInfo) // JSON 형태로 데이터 전송
+	            .uri("/recommend/" + memberId)
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .bodyValue(rvtInfoList) // JSON 형태로 데이터 전송
 	            .retrieve() // 요청을 실행하고 응답을 받음
 	            .bodyToMono(RecommendationResponseDto.class); // 본문을 추천 응답으로 변환
 	}
