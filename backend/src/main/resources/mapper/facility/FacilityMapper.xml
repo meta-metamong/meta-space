@@ -30,7 +30,7 @@
                     NULL,
                 </if>
                 <if test="cat.parentCat != null">
-                    #{cat.parentCat.catId: NUMBER},
+                    #{cat.parentCat.catId},
                 </if>
                 #{cat.catName}
             )
