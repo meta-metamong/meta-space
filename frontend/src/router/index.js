@@ -13,18 +13,17 @@ import DetailReservation from '../components/reservation/DetailReservation.vue';
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
-	
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
-	{ path: '/download', component: Download  },
-	
 	//{ path: '/socket', component: Socket  },
-	//{ path: '/admin', component: Admin },
-	//{ path: '/admin/socket', component: ChatAdmin },
-	//{ path: '/admin/chatlist', component: ChatList },
+	{ path: '/download', component: Download  },
 
-	{ path: '/reservation', component: Reservation},
+	{ path: '/admin', component: Admin },
+	{ path: '/admin/chatlist', component: ChatList },
+
+	{ path: '/reservation', component: Reservation },
+	{ path: '/reservation/:id', component: DetailReservation, props: true },
 ];
 
 const router = createRouter({
