@@ -36,6 +36,10 @@ const store = createStore({
       removeUserInLocal();
       location.href = "/";
     },
+    setLogin(state, payload){
+      state.isLogin = payload;
+      router.push("/");
+    },
     setOnlineSocket(state, socket) {
       state.onlineSocket = socket;
     },

@@ -8,6 +8,7 @@ import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
 import Reservation from '../pages/Reservation.vue';
+import Socket from '../pages/ChatMember.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -20,7 +21,6 @@ const routes = [
 	{ path: '/update', component: UpdateMember },
 
 	{ path: '/admin', component: Admin },
-	{ path: '/admin/socket', component: ChatAdmin },
 	{ path: '/admin/chatlist', component: ChatList },
 	{ path: '/signup', component: SignUp},
 
