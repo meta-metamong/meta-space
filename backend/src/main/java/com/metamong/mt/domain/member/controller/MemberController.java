@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
@@ -27,10 +29,11 @@ import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
-import com.metamong.mt.global.auth.JwtAuthenticationManager;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
+import com.metamong.mt.global.auth.userdetails.MemberUserDetails;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,7 +50,6 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 	private final UserDetailsService userDetailsService;
-	private final JwtAuthenticationManager jwtAuthenticationManager;
     private final CookieGenerator cookieGenerator;
     private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
     
@@ -153,8 +155,20 @@ public class MemberController {
     	 String refreshToken = this.jwtTokenProvider.resolveRefreshTokenFromCookie(request);
     	 
     	 boolean isAvailable = accessToken != null && refreshToken != null;
-    	 boolean isReissuable = !this.jwtAuthenticationManager.validateToken(accessToken) && 
-    			 this.jwtAuthenticationManager.validateToken(refreshToken);
+    	 boolean isReissuable = false;
+    	 try {
+    		 isReissuable = !this.jwtTokenProvider.validateToken(accessToken);
+    	 }catch(ExpiredJwtException e) {
+    		 isReissuable = true;
+    	 }catch(Exception e) {
+    		 isReissuable = false;
+    	 }
+    	 
+    	 try {
+    		 isReissuable = isReissuable && this.jwtTokenProvider.validateToken(refreshToken);
+    	 }catch(Exception e) {
+    		 isReissuable = false;
+    	 }
     	 
     	 if(isAvailable && isReissuable) {    
     		 removeRefreshTokenFromCookie(response);
@@ -179,9 +193,9 @@ public class MemberController {
 	  }
 
 	  @GetMapping("/test")
-	  public ResponseEntity<?> testApi(HttpServletRequest request){
-		  
-		  return ResponseEntity.ok("통과~");
+	  public ResponseEntity<?> testApi(HttpServletRequest request, @AuthenticationPrincipal User user){
+		  MemberUserDetails userDetails = (MemberUserDetails)userDetailsService.loadUserByUsername(user.getUsername());
+		  return ResponseEntity.ok(userDetails.getName());
 	  }
 	  
 	private void removeRefreshTokenFromCookie(HttpServletResponse response) {
@@ -208,11 +222,11 @@ public class MemberController {
 
             String refreshToken = jwtTokenProvider.resolveRefreshTokenFromCookie(request);
 
-            if (refreshToken != null && jwtAuthenticationManager.validateToken(refreshToken)) {
+            if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
 
                 String memberId = jwtTokenProvider.getMemberId(refreshToken);
                 
-                memberService.deleteRefreshToken(memberId);
+                memberService.deleteRefreshToken(Long.parseLong(memberId));
                 removeRefreshTokenFromCookie(response);
 
                 return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));

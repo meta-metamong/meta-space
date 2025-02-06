@@ -1,8 +1,12 @@
 package com.metamong.mt.domain.member.dto.request;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 
 import jakarta.validation.constraints.Email;
@@ -16,33 +20,35 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ProviderSignUpRequestDto {
+
 	@NotEmpty(message = "이메일은 필수입니다.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
 	
     @NotEmpty(message = "이름은 필수입니다.")
-    private String name;
+    private String memName;
 
     @NotEmpty(message = "비밀번호는 필수입니다.")
     private String password;
 
     @NotEmpty(message = "전화번호는 필수입니다.")
-    private String phone;
+    private String memPhone;
     
     @NotEmpty (message = "성별은 필수입니다.")
-    private String gender;
+    private Gender gender;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    private LocalDate birthDate; 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime birthDate; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
-    private String postalCode;
+    private String memPostalCode;
     
     @NotEmpty(message = "주소는 필수입니다.")
-    private String address;
+    private String memAddress;
 
     @NotEmpty(message = "상세 주소는 필수입니다.")
-    private String detailAddress;
+    private String memDetailAddress;
     
     private String businessName;
     private String businessNumber;
@@ -53,21 +59,16 @@ public class ProviderSignUpRequestDto {
     
     public Member toEntity() {
         return Member.builder()
-                .email(this.email)
-                .password(this.password)
-                .name(this.name)
-                .phone(this.phone)
-                .gender(this.gender)
-                .birthDate(this.birthDate)
-                .postalCode(this.postalCode)
-                .detailAddress(this.detailAddress)
-                .address(this.address)
-                .businessName(this.businessName)
-                .businessNumber(this.businessNumber)
-                .bankCode(this.bankCode)
-                .account(this.account)
-                .accountOwner(this.accountOwner)
-                .role(Role.ROLE_PROV)
-                .build();
+			 .password(this.password)
+			 .memName(this.memName)
+			 .email(this.email)
+			 .memPhone(this.memPhone)
+			 .gender(this.gender)
+			 .birthDate(this.birthDate)
+			 .memPostalCode(this.memPostalCode)
+			 .memAddress(this.memAddress)
+			 .memDetailAddress(this.memDetailAddress)
+		    .role(Role.ROLE_PROV)
+		    .build();
     }
 }

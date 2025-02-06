@@ -1,6 +1,8 @@
 package com.metamong.mt.domain.member.dto.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.metamong.mt.domain.member.model.constant.Gender;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,10 +17,10 @@ import lombok.ToString;
 @ToString
 public class UpdateRequestDto {
 	
-	private Long memberId;
+	private Long memId;
 
     @NotEmpty(message = "이름은 필수입니다.")
-    private String name;
+    private String memName;
 
     @NotEmpty(message = "이메일은 필수입니다.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
@@ -28,22 +30,22 @@ public class UpdateRequestDto {
     private String password;
 
     @NotEmpty(message = "전화번호는 필수입니다.")
-    private String phone;
+    private String memPhone;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    private LocalDate birthDate; 
+    private LocalDateTime birthDate; 
     
     @NotEmpty(message = "성별은 필수입니다.")
-    private String gender;
+    private Gender gender;
 
     @NotEmpty(message = "우편번호는 필수입니다.")
-    private String postalCode;
+    private String memPostalCode;
 
     @NotEmpty(message = "상세 주소는 필수입니다.")
-    private String detailAddress;
+    private String memDetailAddress;
 
     @NotEmpty(message = "주소는 필수입니다.")
-    private String address;
+    private String memAddress;
     
     private String businessName;
     private String businessNumber;

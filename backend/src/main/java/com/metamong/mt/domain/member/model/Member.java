@@ -1,8 +1,11 @@
 package com.metamong.mt.domain.member.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 
 import jakarta.persistence.Entity;
@@ -27,45 +30,36 @@ public class Member {
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long memberId;
+    private Long memId;
     
     private String email;
-    private String name;
+    private String memName;
     private String password;
-    private String phone;
-    private String gender;
-    private LocalDate birthDate;
-    private String postalCode;
-    private String detailAddress;
-    private String address;
+    private String memPhone;
+    private Gender gender;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime birthDate;
+    private String memPostalCode;
+    private String memDetailAddress;
+    private String memAddress;
     
     @Enumerated(EnumType.STRING)
     private Role role;
     
     private String refreshToken;
-    
-    private String businessName;
-    private String businessNumber;
-    private String bankCode;
-    private String account;
-    private String accountOwner;
+    private LocalDateTime createdAt = null;
+    private LocalDateTime updatedAt = null;
+    private LocalDateTime memBannedUntil = null;
     
     public void updateInfo(UpdateRequestDto dto) {
     	this.email = dto.getEmail();
-        this.name = dto.getName();
-        this.phone = dto.getPhone();
+        this.memName = dto.getMemName();
+        this.memPhone = dto.getMemPhone();
         this.gender = dto.getGender();
         this.birthDate = dto.getBirthDate();
-        this.postalCode = dto.getPostalCode();
-        this.address = dto.getAddress();
-        this.detailAddress = dto.getDetailAddress();
-        
-        if(this.role.equals(Role.ROLE_PROV)) {
-        	this.businessName = dto.getBusinessName();
-        	this.businessNumber = dto.getBusinessNumber();
-        	this.bankCode = dto.getBankCode();
-        	this.account = dto.getAccount();
-        	this.accountOwner = dto.getAccountOwner();
-        }
+        this.memPostalCode = dto.getMemPostalCode();
+        this.memAddress = dto.getMemAddress();
+        this.memDetailAddress = dto.getMemDetailAddress();
     }
 }

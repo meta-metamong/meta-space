@@ -49,7 +49,7 @@ public class DefaultMemberService implements MemberService {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
         
-        return member.getMemberId();
+        return member.getMemId();
     }
     
     @Override
@@ -79,22 +79,21 @@ public class DefaultMemberService implements MemberService {
     }
     
     @Override
-	public void updateRefreshToken(Long userId, String refreshToken) {
-	    Member member = getMember(userId);
+	public void updateRefreshToken(Long memberId, String refreshToken) {
+	    Member member = getMember(memberId);
 	    member.setRefreshToken(refreshToken);
 	}
     
     @Override
-    public void deleteRefreshToken(String userId) {
-	    Member member = getMember(userId);
+    public void deleteRefreshToken(Long memberId) {
+	    Member member = getMember(memberId);
 	    member.setRefreshToken(null);
     }
     
     @Override
 	@Transactional(readOnly = true)
-	public <T> Member getMember(T userId) {
-    	Long id = userId instanceof Long ? (Long)userId : Long.valueOf((String)userId);
-	    return this.memberRepository.findById(id)
+	public <T> Member getMember(Long memberId) {
+	    return this.memberRepository.findById(memberId)
 	    		.orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
 	}
     
@@ -105,23 +104,19 @@ public class DefaultMemberService implements MemberService {
 	public MemberResponseDto searchMember(Long userId) {
 	    Member member = getMember(userId);
 	    return MemberResponseDto.builder()
-								.memberId(member.getMemberId())
-								.name(member.getName())
+								.memId(member.getMemId())
+								.memName(member.getMemName())
 								.email(member.getEmail())
-								.phone(member.getPhone())
+								.memPhone(member.getMemPhone())
 								.gender(member.getGender())
 								.birthDate(member.getBirthDate())
-								.postalCode(member.getPostalCode())
-								.detailAddress(member.getDetailAddress())
-								.address(member.getAddress())
-								.businessName(member.getBusinessName())
-								.businessNumber(member.getBusinessNumber())
-								.bankCode(member.getBankCode())
-								.account(member.getAccount())
-								.accountOwner(member.getAccountOwner())
+								.memPostalCode(member.getMemPostalCode())
+								.memDetailAddress(member.getMemDetailAddress())
+								.memAddress(member.getMemAddress())
 								.role(member.getRole())
 								.build();
 	}
+	
 	/*
 	@Override
 	@Transactional

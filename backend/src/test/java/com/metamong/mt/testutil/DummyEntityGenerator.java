@@ -10,7 +10,7 @@ public class DummyEntityGenerator {
     
     public static Member generateMember(String userId, String name, String password, String email, Role role) {
         return Member.builder()
-                .name(name)
+                .memName(name)
                 .password(password)
                 .email(email)
                 .role(role)

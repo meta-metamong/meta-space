@@ -19,14 +19,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MyWebSocketHandler myWebSocketHandler;
-    private final JwtAuthenticationManager jwtAuthenticationManager;
-
+    
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // "/ws" 엔드포인트로 WebSocket 핸들러를 등록
         registry.addHandler(myWebSocketHandler, "/ws")
                 .setAllowedOrigins("*")  // Cross-Origin 설정
-                .addInterceptors(new JwtHandshakeInterceptor(jwtTokenProvider, jwtAuthenticationManager));  // JWT 인증 인터셉터 추가
+                .addInterceptors(new JwtHandshakeInterceptor(jwtTokenProvider));  // JWT 인증 인터셉터 추가
     }
 
 

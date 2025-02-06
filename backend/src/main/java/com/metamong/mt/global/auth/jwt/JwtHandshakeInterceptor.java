@@ -17,8 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthenticationManager jwtAuthenticationManager;
-
+    
     @Override
     public boolean beforeHandshake(
             ServerHttpRequest request,
@@ -43,7 +42,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             return false;  
         }
 
-        if (jwtAuthenticationManager.validateToken(token)) {
+        if (jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsername(token);
             attributes.put("username", username);  
             return true;

@@ -4,19 +4,15 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
 import com.metamong.mt.global.auth.userdetails.MemberUserDetails;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +28,7 @@ public class JwtTokenProvider {
     /**
      * 토큰 암호화에 사용할 키
      */
-    private static SecretKey key = Jwts.SIG.HS256.key().build();
+    private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
     /**
      * 토큰 유효기간, 30분, 단위 밀리초
@@ -41,9 +37,6 @@ public class JwtTokenProvider {
     //private final long refreshTokenValidity = 1000 * 60 * 60 * 24;  // 리프레시 토큰 만료 시간 (1일)
     private long accessTokenValidTime = 10 * 1000L;  // 30분
     private long refreshTokenValidTime = 30 * 24 * 60 * 60 * 1000L; // 30일
-
-    @Autowired
-    private UserDetailsService userDetailsService;
     
     /**
      * Access Token을 만들어 반환
@@ -62,7 +55,7 @@ public class JwtTokenProvider {
                 .build();
         return Jwts.builder()
                 .claims(claims)
-                .signWith(key)  // 암호화에 사용할 키 설정
+                .signWith(SECRET_KEY)  // 암호화에 사용할 키 설정
                 .compact();
     }
 
@@ -82,7 +75,7 @@ public class JwtTokenProvider {
                 .build();
         return Jwts.builder()
                 .claims(claims)
-                .signWith(key)  // 암호화에 사용할 키 설정 , 여기서 암호화
+                .signWith(SECRET_KEY)  // 암호화에 사용할 키 설정 , 여기서 암호화
                 .compact();
     }
 
@@ -103,10 +96,24 @@ public class JwtTokenProvider {
     public Claims getClaims(String token) {
         // 서명 검증을 위한 비밀키를 사용하여 토큰을 파싱
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(SECRET_KEY)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+    
+    /**
+     * 토큰의 유효성과 만료 일자 확인
+     * @param token 토큰
+     * @return 토큰이 유효한지 확인, 유효하면 true 반환
+     */
+    public boolean validateToken(String token) {    	
+        try {
+        	this.getClaims(token);
+        	return true;
+        } catch(Exception e) {
+        	throw e;
+        }
     }
 
 	/**

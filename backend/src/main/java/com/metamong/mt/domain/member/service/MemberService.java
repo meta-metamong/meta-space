@@ -19,16 +19,16 @@ public interface MemberService {
 
     
     // 리프레시 토큰 업데이트
-    void updateRefreshToken(Long userId, String refreshToken);
+    void updateRefreshToken(Long memberId, String refreshToken);
     
     // 리프레시 토큰 삭제
-    void deleteRefreshToken(String userId);
+    void deleteRefreshToken(Long memberId);
     
     // 회원 정보 조회
- 	MemberResponseDto searchMember(Long userId);
+ 	MemberResponseDto searchMember(Long memberId);
 
     // DB에서 회원 데이터 조회	
-    <T> Member getMember(T userId);
+    <T> Member getMember(Long memberId);
     
     /*
     

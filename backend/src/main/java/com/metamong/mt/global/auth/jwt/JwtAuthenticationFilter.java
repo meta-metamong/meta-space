@@ -12,6 +12,8 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -43,10 +45,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		if (token != null) {						
 			if(HttpRequestAuthorizationDefinition.NO_AUTH_REQUIRED_LIST.contains(httpRequest.getRequestURI())) {
 				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
-					httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					httpResponse.setCharacterEncoding("UTF-8");
-	                httpResponse.setContentType("application/json");
-	                httpResponse.getWriter().write("{\"message\": \"토큰 존재\"}");
+					this.responseForUnauthorizedToken(httpResponse, "토큰 존재");
 	                return;
 				}
 				
@@ -54,22 +53,36 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				return;
 			}
 			
-			// 토큰이 유효하면 토큰으로부터 사용자 정보를 받아옴
-			Authentication authentication = jwtAuthenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(null, token));
-			
-			if(authentication == null) {
-				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				httpResponse.setCharacterEncoding("UTF-8");
-                httpResponse.setContentType("application/json");
-                httpResponse.getWriter().write("{\"message\": \"유효하지 않은 토큰\"}");
+			try {
+				if(jwtTokenProvider.validateToken(token)) {
+					// 토큰이 유효하면 토큰으로부터 사용자 정보를 받아옴
+					Authentication authentication = jwtAuthenticationManager.authenticate(
+							new UsernamePasswordAuthenticationToken(null, token));
+					// SecurityContext에 Authentication 객체를 저장.
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				}
+			}catch (ExpiredJwtException e) {
+				this.responseForUnauthorizedToken(httpResponse, "만료된 토큰");
                 return;
-			}
-			// SecurityContext에 Authentication 객체를 저장.
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+	        } catch (SecurityException | MalformedJwtException e) {
+	        	this.responseForUnauthorizedToken(httpResponse, "유효하지 않은 토큰");
+	        	return;
+	        }
 		}
 		
 		
 		chain.doFilter(request, response);
+	}
+	
+	private void responseForUnauthorizedToken(HttpServletResponse httpResponse, String message) throws IOException{
+		httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		httpResponse.setCharacterEncoding("UTF-8");
+        httpResponse.setContentType("application/json");
+        
+        StringBuilder responseMessage = new StringBuilder();
+        responseMessage.append("{\"message\": \"");
+        responseMessage.append(message);
+        responseMessage.append("\"}");
+        httpResponse.getWriter().write(responseMessage.toString());
 	}
 }
