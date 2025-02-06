@@ -7,7 +7,7 @@ import java.util.List;
 
 
 
-public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     
     List<Reservation> findByConsId(int consId);
 }

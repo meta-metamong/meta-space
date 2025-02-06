@@ -54,6 +54,10 @@ public class SecurityConfig {
 	    http.authorizeHttpRequests((registry) -> {
             HttpRequestAuthorizationDefinition.defineRequestMatcher(registry);
         });
+
+        // Spring Security JWT 필터 로드
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter.class);
 	    
 	    return http.build();
 	}
