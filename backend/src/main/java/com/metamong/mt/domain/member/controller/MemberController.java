@@ -37,6 +37,7 @@ import com.metamong.mt.global.auth.userdetails.MemberUserDetails;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -68,15 +69,15 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        Long memberId = this.memberService.login(loginRequest);
+        Long memId = this.memberService.login(loginRequest);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(memberId));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(memId));
         // 액세스 토큰과 리프레시 토큰 생성
         String accessToken = this.jwtTokenProvider.generateAccessToken(userDetails);
         String refreshToken = this.jwtTokenProvider.generateRefreshToken(userDetails);
 
         // 리프레시 토큰을 DB에 저장
-        this.memberService.updateRefreshToken(memberId, refreshToken);
+        this.memberService.updateRefreshToken(memId, refreshToken);
 
         // 쿠키 생성
         ResponseCookie accessTokenResponseCookie = this.cookieGenerator.generateCookie("Ws-Access-Token", accessToken);
@@ -103,7 +104,7 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(BaseResponse.of(HttpStatus.OK, "로그인 성공"));
+                .body(BaseResponse.of(memId, HttpStatus.OK, "로그인 성공"));
     }
      
     /**
@@ -222,26 +223,31 @@ public class MemberController {
      */
     @PostMapping("/members/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("\n\n\n\n\n\n\n들어오나요~~~~~~~~~~~~~~");
     	try {
-    
             String refreshToken = jwtTokenProvider.resolveRefreshTokenFromCookie(request);
     
-            if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-    
-                String memberId = jwtTokenProvider.getMemberId(refreshToken);
-                
-                memberService.deleteRefreshToken(Long.parseLong(memberId));
-                removeRefreshTokenFromCookie(response);
-    
-                return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
-            } else {
+            if (refreshToken == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
-            }
-        } catch (Exception e) {
+                        .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 존재하지 않습니다."));
+            } 
+            String memberId = jwtTokenProvider.getMemberId(refreshToken);
+            
+            memberService.deleteRefreshToken(Long.parseLong(memberId));
+            removeRefreshTokenFromCookie(response);
+
+            return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
+        }catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "만료된 토큰"));
+        } catch (SecurityException | MalformedJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰"));
+        } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
-        }
+            .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
+        } 
+    	
     }
     
       /**

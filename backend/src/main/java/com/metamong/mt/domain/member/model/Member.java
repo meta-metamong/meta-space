@@ -58,7 +58,7 @@ public class Member {
     public void updateInfo(UpdateRequestDto dto) {
         this.memName = dto.getMemName();
         this.memPhone = dto.getMemPhone();
-        this.gender = Gender.valueOf(dto.getGender());
+        this.gender = dto.getGender();
         this.birthDate = dto.getBirthDate();
         this.memPostalCode = dto.getMemPostalCode();
         this.memAddress = dto.getMemAddress();

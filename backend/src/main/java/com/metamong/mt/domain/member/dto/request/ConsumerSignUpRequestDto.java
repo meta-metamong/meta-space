@@ -53,13 +53,17 @@ public class ConsumerSignUpRequestDto {
     @NotEmpty(message = "상세 주소는 필수입니다.")
     private String memDetailAddress;
     
+    public Gender getGender() {
+        return Gender.valueOf(this.gender);
+    }
+    
     public Member toEntity() {
         return Member.builder()
                 .password(this.password)
                 .memName(this.memName)
                 .email(this.email)
                 .memPhone(this.memPhone)
-                .gender(Gender.valueOf(this.gender))
+                .gender(getGender())
                 .birthDate(this.birthDate)
                 .memPostalCode(this.memPostalCode)
                 .memAddress(this.memAddress)
