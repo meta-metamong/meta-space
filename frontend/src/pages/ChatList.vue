@@ -1,18 +1,18 @@
 <template>
 	<div class="container mt-4">
 		<div class="d-flex justify-content-center">
-			<WebSocket />
+			<OnlineMemberList />
 		</div>
 	</div>
 </template>
 
 <script>
-import WebSocket from '../components/admin/ChattingMember.vue';
+import OnlineMemberList from '../components/admin/OnlineMemberList.vue';
 
 export default{
     name: "Answer",
     components:{
-        WebSocket
+        OnlineMemberList
 	}
 }
 </script>

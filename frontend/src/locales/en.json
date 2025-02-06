@@ -97,10 +97,19 @@
         "profile": "Profile",
         "signupUser": "Signup as a Member",
         "signupOwner": "Signup as a Owner",
-        "account": "account",
         "membershipDate": "Membership Date"
     },
+    "admin" : {
+        "socket":"socket",
+        "salesList":"salesList",
+        "chatlist":"chatlist"
+    },
     "reservation": {
+        "list": "Reservation List",
+        "id": "ID",
+        "dateTime": "Datetime",
+        "cancelableDate": "Cancelable date",
+        "state": "State",
         "guestCount": "Number of Guests",
         "specialRequests": "Special Requests",
         "totalPrice": "Total Price",

@@ -23,6 +23,7 @@ import org.springframework.web.socket.WebSocketSession;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
+
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.JwtAuthenticationManager;
@@ -47,8 +48,8 @@ public class MemberController {
 	private final UserDetailsService userDetailsService;
 	private final JwtAuthenticationManager jwtAuthenticationManager;
     private final CookieGenerator cookieGenerator;
-    private final List<WebSocketSession> sessions = new ArrayList<>(); // WebSocket 세션을 저장할 리스트
-
+    private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
+    
     /**
      * 로그인 처리 메서드.
      * <p>
@@ -241,7 +242,6 @@ public class MemberController {
     	return ResponseEntity.ok(BaseResponse.of(memberService.searchMember(userId), HttpStatus.OK));
     }
     
- 
 //    /**
 //     * 아이디 또는 비밀번호 찾기 메서드
 //     * <p>

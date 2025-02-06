@@ -29,6 +29,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 
         String token = null;
+        System.out.println("연결시도");
         if (servletRequest.getServletRequest().getCookies() != null) {
             for (Cookie cookie : servletRequest.getServletRequest().getCookies()) {
                 if ("Ws-Access-Token".equals(cookie.getName())) {

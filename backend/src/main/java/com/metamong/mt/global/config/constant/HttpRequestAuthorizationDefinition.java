@@ -34,7 +34,8 @@ public class HttpRequestAuthorizationDefinition {
             HttpMethod.GET, new String[] {
                     "/api/members/reissue",
                     "/api/members/*",
-                    "/api/members/dup-id/*"
+                    "/api/members/dup-id/*",
+                    "/api/members/*/reservations"
             }
     );
     
