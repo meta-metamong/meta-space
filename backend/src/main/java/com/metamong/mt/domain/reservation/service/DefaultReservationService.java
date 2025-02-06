@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
+import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.model.Reservation;
 import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
@@ -22,6 +23,11 @@ public class DefaultReservationService implements ReservationService {
 	@Override
 	public List<Reservation> findReservationByConsId(int consId) {
 		return this.reservationMapper.findReservationByConsId(consId);
+	}
+
+	@Override
+	public List<ReservationInfoResponseDto> getTotalCount() {
+		return this.reservationMapper.getTotalCount();
 	}
 
 }

@@ -29,7 +29,8 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/provider",
                     "/api/members/login",
                     "/api/members/find-member",
-                    "/api/members/dup-email"
+                    "/api/members/dup-email",
+                    "/api/recommends/*"
             },
             HttpMethod.GET, new String[] {
                     "/api/members/reissue",
