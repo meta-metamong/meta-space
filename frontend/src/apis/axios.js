@@ -40,7 +40,7 @@ apiClient.interceptors.response.use(
     },
     async (error) => {    
         const {config, response} = error;
-        const isReissuable = (error.status === 400 && response.data?.message === "토큰 존재") || (error.status === 401 && response.data?.message === "엑세스 토큰 만료");
+        const isReissuable = (error.status === 401 && (response.data?.message === "토큰 존재" || response.data?.message === "만료된 토큰"));
         if(!isReissuable) return error;
 
         if(error.status === 400){
