@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ import org.springframework.web.socket.WebSocketSession;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
@@ -37,6 +39,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -136,7 +139,7 @@ public class MemberController {
 	   * @return 시설제공자 회원가입 성공 시 응답
 	   */
 	  @PostMapping("/members/provider")
-	  public ResponseEntity<?> registerOwner(@RequestBody ProviderSignUpRequestDto request) {
+	  public ResponseEntity<?> registerOwner(@Validated @RequestBody ProviderSignUpRequestDto request) {
 	      memberService.saveProvider(request);
 	      return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "시설제공자 회원가입이 완료되었습니다."));
 	  }
@@ -219,16 +222,16 @@ public class MemberController {
     @PostMapping("/members/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
     	try {
-
+    
             String refreshToken = jwtTokenProvider.resolveRefreshTokenFromCookie(request);
-
+    
             if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
-
+    
                 String memberId = jwtTokenProvider.getMemberId(refreshToken);
                 
                 memberService.deleteRefreshToken(Long.parseLong(memberId));
                 removeRefreshTokenFromCookie(response);
-
+    
                 return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "로그아웃 성공"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -239,6 +242,24 @@ public class MemberController {
                     .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
         }
     }
+    
+      /**
+      * 회원 정보를 수정하는 메서드
+      * 
+      * <p>
+      * 회원의 아이디를 통해 해당 회원의 정보를 수정합니다. 
+      * 수정하려는 데이터는 요청 본문에서 전달되며, 유효성 검사를 거쳐 데이터가 처리됩니다.
+      * </p>
+      * 
+      * @param userId 회원의 아이디 (수정하려는 회원의 고유 식별자)
+      * @param dto 수정할 회원 정보가 담긴 데이터 전송 객체 (UserUpdateRequestDto)
+      * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
+      */
+     @PutMapping("/members/{memId}")
+     public ResponseEntity<?> updateMember(@PathVariable Long memId, @Valid @RequestBody UpdateRequestDto dto) {
+       this.memberService.updateMember(memId, dto);
+       return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+     }
     
 
     /**
@@ -276,23 +297,6 @@ public class MemberController {
 //    
 //    
 //    
-//    /**
-//     * 회원 정보를 수정하는 메서드
-//     * 
-//     * <p>
-//     * 회원의 아이디를 통해 해당 회원의 정보를 수정합니다. 
-//     * 수정하려는 데이터는 요청 본문에서 전달되며, 유효성 검사를 거쳐 데이터가 처리됩니다.
-//     * </p>
-//     * 
-//     * @param userId 회원의 아이디 (수정하려는 회원의 고유 식별자)
-//     * @param dto 수정할 회원 정보가 담긴 데이터 전송 객체 (UserUpdateRequestDto)
-//     * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
-//     */
-//    @PutMapping("/members/{userId}")
-//    public ResponseEntity<?> updateMember(@PathVariable String userId, @Valid @RequestBody UpdateRequestDto dto) {
-//    	this.memberService.updateMember(userId, dto);
-//    	return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
-//    }
 //    
 //    
 //    /**

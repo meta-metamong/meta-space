@@ -36,6 +36,8 @@ public class Member {
     private String memName;
     private String password;
     private String memPhone;
+    
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

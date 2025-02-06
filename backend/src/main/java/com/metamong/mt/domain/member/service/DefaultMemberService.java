@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
@@ -92,7 +93,7 @@ public class DefaultMemberService implements MemberService {
     
     @Override
 	@Transactional(readOnly = true)
-	public <T> Member getMember(Long memberId) {
+	public Member getMember(Long memberId) {
 	    return this.memberRepository.findById(memberId)
 	    		.orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
 	}
@@ -117,18 +118,18 @@ public class DefaultMemberService implements MemberService {
 								.build();
 	}
 	
-	/*
+	
 	@Override
 	@Transactional
-	public void updateMember(String userId, UpdateRequestDto dto) {
-		Member member = findMember(userId);
+	public void updateMember(Long memId, UpdateRequestDto dto) {
+		Member member = getMember(memId);
 		if (dto.getPassword() != null) {
 			member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 		}
 	    member.updateInfo(dto);
 	}
 	
-	
+	/*
 
 //	@Override
 //	public void storeRefreshToken(Member member) {
