@@ -39,22 +39,10 @@ public interface MemberService {
     Member getMember(Long merId);
     
     /*
-    
-    
-    // Refresh Token을 DB에 저장하는 메서드 추가
-    
-    // void storeRefreshToken(Member member);
-    
-    // 회원 전체 조회
-	
-	
-	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
-	
+    	
 	void getRoleUserCount();
 	
 	String view();
 	
-	// 회원 중복 여부 조회
-	boolean isDuplicatedIdOrEmail(String data, String type);
 	*/
 }
