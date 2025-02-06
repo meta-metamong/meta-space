@@ -36,6 +36,8 @@ public class Member {
     private String memName;
     private String password;
     private String memPhone;
+    
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -51,9 +53,9 @@ public class Member {
     private LocalDateTime createdAt = null;
     private LocalDateTime updatedAt = null;
     private LocalDateTime memBannedUntil = null;
+    private Character isDeleted = 'N';
     
     public void updateInfo(UpdateRequestDto dto) {
-    	this.email = dto.getEmail();
         this.memName = dto.getMemName();
         this.memPhone = dto.getMemPhone();
         this.gender = dto.getGender();
@@ -61,5 +63,9 @@ public class Member {
         this.memPostalCode = dto.getMemPostalCode();
         this.memAddress = dto.getMemAddress();
         this.memDetailAddress = dto.getMemDetailAddress();
+    }
+    
+    public void changePassword(String password) {
+        this.password = password;
     }
 }

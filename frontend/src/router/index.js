@@ -13,15 +13,15 @@ import DetailReservation from '../components/reservation/DetailReservation.vue';
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
-
-	{ path: '/download', component: Download  },
-
+	
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },
+	{ path: '/signup', component: SignUp},
+	//{ path: '/socket', component: Socket  },
+	{ path: '/download', component: Download  },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
-	{ path: '/signup', component: SignUp},
 
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },

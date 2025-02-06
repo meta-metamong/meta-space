@@ -67,6 +67,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 	        } catch (SecurityException | MalformedJwtException e) {
 	        	this.responseForUnauthorizedToken(httpResponse, "유효하지 않은 토큰");
 	        	return;
+	        } catch(Exception e) {
+	            this.responseForUnauthorizedToken(httpResponse, "잘못된 토큰");
+	            return;
 	        }
 		}
 		

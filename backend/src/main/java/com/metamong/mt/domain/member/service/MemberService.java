@@ -2,7 +2,9 @@ package com.metamong.mt.domain.member.service;
 
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Member;
 
@@ -19,16 +21,22 @@ public interface MemberService {
 
     
     // 리프레시 토큰 업데이트
-    void updateRefreshToken(Long memberId, String refreshToken);
+    void updateRefreshToken(Long memId, String refreshToken);
     
     // 리프레시 토큰 삭제
-    void deleteRefreshToken(Long memberId);
+    void deleteRefreshToken(Long memId);
     
     // 회원 정보 조회
- 	MemberResponseDto searchMember(Long memberId);
+ 	MemberResponseDto searchMember(Long memId);
 
-    // DB에서 회원 데이터 조회	
-    <T> Member getMember(Long memberId);
+ 	// 회원 정보 수정
+ 	void updateMember(Long memId, UpdateRequestDto dto);
+ 	
+ 	// 비밀번호 변경
+ 	void changePassword(Long memId, PasswordChangeRequestDto dto);
+
+ 	// DB에서 회원 데이터 조회	
+    Member getMember(Long merId);
     
     /*
     
@@ -39,7 +47,6 @@ public interface MemberService {
     
     // 회원 전체 조회
 	
-	void updateMember(String userId, UpdateRequestDto dto);
 	
 	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
 	
