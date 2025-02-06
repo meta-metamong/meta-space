@@ -39,7 +39,8 @@ public class FacilityRegistrationRequestDto {
     private String fctDetailAddress;
     
     @NotNull
-    private Long catId;
+    @Length(min = 3, max = 3)
+    private String catId;
     
     @NotNull
     private Long provId;
