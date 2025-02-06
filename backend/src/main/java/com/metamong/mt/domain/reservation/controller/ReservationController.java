@@ -18,16 +18,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ReservationController {
-	private final ReservationService reservationService;
-	
-	@GetMapping("/members/{memberId}/reservations")
-	public ResponseEntity<?> findReservationByConsId(@PathVariable Long memberId) {
-		System.out.println(reservationService.findReservationByConsId(memberId));
-		return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByConsId(memberId), HttpStatus.OK, "예약 목록 조회 성공"));
-	}
-	
-	@GetMapping("/reservations/{reservationId}")
-	public ResponseEntity<?> findReservationByRvtId(@PathVariable Long reservationId) {
-		return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByRvtId(reservationId), HttpStatus.OK, "예약 상세 정보 불러오기 성공"));
-	}
+    private final ReservationService reservationService;
+
+    @GetMapping("/members/{memberId}/reservations")
+    public ResponseEntity<?> findReservationByConsId(@PathVariable Long memberId) {
+        return ResponseEntity.ok(
+                BaseResponse.of(reservationService.findReservationByConsId(memberId), HttpStatus.OK, "예약 목록 조회 성공"));
+    }
+
+    @GetMapping("/reservations/{reservationId}")
+    public ResponseEntity<?> findReservationByRvtId(@PathVariable Long reservationId) {
+        return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByRvtId(reservationId),
+                HttpStatus.OK, "예약 상세 정보 불러오기 성공"));
+    }
 }
