@@ -19,12 +19,12 @@ public class DefaultReservationService implements ReservationService {
 	private final ReservationRepository reservationRepository;
 
 	@Override
-	public List<ReservationResponseDto> findReservationByConsId(int consId) {
+	public List<ReservationResponseDto> findReservationByConsId(Long consId) {
 		return this.reservationMapper.findReservationByConsId(consId);
 	}
 
 	@Override
-	public ReservationResponseDto findReservationByRvtId(int rvtId) {
+	public ReservationResponseDto findReservationByRvtId(Long rvtId) {
 		return this.reservationMapper.findReservationByRvtId(rvtId);
 	}
 

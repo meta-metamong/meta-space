@@ -8,23 +8,23 @@ import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
 import Reservation from '../pages/Reservation.vue';
+import DetailReservation from '../components/reservation/DetailReservation.vue';
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
 
-	{ path: '/socket', component: Socket  },
 	{ path: '/download', component: Download  },
 
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },
 
 	{ path: '/admin', component: Admin },
-	{ path: '/admin/socket', component: ChatAdmin },
 	{ path: '/admin/chatlist', component: ChatList },
 	{ path: '/signup', component: SignUp},
 
-	{ path: '/reservation', component: Reservation},
+	{ path: '/reservation', component: Reservation },
+	{ path: '/reservation/:id', component: DetailReservation, props: true },
 ];
 
 const router = createRouter({

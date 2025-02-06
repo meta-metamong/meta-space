@@ -10,6 +10,6 @@ import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 @Repository
 @Mapper
 public interface ReservationMapper {
-	List<ReservationResponseDto> findReservationByConsId(int consId);
-	ReservationResponseDto findReservationByRvtId(int rvtId);
+	List<ReservationResponseDto> findReservationByConsId(Long consId);
+	ReservationResponseDto findReservationByRvtId(Long rvtId);
 }

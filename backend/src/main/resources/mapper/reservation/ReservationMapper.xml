@@ -5,25 +5,29 @@
 <mapper namespace="com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper">
 
     <!-- 시설 이용자의 예약 목록 조회 -->
- 	<select id="findReservationByConsId" parameterType="int" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto">
+ 	<select id="findReservationByConsId" parameterType="Long" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto">
 		<![CDATA[
 			SELECT f.fct_name AS "fctName", r.rvt_id AS "rvtId", r.rvt_date AS "rvtDate", z.zone_name AS "zoneName",
-			TO_CHAR(r.usage_start_time, 'HH24:MI') AS "usageStartTime", TO_CHAR(r.usage_end_time, 'HH24:MI') AS "usageEndTime"
-			FROM reservation r, facility f, zone z
-			WHERE r.zone_id = z.zone_id AND f.fct_id = z.fct_id
-			AND r.cons_id = #{consId}
+			r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", p.pay_state AS "payState"
+			FROM reservation r
+			JOIN zone z ON r.zone_id = z.zone_id
+			JOIN facility f ON f.fct_id = z.fct_id
+			JOIN payment p ON p.rvt_id = r.rvt_id
+			WHERE r.cons_id = #{consId}
 		]]>
 	</select>
 
     <!-- 시설 이용자의 예약 상세 조회 -->
-    <select id="findReservationByRvtId" parameterType="int" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto">
+    <select id="findReservationByRvtId" parameterType="Long" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto">
         <![CDATA[
             SELECT f.fct_name AS "fctName", r.rvt_id AS "rvtId", r.rvt_date AS "rvtDate", z.zone_name AS "zoneName",
-            TO_CHAR(r.usage_start_time, 'HH24:MI') AS "usageStartTime", TO_CHAR(r.usage_end_time, 'HH24:MI') AS "usageEndTime",
-            f.fct_address AS "fctAddress", f.fct_detail_address AS "fctDetailAddress", r.usage_count AS "usageCount" 
-            FROM reservation r, facility f, zone z
-            WHERE r.zone_id = z.zone_id AND f.fct_id = z.fct_id
-            AND r.rvt_id = #{rvtId}
+            f.fct_address AS "fctAddress", f.fct_detail_address AS "fctDetailAddress", r.usage_count AS "usageCount",
+            r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", p.pay_state AS "payState"
+            FROM reservation r
+            JOIN zone z ON r.zone_id = z.zone_id
+            JOIN facility f ON f.fct_id = z.fct_id
+            JOIN payment p ON p.rvt_id = r.rvt_id
+            WHERE r.rvt_id = #{rvtId}
         ]]>
     </select>
 

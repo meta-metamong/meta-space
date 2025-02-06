@@ -21,13 +21,12 @@ public class ReservationController {
 	private final ReservationService reservationService;
 	
 	@GetMapping("/members/{memberId}/reservations")
-	public ResponseEntity<?> findReservationByConsId(@PathVariable int memberId) {
-		System.out.println(reservationService.findReservationByConsId(memberId));
+	public ResponseEntity<?> findReservationByConsId(@PathVariable Long memberId) {
 		return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByConsId(memberId), HttpStatus.OK, "예약 목록 조회 성공"));
 	}
 	
 	@GetMapping("/reservations/{reservationId}")
-	public ResponseEntity<?> findReservationByRvtId(@PathVariable int reservationId) {
+	public ResponseEntity<?> findReservationByRvtId(@PathVariable Long reservationId) {
 		return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByRvtId(reservationId), HttpStatus.OK, "예약 상세 정보 불러오기 성공"));
 	}
 }
