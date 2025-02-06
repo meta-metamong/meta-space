@@ -2,6 +2,7 @@ package com.metamong.mt.domain.member.service;
 
 import java.util.Date;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +16,14 @@ import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
+import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.mail.MailAgent;
+import com.metamong.mt.global.mail.MailType;
 
 import lombok.RequiredArgsConstructor;
 
@@ -143,43 +146,8 @@ public class DefaultMemberService implements MemberService {
         member.changePassword(passwordEncoder.encode(dto.getNewPassword()));
     }
 	
-	/*
-
-//	@Override
-//	public void storeRefreshToken(Member member) {
-//
-//        // 사용자가 존재하는 경우, refreshToken을 저장
-//        if (member != null) {
-//        	member.setRefreshToken(member.getRefreshToken());  
-//            memberMapper.updateMember(member);  
-//        } else {
-//            throw new RuntimeException("사용자를 찾을 수 없습니다.");
-//        }
-//		
-//	}
-	
-	
-	@Override
-	public void sendLoginInfoNotificationMail(FindMemberRequestDto request) {
-	    switch (request.getIdOrPw()) {
-	    case ID:
-	        sendMailForId(request.getEmail());
-	        break;
-	    case PW:
-	        sendMailForPassword(request.getEmail(), request.getUserId());
-	    }
-	}
-	
-	private void sendMailForId(String email) {
-	    Member findMember = this.memberRepository.findByEmail(email)
-	            .orElseThrow(() -> {
-	                throw new MemberNotFoundException(email);
-	            });
-	    this.mailAgent.send(MailType.ID_NOTIFICATION, "아이디 정보", email, findMember.getUserId());
-	}
-	
-	private void sendMailForPassword(String email, String userId) {
-	    if (!this.memberRepository.existsByUserIdAndEmail(userId, email)) {
+	private void sendMailForPassword(String email) {
+	    if (!this.memberRepository.existsByEmail(email)) {
 	        throw new InvalidPasswordResetRequestException();
 	    }
 	    this.mailAgent.send(MailType.PASSWORD_RESET_LINK, "패스워드 재설정 링크", email, "링크"); // TODO: 패스워드 재설정 보내줘야 함.
@@ -195,13 +163,4 @@ public class DefaultMemberService implements MemberService {
     	return "개수"+roleUserCount;
     }
 
-	@Override
-	public boolean isDuplicatedIdOrEmail(String data, String type) {
-		if("user".equals(type)) {
-			return memberRepository.existsById(data);
-		}else {
-			return memberRepository.existsByEmail(data);
-		}
-	}
-    */
 }

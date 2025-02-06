@@ -1,8 +1,6 @@
 package com.metamong.mt.domain.member.dto.request;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
 import com.metamong.mt.domain.member.model.Member;
@@ -41,8 +39,7 @@ public class ConsumerSignUpRequestDto {
     private String gender;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime birthDate; 
+    private LocalDate birthDate; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String memPostalCode;

@@ -1,8 +1,7 @@
 package com.metamong.mt.domain.member.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.model.constant.Gender;
@@ -40,8 +39,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private String memPostalCode;
     private String memDetailAddress;
     private String memAddress;

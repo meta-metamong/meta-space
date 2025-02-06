@@ -102,10 +102,8 @@ export const get = async function(endpoint){
 export const post = async function(endpoint, requestData){
     try{
         const response = await apiClient.post(endpoint, requestData);
-        console.log(response);
         return response;
     }catch(error){
-        console.log(response);
         return error
     }
 }
