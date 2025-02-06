@@ -35,7 +35,7 @@ public class Zone {
     private Long fctId;
     private String zoneName;
     private Integer maxUserCount;
-    private Boolean isSharedZone;
+    private Integer isSharedZone;
     private Integer hourlyRate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
