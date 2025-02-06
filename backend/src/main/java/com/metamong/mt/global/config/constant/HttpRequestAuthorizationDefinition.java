@@ -30,7 +30,8 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/login",
                     "/api/members/find-member",
                     "/api/members/dup-email",
-                    "/api/recommends/*"
+                    "/api/recommends/*",
+                    "/api/reservations"
             },
             HttpMethod.GET, new String[] {
                     "/api/members/reissue",

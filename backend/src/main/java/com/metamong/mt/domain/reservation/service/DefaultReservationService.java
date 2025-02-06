@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
+import com.metamong.mt.domain.reservation.model.Reservation;
 import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
 
@@ -32,5 +33,10 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public List<ReservationInfoResponseDto> getTotalCount() {
         return this.reservationMapper.getTotalCount();
+    }
+
+    @Override
+    public Reservation saveReservation(Reservation reservation) {
+        return this.reservationRepository.save(reservation);
     }
 }

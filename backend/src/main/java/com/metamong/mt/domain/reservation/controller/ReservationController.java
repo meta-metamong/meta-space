@@ -9,9 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.reservation.dto.response.RecommendationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
+import com.metamong.mt.domain.reservation.model.Reservation;
 import com.metamong.mt.domain.reservation.service.ReservationService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
@@ -45,6 +48,12 @@ public class ReservationController {
     public ResponseEntity<?> findReservationByRvtId(@PathVariable Long reservationId) {
         return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByRvtId(reservationId),
                 HttpStatus.OK, "예약 상세 정보 불러오기 성공"));
+    }
+    
+    @PostMapping("/reservations")
+    public ResponseEntity<?> saveResevation(@RequestBody Reservation reservation) {
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(BaseResponse.of(reservationService.saveReservation(reservation),
+                HttpStatus.CREATED, "예약하기 성공"));
     }
 
     @PostMapping("/recommends")
