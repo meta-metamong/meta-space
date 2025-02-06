@@ -1,10 +1,7 @@
 package com.metamong.mt.domain.facility.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
@@ -12,6 +9,7 @@ import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
+import com.metamong.mt.domain.facility.dto.response.ZoneImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.model.Zone;
@@ -50,19 +48,19 @@ public class DefaultFacilityService implements FacilityService {
         }
         this.facilityRepository.save(newFacility);
         
-        Map<Integer, List<ImageUploadUrlResponseDto>> zoneImageUploadUrlResponseDtosByZoneNo = new HashMap<>();
+        List<ZoneImageUploadUrlResponseDto> zoneImageUploadUrls = new ArrayList<>();
         for (ZoneRegistrationRequestDto zoneDto : dto.getZones()) {
             Zone zone = zoneDto.toEntity();
-            List<ImageUploadUrlResponseDto> zoneImageUploadUrlResponseDtos = new ArrayList<>(zoneDto.getImages().size());
+            List<ImageUploadUrlResponseDto> uploadUrls = new ArrayList<>(zoneDto.getImages().size());
             for (ImageRequestDto zoneImage : zoneDto.getImages()) {
                 String zoneUuidFilename = this.filenameResolver.generateUuidFilename(zoneImage.getFileType());
                 String zoneUploadUrl = this.fileUploader.generateUploadUrl(zoneUuidFilename);
                 String zoneFilePath = this.filenameResolver.resolveFileUrl(zoneUuidFilename);
                 zone.addZoneImage(new ZoneImage(zoneFilePath, zoneImage.getOrder(), zone));
-                zoneImageUploadUrlResponseDtos.add(new ImageUploadUrlResponseDto(zoneImage.getOrder(), zoneUploadUrl));
+                uploadUrls.add(new ImageUploadUrlResponseDto(zoneImage.getOrder(), zoneUploadUrl));
             }
             this.zoneRepository.save(zone);
-            zoneImageUploadUrlResponseDtosByZoneNo.put(zoneDto.getZoneNo(), zoneImageUploadUrlResponseDtos);
+            zoneImageUploadUrls.add(new ZoneImageUploadUrlResponseDto(zoneDto.getZoneNo(), uploadUrls));
         }
         
         dto.getAddinfos().stream()
@@ -77,7 +75,7 @@ public class DefaultFacilityService implements FacilityService {
                 newFacility.getFctImages().stream()
                         .map((image) -> new ImageUploadUrlResponseDto(image.getImgDisplayOrder(), image.getImgPath()))
                         .toList(),
-                zoneImageUploadUrlResponseDtosByZoneNo
+                zoneImageUploadUrls
         );
     }
 }

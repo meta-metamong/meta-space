@@ -12,6 +12,7 @@ import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponse
 import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,7 +23,7 @@ public class FacilityController {
     
     @PostMapping("/facilities")
     public ResponseEntity<BaseResponse<FacilityRegistrationResponseDto>> postFacility(
-            @RequestBody FacilityRegistrationRequestDto requestBody) {
+            @Valid @RequestBody FacilityRegistrationRequestDto requestBody) {
         return ResponseEntity.status(HttpStatus.CREATED.value())
                 .body(BaseResponse.of(this.facilityService.registerFacility(requestBody), HttpStatus.CREATED));
     }
