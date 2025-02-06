@@ -1,7 +1,9 @@
 package com.metamong.mt.domain.member.controller;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -23,7 +25,6 @@ import org.springframework.web.socket.WebSocketSession;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
-
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.JwtAuthenticationManager;

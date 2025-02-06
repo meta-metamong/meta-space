@@ -25,6 +25,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환기
 
+    /*
     // WebSocket 연결 시 세션을 추가
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -106,4 +107,5 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         updateOnlineUsers();
         System.out.println("WebSocket 연결 종료: " + session.getId());
     }
+    */
 }

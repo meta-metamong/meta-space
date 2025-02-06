@@ -98,6 +98,7 @@ public class JwtTokenProvider {
     // 토큰에서 username 추출
     public String getUsername(String token) {
         return this.getClaims(token).getIssuer();  // Subject로 저장된 username 반환
+    }
     
     public Claims getClaims(String token) {
         // 서명 검증을 위한 비밀키를 사용하여 토큰을 파싱
