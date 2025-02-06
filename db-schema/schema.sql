@@ -87,8 +87,8 @@ CREATE TABLE report (
 );
 
 CREATE TABLE category (
-    cat_id         NUMBER (4, 0),
-    parent_cat_id  NUMBER (4, 0),
+    cat_id         CHAR(3),
+    parent_cat_id  CHAR(3),
     cat_name       VARCHAR2(30)   NOT NULL,
 
     CONSTRAINT pk_category PRIMARY KEY (cat_id),
@@ -98,7 +98,7 @@ CREATE TABLE category (
 
 CREATE TABLE facility (
     fct_id                        NUMBER(4, 0),
-    cat_id                        NUMBER(4, 0)   NOT NULL,
+    cat_id                        CHAR(3)        NOT NULL,
     prov_id                       NUMBER(4, 0)   NOT NULL,
     fct_name                      VARCHAR2(50)   NOT NULL,
     fct_postal_code               CHAR(5)        NOT NULL,
