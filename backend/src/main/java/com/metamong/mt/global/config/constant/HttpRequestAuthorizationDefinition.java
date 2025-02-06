@@ -37,7 +37,12 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/*",
                     "/api/members/dup-id/*",
                     "/api/members/*/reservations",
+                    "/api/reservations/*",
                     "/api/test"
+            },
+            HttpMethod.PUT, new String[] {
+                    "/api/members",
+                    "/api/members/password"
             }
     );
     

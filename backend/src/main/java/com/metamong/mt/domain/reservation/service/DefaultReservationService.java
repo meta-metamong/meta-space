@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
-import com.metamong.mt.domain.reservation.model.Reservation;
+import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
 
@@ -17,17 +16,21 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class DefaultReservationService implements ReservationService {
-	private final ReservationMapper reservationMapper;
-	private final ReservationRepository reservationRepository;
+    private final ReservationMapper reservationMapper;
+    private final ReservationRepository reservationRepository;
 
-	@Override
-	public List<Reservation> findReservationByConsId(int consId) {
-		return this.reservationMapper.findReservationByConsId(consId);
-	}
+    @Override
+    public List<ReservationResponseDto> findReservationByConsId(Long consId) {
+        return this.reservationMapper.findReservationByConsId(consId);
+    }
 
-	@Override
-	public List<ReservationInfoResponseDto> getTotalCount() {
-		return this.reservationMapper.getTotalCount();
-	}
+    @Override
+    public ReservationResponseDto findReservationByRvtId(Long rvtId) {
+        return this.reservationMapper.findReservationByRvtId(rvtId);
+    }
 
+    @Override
+    public List<ReservationInfoResponseDto> getTotalCount() {
+        return this.reservationMapper.getTotalCount();
+    }
 }

@@ -26,20 +26,31 @@
 
 <script>
 
+import { getUserIdInLocal } from '../../store';
+
 export default{
     name: 'Header',
     methods: {
         logout(){
-            this.$store.commit('setLogin', false);
+            this.$store.dispatch('logoutRequest');
         },
         handleLanguageChange(event){
           this.$i18n.locale = event.target.value;
+        },
+        initUserId(){
+        const userId = getUserIdInLocal();
+        if(!this.$store.state.userId && userId){
+          this.$store.commit('initUserId', userId);
         }
+      }
     },
     computed: {
         isLogin(){
-            return this.$store.state.isLogin;
+            return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
         }
+    },
+    mounted(){
+      this.initUserId();
     }
 }
 </script>

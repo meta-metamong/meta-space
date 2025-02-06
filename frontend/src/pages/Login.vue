@@ -41,9 +41,8 @@ export default {
 				"email": this.email,
 				"password": this.password
 			}
-			this.$store.commit('setLogin', true);
 
-			// await this.$store.dispatch("loginRequest", loginDto);
+			await this.$store.dispatch("loginRequest", loginDto);
 		},
 		route(page){
 			this.$router.push(page);
