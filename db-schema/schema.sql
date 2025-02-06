@@ -26,10 +26,12 @@ CREATE TABLE member (
     created_at                   DATE           DEFAULT SYSDATE,
     updated_at                   DATE           DEFAULT SYSDATE,
     mem_banned_until             DATE,
+    is_del                       CHAR(1)        DEFAULT 'N',
     
     CONSTRAINT pk_member PRIMARY KEY (mem_id),
     CONSTRAINT member_gender_domain CHECK (gender IN ('M', 'W')),
-    CONSTRAINT member_role_domain CHECK (role IN ('ROLE_PROV', 'ROLE_CONS', 'ROLE_ADMN'))
+    CONSTRAINT member_role_domain CHECK (role IN ('ROLE_PROV', 'ROLE_CONS', 'ROLE_ADMN')),
+    CONSTRAINT member_is_del_domain CHECK (is_del IN ('Y', 'N'))
 );
 
 CREATE TABLE notification (
@@ -37,10 +39,12 @@ CREATE TABLE notification (
     receiver_id   NUMBER(4, 0)   NOT NULL,
     noti_msg      VARCHAR2(150)  NOT NULL,
     created_at    DATE           DEFAULT SYSDATE,
+    is_read       CHAR(1)        DEFAULT 'N',
 
     CONSTRAINT pk_notification PRIMARY KEY (noti_id),
     CONSTRAINT fk_noti_receiver_id FOREIGN KEY (receiver_id)
-        REFERENCES member (mem_id)
+        REFERENCES member (mem_id),
+    CONSTRAINT noti_is_read_domain CHECK (is_read IN ('Y', 'N'))
 );
 
 CREATE TABLE bank (
@@ -72,17 +76,19 @@ CREATE TABLE report (
     report_msg     VARCHAR2(255)    NOT NULL,
     report_date    DATE             DEFAULT SYSDATE,
     report_type    VARCHAR2(50)     NOT NULL,
+    is_processed   CHAR(1)          DEFAULT 'N',
     
     CONSTRAINT pk_report PRIMARY KEY (report_id),
     CONSTRAINT fk_report_reporter_id FOREIGN KEY (reporter_id)
         REFERENCES member (mem_id),
     CONSTRAINT fk_report_reported_id FOREIGN KEY (reported_id)
-        REFERENCES member (mem_id)
+        REFERENCES member (mem_id),
+    CONSTRAINT report_is_processed_domain CHECK(is_processed IN ('Y', 'N'))
 );
 
 CREATE TABLE category (
-    cat_id         NUMBER (4, 0),
-    parent_cat_id  NUMBER (4, 0),
+    cat_id         CHAR(3),
+    parent_cat_id  CHAR(3),
     cat_name       VARCHAR2(30)   NOT NULL,
 
     CONSTRAINT pk_category PRIMARY KEY (cat_id),
@@ -92,7 +98,7 @@ CREATE TABLE category (
 
 CREATE TABLE facility (
     fct_id                        NUMBER(4, 0),
-    cat_id                        NUMBER(4, 0)   NOT NULL,
+    cat_id                        CHAR(3)        NOT NULL,
     prov_id                       NUMBER(4, 0)   NOT NULL,
     fct_name                      VARCHAR2(50)   NOT NULL,
     fct_postal_code               CHAR(5)        NOT NULL,
