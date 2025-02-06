@@ -14,21 +14,22 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @ToString
 public class Reservation {
-	@Id
-	private Long rvtId;
-	
-	private Long consId;
-	private Long zoneId;
-	private LocalDate rvtDate;
-	private LocalTime usageStartTime;
-	private LocalTime usageEndTime;
-	private int usageCount;
-	private LocalDate createdAt;
-	private String rvtCancelationReason;
+    @Id
+    private Long rvtId;
+
+    private Long consId;
+    private Long zoneId;
+    private LocalDate rvtDate;
+    private LocalTime usageStartTime;
+    private LocalTime usageEndTime;
+    private int usageCount;
+    private LocalDate createdAt;
+    private String rvtCancelationReason;
 }

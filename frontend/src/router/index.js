@@ -13,7 +13,6 @@ import DetailReservation from '../components/reservation/DetailReservation.vue';
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
-	
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},

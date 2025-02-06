@@ -31,4 +31,15 @@
         ]]>
     </select>
 
+    <!-- 예약 내역 개수 조회 -->
+    <select id="getTotalCount" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto">
+        <![CDATA[
+            SELECT r.cons_id AS "consId", f.fct_id AS "fctId", count(*) AS "totalCount"
+			FROM reservation r
+			JOIN zone z ON r.zone_id = z.zone_id
+			JOIN facility f ON z.fct_id = f.fct_id
+			GROUP BY r.cons_id, f.fct_id
+        ]]>
+    </select>
+
 </mapper>
