@@ -4,21 +4,26 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConsumerSignUpRequestDto {
 
-	@NotEmpty(message = "이메일은 필수입니다.")
+    @NotEmpty(message = "이메일은 필수입니다.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
 	
@@ -31,8 +36,9 @@ public class ConsumerSignUpRequestDto {
     @NotEmpty(message = "전화번호는 필수입니다.")
     private String memPhone;
     
-    @NotEmpty (message = "성별은 필수입니다.")
-    private Gender gender;
+    @NotBlank(message = "성별은 필수입니다.")
+    @EnumValidator(enumClass=Gender.class, message="성별 값은 'M' 또는 'W'만 가능합니다.")
+    private String gender;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -53,7 +59,7 @@ public class ConsumerSignUpRequestDto {
                 .memName(this.memName)
                 .email(this.email)
                 .memPhone(this.memPhone)
-                .gender(this.gender)
+                .gender(Gender.valueOf(this.gender))
                 .birthDate(this.birthDate)
                 .memPostalCode(this.memPostalCode)
                 .memAddress(this.memAddress)
