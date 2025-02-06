@@ -25,11 +25,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환기
 
+    /*
     // WebSocket 연결 시 세션을 추가
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        memberController.addSession(session); 
-        updateOnlineUsers();
+        //boardController.addSession(session); // WebSocket 세션을 BoardController에 추가
     }
 
     // 클라이언트로부터 받은 메시지를 처리하고, 클라이언트에게 JSON 응답을 보냄
@@ -107,4 +107,5 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         updateOnlineUsers();
         System.out.println("WebSocket 연결 종료: " + session.getId());
     }
+    */
 }

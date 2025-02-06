@@ -1,13 +1,18 @@
 package com.metamong.mt.domain.member.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,31 +29,37 @@ import lombok.Setter;
 public class Member {
     
     @Id
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long memId;
     
-    private String name;
-    private String password;
-    private String phone;
     private String email;
-    private LocalDate birth;
-    private String postalCode;
-    private String detailAddress;
-    private String address;
+    private String memName;
+    private String password;
+    private String memPhone;
+    private Gender gender;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime birthDate;
+    private String memPostalCode;
+    private String memDetailAddress;
+    private String memAddress;
     
     @Enumerated(EnumType.STRING)
     private Role role;
     
     private String refreshToken;
-    private String businessName;
-    private String businessRegistrationNumber;
+    private LocalDateTime createdAt = null;
+    private LocalDateTime updatedAt = null;
+    private LocalDateTime memBannedUntil = null;
     
     public void updateInfo(UpdateRequestDto dto) {
-        this.name = dto.getName();
-        this.phone = dto.getPhone();
-        this.email = dto.getEmail();
-        this.birth = dto.getBirth();
-        this.postalCode = dto.getPostalCode();
-        this.address = dto.getAddress();
-        this.detailAddress = dto.getDetailAddress();
+    	this.email = dto.getEmail();
+        this.memName = dto.getMemName();
+        this.memPhone = dto.getMemPhone();
+        this.gender = dto.getGender();
+        this.birthDate = dto.getBirthDate();
+        this.memPostalCode = dto.getMemPostalCode();
+        this.memAddress = dto.getMemAddress();
+        this.memDetailAddress = dto.getMemDetailAddress();
     }
 }
