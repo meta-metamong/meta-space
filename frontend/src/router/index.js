@@ -9,6 +9,8 @@ import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
 import Reservation from '../pages/Reservation.vue';
 import DetailReservation from '../components/reservation/DetailReservation.vue';
+import AdminChat from '../components/admin/OnlineMemberList.vue';
+import MemberChat from '../components/admin/ChattingMember.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -16,7 +18,8 @@ const routes = [
 	{ path: '/mypage', component: MyPage },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
-	//{ path: '/socket', component: Socket  },
+	{ path: '/chat', component: MemberChat },
+	{ path: '/admin/chat', component: AdminChat },
 	{ path: '/download', component: Download  },
 
 	{ path: '/admin', component: Admin },

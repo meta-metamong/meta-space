@@ -376,4 +376,16 @@ public class MemberController {
 //                .contentType(MediaType.parseMediaType("application/octet-stream"))  
 //                .body(resource);
 //    }
+    
+    	public void addSession(WebSocketSession session) {
+    		sessions.add(session);
+    	}
+    	
+    	public void removeSession(WebSocketSession session) {
+            sessions.remove(session);
+        }
+
+        public Set<WebSocketSession> getAllSessions() {
+            return sessions;
+        }
 }
