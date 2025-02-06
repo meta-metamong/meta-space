@@ -25,23 +25,23 @@ class MemberMapperTest {
     
     @Autowired
     MemberRepository memberRepository;
-
-    @Test
-    @DisplayName("findLoginInfoByUserId() - 성공")
-    void findLoginInfoByUserId_successs() {
-        // Given
-        Member dummy = DummyEntityGenerator.generateMember();
-        String dummyId = dummy.getUserId();
-        String dummyName = dummy.getName();
-        Role dummyRole = dummy.getRole();
-        this.memberRepository.save(dummy);
-        
-        // When
-        LoginInfoResponseDto result = this.memberMapper.findLoginInfoByUserId(dummyId).get();
-        
-        // Then
-        assertThat(result.getUserId()).isEqualTo(dummyId);
-        assertThat(result.getName()).isEqualTo(dummyName);
-        assertThat(result.getRole()).isEqualTo(dummyRole);
-    }
+//
+//    @Test
+//    @DisplayName("findLoginInfoByUserId() - 성공")
+//    void findLoginInfoByUserId_successs() {
+//        // Given
+//        Member dummy = DummyEntityGenerator.generateMember();
+//        String dummyId = dummy.getUserId();
+//        String dummyName = dummy.getName();
+//        Role dummyRole = dummy.getRole();
+//        this.memberRepository.save(dummy);
+//        
+//        // When
+//        LoginInfoResponseDto result = this.memberMapper.findLoginInfoByUserId(dummyId).get();
+//        
+//        // Then
+//        assertThat(result.getUserId()).isEqualTo(dummyId);
+//        assertThat(result.getName()).isEqualTo(dummyName);
+//        assertThat(result.getRole()).isEqualTo(dummyRole);
+//    }
 }

@@ -11,7 +11,6 @@
 			<!-- 비밀번호 입력 -->
 			<div class="mb-4">
 				<input type="password" id="password" name="userId" class="form-control signup-input" v-model="password" :placeholder="$t('member.password')" required />
-				<h3 class="error-message mt-2" v-if="!isValidated" v-text="$t('error.login')" />
 			</div>	
 	
 			<!-- 로그인 버튼 -->
@@ -33,8 +32,7 @@ export default {
 	data() {
 		return {
 			email: "",
-			password: "",
-			isValidated: true
+			password: ""			
 		}
 	},
 	methods: {

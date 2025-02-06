@@ -1,9 +1,9 @@
 package com.metamong.mt.domain.member.model.constant;
 
 public enum Role {
-    ROLE_USER,
-    ROLE_OWNER,
-    ROLE_ADMIN;
+    ROLE_CONS,
+    ROLE_PROV,
+    ROLE_ADMN;
     
     private final String role;
     

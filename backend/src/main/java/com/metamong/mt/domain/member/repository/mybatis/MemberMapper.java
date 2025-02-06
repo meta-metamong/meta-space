@@ -11,9 +11,7 @@ import com.metamong.mt.domain.member.model.Member;
 
 @Repository
 @Mapper
-public interface MemberMapper {
-	Optional<LoginInfoResponseDto> findLoginInfoByUserId(@Param("userId") String userId);
-	
+public interface MemberMapper {	
 	void updateMember(Member member);
 	
 	boolean existsAdmin();
