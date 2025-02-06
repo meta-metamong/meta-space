@@ -7,18 +7,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.metamong.mt.domain.member.model.constant.IdOrPw;
+import com.metamong.mt.global.file.FileType;
 import com.metamong.mt.global.file.local.LocalFileUploader;
-import com.metamong.mt.global.jackson.idorpw.IdOrPwDeserializer;
+import com.metamong.mt.global.jackson.fileextension.FileTypeDeserializer;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailAgentMock;
 import com.metamong.mt.global.mail.MailMessageFormatter;
@@ -51,9 +47,9 @@ public class BeanConfig {
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
 
-        SimpleModule idOrPwDeserializerModule = new SimpleModule();
-        idOrPwDeserializerModule.addDeserializer(IdOrPw.class, new IdOrPwDeserializer());
-        objectMapper.registerModule(idOrPwDeserializerModule);
+        SimpleModule fileTypeDeserializerModule = new SimpleModule();
+        fileTypeDeserializerModule.addDeserializer(FileType.class, new FileTypeDeserializer());
+        objectMapper.registerModule(fileTypeDeserializerModule);
 
         return objectMapper;
     }
