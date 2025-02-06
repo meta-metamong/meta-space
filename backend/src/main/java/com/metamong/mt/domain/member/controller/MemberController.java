@@ -27,6 +27,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -255,9 +256,9 @@ public class MemberController {
       * @param dto 수정할 회원 정보가 담긴 데이터 전송 객체 (UserUpdateRequestDto)
       * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
       */
-     @PutMapping("/members/{memId}")
-     public ResponseEntity<?> updateMember(@PathVariable Long memId, @Valid @RequestBody UpdateRequestDto dto) {
-       this.memberService.updateMember(memId, dto);
+     @PutMapping("/members")
+     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {
+       this.memberService.updateMember(Long.parseLong(user.getUsername()), dto);
        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
      }
     
@@ -276,6 +277,21 @@ public class MemberController {
     @GetMapping("/members/{userId}")
     public ResponseEntity<?> getMember(@PathVariable Long userId){
     	return ResponseEntity.ok(BaseResponse.of(memberService.searchMember(userId), HttpStatus.OK));
+    }
+    
+    /**
+     * 비밀번호 변경 메서드
+     * <p>
+     *  새로운 비밀번호를 사용하기 위해 비밀번호를 변경하는 메서드입니다.
+     * </p>
+     * 
+     * @param 현재 비밀번호와 password와 passwordConfirm를 담은 객체
+     * @return 비밀번호 변경 성공 여부
+     */
+    @PutMapping("/members/password")
+    public ResponseEntity<?> confirmPassword(@AuthenticationPrincipal User user, @RequestBody PasswordChangeRequestDto dto){
+        memberService.changePassword(Long.parseLong(user.getUsername()), dto);
+        return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "비밀번호 변경 성공"));
     }
     
 //    /**

@@ -2,6 +2,7 @@ package com.metamong.mt.domain.member.service;
 
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
@@ -28,10 +29,15 @@ public interface MemberService {
     // 회원 정보 조회
  	MemberResponseDto searchMember(Long memId);
 
-    // DB에서 회원 데이터 조회	
+ 	// 회원 정보 수정
+ 	void updateMember(Long memId, UpdateRequestDto dto);
+ 	
+ 	// 비밀번호 변경
+ 	void changePassword(Long memId, PasswordChangeRequestDto dto);
+
+ 	// DB에서 회원 데이터 조회	
     Member getMember(Long merId);
     
-    void updateMember(Long memId, UpdateRequestDto dto);
     /*
     
     

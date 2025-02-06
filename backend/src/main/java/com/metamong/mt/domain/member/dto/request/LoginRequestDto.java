@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class LoginRequestDto {
 
 	@NotBlank(message = "이메일은 필수입니다.")

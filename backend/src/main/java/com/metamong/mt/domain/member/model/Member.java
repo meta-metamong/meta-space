@@ -55,13 +55,16 @@ public class Member {
     private LocalDateTime memBannedUntil = null;
     
     public void updateInfo(UpdateRequestDto dto) {
-    	this.email = dto.getEmail();
         this.memName = dto.getMemName();
         this.memPhone = dto.getMemPhone();
-        this.gender = dto.getGender();
+        this.gender = Gender.valueOf(dto.getGender());
         this.birthDate = dto.getBirthDate();
         this.memPostalCode = dto.getMemPostalCode();
         this.memAddress = dto.getMemAddress();
         this.memDetailAddress = dto.getMemDetailAddress();
+    }
+    
+    public void changePassword(String password) {
+        this.password = password;
     }
 }
