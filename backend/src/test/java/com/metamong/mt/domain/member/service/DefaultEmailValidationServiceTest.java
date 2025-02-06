@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
+import com.metamong.mt.domain.member.repository.redis.MemberEmailCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 import com.metamong.mt.global.mail.exception.MailTransmissionException;
@@ -22,12 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 class DefaultEmailValidationServiceTest {
     DefaultEmailValidationService defaultEmailValidationService;
     MailAgentMocking mailAgent;
-    MemberVolatileCodeRepository memberVolatileCodeRepository;
+    MemberEmailCodeRepository memberVolatileCodeRepository;
     
     @RequiredArgsConstructor
     static class MailAgentMocking implements MailAgent {
         private static final Map<String, String> mailCodeMap = new HashMap<>();
-        private final MemberVolatileCodeRepository memberVolatileCodeRepository;
+        private final MemberEmailCodeRepository memberVolatileCodeRepository;
 
         @Override
         public void send(MailType mailType, String subject, String receiverEmail, Object... params)
@@ -45,7 +45,7 @@ class DefaultEmailValidationServiceTest {
         }
     }
     
-    static class MemberVolatileCodeRepositoryMock implements MemberVolatileCodeRepository {
+    static class MemberVolatileCodeRepositoryMock implements MemberEmailCodeRepository {
         private static final Map<String, String> store = new HashMap<>();
 
         @Override

@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
-import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
+import com.metamong.mt.domain.member.repository.redis.MemberEmailCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -34,7 +34,7 @@ public class DefaultEmailValidationService implements EmailValidationService {
     }
     
     private final MailAgent mailAgent;
-    private final MemberVolatileCodeRepository memberVolatileCodeRepository;
+    private final MemberEmailCodeRepository memberVolatileCodeRepository;
 
     @Override
     public void sendEmailValidationCode(String email) {

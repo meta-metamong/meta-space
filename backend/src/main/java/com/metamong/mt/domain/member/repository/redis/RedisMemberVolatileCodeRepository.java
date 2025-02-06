@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class RedisMemberVolatileCodeRepository implements MemberVolatileCodeRepository {
-    private static final String EMAIL_VALIDATION_CODE_PREFIX = "email_validation_code";
+    private static final String EMAIL_VALIDATION_CODE_PREFIX = "email_validation_code_";
+    private static final String SIGN_UP_VALIDATION_TOKEN = "sign_up_validation_token_";
     
     private final RedisTemplate<String, String> stringRedisTemplate;
     
@@ -37,5 +38,17 @@ public class RedisMemberVolatileCodeRepository implements MemberVolatileCodeRepo
     @Override
     public boolean deleteByEmail(String email) {
         return this.stringRedisTemplate.delete(EMAIL_VALIDATION_CODE_PREFIX + email);
+    }
+
+    @Override
+    public void saveSignUpValidationCode(String email, String code) {
+        this.stringRedisTemplate.opsForValue()
+                .set(SIGN_UP_VALIDATION_TOKEN + email, code);
+        
+    }
+
+    @Override
+    public boolean deleteSignUpValidationCodeByEmail(String email) {
+        return this.stringRedisTemplate.delete(SIGN_UP_VALIDATION_TOKEN + email);
     }
 }
