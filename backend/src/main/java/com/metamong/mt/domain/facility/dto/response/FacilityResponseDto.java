@@ -35,5 +35,5 @@ public class FacilityResponseDto {
     private FacilityState fctState;
     private List<FacilityImageResponseDto> fctImages;
     private List<ZoneResponseDto> zones;
-    private List<String> additionalInfos;
+    private List<AdditionalInfoResponseDto> additionalInfos;
 }

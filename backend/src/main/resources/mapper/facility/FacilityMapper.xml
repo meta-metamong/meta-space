@@ -68,9 +68,47 @@
                 <result property="zoneImgUrl" column="zone_img_path" jdbcType="VARCHAR" />
             </collection>
         </collection>
-        <collection property="additionalInfos" ofType="java.lang.String">
+        <collection property="additionalInfos" ofType="com.metamong.mt.domain.facility.dto.response.AdditionalInfoResponseDto">
             <id property="addinfoId" column="addinfo_id" jdbcType="BIGINT" />
             <result property="addinfoDesc" column="addinfo_desc" jdbcType="VARCHAR" />
         </collection>
     </resultMap>
+    
+    <select id="findFacilityById" parameterType="java.lang.Long" resultMap="facilityDto">
+        <![CDATA[
+            SELECT
+                fct.fct_id AS "fct_id",
+                fct.fct_name AS "fct_name",
+                fct.fct_postal_code AS "fct_postal_code",
+                fct.fct_address AS "fct_address",
+                fct.fct_detail_address AS "fct_detail_address",
+                fct.fct_latitude AS "fct_latitude",
+                fct.fct_longitude AS "fct_longitude",
+                fct.fct_tel AS "fct_tel",
+                cat.cat_id AS "cat_id",
+                cat.cat_name AS "cat_name",
+                fct.fct_guide AS "fct_guide",
+                fct.is_open_on_holidays As "is_open_on_holidays",
+                fct.fct_open_time AS "fct_open_time",
+                fct.fct_close_time AS "fct_close_time",
+                fct.fct_state AS "fct_state",
+                fi.img_path AS "fct_img_display_order",
+                fi.img_display_order AS "fct_img_display_order",
+                z.zone_id AS "zone_id",
+                z.zone_name AS "zone_name",
+                z.max_user_count AS "max_user_count",
+                z.hourly_rate AS "hourly_rate",
+                z.is_shared_zone AS "is_shared_zone",
+                zi.img_path AS "zone_img_path",
+                zi.img_display_order AS "zone_img_display_order",
+                addinfo.addinfo_id AS "addinfo_id",
+                addinfo.addinfo_desc AS "addinfo_desc"
+            FROM facility fct
+            INNER JOIN category cat ON cat.cat_id = fct.cat_id
+            LEFT JOIN image fi ON fct.fct_id = fi.fct_id
+            INNER JOIN zone z ON z.fct_id = fct.fct_id
+            LEFT JOIN image zi ON zi.zone_id = z.zone_id
+            WHERE fct.fct_id = #{fctId}
+        ]]>
+    </select>
 </mapper>
