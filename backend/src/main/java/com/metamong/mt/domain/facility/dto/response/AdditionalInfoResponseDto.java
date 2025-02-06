@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class FacilityImageResponseDto {
-    private int fctImgDisplayOrder;
-    private String fctImgUrl;
+public class AdditionalInfoResponseDto {
+    private Long addinfoId;
+    private String addinfoDesc;
 }

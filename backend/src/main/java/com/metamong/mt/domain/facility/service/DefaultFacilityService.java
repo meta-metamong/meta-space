@@ -8,6 +8,7 @@ import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDt
 import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
@@ -77,5 +78,10 @@ public class DefaultFacilityService implements FacilityService {
                         .toList(),
                 zoneImageUploadUrls
         );
+    }
+    
+    @Override
+    public FacilityResponseDto getFacility(Long facilityId) {
+        throw new UnsupportedOperationException();
     }
 }

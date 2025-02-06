@@ -2,20 +2,25 @@ package com.metamong.mt.domain.facility.dto.response;
 
 import java.util.List;
 
+import com.metamong.mt.global.constant.BooleanAlt;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @Getter
 @ToString
 public class ZoneResponseDto {
-    private final Long zoneId;
-    private final String zoneName;
-    private final int maxUserCount;
-    private final int hourlyRate;
-    private final boolean isSharedZone;
-    private final List<ZoneImageResponseDto> zoneImgs;
+    private Long zoneId;
+    private String zoneName;
+    private int maxUserCount;
+    private int hourlyRate;
+    private BooleanAlt isSharedZone;
+    private List<ZoneImageResponseDto> zoneImgs;
 }
