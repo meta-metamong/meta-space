@@ -1,6 +1,6 @@
 package com.metamong.mt.domain.member.dto.request;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
 import com.metamong.mt.domain.member.model.constant.Gender;
@@ -27,7 +27,7 @@ public class UpdateRequestDto {
     private String memPhone;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    private LocalDateTime birthDate; 
+    private LocalDate birthDate; 
     
     @NotEmpty(message = "성별은 필수입니다.")
     @EnumValidator(enumClass=Gender.class, message="성별 값은 'M' 또는 'W'만 가능합니다.")

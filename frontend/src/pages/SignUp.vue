@@ -37,7 +37,7 @@ import InputPassword from "../components/member/signup/InputPassword.vue";
 import InputDetail from "../components/member/signup/InputDetail.vue";
 import InputAdditional from "../components/member/signup/InputAdditional.vue";
 
-import { toRaw } from "vue";
+import { post } from "../apis/axios";
 
 export default{
     name: "SignUp",
@@ -50,22 +50,7 @@ export default{
 	},
 	data(){
 		return{
-			user: {
-				role: "",
-				email: "",
-				password: "",
-				name: "",
-				birthDate: "",
-				gender: "",
-				postalCode: "",
-				address: "",
-				detailAddress: "",
-				businessName: "",
-				businessNumber: "",
-				bank: "",
-				account: "",
-				accountOwner: ""
-			},
+			role: "",
 			step: 0,
 			steps: [
 				InputRole,
@@ -78,23 +63,55 @@ export default{
 	},
 	computed:{
 		maxStep(){
-			return this.user.role === 'provider' ? 5 : 4;
+			return this.role === 'provider' ? 5 : 4;
+		},
+		user(){
+			let user = {
+				email: "",
+				memName: "",
+				password: "",
+				memPhone: "",
+				birthDate: "",
+				gender: "",
+				memPostalCode: "",
+				memAddress: "",
+				memDetailAddress: "",
+			};
+			if(this.role === 'provider'){
+				user = { ...user, 
+					bizName: "",
+					bizRegNum: "",
+					bankCode: "",
+					provAccount: "",
+					provAccountOwner: ""
+				}
+			}
+			return user;
 		}
 	},
 	methods:{
-		setUserInfo(data = [{}]){
+		async setUserInfo(data = [{}]){
+			if(this.step === 0){
+				this.role = data[0]['value'];
+				this.step++;
+				return;
+			}
+
 			data.forEach(input => {
 				this.user[input.key] = input.value;
 			});
-
-
-			try{
+			try {
 				this.step++;
 				if (this.step === this.maxStep) {
-					alert("가입 완료!");
-										
-					this.$router.push('/'); // 홈 화면으로 이동
-					return;
+					const response = await post(`/members/${this.role}`, this.user);
+					if(response.status === 200) {
+						alert(response.data.message);
+						this.$router.push('/');			
+						return;
+					}else{
+						this.step--;
+						return;
+					}
 				}
 			}catch(exception){
 				console.log(exception);
