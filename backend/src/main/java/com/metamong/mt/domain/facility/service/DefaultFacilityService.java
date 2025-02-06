@@ -13,14 +13,14 @@ import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
 import com.metamong.mt.domain.facility.model.Facility;
+import com.metamong.mt.domain.facility.model.FacilityImage;
 import com.metamong.mt.domain.facility.model.Zone;
+import com.metamong.mt.domain.facility.model.ZoneImage;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.facility.repository.mybatis.FacilityMapper;
 import com.metamong.mt.global.file.FileUploader;
 import com.metamong.mt.global.file.FilenameResolver;
-import com.metamong.mt.global.image.model.FacilityImage;
-import com.metamong.mt.global.image.model.ZoneImage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

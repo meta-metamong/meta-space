@@ -62,7 +62,7 @@
             <result property="zoneName" column="zone_name" jdbcType="VARCHAR" />
             <result property="maxUserCount" column="max_user_count" jdbcType="INTEGER" />
             <result property="hourlyRate" column="hourly_rate" jdbcType="INTEGER" />
-            <result property="is_shared_zone" column="is_shared_zone" jdbcType="CHAR" />
+            <result property="isSharedZone" column="is_shared_zone" jdbcType="CHAR" />
             <collection property="zoneImgs" ofType="com.metamong.mt.domain.facility.dto.response.ZoneImageResponseDto">
                 <result property="zoneImgDisplayOrder" column="zone_img_display_order" jdbcType="INTEGER" />
                 <result property="zoneImgUrl" column="zone_img_path" jdbcType="VARCHAR" />
@@ -92,7 +92,7 @@
                 fct.fct_open_time AS "fct_open_time",
                 fct.fct_close_time AS "fct_close_time",
                 fct.fct_state AS "fct_state",
-                fi.img_path AS "fct_img_display_order",
+                fi.img_path AS "fct_img_path",
                 fi.img_display_order AS "fct_img_display_order",
                 z.zone_id AS "zone_id",
                 z.zone_name AS "zone_name",
@@ -106,6 +106,7 @@
             FROM facility fct
             INNER JOIN category cat ON cat.cat_id = fct.cat_id
             LEFT JOIN image fi ON fct.fct_id = fi.fct_id
+            LEFT JOIN additional_info addinfo ON addinfo.fct_id = fct.fct_id
             INNER JOIN zone z ON z.fct_id = fct.fct_id
             LEFT JOIN image zi ON zi.zone_id = z.zone_id
             WHERE fct.fct_id = #{fctId}

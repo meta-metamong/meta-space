@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.metamong.mt.global.image.model.ZoneImage;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,7 +43,10 @@ public class Zone {
     private Long fctId;
     private String zoneName;
     private Integer maxUserCount;
-    private Integer isSharedZone;
+    
+    @Enumerated(EnumType.STRING)
+    private BooleanAlt isSharedZone;
+    
     private Integer hourlyRate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

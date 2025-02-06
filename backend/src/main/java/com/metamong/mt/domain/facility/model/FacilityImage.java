@@ -1,6 +1,6 @@
-package com.metamong.mt.global.image.model;
+package com.metamong.mt.domain.facility.model;
 
-import com.metamong.mt.domain.facility.model.Zone;
+import com.metamong.mt.global.image.model.Image;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -12,17 +12,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorValue("Z")
+@DiscriminatorValue("F")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ZoneImage extends Image {
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "zone_id")
-    private Zone zone;
+public class FacilityImage extends Image {
     
-    public ZoneImage(String imgPath, Integer imgDisplayOrder, Zone zone) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fct_id")
+    private Facility fct;
+    
+    public FacilityImage(String imgPath, Integer imgDisplayOrder, Facility fct) {
         super(imgPath, imgDisplayOrder);
-        this.zone = zone;
+        this.fct = fct;
     }
 }

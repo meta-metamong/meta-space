@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.metamong.mt.global.image.model.FacilityImage;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -57,7 +57,8 @@ public class Facility {
     private String fctGuide;
     
     @Column(name = "is_open_on_holidays")
-    private boolean openOnHolidays;
+    @Enumerated(EnumType.STRING)
+    private BooleanAlt openOnHolidays;
     
     private LocalDateTime fctOpenTime;
     private LocalDateTime fctCloseTime;
