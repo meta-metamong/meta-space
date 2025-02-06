@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class FacilityImage extends Image {
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fct_id")
     private Facility fct;
