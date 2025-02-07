@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
@@ -206,8 +206,8 @@ class FacilityMapperTest {
                 .fctTel("02-1235-1234")
                 .fctGuide("No more man")
                 .openOnHolidays(BooleanAlt.Y)
-                .fctOpenTime(LocalDateTime.of(LocalDate.of(1990, 1, 1), LocalTime.of(12, 0)))
-                .fctCloseTime(LocalDateTime.of(LocalDate.of(1990, 1, 1), LocalTime.of(18, 0)))
+                .fctOpenTime(LocalTime.of(12, 0))
+                .fctCloseTime(LocalTime.of(18, 0))
                 .unitUsageTime(30)
                 .fctLatitude(34.51624)
                 .fctLongitude(127.16315)

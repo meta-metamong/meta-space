@@ -1,6 +1,6 @@
 package com.metamong.mt.domain.facility.dto.request;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.metamong.mt.domain.facility.model.FacilityState;
 import com.metamong.mt.global.apispec.CommonListUpdateRequestDto;
@@ -23,8 +23,8 @@ public class FacilityUpdateRequestDto {
     private String catId;
     private String fctGuide;
     private BooleanAlt isOpenOnHolidays;
-    private LocalDateTime fctOpenTime;
-    private LocalDateTime fctCloseTime;
+    private LocalTime fctOpenTime;
+    private LocalTime fctCloseTime;
     private Integer unitUsageTime;
     private FacilityState fctState;
     private Double fctLatitude;
