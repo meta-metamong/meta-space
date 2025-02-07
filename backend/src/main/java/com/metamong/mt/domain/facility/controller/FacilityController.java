@@ -17,10 +17,12 @@ import com.metamong.mt.global.apispec.BaseResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class FacilityController {
     private final FacilityService facilityService;
     
@@ -33,8 +35,12 @@ public class FacilityController {
     
     @GetMapping("/facilities/{facilityId}")
     public ResponseEntity<BaseResponse<FacilityResponseDto>> getFacility(@PathVariable("facilityId") Long facilityId) {
+        FacilityResponseDto result = this.facilityService.getFacility(facilityId);
+        if (log.isDebugEnabled()) {
+            log.debug("result={}", result);
+        }
         return ResponseEntity.ok(
-                BaseResponse.of(this.facilityService.getFacility(facilityId), HttpStatus.OK)
+                BaseResponse.of(result, HttpStatus.OK)
         );
     }
 }

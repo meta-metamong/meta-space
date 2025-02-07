@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.metamong.mt.domain.facility.model.FacilityState;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,7 @@ public class FacilityResponseDto {
     private String catId;
     private String catName;
     private String fctGuide;
-    private boolean isOpenOnHolidays;
+    private BooleanAlt isOpenOnHolidays;
     private LocalTime fctOpenTime;
     private LocalTime fctClosetime;
     private FacilityState fctState;

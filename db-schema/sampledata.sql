@@ -1,5 +1,5 @@
 INSERT INTO member (
-    member_id,
+    mem_id,
     email,
     mem_name,
     password,
@@ -83,12 +83,13 @@ INSERT INTO facility (
     'Over the rainbow',
     '02-2612-2555',
     'How can do that',
-    TO_DATE('08:00:00', 'hh:mm:ss'),
-    TO_DATE('18:00:00', 'hh:mm:ss'),
+    'Y',
+    TO_DATE('08:00:00', 'HH24:MI:SS'),
+    TO_DATE('18:00:00', 'HH24:MI:SS'),
     30,
     'REGISTERED',
     37.513513,
-    129.415341
+    129.415341 
 );
 
 INSERT INTO additional_info (
@@ -151,6 +152,8 @@ INSERT INTO image (
     img_display_order
 ) VALUES (
     img_pk_seq.NEXTVAL,
-    fct_pk.seq.CURRVAL,
-    'http://localhost:8080/resources/images/zone-image1.jpg'
+    fct_pk_seq.CURRVAL,
+    'http://localhost:8080/resources/images/zone-image1.jpg',
+    'F',
+    1
 );
