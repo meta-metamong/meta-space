@@ -1,11 +1,9 @@
 package com.metamong.mt.domain.member.dto.request;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
+import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
@@ -17,7 +15,6 @@ import jakarta.validation.constraints.Past;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -43,8 +40,7 @@ public class ProviderSignUpRequestDto {
     private String gender;
 
     @Past(message = "생일은 과거의 날짜만 가능합니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime birthDate; 
+    private LocalDate birthDate; 
 
     @NotEmpty(message = "우편번호는 필수입니다.")
     private String memPostalCode;
@@ -55,11 +51,21 @@ public class ProviderSignUpRequestDto {
     @NotEmpty(message = "상세 주소는 필수입니다.")
     private String memDetailAddress;
     
-    private String businessName;
-    private String businessNumber;
+    @NotEmpty(message = "사업자명은 필수입니다.")
+    private String bizName;
+    
+    @NotEmpty(message = "사업자등록번호는 필수입니다.")
+    private String bizRegNum;
+    
+    @NotEmpty(message = "은행코드는 필수입니다.")
     private String bankCode;
-    private String account;
-    private String accountOwner;
+    
+    @NotEmpty(message = "계좌번호는 필수입니다.")
+    private String provAccount;
+    
+    @NotEmpty(message = "예금주명은 필수입니다.")
+
+    private String provAccountOwner;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);
@@ -76,7 +82,17 @@ public class ProviderSignUpRequestDto {
 			 .memPostalCode(this.memPostalCode)
 			 .memAddress(this.memAddress)
 			 .memDetailAddress(this.memDetailAddress)
-		    .role(Role.ROLE_PROV)
-		    .build();
+             .role(Role.ROLE_PROV)
+             .build();
+    }
+    
+    public FctProvider toProvider() {
+        return FctProvider.builder()
+                .bizName(this.bizName)
+                .bizRegNum(this.bizRegNum)
+                .bankCode(this.bankCode)
+                .provAccount(this.provAccount)
+                .provAccountOwner(this.provAccountOwner)
+                .build();
     }
 }

@@ -15,14 +15,14 @@ CREATE TABLE member (
     email                        VARCHAR2(50)   NOT NULL UNIQUE,
     mem_name                     VARCHAR2(30)   NOT NULL,
     password                     VARCHAR2(80)   NOT NULL,
-    mem_phone                    VARCHAR2(11)   NOT NULL,
+    mem_phone                    VARCHAR2(15)   NOT NULL,
     birth_date                   DATE           NOT NULL,
     gender                       CHAR(1)        NOT NULL,
     mem_postal_code              CHAR(5)        NOT NULL,
     mem_address                  VARCHAR2(40)   NOT NULL,
     mem_detail_address           VARCHAR2(30)   NOT NULL,
     role                         CHAR(9)        NOT NULL,
-    refresh_token                VARCHAR2(1000) NOT NULL,
+    refresh_token                VARCHAR2(1000),
     created_at                   DATE           DEFAULT SYSDATE,
     updated_at                   DATE           DEFAULT SYSDATE,
     mem_banned_until             DATE,
@@ -104,9 +104,9 @@ CREATE TABLE facility (
     fct_postal_code               CHAR(5)        NOT NULL,
     fct_address                   VARCHAR2(40)   NOT NULL,
     fct_detail_address            VARCHAR2(30)   NOT NULL,
-    fct_tel                       VARCHAR2(11)   NOT NULL,
+    fct_tel                       VARCHAR2(15)   NOT NULL,
     fct_guide                     VARCHAR2(1000) NOT NULL,
-    is_open_on_holidays           NUMBER(1, 0)   NOT NULL,
+    is_open_on_holidays           CHAR(1)        NOT NULL,
     fct_open_time                 DATE           NOT NULL,
     fct_close_time                DATE           NOT NULL,
     unit_usage_time               NUMBER(4, 0)   NOT NULL,
@@ -121,7 +121,8 @@ CREATE TABLE facility (
         REFERENCES category (cat_id),
     CONSTRAINT fk_facility_prov_id FOREIGN KEY (prov_id)
         REFERENCES fct_provider (prov_id),
-    CONSTRAINT chk_fct_state CHECK (fct_state IN ('REG_REQUESTED', 'REGISTERED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED'))
+    CONSTRAINT chk_fct_state CHECK (fct_state IN ('REG_REQUESTED', 'REGISTERED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED')),
+    CONSTRAINT fct_is_open_on_holidays_domain CHECK (is_open_on_holidays IN ('Y', 'N'))
 );
 
 CREATE TABLE additional_info (
@@ -139,14 +140,15 @@ CREATE TABLE zone (
     fct_id             NUMBER(4, 0)  NOT NULL,
     zone_name          VARCHAR2(30)  NOT NULL,
     max_user_count     NUMBER(4, 0)  NOT NULL,
-    is_shared_zone     NUMBER(1, 0)  NOT NULL,
+    is_shared_zone     CHAR(1)       NOT NULL,
     hourly_rate        NUMBER(5, 0)  NOT NULL,
     created_at         DATE          DEFAULT SYSDATE,
     updated_at         DATE          DEFAULT SYSDATE,
 
     CONSTRAINT pk_zone PRIMARY KEY (zone_id),
     CONSTRAINT fk_zone_fct_id FOREIGN KEY (fct_id)
-        REFERENCES facility (fct_id)
+        REFERENCES facility (fct_id),
+    CONSTRAINT zone_is_shared_zone_domain CHECK (is_shared_zone IN ('Y', 'N'))
 );
 
 CREATE TABLE image (

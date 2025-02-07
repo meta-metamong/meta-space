@@ -48,19 +48,19 @@ export default{
     methods:{
 		nextStep(){
 			this.setUserInfo([{
-                key: 'businessName',
+                key: 'bizName',
                 value: this.businessName
             },{
-                key: 'businessNumber',
+                key: 'bizRegNumber',
                 value: this.businessNumber
             },{
                 key: 'bankCode',
                 value: this.bankCode
             },{
-                key: 'account',
+                key: 'provAccount',
                 value: this.account
             },{
-                key: 'accountOwner',
+                key: 'provAccountOwner',
                 value: this.accountOwner
             }]);
 		}

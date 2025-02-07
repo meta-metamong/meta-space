@@ -69,7 +69,7 @@ class FacilityControllerMockMvcTest {
                             "fctPostalCode": "12345",
                             "fctAddress": "hello",
                             "fctDetailAddress": "World",
-                            "catId": 15,
+                            "catId": "100",
                             "provId": 3000,
                             "fctTel": "02-1234-1234",
                             "fctGuide": "Hello, World!",
