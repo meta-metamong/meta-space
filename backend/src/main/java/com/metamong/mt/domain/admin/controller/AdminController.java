@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.service.AdminService;
 import com.metamong.mt.global.apispec.BaseResponse;
@@ -21,15 +22,15 @@ public class AdminController {
 	
 	private final AdminService adminService;
 	
-    @GetMapping("/searchMembers")
-    public ResponseEntity<?> searchMembers(){
-    	return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
-    }
+	@GetMapping("/searchMembers")
+	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchMembers() {
+	    return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
+	}
+
     
     @GetMapping("/reportedMembers")
-    public ResponseEntity<List<ReportedMemberResponseDto>> getReportedMembers() {
-        List<ReportedMemberResponseDto> reportedMembers = adminService.getReportedMembers();
-        return ResponseEntity.ok(reportedMembers);
+    public ResponseEntity<BaseResponse<List<ReportedMemberResponseDto>>> getReportedMembers() {
+        return ResponseEntity.ok(BaseResponse.of(adminService.getReportedMembers(), HttpStatus.OK));
     }
     
     

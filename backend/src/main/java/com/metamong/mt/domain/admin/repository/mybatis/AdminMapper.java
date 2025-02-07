@@ -11,7 +11,6 @@ import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 @Repository
 @Mapper
 public interface AdminMapper {
-	//List<MemberSearchResponseDto> searchMembers(MemberSearchRequestDto memberSearchResponseDto);
 	List<MemberSearchResponseDto> searchMembers();
 	
 	List<ReportedMemberResponseDto> getReportedMembers();
