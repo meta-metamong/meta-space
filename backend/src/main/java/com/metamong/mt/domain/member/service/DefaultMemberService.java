@@ -14,6 +14,7 @@ import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
+import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
@@ -25,7 +26,6 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
-import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -41,7 +41,7 @@ public class DefaultMemberService implements MemberService {
     private final FctProviderRepository providerRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
-    private final MemberVolatileCodeRepository memberVolatileCodeRepository;
+    private final EmailValidationService emailValidationService;
     //private final SimpMessagingTemplate messagingTemplate; 
     private Date lastExecutionTime;
     private int roleUserCount; 
@@ -71,12 +71,14 @@ public class DefaultMemberService implements MemberService {
         	throw new EmailAleadyExistException();
         }
         
+        if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {
+            throw new IllegalSignUpRequestException("Not valid signup");
+        }
+        
     	Member member = dto.toEntity();
     	member.setIsDel('N');
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
-        
-	       
     }
 
     @Override
@@ -85,6 +87,10 @@ public class DefaultMemberService implements MemberService {
 
         if(memberRepository.existsByEmail(dto.getEmail())) {
         	throw new EmailAleadyExistException();
+        }
+        
+        if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {
+            throw new IllegalSignUpRequestException("Not valid signup");
         }
         
         Member member = dto.toEntity();
