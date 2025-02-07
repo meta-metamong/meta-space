@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
+import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
@@ -83,5 +85,10 @@ public class DefaultFacilityService implements FacilityService {
     @Override
     public FacilityResponseDto getFacility(Long facilityId) {
         return this.facilityMapper.findFacilityById(facilityId);
+    }
+
+    @Override
+    public FacilityUpdateResponseDto updateFacility(Long fctId, FacilityUpdateRequestDto dto) {
+        throw new UnsupportedOperationException();
     }
 }

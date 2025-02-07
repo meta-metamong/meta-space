@@ -86,22 +86,21 @@ public class Member {
     @CreationTimestamp
     @Column(name="created_at")
     @ColumnDefault(value="SYSDATE")
-    private LocalDateTime createdAt = null;
+    private LocalDateTime createdAt;
     
     @Column(name="updated_at")
-    private LocalDateTime updatedAt = null;
+    private LocalDateTime updatedAt;
     
     @Column(name="mem_banned_until")
-    private LocalDateTime memBannedUntil = null;
+    private LocalDateTime memBannedUntil;
     
     @Column(name="is_del", length=1)
-    @ColumnDefault(value="'N'")
-    private Character isDel = 'N';
+    private Character isDel;
     
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private FctProvider fctProvider;
     
-    public void updateInfo(UpdateRequestDto dto) {
+    public void updateInfo(Member dto) {
         this.memName = dto.getMemName();
         this.memPhone = dto.getMemPhone();
         this.gender = dto.getGender();

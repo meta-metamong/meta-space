@@ -70,6 +70,7 @@ public class DefaultMemberService implements MemberService {
         }
         
     	Member member = dto.toEntity();
+    	member.setIsDel('N');
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
         
@@ -86,10 +87,11 @@ public class DefaultMemberService implements MemberService {
         
         Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+        member.setIsDel('N');
         
         FctProvider provider = dto.toProvider();
-        member.setFctProvider(provider);
         provider.setMember(member);
+        member.setFctProvider(provider);
         
         this.memberRepository.save(member);
     }
@@ -108,21 +110,32 @@ public class DefaultMemberService implements MemberService {
     
     @Override
 	@Transactional(readOnly = true)
-	public Member getMember(Long memberId) {
-	    return this.memberRepository.findById(memberId)
-	    		.orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+	public Member getMember(Long memId) {
+	    Member member = this.memberMapper.getMember(memId);
+	    if(member == null) {
+	        throw new MemberNotFoundException("회원을 찾을 수 없습니다.");
+	    }
+	    System.out.println("\n\n\n\n\n");
+	    System.out.println(member);
+	    return member;
 	}
+    
+    @Override
+    @Transactional (readOnly = true)
+    public FctProvider getProvider(Long memId) {
+        return this.providerRepository.findById(memId)
+                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+    }
     
     
 
 	@Override
 	@Transactional(readOnly = true)
-	public MemberResponseDto searchMember(Long userId) {
-	    Member member = getMember(userId);
+	public MemberResponseDto searchMember(Long memId) {
+	    Member member = getMember(memId);
 	    FctProvider provider = null;
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
-	        provider = providerRepository.findById(userId).orElseThrow(
-	                () -> new MemberNotFoundException(member.getMemName(), "회원을 찾을 수 없습니다."));
+	        provider = this.getProvider(memId);
 	    }
         return MemberResponseDto.builder()
                                 .memId(member.getMemId())
@@ -136,7 +149,7 @@ public class DefaultMemberService implements MemberService {
                                 .memAddress(member.getMemAddress())
                                 .role(member.getRole())
                                 .bizName(provider == null ? null : provider.getBizName())
-                                .bizRegNum(provider == null ? null : provider.getBizName())
+                                .bizRegNum(provider == null ? null : provider.getBizRegNum())
                                 .bankCode(provider == null ? null : provider.getBankCode())
                                 .provAccount(provider == null ? null : provider.getProvAccount())
                                 .provAccountOwner(provider == null ? null : provider.getProvAccountOwner())
@@ -148,10 +161,21 @@ public class DefaultMemberService implements MemberService {
 	@Transactional
 	public void updateMember(Long memId, UpdateRequestDto dto) {
 		Member member = getMember(memId);
-		if (dto.getPassword() != null) {
-			member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
-		}
-	    member.updateInfo(dto);
+	    member.updateInfo(dto.toMember());
+	    if(member.getRole().equals(Role.ROLE_PROV)) {
+	        FctProvider provider = getProvider(memId);
+	        provider.updateInfo(dto.toProvider());
+	    }
+	}
+	
+	@Override
+	@Transactional
+	public boolean deleteMember(Long memId) {
+	    if(!memberRepository.existsById(memId)) {
+	        return false;
+	    }
+	    this.memberMapper.deleteMember(memId);
+	    return true;
 	}
 
     @Override
