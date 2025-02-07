@@ -28,7 +28,7 @@ public class AdminController {
 	}
 
     
-    @GetMapping("/reportedMembers")
+    @GetMapping("/reported-members")
     public ResponseEntity<BaseResponse<List<ReportedMemberResponseDto>>> getReportedMembers() {
         return ResponseEntity.ok(BaseResponse.of(adminService.getReportedMembers(), HttpStatus.OK));
     }
