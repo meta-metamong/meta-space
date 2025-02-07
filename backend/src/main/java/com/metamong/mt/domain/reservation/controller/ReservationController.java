@@ -23,7 +23,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.RecommendationResponseDto;
+import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.service.ReservationService;
 import com.metamong.mt.global.apispec.BaseResponse;
@@ -62,6 +64,13 @@ public class ReservationController {
     public ResponseEntity<?> cancelReservation(@PathVariable Long reservationId, @RequestBody CancelRequestDto dto) {
         this.reservationService.cancelReservation(reservationId, dto);
         return ResponseEntity.ok(BaseResponse.of(dto, HttpStatus.OK, "예약 취소 성공"));
+    }
+    
+    @GetMapping("/reservations/remain")
+    public ResponseEntity<?> getAvailableTimes(@RequestBody SelectedInfoRequestDto dto) {
+        
+        List<RemainingCountResponseDto> availableTimes = reservationService.getRemainingUsageCount(dto);
+        return ResponseEntity.ok(BaseResponse.of(availableTimes, HttpStatus.OK));
     }
 
     @PostMapping("/recommends")
