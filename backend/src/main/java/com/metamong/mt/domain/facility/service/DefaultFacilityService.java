@@ -2,9 +2,9 @@ package com.metamong.mt.domain.facility.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +20,7 @@ import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneImageUploadUrlResponseDto;
+import com.metamong.mt.domain.facility.exception.FacilityDeleteFailureException;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.model.FacilityImage;
@@ -29,6 +30,7 @@ import com.metamong.mt.domain.facility.repository.jpa.AdditionalInfoRepository;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.facility.repository.mybatis.FacilityMapper;
+import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.CommonListUpdateRequestDto;
 import com.metamong.mt.global.apispec.CommonUpdateListItemRequestDto;
 import com.metamong.mt.global.file.FileUploader;
@@ -48,6 +50,7 @@ public class DefaultFacilityService implements FacilityService {
     private final FacilityMapper facilityMapper;
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
+    private final MemberService memberService;
     
     @Override
     public FacilityRegistrationResponseDto registerFacility(FacilityRegistrationRequestDto dto) {
@@ -157,5 +160,17 @@ public class DefaultFacilityService implements FacilityService {
                     return additionalInfo.getAddinfoId();
                 })
                 .toList();
+    }
+    
+    @Override
+    public void deleteFacility(Long fctId, String password) {
+        Facility facility = this.facilityRepository.findById(fctId)
+                .orElseThrow(() -> new NoSuchElementException());
+        
+        if (!this.memberService.isValidPassword(facility.getProvId(), password)) {
+            throw new FacilityDeleteFailureException("패스워드가 맞지 않습니다.");
+        }
+        
+        facility.requestDelete();
     }
 }

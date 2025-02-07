@@ -14,6 +14,8 @@ public interface MemberService {
 	// 로그인
 	Long login(LoginRequestDto dto);
 	
+	boolean isValidPassword(Long memId, String password);
+	
 	// 일반 회원 정보 저장
     void saveConsumer(ConsumerSignUpRequestDto dto);
 

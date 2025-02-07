@@ -85,4 +85,8 @@ public class Facility {
     public void addFctImage(FacilityImage fctImage) {
         this.fctImages.add(fctImage);
     }
+    
+    public void requestDelete() {
+        this.fctState = FacilityState.DEL_REQUESTED;
+    }
 }
