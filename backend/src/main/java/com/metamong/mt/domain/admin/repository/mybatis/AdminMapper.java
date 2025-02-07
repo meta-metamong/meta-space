@@ -19,4 +19,6 @@ public interface AdminMapper {
     void updateFacilityState(Map<String, Object> params);
 
     void insertNotification(Map<String, Object> params);
+    
+    void updateFacilityState2(Map<String, Object> params);
 }
