@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
@@ -65,7 +66,6 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     public void saveConsumer(ConsumerSignUpRequestDto dto) {
-
         if(memberRepository.existsByEmail(dto.getEmail())) {
         	throw new EmailAleadyExistException();
         }
@@ -74,14 +74,11 @@ public class DefaultMemberService implements MemberService {
     	member.setIsDel(BooleanAlt.N);
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
-        
-	       
     }
 
     @Override
     @Transactional
     public void saveProvider(ProviderSignUpRequestDto dto) {
-
         if(memberRepository.existsByEmail(dto.getEmail())) {
         	throw new EmailAleadyExistException();
         }
@@ -101,12 +98,14 @@ public class DefaultMemberService implements MemberService {
 	public void updateRefreshToken(Long memberId, String refreshToken) {
 	    Member member = getMember(memberId);
 	    member.setRefreshToken(refreshToken);
+	    memberRepository.save(member);
 	}
     
     @Override
     public void deleteRefreshToken(Long memberId) {
 	    Member member = getMember(memberId);
 	    member.setRefreshToken(null);
+	    memberRepository.save(member);
     }
     
     @Override
@@ -125,8 +124,6 @@ public class DefaultMemberService implements MemberService {
         return this.providerRepository.findById(memId)
                 .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
     }
-    
-    
 
 	@Override
 	@Transactional(readOnly = true)
@@ -162,9 +159,11 @@ public class DefaultMemberService implements MemberService {
 		Member member = getMember(memId);
 	    member.updateInfo(dto.toMember());
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
-	        FctProvider provider = getProvider(memId);
+	        FctProvider provider = this.getProvider(memId);
 	        provider.updateInfo(dto.toProvider());
+	        member.setFctProvider(provider);
 	    }
+	    memberRepository.save(member);
 	}
 	
 	@Override
@@ -176,17 +175,24 @@ public class DefaultMemberService implements MemberService {
 	    this.memberMapper.deleteMember(memId);
 	    return true;
 	}
+	
+	@Override
+    public void confirmPassword(Long memId, PasswordConfirmRequestDto dto) {
+	    Member member = getMember(memId);
+        if(!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+            throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
+        }
+    }
 
     @Override
     public void changePassword(Long memId, PasswordChangeRequestDto dto) {
         Member member = getMember(memId);
-        if(!passwordEncoder.matches(dto.getOldPassword(), member.getPassword())) {
-            throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
-        }else if(!dto.getNewPassword().equals(dto.getNewPasswordConfirm())) {
+        if(!dto.getNewPassword().equals(dto.getNewPasswordConfirm())) {
             throw new PasswordNotConfirmedException();
         }
         
         member.changePassword(passwordEncoder.encode(dto.getNewPassword()));
+        memberRepository.save(member);
     }
 	
 	private void sendMailForPassword(String email) {

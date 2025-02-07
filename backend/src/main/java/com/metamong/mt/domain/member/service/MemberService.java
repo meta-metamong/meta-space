@@ -3,6 +3,7 @@ package com.metamong.mt.domain.member.service;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
@@ -36,7 +37,9 @@ public interface MemberService {
  	// 회원 정보 삭제
 	boolean deleteMember(Long memId);
 
- 	
+ 	// 비밀번호 확인
+	void confirmPassword(Long memId, PasswordConfirmRequestDto dto);
+	
  	// 비밀번호 변경
  	void changePassword(Long memId, PasswordChangeRequestDto dto);
 
