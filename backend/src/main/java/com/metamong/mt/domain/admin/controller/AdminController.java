@@ -22,7 +22,7 @@ public class AdminController {
 	
 	private final AdminService adminService;
 	
-	@GetMapping("/searchMembers")
+	@GetMapping("/search-members")
 	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchMembers() {
 	    return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
 	}
