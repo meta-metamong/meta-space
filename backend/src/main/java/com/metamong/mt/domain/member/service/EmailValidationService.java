@@ -1,5 +1,7 @@
 package com.metamong.mt.domain.member.service;
 
+import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
+
 public interface EmailValidationService {
 
     /**
@@ -13,8 +15,12 @@ public interface EmailValidationService {
      * 
      * @param email 유효한 이메일인지 체크할 이메일
      * @param emailValidationCode 확인할 이메일 인증 코드
-     * @return 유효한 코드일 경우 true를 반환하고, 유효하지 않을 경우 false를 반환. 유효한
+     * @return 유효한 코드일 경우 SignUpValidationCode를 반환한다. 유효한
      *         코드일 경우 emailValidationCode를 유효하지 않은 코드로 만든다
+     * @throws InvalidEmailValidationCodeException 유효하지 않은 코드일 경우
      */
-    boolean isValidCode(String email, String emailValidationCode);
+    String validateCode(String email, String emailValidationCode)
+            throws InvalidEmailValidationCodeException;
+    
+    boolean isValidSignUpValidationCode(String email, String signUpValidationCode);
 }

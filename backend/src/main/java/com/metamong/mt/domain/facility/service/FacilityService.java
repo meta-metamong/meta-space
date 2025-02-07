@@ -13,4 +13,6 @@ public interface FacilityService {
     FacilityResponseDto getFacility(Long facilityId);
     
     FacilityUpdateResponseDto updateFacility(Long fctId, FacilityUpdateRequestDto dto);
+    
+    void deleteFacility(Long fctId, String password);
 }

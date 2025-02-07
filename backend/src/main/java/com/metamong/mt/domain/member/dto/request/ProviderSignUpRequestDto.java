@@ -11,6 +11,7 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -65,6 +66,10 @@ public class ProviderSignUpRequestDto {
     
     @NotEmpty(message = "예금주명은 필수입니다.")
     private String provAccountOwner;
+    
+    @NotNull
+    @NotEmpty
+    private String signUpValidationCode;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);

@@ -29,7 +29,7 @@ public class FctProvider {
     
     @OneToOne
     @MapsId
-    @JoinColumn(name="mem_id")
+    @JoinColumn(name="prov_id")
     private Member member;
     
     @Column(name="bank_code")

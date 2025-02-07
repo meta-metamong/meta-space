@@ -2,6 +2,7 @@ package com.metamong.mt.domain.facility.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.metamong.mt.domain.facility.dto.request.FacilityDeleteRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
@@ -59,5 +61,12 @@ public class FacilityController {
         return ResponseEntity.ok(
                 BaseResponse.of(result, HttpStatus.OK)
         );
+    }
+    
+    @DeleteMapping("/facilities/{facilityId}")
+    public ResponseEntity<BaseResponse<Void>> deleteFacility(@PathVariable("facilityId") Long facilityId,
+            @RequestBody FacilityDeleteRequestDto dto) {
+        this.facilityService.deleteFacility(facilityId, dto.getPassword());
+        return new ResponseEntity<>(BaseResponse.of(HttpStatus.NO_CONTENT), HttpStatus.NO_CONTENT);
     }
 }
