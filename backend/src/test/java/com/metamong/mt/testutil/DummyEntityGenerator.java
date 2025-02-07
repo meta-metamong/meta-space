@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.reservation.model.Reservation;
 
@@ -16,8 +17,15 @@ public class DummyEntityGenerator {
         return Member.builder()
                 .memName(name)
                 .password(password)
+                .memPhone("010-1234-1234")
                 .email(email)
                 .role(role)
+                .gender(Gender.M)
+                .birthDate(LocalDate.of(1997, 9, 16))
+                .memPostalCode("01234")
+                .memDetailAddress("detail addr")
+                .memAddress("addr")
+                .isDel('N')
                 .build();
     }
     

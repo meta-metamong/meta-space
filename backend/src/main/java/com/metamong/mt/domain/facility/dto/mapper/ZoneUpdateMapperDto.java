@@ -1,16 +1,20 @@
-package com.metamong.mt.domain.facility.dto.request;
+package com.metamong.mt.domain.facility.dto.mapper;
 
 import com.metamong.mt.global.constant.BooleanAlt;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @ToString
-public class ZoneUpdateRequestDto {
+public class ZoneUpdateMapperDto {
+    private Long zoneId;
     private String zoneName;
     private Integer maxUserCount;
     private BooleanAlt isSharedZone;
