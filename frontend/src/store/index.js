@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { login, logout } from "../apis/axios";
+import { login, logout, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
 
 const saveUserIdInLocal = function (userId) {

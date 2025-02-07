@@ -54,13 +54,13 @@
         <div class="w-100 text-center mb-2">
             <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('button.update') }}</button>
             <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="">{{ $t('member.changePw') }}</button>
-            <button class="signup-btn exit-btn w-75 h-75 rounded-pill" @click="">{{ $t('member.exit') }}</button>
+            <button class="signup-btn exit-btn w-75 h-75 rounded-pill" @click="exitMember">{{ $t('member.exit') }}</button>
         </div>
 	</div>
 </template>
 
 <script>
-import { get } from "../../apis/axios";
+import { del, get } from "../../apis/axios";
 export default {
     name: "Profile",
     data() {
@@ -77,6 +77,14 @@ export default {
         async getMemberInfo() {
             const response = await get(`/members/${this.$store.state.userId}`);
             this.memberInfo = response.data.content;
+        },
+        async exitMember(){
+            if(confirm("MetaSpace를 정말 탈퇴하시겠습니까?")){
+                const response = await(del('/members'));
+                if(response.status === 200){
+                    this.$store.dispatch('logoutRequest');
+                }
+            }
         }
     },
     mounted() {

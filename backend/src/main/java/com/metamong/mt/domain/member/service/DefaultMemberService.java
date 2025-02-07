@@ -96,28 +96,33 @@ public class DefaultMemberService implements MemberService {
     
     @Override
 	public void updateRefreshToken(Long memId, String refreshToken) {
-	    Member member = getMember(memId);
+        Member member = getMemberByRepository(memId);
 	    member.setRefreshToken(refreshToken);
-	    member.setFctProvider(getProvider(memId));
-	    memberRepository.save(member);
 	}
     
     @Override
-    public void deleteRefreshToken(Long memberId) {
-	    Member member = getMember(memberId);
+    public void deleteRefreshToken(Long memId) {
+	    Member member = getMemberByRepository(memId);
 	    member.setRefreshToken(null);
-	    memberRepository.save(member);
     }
     
     @Override
 	@Transactional(readOnly = true)
-	public Member getMember(Long memId) {
+	public Member getMemberByMapper(Long memId) {
 	    Member member = this.memberMapper.getMember(memId);
 	    if(member == null) {
 	        throw new MemberNotFoundException("회원을 찾을 수 없습니다.");
 	    }
 	    return member;
 	}
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Member getMemberByRepository(Long memId) {
+        return memberRepository.findById(memId)
+                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+    }
+    
     
     @Override
     @Transactional (readOnly = true)
@@ -129,7 +134,7 @@ public class DefaultMemberService implements MemberService {
 	@Override
 	@Transactional(readOnly = true)
 	public MemberResponseDto searchMember(Long memId) {
-	    Member member = getMember(memId);
+	    Member member = getMemberByMapper(memId);
 	    FctProvider provider = null;
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        provider = this.getProvider(memId);
@@ -157,7 +162,7 @@ public class DefaultMemberService implements MemberService {
 	@Override
 	@Transactional
 	public void updateMember(Long memId, UpdateRequestDto dto) {
-		Member member = getMember(memId);
+		Member member = getMemberByMapper(memId);
 	    member.updateInfo(dto.toMember());
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        FctProvider provider = this.getProvider(memId);
@@ -179,7 +184,7 @@ public class DefaultMemberService implements MemberService {
 	
 	@Override
     public void confirmPassword(Long memId, PasswordConfirmRequestDto dto) {
-	    Member member = getMember(memId);
+	    Member member = getMemberByMapper(memId);
         if(!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
@@ -187,14 +192,11 @@ public class DefaultMemberService implements MemberService {
 
     @Override
     public void changePassword(Long memId, PasswordChangeRequestDto dto) {
-        Member member = getMember(memId);
+        Member member = getMemberByRepository(memId);
         if(!dto.getNewPassword().equals(dto.getNewPasswordConfirm())) {
             throw new PasswordNotConfirmedException();
         }
-        
         member.changePassword(passwordEncoder.encode(dto.getNewPassword()));
-        member.setFctProvider(getProvider(memId));
-        memberRepository.save(member);
     }
 	
 	private void sendMailForPassword(String email) {
