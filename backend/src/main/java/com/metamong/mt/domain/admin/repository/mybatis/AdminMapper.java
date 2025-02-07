@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.admin.repository.mybatis;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,8 @@ public interface AdminMapper {
 	List<MemberSearchResponseDto> searchMembers();
 	
 	List<ReportedMemberResponseDto> getReportedMembers();
+	
+    void updateFacilityState(Map<String, Object> params);
+
+    void insertNotification(Map<String, Object> params);
 }

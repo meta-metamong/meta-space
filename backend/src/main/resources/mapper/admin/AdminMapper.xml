@@ -37,4 +37,56 @@ GROUP BY
         JOIN report r ON m.mem_id = r.reported_id
     </select>
 
+    <!-- 신고된 아이디 정지 기간 업데이트 (배치 처리) -->
+<update id="updateMemberBan" parameterType="list">
+    <![CDATA[
+    <foreach collection="list" item="reportData" separator=";">
+        UPDATE member
+        SET mem_banned_until = 
+            CASE 
+                WHEN #{reportData.reportCount} = 1 THEN SYSDATE + INTERVAL '7' DAY
+                WHEN #{reportData.reportCount} = 2 THEN SYSDATE + INTERVAL '14' DAY
+                WHEN #{reportData.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')
+            END
+        WHERE mem_id = #{reportData.reportedId}
+    </foreach>
+    ]]>
+</update>
+
+<delete id="deleteReportedData" parameterType="list">
+    <![CDATA[
+    <foreach collection="list" item="reportedId" separator=";">
+        DELETE FROM report
+        WHERE reported_id = #{reportedId}
+    </foreach>
+    ]]>
+</delete>
+
+
+    <!-- 신고 횟수 조회 -->
+<resultMap id="reportCountMap" type="java.util.HashMap">
+    <result property="reported_id" column="reported_id"/>
+    <result property="report_count" column="report_count" jdbcType="DECIMAL" javaType="java.lang.Integer"/>
+</resultMap>
+
+<select id="getReportCounts" resultMap="reportCountMap">
+    SELECT reported_id as reportedId , COUNT(*) AS reportCount
+    FROM report
+    GROUP BY reported_id
+</select>
+
+ <!-- 요청 승인 쿼리 -->
+    <update id="updateFacilityState" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'REGISTERED'
+        WHERE fct_state = 'REG_REQUESTED'
+        AND prov_id = #{provId}
+    </update>
+
+    <!-- 알림 테이블에 데이터 추가 쿼리 -->
+    <insert id="insertNotification" parameterType="map">
+        INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
+        VALUES (1,#{receiverId}, #{notiMsg}, 'N')
+    </insert>
+
 </mapper>
