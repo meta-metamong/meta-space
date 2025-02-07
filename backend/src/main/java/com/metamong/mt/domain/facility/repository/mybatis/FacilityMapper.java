@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
 
 @Repository
@@ -11,4 +12,6 @@ import com.metamong.mt.domain.facility.model.AdditionalInfo;
 public interface FacilityMapper {
     
     void saveAdditionalInfo(@Param("addinfo") AdditionalInfo addinfo);
+    
+    FacilityResponseDto findFacilityById(@Param("fctId") Long fctId);
 }
