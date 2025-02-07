@@ -11,4 +11,5 @@ public interface AdminService {
 	List<ReportedMemberResponseDto> getReportedMembers();
 	void processReportBans(List<Long> reportedIds);
 	void approveFacilityRequest(Long provId);
+	void rejectFacilityRequest(Long provId);
 }
