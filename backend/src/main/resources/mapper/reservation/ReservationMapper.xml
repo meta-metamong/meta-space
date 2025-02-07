@@ -42,7 +42,7 @@
         ]]>
     </select>
 
-    <!-- 예약 내역 이용 시간 조회(예약 시간 선택 후) -->
+    <!-- 예약 내역 이용 시간 조회(중복 확인) -->
     <select id="getHourlyUsageCounts" parameterType="com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto" resultType="com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto">
         <![CDATA[
             SELECT r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", SUM(r.usage_count) AS "totalUsageCount"

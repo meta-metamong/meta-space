@@ -70,7 +70,7 @@ public class ReservationController {
     public ResponseEntity<?> getAvailableTimes(@RequestBody SelectedInfoRequestDto dto) {
         
         List<RemainingCountResponseDto> availableTimes = reservationService.getRemainingUsageCount(dto);
-        return ResponseEntity.ok(availableTimes);
+        return ResponseEntity.ok(BaseResponse.of(availableTimes, HttpStatus.OK));
     }
 
     @PostMapping("/recommends")

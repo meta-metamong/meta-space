@@ -56,7 +56,8 @@ public class DefaultReservationService implements ReservationService {
 
     @Override
     public List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto) {
-        Facility fctInfo = facilityRepository.findById(dto.getFctId()).orElseThrow();
+        Facility fctInfo = facilityRepository.findById(dto.getFctId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 시설이 존재하지 않습니다."));
         LocalTime openTime = fctInfo.getFctOpenTime().toLocalTime();
         LocalTime closeTime = fctInfo.getFctCloseTime().toLocalTime();
         int unitTime = fctInfo.getUnitUsageTime();
