@@ -12,6 +12,7 @@ import DetailReservation from '../components/reservation/DetailReservation.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
+import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 
 const routes = [
 	{ path: '/', component: Home },
@@ -25,6 +26,8 @@ const routes = [
 
 	//{ path: '/socket', component: Socket  },
 	{ path: '/download', component: Download  },
+
+	{ path: '/facilities/register', component: FacilityRegistration },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
