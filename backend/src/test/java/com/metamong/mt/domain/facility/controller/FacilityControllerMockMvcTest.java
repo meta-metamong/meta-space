@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
@@ -76,8 +79,8 @@ class FacilityControllerMockMvcTest {
                             "provId": 3000,
                             "fctTel": "02-1234-1234",
                             "fctGuide": "Hello, World!",
-                            "fctOpenTime": "1980-09-05T12:00:00.000",
-                            "fctCloseTime": "1980-09-05T16:00:00.000",
+                            "fctOpenTime": "12:00:00",
+                            "fctCloseTime": "16:00:00",
                             "unitUsageTime": 30,
                             "images": [
                                 {
@@ -208,5 +211,14 @@ class FacilityControllerMockMvcTest {
                             }
                         }
                         """));
+    }
+    
+    @Autowired
+    ObjectMapper objectMapper;
+    
+    @Test
+    void test() throws JsonProcessingException {
+        String str = objectMapper.writeValueAsString(LocalTime.of(13, 50, 10));
+        System.out.println("str=" + str);
     }
 }

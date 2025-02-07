@@ -32,4 +32,8 @@ public class AdditionalInfo {
     
     private Long fctId;
     private String addinfoDesc;
+    
+    public void updateAddinfoDesc(String addinfoDesc) {
+        this.addinfoDesc = addinfoDesc;
+    }
 }

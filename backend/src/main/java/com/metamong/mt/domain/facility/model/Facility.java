@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.facility.model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +61,8 @@ public class Facility {
     @Enumerated(EnumType.STRING)
     private BooleanAlt openOnHolidays;
     
-    private LocalDateTime fctOpenTime;
-    private LocalDateTime fctCloseTime;
+    private LocalTime fctOpenTime;
+    private LocalTime fctCloseTime;
     private int unitUsageTime;
     
     @Builder.Default
@@ -83,5 +84,9 @@ public class Facility {
     
     public void addFctImage(FacilityImage fctImage) {
         this.fctImages.add(fctImage);
+    }
+    
+    public void requestDelete() {
+        this.fctState = FacilityState.DEL_REQUESTED;
     }
 }
