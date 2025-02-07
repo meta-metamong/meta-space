@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/Home.vue';
-import Login from '../pages/Login.vue';
-import SignUp from '../pages/SignUp.vue';
-import Profile from '../pages/Profile.vue';
-import UpdateMember from '../components/member/UpdateMember.vue';
+import Login from '../pages/member/Login.vue';
+import SignUp from '../pages/member/SignUp.vue';
+import Profile from '../pages/member/Profile.vue';
+import UpdateMember from '../pages/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';

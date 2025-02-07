@@ -61,18 +61,6 @@
 					<input type="text" class="form-control" id="detailAddress" name="detailAddress" v-model="memberInfo.detailAddress" required />
 				</div>
 			</div>
-			<!-- <div class="row mb-4" v-if="role === 'ROLE_OWNER'">
-				<label class="col-form-label col-sm-2" for="businessName">{{ $t('member.businessName') }}</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="businessName" name="businessName" v-model="memberInfo.businessName" required />
-				</div>
-			</div>
-			<div class="row mb-4" v-if="role === 'ROLE_OWNER'">
-				<label class="col-form-label col-sm-2" for="businessRegistrationNumber">{{ $t('member.businessRegistrationNumber') }}</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="businessRegistrationNumber" name="businessRegistrationNumber" v-model="memberInfo.businessRegistrationNumber" required />
-				</div>
-			</div> -->
 			<button class="btn btn-primary w-100 p-2 mt-3" type="submit">{{ $t('button.save') }}</button>
 		</form>
 	</div>

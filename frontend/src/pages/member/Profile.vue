@@ -59,8 +59,7 @@
 </template>
 
 <script>
-import { get } from "../apis/axios";
-import { toRaw } from 'vue';
+import { get } from "../../apis/axios";
 export default {
     name: "Profile",
     data() {
