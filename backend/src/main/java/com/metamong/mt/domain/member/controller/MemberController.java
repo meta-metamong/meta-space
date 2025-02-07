@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,13 +29,14 @@ import org.springframework.web.socket.WebSocketSession;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeTransmissionRequestDto;
+import com.metamong.mt.domain.member.dto.request.FindPasswordRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
-import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
+import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
@@ -318,7 +318,7 @@ public class MemberController {
      * @return 비밀번호 확인 성공 여부
      */
     @PostMapping("/members/password")
-    public ResponseEntity<?> confirmPassword(@AuthenticationPrincipal User user, @RequestBody PasswordConfirmRequestDto dto){
+    public ResponseEntity<?> confirmPassword(@AuthenticationPrincipal User user, @Validated @RequestBody PasswordConfirmRequestDto dto){
         try {
             memberService.confirmPassword(Long.valueOf(user.getUsername()), dto);
             return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "비밀번호 인증이 확인되었습니다."));
@@ -341,7 +341,7 @@ public class MemberController {
      * @return 비밀번호 변경 성공 여부
      */
     @PutMapping("/members/password")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User user, @RequestBody PasswordChangeRequestDto dto){
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User user, @Validated @RequestBody PasswordChangeRequestDto dto){
         memberService.changePassword(Long.parseLong(user.getUsername()), dto);
         return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "비밀번호 변경 성공"));
     }
@@ -368,31 +368,15 @@ public class MemberController {
                     .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
         }
     }
-
-//    public void addSession(WebSocketSession session) {
-//        sessions.add(session);
-//    }
-//    
-//    @GetMapping("/members/roleUserCount")
-//    public String getRoleUserCount() {
-//        return memberService.view();
-//    }
-//    
-//    @GetMapping("/download/{filename}")
-//    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-//    	
-//        String fileDirectory = "C:/Users/KOSA/Downloads/";
-//        File file = new File(fileDirectory + filename);
-//        
-//        if (!file.exists()) {
-//            return ResponseEntity.notFound().build();  // 파일이 없을 때 처리해놓깅
-//        }
-//
-//        Resource resource = new FileSystemResource(file);
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")  
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))  
-//                .body(resource);
-//    }
+    
+    /**
+     * 비밀번호 찾기 버튼을 누른 후 이메일을 입력하여 재설정 링크를 전송받습니다.
+     * 
+     * @param email 이메일
+     * @return verification 인증코드
+     */
+    @PostMapping("/members/find-password")
+    public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
+        return null;
+    }
 }
