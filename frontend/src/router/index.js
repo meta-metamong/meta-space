@@ -9,6 +9,7 @@ import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
 import Reservation from '../pages/Reservation.vue';
 import DetailReservation from '../components/reservation/DetailReservation.vue';
+import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -16,6 +17,8 @@ const routes = [
 	{ path: '/profile', component: Profile },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
+	{ path: '/confirm-pw/:type', component: ConfirmPassword},
+
 	//{ path: '/socket', component: Socket  },
 	{ path: '/download', component: Download  },
 
