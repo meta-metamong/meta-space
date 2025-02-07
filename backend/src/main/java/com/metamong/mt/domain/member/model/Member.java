@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -95,7 +96,8 @@ public class Member {
     private LocalDateTime memBannedUntil;
     
     @Column(name="is_del", length=1)
-    private Character isDel;
+    @Enumerated(EnumType.STRING)
+    private BooleanAlt isDel;
     
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private FctProvider fctProvider;

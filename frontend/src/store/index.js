@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { login, logout } from "../apis/axios";
+import { login, logout, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
 
 const saveUserIdInLocal = function (userId) {
@@ -7,7 +7,7 @@ const saveUserIdInLocal = function (userId) {
 };
 
 export const getUserIdInLocal = function () {
-  return JSON.parse(sessionStorage.getItem("user"));
+  return sessionStorage.getItem("userId");
 };
 
 const removeUserIdInLocal = function () {
@@ -64,6 +64,8 @@ const store = createStore({
       if (response.status === 200) {
         context.commit("saveUserId", response.data.content);
         context.dispatch("connectOnlineStatus");
+      }else{
+        return response.response.data.message;
       }
     },
     async logoutRequest(context) {

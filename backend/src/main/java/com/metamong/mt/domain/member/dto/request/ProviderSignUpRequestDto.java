@@ -64,7 +64,6 @@ public class ProviderSignUpRequestDto {
     private String provAccount;
     
     @NotEmpty(message = "예금주명은 필수입니다.")
-
     private String provAccountOwner;
     
     public Gender getGender() {

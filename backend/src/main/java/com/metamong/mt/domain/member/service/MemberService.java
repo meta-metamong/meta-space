@@ -3,6 +3,7 @@ package com.metamong.mt.domain.member.service;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
@@ -19,7 +20,6 @@ public interface MemberService {
 
     // 업주 회원 정보 저장
     void saveProvider(ProviderSignUpRequestDto dto);
-
     
     // 리프레시 토큰 업데이트
     void updateRefreshToken(Long memId, String refreshToken);
@@ -36,12 +36,17 @@ public interface MemberService {
  	// 회원 정보 삭제
 	boolean deleteMember(Long memId);
 
- 	
+ 	// 비밀번호 확인
+	void confirmPassword(Long memId, PasswordConfirmRequestDto dto);
+	
  	// 비밀번호 변경
  	void changePassword(Long memId, PasswordChangeRequestDto dto);
 
- 	// DB에서 회원 데이터 조회	
-    Member getMember(Long memId);
+ 	// 매퍼를 통해 DB에서 회원 데이터 조회 (탈퇴하지 않은 회원)
+    Member getMemberByMapper(Long memId);
+    
+    // Jpa를 통해 DB에서 회원 데이터 조회 (삭제 여부 상관 x)
+    Member getMemberByRepository(Long memId);
     
     // DB에서 시설제공자 데이터 조회
     FctProvider getProvider(Long memId);

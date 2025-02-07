@@ -28,11 +28,6 @@ public class Payment {
     @Id
     private Long rvtId;
     
-    @OneToOne
-    @MapsId
-    @JoinColumn(name="rvt_id")
-    private Reservation reservation;
-    
     @Column(name="pay_price")
     private Long payPrice;
     
@@ -52,7 +47,10 @@ public class Payment {
     @Column(name="refund_bank_code")
     private String refundBankCode;
     
-    @Column(name="refundAccountOwner")
+    @Column (name="refund_account")
+    private String refundAccount;
+    
+    @Column(name="refund_account_owner")
     private String refundAccountOwner;
 
 }
