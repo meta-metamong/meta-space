@@ -6,8 +6,8 @@ import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.metamong.mt.domain.reservation.model.Reservation;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class ReservationRequestDto {
     private Long zoneId;
     private Long consId;
 
-    @Past(message = "예약 날짜는 과거의 날짜만 가능합니다.")
+    @FutureOrPresent(message = "예약 날짜는 오늘 이후의 날짜만 가능합니다.")
     private LocalDate rvtDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
@@ -29,7 +29,7 @@ public class ReservationRequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime usageEndTime;
 
-    @NotEmpty(message = "이용 인원 수는 필수입니다.")
+    @Min(value = 1, message = "이용 인원 수는 1 이상이어야 합니다.")
     private int usageCount;
 
     public Reservation toEntity() {

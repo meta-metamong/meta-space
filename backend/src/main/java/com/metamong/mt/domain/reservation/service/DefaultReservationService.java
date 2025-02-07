@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
+import com.metamong.mt.domain.reservation.exception.ReservationNotFoundException;
 import com.metamong.mt.domain.reservation.model.Reservation;
 import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
@@ -45,7 +47,7 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public void cancelReservation(Long rvtId, CancelRequestDto dto) {
         Reservation reservation = this.reservationRepository.findById(rvtId)
-                .orElseThrow();
+                .orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
         reservation.setRvtCancelationReason(dto.getRvtCancelationReason());
     }
 }
