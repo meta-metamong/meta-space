@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import 'v-calendar/style.css';
 import './style.css'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -8,7 +9,6 @@ import router from './router'
 import i18n from './i18n';
 import store from './store';
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
 
 console.warn = console.error = () => {};
 
