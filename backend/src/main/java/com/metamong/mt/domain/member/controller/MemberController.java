@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,9 +32,11 @@ import com.metamong.mt.domain.member.dto.request.EmailValidationCodeRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeTransmissionRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.service.EmailValidationService;
+import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
@@ -57,7 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-	private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final CookieGenerator cookieGenerator;
     private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
     private final EmailValidationService emailValidationService;
@@ -306,16 +309,39 @@ public class MemberController {
     }
     
     /**
+     * 비밀번호 확인 메서드
+     * <p>
+     *  비밀번호 변경 전 비밀번호를 확인하는 메서드입니다.
+     * </p>
+     * 
+     * @param 현재 비밀번호
+     * @return 비밀번호 확인 성공 여부
+     */
+    @PostMapping("/members/password")
+    public ResponseEntity<?> confirmPassword(@AuthenticationPrincipal User user, @RequestBody PasswordConfirmRequestDto dto){
+        try {
+            memberService.confirmPassword(Long.valueOf(user.getUsername()), dto);
+            return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "비밀번호 인증이 확인되었습니다."));
+        }catch(InvalidLoginRequestException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(BaseResponse.of(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."));
+        }catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호 인증 중 오류가 발생했습니다."));
+        }
+    }
+    
+    /**
      * 비밀번호 변경 메서드
      * <p>
      *  새로운 비밀번호를 사용하기 위해 비밀번호를 변경하는 메서드입니다.
      * </p>
      * 
-     * @param 현재 비밀번호와 password와 passwordConfirm를 담은 객체
+     * @param password와 passwordConfirm를 담은 객체
      * @return 비밀번호 변경 성공 여부
      */
     @PutMapping("/members/password")
-    public ResponseEntity<?> confirmPassword(@AuthenticationPrincipal User user, @RequestBody PasswordChangeRequestDto dto){
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User user, @RequestBody PasswordChangeRequestDto dto){
         memberService.changePassword(Long.parseLong(user.getUsername()), dto);
         return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "비밀번호 변경 성공"));
     }

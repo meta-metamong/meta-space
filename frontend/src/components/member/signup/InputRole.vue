@@ -6,13 +6,13 @@
 			<!-- 시설 이용자 -->
 			<div class="mb-4">
 				<p class="fw-bold">{{ $t('signup.isConsumer') }}</p>
-				<button type="button" @click="nextStep('consumer')" class="w-100 h-75 signup-btn">{{ $t('signup.ConsumerSignup') }}</button>
+				<button type="button" @click="nextStep('consumer')" class="w-100 h-75 signup-btn rounded-pill">{{ $t('signup.ConsumerSignup') }}</button>
 			</div>
 
 			<!-- 시설 제공자 -->
 			<div>
 				<p class="fw-bold">{{ $t('signup.isProvider') }}</p>
-				<button type="button" @click="nextStep('provider')" class="w-100 h-75 signup-btn">{{ $t('signup.ProviderSignup') }}</button>
+				<button type="button" @click="nextStep('provider')" class="w-100 h-75 signup-btn rounded-pill">{{ $t('signup.ProviderSignup') }}</button>
 			</div>
 		</div>
 </template>

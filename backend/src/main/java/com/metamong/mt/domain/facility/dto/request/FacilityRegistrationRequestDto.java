@@ -1,6 +1,6 @@
 package com.metamong.mt.domain.facility.dto.request;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,10 +56,10 @@ public class FacilityRegistrationRequestDto {
     private BooleanAlt openOnHolidays;
     
     @NotNull
-    private LocalDateTime fctOpenTime;
+    private LocalTime fctOpenTime;
     
     @NotNull
-    private LocalDateTime fctCloseTime;
+    private LocalTime fctCloseTime;
     
     @NotNull
     @Min(30)

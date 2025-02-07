@@ -14,7 +14,7 @@
           <router-link to="/" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
             <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
           </router-link>
-          <router-link to="/" class="nav-link text-center"  v-if="isLogin">
+          <router-link to="/profile" class="nav-link text-center"  v-if="isLogin">
             <i class="bi bi-person text-primary"></i><br>{{ $t('footer.profile') }}
           </router-link>
           <router-link to="/login" class="nav-link text-center" v-if="!isLogin">

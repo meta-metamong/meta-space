@@ -38,9 +38,9 @@ export default{
           this.$i18n.locale = event.target.value;
         },
         initUserId(){
-        const userId = getUserIdInLocal();
-        if(!this.$store.state.userId && userId){
-          this.$store.commit('initUserId', userId);
+          const userId = getUserIdInLocal();
+          if(userId !== null && userId !== undefined){
+            this.$store.commit('initUserId', userId);
         }
       }
     },

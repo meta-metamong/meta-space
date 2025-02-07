@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 public class ZoneUpdateRequestDto {
     private String zoneName;
-    private int maxUserCount;
+    private Integer maxUserCount;
     private BooleanAlt isSharedZone;
-    private int hourlyRate;
+    private Integer hourlyRate;
 }

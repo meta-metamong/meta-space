@@ -17,10 +17,4 @@ public class HourlyUsageDto {
     private LocalTime usageEndTime;
 
     private int totalUsageCount;
-    
-    public HourlyUsageDto(LocalTime usageStartTime, LocalTime usageEndTime, int totalUsageCount) {
-        this.usageStartTime = usageStartTime;
-        this.usageEndTime = usageEndTime;
-        this.totalUsageCount = totalUsageCount;
-    }
 }
