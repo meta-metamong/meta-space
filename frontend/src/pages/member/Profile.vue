@@ -52,9 +52,9 @@
             </div>
         </div>
         <div class="w-100 text-center mb-2">
-            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('button.update') }}</button>
-            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/confirm-pw/change')">{{ $t('member.changePw') }}</button>
-            <button class="signup-btn exit-btn w-75 h-75 rounded-pill" @click="$router.push('/confirm-pw/exit')">{{ $t('member.exit') }}</button>
+            <button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('button.update') }}</button>
+            <button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/confirm-pw/change')">{{ $t('member.changePw') }}</button>
+            <button class="signup-btn exit-btn w-75 rounded-pill" @click="$router.push('/confirm-pw/exit')">{{ $t('member.exit') }}</button>
         </div>
 	</div>
 </template>

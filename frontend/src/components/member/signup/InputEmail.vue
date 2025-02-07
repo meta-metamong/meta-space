@@ -4,9 +4,9 @@
         <h1 class="text-center mb-4">{{ $t('signup.signup') }} (1/3)</h1>
         <!-- 이메일 입력 -->
         <div class="mb-3">
-            <input type="email" class="w-100 mb-2 signup-input" v-model="email" :disabled="isCodeSent" :placeholder="$t('member.email')" />
+            <input type="email" class="w-100 mb-2 signup-input rounded-pill" v-model="email" :disabled="isCodeSent" :placeholder="$t('member.email')" />
             <h3 class="error-message mb-2" v-if="email !== '' && !isValidatedEmail" v-text="$t('signupError.notValidatedEmail')" />
-            <button type="button" class="w-100 h-75 signup-btn" :disabled="isCodeSent || !isValidatedEmail" @click="sendCode" v-text="$t('signup.checkEmail')" />
+            <button type="button" class="w-100 signup-btn rounded-pill" :disabled="isCodeSent || !isValidatedEmail" @click="sendCode" v-text="$t('signup.checkEmail')" />
         </div>
 
         <div class="row mt-4 mb-4" v-if="isCodeSent">
@@ -16,7 +16,7 @@
         </div>
 
         <!-- 다음 단계 진행행 버튼 -->
-        <button type="button" v-if="isCorrectCode" class="w-100 h-75 signup-btn mt-2 rounded-pill" @click="nextStep()">{{ $t('signup.next') }}</button>
+        <button type="button" v-if="isCorrectCode" class="w-100 signup-btn mt-2 rounded-pill" @click="nextStep()">{{ $t('signup.next') }}</button>
     </div>
 </template>
 

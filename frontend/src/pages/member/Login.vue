@@ -1,6 +1,6 @@
 <template>
 	  <div class="container w-100 mt-4">
-		<h2 class="text-center mb-3" v-text="$t('member.confirmPw')"></h2>
+		<h2 class="text-center mb-3" v-text="$t('member.login')"></h2>
   
 		<form @submit.prevent="handleLogin">
 			<!-- 이메일 입력 -->

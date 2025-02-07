@@ -10,6 +10,7 @@ import ChatList  from '../pages/ChatList.vue';
 import Reservation from '../pages/Reservation.vue';
 import DetailReservation from '../components/reservation/DetailReservation.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
+import ChangePassword from '../pages/member/ChangePassword.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -17,7 +18,8 @@ const routes = [
 	{ path: '/profile', component: Profile },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
-	{ path: '/confirm-pw/:type', component: ConfirmPassword},
+	{ path: '/confirm-pw/:type', component: ConfirmPassword, props: true },
+	{ path: '/change-pw', component: ChangePassword },
 
 	//{ path: '/socket', component: Socket  },
 	{ path: '/download', component: Download  },
