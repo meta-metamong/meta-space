@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.reservation.service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +9,14 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.domain.facility.model.Facility;
+import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
+import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 import com.metamong.mt.domain.reservation.exception.ReservationDuplicatedException;
@@ -31,6 +36,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
     private final ZoneRepository zoneRepository;
+    private final FacilityRepository facilityRepository;
 
     @Override
     public List<ReservationResponseDto> findReservationByConsId(Long consId) {
@@ -45,6 +51,44 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public List<ReservationInfoResponseDto> getTotalCount() {
         return this.reservationMapper.getTotalCount();
+    }
+    
+
+    @Override
+    public List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto) {
+        Facility fctInfo = facilityRepository.findById(dto.getFctId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 시설이 존재하지 않습니다."));
+        LocalTime openTime = fctInfo.getFctOpenTime().toLocalTime();
+        LocalTime closeTime = fctInfo.getFctCloseTime().toLocalTime();
+        int unitTime = fctInfo.getUnitUsageTime();
+        
+        List<HourlyUsageDto> reservedTimes = reservationMapper.getReservedTimes(dto);
+        
+        List<RemainingCountResponseDto> availableTimes = new ArrayList<>();
+        int maxUserCount = zoneRepository.findMaxUserCountByZoneId(dto.getZoneId());
+        LocalTime currentTime = openTime;
+        
+        while (currentTime.plusMinutes(unitTime).isBefore(closeTime) || currentTime.plusMinutes(unitTime).equals(closeTime)) {
+            LocalTime nextTime = currentTime.plusMinutes(unitTime);
+            RemainingCountResponseDto timeInfo = new RemainingCountResponseDto();
+            timeInfo.setUsageStartTime(currentTime);
+
+            // 기본적으로 최대 인원 수로 설정
+            int remainingCapacity = maxUserCount;
+
+            // 현재 시간 슬롯에 해당하는 예약된 인원 차감
+            for (HourlyUsageDto usage : reservedTimes) {
+                if (usage.getUsageStartTime().isBefore(nextTime) && usage.getUsageEndTime().isAfter(currentTime)) {
+                    remainingCapacity -= usage.getTotalUsageCount();
+                }
+            }
+
+            // 남은 인원 저장
+            timeInfo.setRemainUsageCount(Math.max(remainingCapacity, 0));
+            availableTimes.add(timeInfo);
+            currentTime = nextTime;
+        }
+        return availableTimes;
     }
 
     @Override
@@ -91,4 +135,5 @@ public class DefaultReservationService implements ReservationService {
                 .orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
         reservation.setRvtCancelationReason(dto.getRvtCancelationReason());
     }
+
 }

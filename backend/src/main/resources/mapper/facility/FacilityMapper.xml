@@ -112,4 +112,82 @@
             WHERE fct.fct_id = #{fctId}
         ]]>
     </select>
+    
+    <update id="updateFacilityById" parameterType="com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto">
+        UPDATE facility
+        <set>
+            <if test="dto.fctName != null">
+                fct_name = #{dto.fctName: VARCHAR},
+            </if>
+            <if test="dto.fctPostalCode != null">
+                fct_postal_code = #{dto.fctPostalCode: CHAR},
+            </if>
+            <if test="dto.fctAddress != null">
+                fct_address = #{dto.fctAddress: VARCHAR},
+            </if>
+            <if test="dto.fctDetailAddress != null">
+                fct_detail_address = #{dto.fctDetailAddress: VARCHAR},
+            </if>
+            <if test="dto.fctTel != null">
+                fct_tel = #{dto.fctTel: VARCHAR},
+            </if>
+            <if test="dto.catId != null">
+                cat_id = #{dto.catId: CHAR},
+            </if>
+            <if test="dto.fctGuide != null">
+                fct_guide = #{dto.fctGuide: VARCHAR},
+            </if>
+            <if test="dto.isOpenOnHolidays != null">
+                is_open_on_holidays = #{dto.isOpenOnHolidays: CHAR},
+            </if>
+            <if test="dto.fctOpenTime != null">
+                fct_open_time = #{dto.fctOpenTime: DATE},
+            </if>
+            <if test="dto.fctCloseTime != null">
+                fct_close_time = #{dto.fctCloseTime: DATE},
+            </if>
+            <if test="dto.unitUsageTime != null">
+                unit_usage_time = #{dto.unitUsageTime: INTEGER},
+            </if>
+            <if test="dto.fctState != null">
+                fct_state = #{dto.fctState: VARCHAR},
+            </if>
+            <if test="dto.fctLatitude != null">
+                fct_latitude = #{dto.fctLatitude: DOUBLE},
+            </if>
+            <if test="dto.fctLongitude != null">
+                fct_longitude = #{dto.fctLongitude: DOUBLE},
+            </if>
+            updated_at = SYSDATE
+        </set>
+        WHERE fct_id = #{dto.fctId: BIGINT}
+    </update>
+    
+    <update id="updateZoneById" parameterType="com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto">
+        UPDATE zone
+        <set>
+            <if test="dto.zoneName != null">
+                zone_name = #{dto.zoneName: VARCHAR},
+            </if>
+            <if test="dto.maxUserCount != null">
+                max_user_count = #{dto.maxUserCount: INTEGER},
+            </if>
+            <if test="dto.isSharedZone != null">
+                is_shared_zone = #{dto.isSharedZone: CHAR},
+            </if>
+            <if test="dto.hourlyRate != null">
+                hourly_rate = #{dto.hourlyRate: INTEGER},
+            </if>
+            updated_at = SYSDATE
+        </set>
+        WHERE zone_id = #{dto.zoneId: BIGINT}
+    </update>
+    
+    <delete id="deleteAdditionalInfosByIds" parameterType="java.util.List">
+        DELETE FROM additional_info
+        WHERE addinfo_id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </delete>
 </mapper>

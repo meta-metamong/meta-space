@@ -16,7 +16,7 @@
         </div>
 
         <!-- 다음 단계 진행행 버튼 -->
-        <button type="button" v-if="isCorrectCode" class="w-100 h-75 signup-btn mt-2" @click="nextStep()">{{ $t('signup.next') }}</button>
+        <button type="button" v-if="isCorrectCode" class="w-100 h-75 signup-btn mt-2 rounded-pill" @click="nextStep()">{{ $t('signup.next') }}</button>
     </div>
 </template>
 

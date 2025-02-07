@@ -2,7 +2,8 @@
     "button": {
         "search": "검색",
         "new": "추가",
-        "save": "수정",
+        "save": "저장",
+        "update": "수정",
         "delete": "삭제",
         "cancel": "취소",
         "check": "확인"
@@ -96,7 +97,8 @@
         "profile": "프로필",
         "signupUser": "일반 회원가입",
         "signupOwner": "업주 회원가입",
-        "membershipDate": "가입일"
+        "membershipDate": "가입일",
+        "changePw": "비밀번호 재설정"
     },
     "admin": {
         "socket":"소켓",

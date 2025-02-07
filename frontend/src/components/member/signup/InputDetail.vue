@@ -40,7 +40,7 @@
             <input class="signup-input w-100" type="text" v-model="detailAddress" :placeholder="$t('member.detailAddress')" />
         </div>
 
-        <button type="button" class="w-100 signup-btn" :disabled="!isValidatedName || !isValidatedPhone || isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>
+        <button type="button" class="w-100 signup-btn rounded-pill" :disabled="!isValidatedName || !isValidatedPhone || isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>
     </div>
 </template>
 

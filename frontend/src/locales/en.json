@@ -3,6 +3,7 @@
         "search": "search",
         "new": "new",
         "save": "save",
+        "update": "update",
         "delete": "delete",
         "cancel": "cancel",
         "check": "check"
@@ -97,7 +98,8 @@
         "profile": "Profile",
         "signupUser": "Signup as a Member",
         "signupOwner": "Signup as a Owner",
-        "membershipDate": "Membership Date"
+        "membershipDate": "Membership Date",
+        "changePw": "Change Password"
     },
     "admin" : {
         "socket":"socket",
