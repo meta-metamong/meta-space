@@ -21,7 +21,7 @@
 			<div class="text-center mt-3">
 				<router-link to="/signup" class="text-muted text-decoration-none">{{ $t('member.signup') }}</router-link>
 				<span class="mx-4">|</span>
-				<router-link to="/find-password" class="text-muted text-decoration-none">{{ $t('member.findPw') }}</router-link>
+				<router-link to="/find-pw" class="text-muted text-decoration-none">{{ $t('member.findPw') }}</router-link>
 			</div>
 		</form>
 	  </div>

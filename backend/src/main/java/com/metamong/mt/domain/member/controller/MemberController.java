@@ -377,6 +377,6 @@ public class MemberController {
      */
     @PostMapping("/members/find-password")
     public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
-        return null;
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
     }
 }

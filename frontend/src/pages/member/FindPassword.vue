@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { post, del } from '../../apis/axios';
+import { post } from '../../apis/axios';
 export default {
   name: 'FindPassword',
   data() {
@@ -28,14 +28,11 @@ export default {
           const requestDto = {
               email: this.email
           }
-          const response = await post("/members/password", requestDto);
+          const response = await post("/members/find-password", requestDto);
+          console.log(response);
           if(response.status === 200){
               alert(response.data.message);
-              if(this.type === 'exit'){
-                  this.exitMember();
-              }else{
-                  this.$router.push("/change-pw")
-              }
+              this.$router.push("/");
           }else{
               alert(response.response.data.message);
           }

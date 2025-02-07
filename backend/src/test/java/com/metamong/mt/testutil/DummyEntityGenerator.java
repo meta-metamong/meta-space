@@ -7,6 +7,7 @@ import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.reservation.model.Reservation;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 /**
  * 테스트를 위한 더미 엔티티 객체 생성 helper 클래스
@@ -25,7 +26,7 @@ public class DummyEntityGenerator {
                 .memPostalCode("01234")
                 .memDetailAddress("detail addr")
                 .memAddress("addr")
-                .isDel('N')
+                .isDel(BooleanAlt.N)
                 .build();
     }
     
