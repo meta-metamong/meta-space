@@ -7,8 +7,9 @@ public interface EmailValidationService {
     /**
      * 주어진 이메일로 랜덤 생성한 코드를 전송
      * @param email 코드를 전송할 이메일
+     * @return validationCode 프론트에서 검증할 코드
      */
-    void sendEmailValidationCode(String email);
+    String sendEmailValidationCode(String email);
     
     /**
      * emailValidationCode가 유효한 코드인지 확인한다.

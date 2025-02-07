@@ -205,15 +205,13 @@ public class MemberController {
 	  }
 	  
 	  @PostMapping("/members/send-validation-emails")
-	  public ResponseEntity<BaseResponse<Void>> sendValidationEmail(@RequestBody EmailValidationCodeTransmissionRequestDto requestBody) {
-	      this.emailValidationService.sendEmailValidationCode(requestBody.getEmail());
-	      return new ResponseEntity<>(
-	              BaseResponse.of(HttpStatus.NO_CONTENT, "메일을 전송했습니다."),
-	              HttpStatus.NO_CONTENT);
+	  public ResponseEntity<BaseResponse<String>> sendValidationEmail(@Validated @RequestBody EmailValidationCodeTransmissionRequestDto requestBody) {
+	      return ResponseEntity.ok(BaseResponse.of(this.emailValidationService.sendEmailValidationCode(requestBody.getEmail()), 
+	              HttpStatus.OK, "메일을 전송했습니다."));
 	  }
 	  
 	  @PostMapping("/members/check-email-validation")
-	  public ResponseEntity<BaseResponse<String>> checkEmailValidation(@RequestBody EmailValidationCodeRequestDto requestBody) {
+	  public ResponseEntity<BaseResponse<String>> checkEmailValidation(@Validated @RequestBody EmailValidationCodeRequestDto requestBody) {
 	      String signUpValidationCode =
 	              this.emailValidationService.validateCode(requestBody.getEmail(), requestBody.getEmailValidationCode());
 	      return ResponseEntity.ok(

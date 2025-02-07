@@ -21,6 +21,8 @@ public class HttpRequestAuthorizationDefinition {
             "/api/members/provider",
             "/api/members/login",
             "/api/members/reissue",
+            "/api/members/send-validation-emails",
+            "/api/members/check-email-validation",
             "/api/members/find-password"
 		);
 	
@@ -33,6 +35,8 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/dup-email",
                     "/api/recommends/*",
                     "/api/reservations",
+                    "/api/members/send-validation-emails",
+                    "/api/members/check-email-validation",
                     "/api/members/find-password"
             },
             HttpMethod.GET, new String[] {

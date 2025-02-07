@@ -38,13 +38,14 @@ public class DefaultEmailValidationService implements EmailValidationService {
     private final MemberVolatileCodeRepository memberVolatileCodeRepository;
 
     @Override
-    public void sendEmailValidationCode(String email) {
+    public String sendEmailValidationCode(String email) {
         final String validationCode = generateRandomValue(6);
         if (log.isDebugEnabled()) {
             log.debug("Generated validation code: {}", validationCode);
         }
         this.mailAgent.send(MailType.MAIL_VALIDATION, "[Metaspace] 메일 인증 번호", email, validationCode);
         this.memberVolatileCodeRepository.saveEmailValidationCode(email, validationCode);
+        return validationCode;
     }
 
     @Override
