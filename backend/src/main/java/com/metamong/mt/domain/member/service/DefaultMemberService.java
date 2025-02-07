@@ -25,6 +25,7 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
+import com.metamong.mt.global.constant.BooleanAlt;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -70,7 +71,7 @@ public class DefaultMemberService implements MemberService {
         }
         
     	Member member = dto.toEntity();
-    	member.setIsDel('N');
+    	member.setIsDel(BooleanAlt.N);
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
         
@@ -87,7 +88,7 @@ public class DefaultMemberService implements MemberService {
         
         Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
-        member.setIsDel('N');
+        member.setIsDel(BooleanAlt.N);
         
         FctProvider provider = dto.toProvider();
         provider.setMember(member);
@@ -115,8 +116,6 @@ public class DefaultMemberService implements MemberService {
 	    if(member == null) {
 	        throw new MemberNotFoundException("회원을 찾을 수 없습니다.");
 	    }
-	    System.out.println("\n\n\n\n\n");
-	    System.out.println(member);
 	    return member;
 	}
     
