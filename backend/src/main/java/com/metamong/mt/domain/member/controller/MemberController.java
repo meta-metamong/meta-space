@@ -27,10 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.EmailValidationCodeRequestDto;
+import com.metamong.mt.domain.member.dto.request.EmailValidationCodeTransmissionRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
@@ -52,12 +55,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class MemberController {
-	
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 	private final UserDetailsService userDetailsService;
     private final CookieGenerator cookieGenerator;
     private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
+    private final EmailValidationService emailValidationService;
     
     /**
      * 로그인 처리 메서드.
@@ -196,6 +199,23 @@ public class MemberController {
          
     	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                  .body(BaseResponse.of(refreshToken, HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."));
+	  }
+	  
+	  @PostMapping("/members/send-validation-emails")
+	  public ResponseEntity<BaseResponse<Void>> sendValidationEmail(@RequestBody EmailValidationCodeTransmissionRequestDto requestBody) {
+	      this.emailValidationService.sendEmailValidationCode(requestBody.getEmail());
+	      return new ResponseEntity<>(
+	              BaseResponse.of(HttpStatus.NO_CONTENT, "메일을 전송했습니다."),
+	              HttpStatus.NO_CONTENT);
+	  }
+	  
+	  @PostMapping("/members/check-email-validation")
+	  public ResponseEntity<BaseResponse<String>> checkEmailValidation(@RequestBody EmailValidationCodeRequestDto requestBody) {
+	      String signUpValidationCode =
+	              this.emailValidationService.validateCode(requestBody.getEmail(), requestBody.getEmailValidationCode());
+	      return ResponseEntity.ok(
+	              BaseResponse.of(signUpValidationCode, HttpStatus.OK, "content에 signUpValidationCode가 있음")
+	      );
 	  }
 
 	  @GetMapping("/test")
