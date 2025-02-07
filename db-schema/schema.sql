@@ -57,7 +57,7 @@ CREATE TABLE bank (
 CREATE TABLE fct_provider (
     prov_id            NUMBER(4, 0),
     biz_name           VARCHAR2(30) NOT NULL,
-    biz_reg_name       VARCHAR2(12) NOT NULL,
+    biz_reg_num        VARCHAR2(30) NOT NULL,
     bank_code          CHAR(3) NOT NULL,
     prov_account       VARCHAR2(20) NOT NULL,
     prov_account_owner VARCHAR2(30) NOT NULL,
