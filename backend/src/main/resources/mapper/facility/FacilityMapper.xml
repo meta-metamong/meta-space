@@ -112,4 +112,53 @@
             WHERE fct.fct_id = #{fctId}
         ]]>
     </select>
+    
+    <update id="updateFacilityById" parameterType="com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto">
+        UPDATE facility
+        <set>
+            <if test="dto.fctName != null">
+                fct_name = #{dto.fctName},
+            </if>
+            <if test="dto.fctPostalCode != null">
+                fct_postal_code = #{dto.fctPostalCode},
+            </if>
+            <if test="dto.fctAddress != null">
+                fct_address = #{dto.fctAddress},
+            </if>
+            <if test="dto.fctDetailAddress != null">
+                fct_detail_address = #{dto.fctDetailAddress},
+            </if>
+            <if test="dto.fctTel != null">
+                fct_tel = #{dto.fctTel},
+            </if>
+            <if test="dto.catId != null">
+                cat_id = #{dto.catId},
+            </if>
+            <if test="dto.fctGuide != null">
+                fct_guide = #{dto.fctGuide},
+            </if>
+            <if test="dto.isOpenOnHolidays != null">
+                is_open_on_holidays = #{dto.isOpenOnHolidays},
+            </if>
+            <if test="dto.fctOpenTime != null">
+                fct_open_time = #{dto.fctOpenTime},
+            </if>
+            <if test="dto.fctCloseTime != null">
+                fct_close_time = #{dto.fctCloseTime},
+            </if>
+            <if test="dto.unitUsageTime != null">
+                unit_usage_time = #{dto.unitUsageTime},
+            </if>
+            <if test="dto.fctState != null">
+                fct_state = #{dto.fctState},
+            </if>
+            <if test="dto.fctLatitude != null">
+                fct_latitude = #{dto.fctLatitude},
+            </if>
+            <if test="dto.fctLongitude != null">
+                fct_longitude = #{dto.fctLongitude},
+            </if>
+        </set>
+        WHERE fct_id = #{dto.fctId}
+    </update>
 </mapper>
