@@ -50,4 +50,8 @@ public class Category {
     public void addChildCategory(Category childCategory) {
         this.children.add(childCategory);
     }
+    
+    public boolean isRoot() {
+        return this.parentCat == null;
+    }
 }
