@@ -95,9 +95,10 @@ public class DefaultMemberService implements MemberService {
     }
     
     @Override
-	public void updateRefreshToken(Long memberId, String refreshToken) {
-	    Member member = getMember(memberId);
+	public void updateRefreshToken(Long memId, String refreshToken) {
+	    Member member = getMember(memId);
 	    member.setRefreshToken(refreshToken);
+	    member.setFctProvider(getProvider(memId));
 	    memberRepository.save(member);
 	}
     
@@ -192,6 +193,7 @@ public class DefaultMemberService implements MemberService {
         }
         
         member.changePassword(passwordEncoder.encode(dto.getNewPassword()));
+        member.setFctProvider(getProvider(memId));
         memberRepository.save(member);
     }
 	
