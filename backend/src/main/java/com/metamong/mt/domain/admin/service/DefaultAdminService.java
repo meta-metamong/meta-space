@@ -1,28 +1,42 @@
 package com.metamong.mt.domain.admin.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.metamong.mt.domain.admin.request.MemberSearchRequestDto;
-import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
-import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
+import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
 
-public class DefaultAdminService {
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class DefaultAdminService implements AdminService{
+	
+	private final AdminMapper adminMapper;
 	
 //	@Override
 //	@Transactional(readOnly = true)
-//	public MemberResponseDto searchMembers(MemberSearchRequestDto requestDto) {
-//	    Member member = getMember(requestDto);
-//	    return MemberResponseDto.builder()
-//								.memId(member.getMemId())
-//								.memName(member.getMemName())
-//								.email(member.getEmail())
-//								.memPhone(member.getMemPhone())
-//								.gender(member.getGender())
-//								.birthDate(member.getBirthDate())
-//								.memPostalCode(member.getMemPostalCode())
-//								.memDetailAddress(member.getMemDetailAddress())
-//								.memAddress(member.getMemAddress())
-//								.role(member.getRole())
-//								.build();
+//	public List<MemberSearchResponseDto> searchMembers(MemberSearchRequestDto requestDto) {
+//		return adminMapper.searchMembers(requestDto);
 //	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<MemberSearchResponseDto> searchMembers() {
+		return adminMapper.searchMembers();
+	}
+
+	@Override
+	public List<ReportedMemberResponseDto> getReportedMembers() {
+		return adminMapper.getReportedMembers();
+	}
+
+
+	
+
 }

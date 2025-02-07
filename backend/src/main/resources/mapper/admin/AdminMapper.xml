@@ -3,6 +3,38 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.metamong.mt.domain.admin.repository.mybatis.AdminMapper">
-    
+
+    <select id="searchMembers" resultType="com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto">
+    <![CDATA[
+        SELECT 
+    m.email, 
+    case when m.role ='ROLE_PROV' then '시설제공자' 
+        when m.role ='ROLE_CONS' then '시설이용자'
+    end as role,
+    CASE 
+        WHEN m.mem_banned_until IS NULL THEN '정상' 
+        ELSE '정지' 
+    END AS accountStatus, 
+    COUNT(r.rvt_id) AS reservationCount, 
+    m.created_at as createdAt
+FROM 
+    member m
+JOIN 
+    reservation r ON m.mem_id = r.cons_id
+GROUP BY  
+    m.email, 
+    m.role, 
+    m.mem_banned_until,  
+    m.created_at
+    ]]>
+	</select>
+	
+
+    <!-- 신고된 회원 목록 조회 -->
+    <select id="getReportedMembers" resultType="com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto">
+        SELECT m.email, r.report_type, r.report_msg
+        FROM member m
+        JOIN report r ON m.mem_id = r.reported_id
+    </select>
 
 </mapper>

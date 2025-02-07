@@ -1,4 +1,6 @@
-package com.metamong.mt.domain.admin.response;
+package com.metamong.mt.domain.admin.dto.response;
+
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,5 +12,5 @@ public class MemberSearchResponseDto {
     private String role;              
     private String accountStatus;    
     private int reservationCount;     
-    private String createdAt;         
+    private LocalDate createdAt;         
 }

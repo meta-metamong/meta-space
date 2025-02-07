@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.admin.request;
+package com.metamong.mt.domain.admin.dto.request;
 
 import lombok.Data;
 

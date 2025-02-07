@@ -1,15 +1,36 @@
 package com.metamong.mt.domain.admin.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.metamong.mt.domain.facility.service.FacilityService;
+import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
+import com.metamong.mt.domain.admin.service.AdminService;
+import com.metamong.mt.global.apispec.BaseResponse;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 public class AdminController {
 	
+	private final AdminService adminService;
+	
+    @GetMapping("/searchMembers")
+    public ResponseEntity<?> searchMembers(){
+    	return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
+    }
+    
+    @GetMapping("/reportedMembers")
+    public ResponseEntity<List<ReportedMemberResponseDto>> getReportedMembers() {
+        List<ReportedMemberResponseDto> reportedMembers = adminService.getReportedMembers();
+        return ResponseEntity.ok(reportedMembers);
+    }
+    
+    
 }

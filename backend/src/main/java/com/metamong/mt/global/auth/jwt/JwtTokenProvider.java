@@ -1,18 +1,26 @@
 package com.metamong.mt.global.auth.jwt;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.global.auth.userdetails.MemberUserDetails;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +32,42 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JwtTokenProvider {
+	
+	private String secretKey;
+	private SecretKey key;  
 
-    /**
-     * 토큰 암호화에 사용할 키
-     */
-    private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
+    @Autowired
+    private Environment environment;
+
+    @PostConstruct
+    public void init() {
+ 	
+    	String secretKey = environment.getProperty("jwt.secret.key")+"dsfsdf";
+    	
+        String encodedKey  = Base64.getEncoder().encodeToString(secretKey.getBytes());  
+
+        if (encodedKey != null) {
+            byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
+            
+            if (decodedKey.length < 32) {
+                log.error("JWT Secret Key is too short. It must be at least 256 bits (32 bytes).");
+                throw new IllegalArgumentException("JWT Secret Key is too short. It must be at least 256 bits.");
+            }
+            this.key = Keys.hmacShaKeyFor(decodedKey);
+        } else {
+            log.warn("JWT Secret Key is not set. Using a temporary default key.");
+            byte[] defaultKey = new byte[32]; 
+            this.key = new SecretKeySpec(defaultKey, "HmacSHA256");
+        }
+    }
+
 
     /**
      * 토큰 유효기간, 30분, 단위 밀리초
      */
     private long accessTokenValidTime = 30 * 60 * 1000L;  // 30분
     private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L; // 14일
-    
+    	
     /**
      * Access Token을 만들어 반환
      * @param member 사용자 정보를 저장한 객체, 클래임에 사용자 정보를 저장하기 위해 필요
@@ -53,7 +85,7 @@ public class JwtTokenProvider {
                 .build();
         return Jwts.builder()
                 .claims(claims)
-                .signWith(SECRET_KEY)  // 암호화에 사용할 키 설정
+                .signWith(key, SignatureAlgorithm.HS256)  // 암호화에 사용할 키 설정
                 .compact();
     }
 
@@ -73,7 +105,7 @@ public class JwtTokenProvider {
                 .build();
         return Jwts.builder()
                 .claims(claims)
-                .signWith(SECRET_KEY)  // 암호화에 사용할 키 설정 , 여기서 암호화
+                .signWith(key)  // 암호화에 사용할 키 설정 , 여기서 암호화
                 .compact();
     }
 
@@ -94,7 +126,7 @@ public class JwtTokenProvider {
     public Claims getClaims(String token) {
         // 서명 검증을 위한 비밀키를 사용하여 토큰을 파싱
         return Jwts.parser()
-                .verifyWith(SECRET_KEY)
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
