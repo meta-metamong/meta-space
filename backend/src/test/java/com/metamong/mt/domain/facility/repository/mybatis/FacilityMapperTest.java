@@ -169,7 +169,7 @@ class FacilityMapperTest {
                     INSERT INTO fct_provider (
                         prov_id,
                         biz_name,
-                        biz_reg_name,
+                        biz_reg_num,
                         bank_code,
                         prov_account,
                         prov_account_owner

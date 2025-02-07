@@ -4,7 +4,9 @@ import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
+import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
 import com.metamong.mt.domain.member.repository.redis.MemberEmailCodeRepository;
+import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -16,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultEmailValidationService implements EmailValidationService {
     private static final char[] MAIL_VALIDATION_CODE_CHARACTERS;
-    private static final int MAIL_VALIDATION_CODE_LENGTH = 6;
     
     static {
         char[] chars = new char['z' - 'a' + 1 + '9' - '0' + 1];
@@ -34,11 +35,11 @@ public class DefaultEmailValidationService implements EmailValidationService {
     }
     
     private final MailAgent mailAgent;
-    private final MemberEmailCodeRepository memberVolatileCodeRepository;
+    private final MemberVolatileCodeRepository memberVolatileCodeRepository;
 
     @Override
     public void sendEmailValidationCode(String email) {
-        final String validationCode = generateRandomValue();
+        final String validationCode = generateRandomValue(6);
         if (log.isDebugEnabled()) {
             log.debug("Generated validation code: {}", validationCode);
         }
@@ -47,19 +48,21 @@ public class DefaultEmailValidationService implements EmailValidationService {
     }
 
     @Override
-    public boolean isValidCode(String email, String emailValidationCode) {
+    public String validateCode(String email, String emailValidationCode) {
         String codeFromRepository = this.memberVolatileCodeRepository.findEmailValidationCodeByEmail(email);
-        if (emailValidationCode.equals(codeFromRepository)) {
+        if (codeFromRepository != null && emailValidationCode.equals(codeFromRepository)) {
             this.memberVolatileCodeRepository.deleteByEmail(email);
-            return true;
+            String signUpValidationCode = generateRandomValue(15);
+            this.memberVolatileCodeRepository.saveSignUpValidationCode(email, signUpValidationCode);
+            return signUpValidationCode;
         }
-        return false;
+        throw new InvalidEmailValidationCodeException(email);
     }
     
-    private String generateRandomValue() {
+    private String generateRandomValue(int size) {
         Random random = new Random();
-        char[] codeCharArray = new char[MAIL_VALIDATION_CODE_LENGTH];
-        for (int i = 0; i < MAIL_VALIDATION_CODE_LENGTH; i++) {
+        char[] codeCharArray = new char[size];
+        for (int i = 0; i < size; i++) {
             codeCharArray[i] = MAIL_VALIDATION_CODE_CHARACTERS[Math.abs(random.nextInt()) % MAIL_VALIDATION_CODE_CHARACTERS.length];
         }
         return String.valueOf(codeCharArray);

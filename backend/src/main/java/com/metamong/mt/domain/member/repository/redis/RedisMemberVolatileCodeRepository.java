@@ -51,4 +51,10 @@ public class RedisMemberVolatileCodeRepository implements MemberVolatileCodeRepo
     public boolean deleteSignUpValidationCodeByEmail(String email) {
         return this.stringRedisTemplate.delete(SIGN_UP_VALIDATION_TOKEN + email);
     }
+
+    @Override
+    public String findSignUpValidationCodeByEmail(String email) {
+        return this.stringRedisTemplate.opsForValue()
+                .get(SIGN_UP_VALIDATION_TOKEN + email);
+    }
 }

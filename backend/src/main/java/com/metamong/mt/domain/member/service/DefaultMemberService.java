@@ -25,6 +25,7 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
+import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -40,6 +41,7 @@ public class DefaultMemberService implements MemberService {
     private final FctProviderRepository providerRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
+    private final MemberVolatileCodeRepository memberVolatileCodeRepository;
     //private final SimpMessagingTemplate messagingTemplate; 
     private Date lastExecutionTime;
     private int roleUserCount; 

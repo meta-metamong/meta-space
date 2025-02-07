@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
 import com.metamong.mt.domain.member.repository.redis.MemberEmailCodeRepository;
+import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 import com.metamong.mt.global.mail.exception.MailTransmissionException;
@@ -22,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 class DefaultEmailValidationServiceTest {
     DefaultEmailValidationService defaultEmailValidationService;
     MailAgentMocking mailAgent;
-    MemberEmailCodeRepository memberVolatileCodeRepository;
+    MemberVolatileCodeRepository memberVolatileCodeRepository;
     
     @RequiredArgsConstructor
     static class MailAgentMocking implements MailAgent {
@@ -45,8 +48,9 @@ class DefaultEmailValidationServiceTest {
         }
     }
     
-    static class MemberVolatileCodeRepositoryMock implements MemberEmailCodeRepository {
+    static class MemberVolatileCodeRepositoryMock implements MemberVolatileCodeRepository {
         private static final Map<String, String> store = new HashMap<>();
+        private static final Map<String, String> store2 = new HashMap<>();
 
         @Override
         public void saveEmailValidationCode(String email, String code) {
@@ -62,6 +66,23 @@ class DefaultEmailValidationServiceTest {
         public boolean deleteByEmail(String email) {
             boolean result = store.containsKey(email);
             store.remove(email);
+            return result;
+        }
+
+        @Override
+        public void saveSignUpValidationCode(String email, String code) {
+            store2.put(email, code);
+        }
+
+        @Override
+        public String findSignUpValidationCodeByEmail(String email) {
+            return store2.get(email);
+        }
+
+        @Override
+        public boolean deleteSignUpValidationCodeByEmail(String email) {
+            boolean result = store2.containsKey(email);
+            store2.remove(email);
             return result;
         }
     }
@@ -83,7 +104,8 @@ class DefaultEmailValidationServiceTest {
         log.info("validationCode={}", validationCode);
         log.info("inRepository={}", this.memberVolatileCodeRepository.findEmailValidationCodeByEmail(email));
         
-        assertThat(this.defaultEmailValidationService.isValidCode(email, validationCode)).isTrue();
-        assertThat(this.defaultEmailValidationService.isValidCode(email, validationCode)).isFalse();
+        assertThat(this.defaultEmailValidationService.validateCode(email, validationCode)).isNotNull();
+        assertThatExceptionOfType(InvalidEmailValidationCodeException.class)
+                .isThrownBy(() -> this.defaultEmailValidationService.validateCode(email, validationCode));
     }
 }
