@@ -50,10 +50,10 @@
 </template>
 
 <script>
-import { get } from "../apis/axios";
+import { get } from "../../apis/axios";
 import { toRaw } from 'vue';
 export default {
-    name: "Reservation",
+    name: "ReservationList",
     data() {
         return {
             rvtInfo: [],
