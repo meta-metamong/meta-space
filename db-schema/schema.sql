@@ -22,7 +22,7 @@ CREATE TABLE member (
     mem_address                  VARCHAR2(40)   NOT NULL,
     mem_detail_address           VARCHAR2(30)   NOT NULL,
     role                         CHAR(9)        NOT NULL,
-    refresh_token                VARCHAR2(1000) NOT NULL,
+    refresh_token                VARCHAR2(1000),
     created_at                   DATE           DEFAULT SYSDATE,
     updated_at                   DATE           DEFAULT SYSDATE,
     mem_banned_until             DATE,

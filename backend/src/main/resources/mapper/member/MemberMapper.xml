@@ -9,7 +9,7 @@
     <![CDATA[
         SELECT COUNT(*)
         FROM member 
-        WHERE mem_id = 'admin'
+        WHERE role = 'ROLE_ADMN'
     ]]>
     </select>
     
