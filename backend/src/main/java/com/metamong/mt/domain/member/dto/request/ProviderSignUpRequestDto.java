@@ -3,6 +3,7 @@ package com.metamong.mt.domain.member.dto.request;
 import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
+import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
@@ -50,10 +51,19 @@ public class ProviderSignUpRequestDto {
     @NotEmpty(message = "상세 주소는 필수입니다.")
     private String memDetailAddress;
     
+    @NotEmpty(message = "사업자명은 필수입니다.")
     private String bizName;
+    
+    @NotEmpty(message = "사업자등록번호는 필수입니다.")
     private String bizRegNum;
+    
+    @NotEmpty(message = "은행코드는 필수입니다.")
     private String bankCode;
+    
+    @NotEmpty(message = "계좌번호는 필수입니다.")
     private String provAccount;
+    
+    @NotEmpty(message = "예금주명은 필수입니다.")
     private String provAccountOwner;
     
     public Gender getGender() {
@@ -71,7 +81,17 @@ public class ProviderSignUpRequestDto {
 			 .memPostalCode(this.memPostalCode)
 			 .memAddress(this.memAddress)
 			 .memDetailAddress(this.memDetailAddress)
-		    .role(Role.ROLE_PROV)
-		    .build();
+             .role(Role.ROLE_PROV)
+             .build();
+    }
+    
+    public FctProvider toProvider() {
+        return FctProvider.builder()
+                .bizName(this.bizName)
+                .bizRegNum(this.bizRegNum)
+                .bankCode(this.bankCode)
+                .provAccount(this.provAccount)
+                .provAccountOwner(this.provAccountOwner)
+                .build();
     }
 }

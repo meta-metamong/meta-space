@@ -1,19 +1,19 @@
 package com.metamong.mt.domain.facility.dto.request;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 
 import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.model.Facility;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,13 +53,13 @@ public class FacilityRegistrationRequestDto {
     @NotEmpty
     private String fctGuide;
     
-    private boolean openOnHolidays;
+    private BooleanAlt openOnHolidays;
     
     @NotNull
-    private LocalDateTime fctOpenTime;
+    private LocalTime fctOpenTime;
     
     @NotNull
-    private LocalDateTime fctCloseTime;
+    private LocalTime fctCloseTime;
     
     @NotNull
     @Min(30)
@@ -83,7 +83,7 @@ public class FacilityRegistrationRequestDto {
                 .fctDetailAddress(this.getFctDetailAddress())
                 .fctTel(this.getFctTel())
                 .fctGuide(this.getFctGuide())
-                .openOnHolidays(this.isOpenOnHolidays())
+                .openOnHolidays(this.getOpenOnHolidays())
                 .fctOpenTime(this.getFctOpenTime())
                 .fctCloseTime(this.getFctCloseTime())
                 .unitUsageTime(this.getUnitUsageTime())

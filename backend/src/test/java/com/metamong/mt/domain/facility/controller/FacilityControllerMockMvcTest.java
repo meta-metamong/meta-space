@@ -1,14 +1,17 @@
 package com.metamong.mt.domain.facility.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +25,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneImageUploadUrlResponseDto;
 import com.metamong.mt.domain.facility.service.FacilityService;
@@ -73,8 +79,8 @@ class FacilityControllerMockMvcTest {
                             "provId": 3000,
                             "fctTel": "02-1234-1234",
                             "fctGuide": "Hello, World!",
-                            "fctOpenTime": "1980-09-05T12:00:00.000",
-                            "fctCloseTime": "1980-09-05T16:00:00.000",
+                            "fctOpenTime": "12:00:00",
+                            "fctCloseTime": "16:00:00",
                             "unitUsageTime": 30,
                             "images": [
                                 {
@@ -130,5 +136,89 @@ class FacilityControllerMockMvcTest {
                             }
                         }
                         """));
+    }
+    
+    @Test
+    @DisplayName("PUT /api/facilities/{facilityId} - success")
+    void putFacility_success() throws Exception {
+        when(this.facilityService.updateFacility(anyLong(), any()))
+                .thenReturn(new FacilityUpdateResponseDto(
+                        List.of(10L, 20L),
+                        List.of(10L, 20L)));
+        
+        final Long facilityId = 20L;
+        this.mockMvc.perform(put("/api/facilities/{facilityId}", facilityId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "fctName": "FCT",
+                            "fctPostalCode": "01234",
+                            "fctAddress": "Hello",
+                            "fctDetailAddress": "World",
+                            "isOpenOnHolidays": "Y",
+                            "zones": {
+                                "create": [
+                                    {
+                                        "zoneName": "Hello!",
+                                        "maxUserCount": 13,
+                                        "isSharedZone": "Y",
+                                        "hourlyRate": 1500
+                                    },
+                                    {
+                                        "zoneName": "Zone2",
+                                        "maxUserCount": 50,
+                                        "isSharedZone": "N",
+                                        "hourlyRate": 3000
+                                    }
+                                ],
+                                "update": [
+                                    {
+                                        "id": 5,
+                                        "to": {
+                                            "zoneName": "new_zone1",
+                                            "maxUserCount": 13
+                                        }
+                                    }
+                                ],
+                                "delete": [100, 200, 300]
+                            },
+                            "addinfos": {
+                                "create": [
+                                    "newinfo1", "newinfo2"
+                                ],
+                                "update": [
+                                    {
+                                        "id": 500,
+                                        "to": "modified1"
+                                    },
+                                    {
+                                        "id": 501,
+                                        "to": "modified2"
+                                    }
+                                ],
+                                "delete": []
+                            }
+                        }
+                        """))
+                .andDo(print()).andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "statusCode": 200,
+                            "content": {
+                                "generatedZoneIds": [10, 20],
+                                "generatedAdditionalInfoIds": [10, 20]
+                            }
+                        }
+                        """));
+    }
+    
+    @Autowired
+    ObjectMapper objectMapper;
+    
+    @Test
+    void test() throws JsonProcessingException {
+        String str = objectMapper.writeValueAsString(LocalTime.of(13, 50, 10));
+        System.out.println("str=" + str);
     }
 }

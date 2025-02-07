@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { login, logout } from "../apis/axios";
+import { login, logout, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
 
 const saveUserIdInLocal = function (userId) {
@@ -7,7 +7,7 @@ const saveUserIdInLocal = function (userId) {
 };
 
 export const getUserIdInLocal = function () {
-  return JSON.parse(sessionStorage.getItem("userId"));
+  return sessionStorage.getItem("userId");
 };
 
 const removeUserIdInLocal = function () {
@@ -36,7 +36,7 @@ const store = createStore({
       removeUserIdInLocal();
       location.href = "/";
     },
-    initUserId(state, payload) {
+    initUserId(state, payload){
       state.userId = payload;
     },
     setOnlineSocket(state, socket) {
@@ -45,7 +45,7 @@ const store = createStore({
     closeOnlineSocket(state) {
       if (state.onlineSocket) {
         state.onlineSocket.send(
-          JSON.stringify({ type: "logout", userId: state.userId }) // userId로 수정
+          JSON.stringify({ type: "logout", userId: state.user?.userId })
         );
         state.onlineSocket.close();
         state.onlineSocket = null;
@@ -64,6 +64,8 @@ const store = createStore({
       if (response.status === 200) {
         context.commit("saveUserId", response.data.content);
         context.dispatch("connectOnlineStatus");
+      }else{
+        return response.response.data.message;
       }
     },
     async logoutRequest(context) {
@@ -74,14 +76,14 @@ const store = createStore({
       }
     },
     connectOnlineStatus(context) {
-      if (!context.state.userId) return;  // userId가 없으면 리턴
+      if (!context.state.user) return;
 
       const socket = new WebSocket("ws://localhost:8080/ws");
 
       socket.onopen = () => {
         console.log("✅ 온라인 상태 웹소켓 연결됨");
         socket.send(
-          JSON.stringify({ type: "login", userId: context.state.userId }) // userId로 수정
+          JSON.stringify({ type: "login", userId: context.state.user.userId })
         );
       };
 

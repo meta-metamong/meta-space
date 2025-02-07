@@ -36,4 +36,158 @@
             )
         ]]>
     </insert>
+    
+    <resultMap type="com.metamong.mt.domain.facility.dto.response.FacilityResponseDto" id="facilityDto">
+        <id property="fctId" column="fct_id" jdbcType="BIGINT" />
+        <result property="fctName" column="fct_name" jdbcType="VARCHAR" />
+        <result property="fctPostalCode" column="fct_postal_code" jdbcType="CHAR" />
+        <result property="fctAddress" column="fct_address" jdbcType="VARCHAR" />
+        <result property="fctDetailAddress" column="fct_detail_address" jdbcType="VARCHAR" />
+        <result property="fctLatitude" column="fct_latitude" jdbcType="DOUBLE" />
+        <result property="fctLongitude" column="fct_longitude" jdbcType="DOUBLE" />
+        <result property="fctTel" column="fct_tel" jdbcType="VARCHAR" />
+        <result property="catId" column="cat_id" jdbcType="CHAR" />
+        <result property="catName" column="cat_name" jdbcType="VARCHAR" />
+        <result property="fctGuide" column="fct_guide" jdbcType="VARCHAR" />
+        <result property="isOpenOnHolidays" column="is_open_on_holidays" jdbcType="CHAR" />
+        <result property="fctOpenTime" column="fct_open_time" jdbcType="DATE" />
+        <result property="fctClosetime" column="fct_close_time" jdbcType="DATE" />
+        <result property="fctState" column="fct_state" jdbcType="VARCHAR" />
+        <collection property="fctImages" ofType="com.metamong.mt.domain.facility.dto.response.FacilityImageResponseDto">
+            <id property="fctImgDisplayOrder" column="fct_img_display_order" jdbcType="INTEGER" />
+            <result property="fctImgUrl" column="fct_img_path" jdbcType="VARCHAR" />
+        </collection>
+        <collection property="zones" ofType="com.metamong.mt.domain.facility.dto.response.ZoneResponseDto">
+            <id property="zoneId" column="zone_id" jdbcType="BIGINT" />
+            <result property="zoneName" column="zone_name" jdbcType="VARCHAR" />
+            <result property="maxUserCount" column="max_user_count" jdbcType="INTEGER" />
+            <result property="hourlyRate" column="hourly_rate" jdbcType="INTEGER" />
+            <result property="isSharedZone" column="is_shared_zone" jdbcType="CHAR" />
+            <collection property="zoneImgs" ofType="com.metamong.mt.domain.facility.dto.response.ZoneImageResponseDto">
+                <result property="zoneImgDisplayOrder" column="zone_img_display_order" jdbcType="INTEGER" />
+                <result property="zoneImgUrl" column="zone_img_path" jdbcType="VARCHAR" />
+            </collection>
+        </collection>
+        <collection property="additionalInfos" ofType="com.metamong.mt.domain.facility.dto.response.AdditionalInfoResponseDto">
+            <id property="addinfoId" column="addinfo_id" jdbcType="BIGINT" />
+            <result property="addinfoDesc" column="addinfo_desc" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+    
+    <select id="findFacilityById" parameterType="java.lang.Long" resultMap="facilityDto">
+        <![CDATA[
+            SELECT
+                fct.fct_id AS "fct_id",
+                fct.fct_name AS "fct_name",
+                fct.fct_postal_code AS "fct_postal_code",
+                fct.fct_address AS "fct_address",
+                fct.fct_detail_address AS "fct_detail_address",
+                fct.fct_latitude AS "fct_latitude",
+                fct.fct_longitude AS "fct_longitude",
+                fct.fct_tel AS "fct_tel",
+                cat.cat_id AS "cat_id",
+                cat.cat_name AS "cat_name",
+                fct.fct_guide AS "fct_guide",
+                fct.is_open_on_holidays As "is_open_on_holidays",
+                fct.fct_open_time AS "fct_open_time",
+                fct.fct_close_time AS "fct_close_time",
+                fct.fct_state AS "fct_state",
+                fi.img_path AS "fct_img_path",
+                fi.img_display_order AS "fct_img_display_order",
+                z.zone_id AS "zone_id",
+                z.zone_name AS "zone_name",
+                z.max_user_count AS "max_user_count",
+                z.hourly_rate AS "hourly_rate",
+                z.is_shared_zone AS "is_shared_zone",
+                zi.img_path AS "zone_img_path",
+                zi.img_display_order AS "zone_img_display_order",
+                addinfo.addinfo_id AS "addinfo_id",
+                addinfo.addinfo_desc AS "addinfo_desc"
+            FROM facility fct
+            INNER JOIN category cat ON cat.cat_id = fct.cat_id
+            LEFT JOIN image fi ON fct.fct_id = fi.fct_id
+            LEFT JOIN additional_info addinfo ON addinfo.fct_id = fct.fct_id
+            INNER JOIN zone z ON z.fct_id = fct.fct_id
+            LEFT JOIN image zi ON zi.zone_id = z.zone_id
+            WHERE fct.fct_id = #{fctId}
+        ]]>
+    </select>
+    
+    <update id="updateFacilityById" parameterType="com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto">
+        UPDATE facility
+        <set>
+            <if test="dto.fctName != null">
+                fct_name = #{dto.fctName: VARCHAR},
+            </if>
+            <if test="dto.fctPostalCode != null">
+                fct_postal_code = #{dto.fctPostalCode: CHAR},
+            </if>
+            <if test="dto.fctAddress != null">
+                fct_address = #{dto.fctAddress: VARCHAR},
+            </if>
+            <if test="dto.fctDetailAddress != null">
+                fct_detail_address = #{dto.fctDetailAddress: VARCHAR},
+            </if>
+            <if test="dto.fctTel != null">
+                fct_tel = #{dto.fctTel: VARCHAR},
+            </if>
+            <if test="dto.catId != null">
+                cat_id = #{dto.catId: CHAR},
+            </if>
+            <if test="dto.fctGuide != null">
+                fct_guide = #{dto.fctGuide: VARCHAR},
+            </if>
+            <if test="dto.isOpenOnHolidays != null">
+                is_open_on_holidays = #{dto.isOpenOnHolidays: CHAR},
+            </if>
+            <if test="dto.fctOpenTime != null">
+                fct_open_time = #{dto.fctOpenTime: DATE},
+            </if>
+            <if test="dto.fctCloseTime != null">
+                fct_close_time = #{dto.fctCloseTime: DATE},
+            </if>
+            <if test="dto.unitUsageTime != null">
+                unit_usage_time = #{dto.unitUsageTime: INTEGER},
+            </if>
+            <if test="dto.fctState != null">
+                fct_state = #{dto.fctState: VARCHAR},
+            </if>
+            <if test="dto.fctLatitude != null">
+                fct_latitude = #{dto.fctLatitude: DOUBLE},
+            </if>
+            <if test="dto.fctLongitude != null">
+                fct_longitude = #{dto.fctLongitude: DOUBLE},
+            </if>
+            updated_at = SYSDATE
+        </set>
+        WHERE fct_id = #{dto.fctId: BIGINT}
+    </update>
+    
+    <update id="updateZoneById" parameterType="com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto">
+        UPDATE zone
+        <set>
+            <if test="dto.zoneName != null">
+                zone_name = #{dto.zoneName: VARCHAR},
+            </if>
+            <if test="dto.maxUserCount != null">
+                max_user_count = #{dto.maxUserCount: INTEGER},
+            </if>
+            <if test="dto.isSharedZone != null">
+                is_shared_zone = #{dto.isSharedZone: CHAR},
+            </if>
+            <if test="dto.hourlyRate != null">
+                hourly_rate = #{dto.hourlyRate: INTEGER},
+            </if>
+            updated_at = SYSDATE
+        </set>
+        WHERE zone_id = #{dto.zoneId: BIGINT}
+    </update>
+    
+    <delete id="deleteAdditionalInfosByIds" parameterType="java.util.List">
+        DELETE FROM additional_info
+        WHERE addinfo_id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </delete>
 </mapper>

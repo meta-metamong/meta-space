@@ -10,11 +10,12 @@
 	
 			<!-- 비밀번호 입력 -->
 			<div class="mb-4">
-				<input type="password" id="password" name="userId" class="form-control signup-input" v-model="password" :placeholder="$t('member.password')" required />
+				<input type="password" id="password" name="password" class="form-control signup-input mb-2" v-model="password" :placeholder="$t('member.password')" required />
+				<span class="error-message">{{ errorMessage }}</span>
 			</div>	
 	
 			<!-- 로그인 버튼 -->
-			<button type="submit" class="w-100 signup-btn" @click="" v-text="$t('member.login')" />
+			<button type="submit" class="w-100 signup-btn rounded-pill" @click="" v-text="$t('member.login')" />
 	
 			<!-- 하단 링크 (회원가입 / 비밀번호 찾기) -->
 			<div class="text-center mt-3">
@@ -32,7 +33,8 @@ export default {
 	data() {
 		return {
 			email: "",
-			password: ""			
+			password: "",
+			errorMessage: ""
 		}
 	},
 	methods: {
@@ -42,15 +44,13 @@ export default {
 				"password": this.password
 			}
 
-			await this.$store.dispatch("loginRequest", loginDto);
+			const message = await this.$store.dispatch("loginRequest", loginDto);
+			this.errorMessage = message;
 
 			if(this.$store.state.userId === 1) {
 				this.$router.push("/admin");
 			}
-		},
-		route(page){
-			this.$router.push(page);
-		}		
+		}
 	}
 };
 </script>
@@ -62,4 +62,8 @@ input{
 	border-bottom: 1px solid #999;
 }
 
+.error-message {
+	font-size: 16px;
+	color: #ff0101;
+}
 </style>

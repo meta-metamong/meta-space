@@ -1,10 +1,11 @@
 package com.metamong.mt.domain.facility.model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.metamong.mt.global.image.model.FacilityImage;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -57,10 +58,11 @@ public class Facility {
     private String fctGuide;
     
     @Column(name = "is_open_on_holidays")
-    private boolean openOnHolidays;
+    @Enumerated(EnumType.STRING)
+    private BooleanAlt openOnHolidays;
     
-    private LocalDateTime fctOpenTime;
-    private LocalDateTime fctCloseTime;
+    private LocalTime fctOpenTime;
+    private LocalTime fctCloseTime;
     private int unitUsageTime;
     
     @Builder.Default
@@ -82,5 +84,9 @@ public class Facility {
     
     public void addFctImage(FacilityImage fctImage) {
         this.fctImages.add(fctImage);
+    }
+    
+    public void requestDelete() {
+        this.fctState = FacilityState.DEL_REQUESTED;
     }
 }
