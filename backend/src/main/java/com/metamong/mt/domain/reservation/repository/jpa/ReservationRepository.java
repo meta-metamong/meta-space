@@ -16,8 +16,17 @@ import jakarta.persistence.LockModeType;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT r FROM Reservation r WHERE r.rvtDate = :usageDate " +
-           "AND (r.usageStartTime < :endTime AND r.usageEndTime > :startTime)")
-    List<Reservation> findOverlappingReservations(@Param("usageDate") LocalDate usageDate, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
+    @Query("SELECT r.usageStartTime, r.usageEndTime, SUM(r.usageCount) " +
+            "FROM Reservation r " +
+            "WHERE r.rvtDate = :usageDate " +
+            "AND (r.usageStartTime < :endTime AND r.usageEndTime > :startTime) " +
+            "AND r.zoneId = :zoneId " +
+            "GROUP BY r.usageStartTime, r.usageEndTime")
+     List<Object[]> getHourlyUsageCounts(
+             @Param("usageDate") LocalDate usageDate,
+             @Param("startTime") LocalTime startTime,
+             @Param("endTime") LocalTime endTime,
+             @Param("zoneId") Long zoneId);
+
 
 }
