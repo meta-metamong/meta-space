@@ -3,6 +3,8 @@ package com.metamong.mt.domain.member.dto.request;
 import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
+import com.metamong.mt.domain.member.model.FctProvider;
+import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -19,9 +21,6 @@ import lombok.ToString;
 public class UpdateRequestDto {
     @NotEmpty(message = "이름은 필수입니다.")
     private String memName;
-
-    @Size(min = 6, message = "비밀번호는 6자리 이상이어야 합니다.")
-    private String password;
 
     @NotEmpty(message = "전화번호는 필수입니다.")
     private String memPhone;
@@ -42,14 +41,36 @@ public class UpdateRequestDto {
     @NotEmpty(message = "주소는 필수입니다.")
     private String memAddress;
     
-    private String businessName;
-    private String businessNumber;
+    private String bizName;
+    private String bizRegNum;
     
     private String bankCode;
-    private String account;
-    private String accountOwner;
+    private String provAccount;
+    private String provAccountOwner;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);
+    }
+    
+    public Member toMember() {
+        return Member.builder()
+                .memName(this.memName)
+                .memPhone(this.memPhone)
+                .birthDate(this.birthDate)
+                .gender(this.getGender())
+                .memPostalCode(this.memPostalCode)
+                .memAddress(this.memAddress)
+                .memDetailAddress(this.memDetailAddress)
+                .build();
+    }
+    
+    public FctProvider toProvider() {
+        return FctProvider.builder()
+                .bizName(this.bizName)
+                .bizRegNum(this.bizRegNum)
+                .bankCode(this.bankCode)
+                .provAccount(this.provAccount)
+                .provAccountOwner(this.provAccountOwner)
+                .build();
     }
 }

@@ -46,4 +46,12 @@ public class FctProvider {
     
     @Column(name="prov_account_owner")
     private String provAccountOwner;
+    
+    public void updateInfo(FctProvider provider) {
+        this.bankCode = provider.getBankCode();
+        this.bizName = provider.getBizName();
+        this.bizRegNum = provider.getBizRegNum();
+        this.provAccount = provider.getProvAccount();
+        this.provAccountOwner = provider.getProvAccountOwner();
+    }
 }

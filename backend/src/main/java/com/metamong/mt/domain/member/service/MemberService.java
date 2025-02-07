@@ -6,6 +6,7 @@ import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
+import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 
 public interface MemberService {
@@ -32,11 +33,18 @@ public interface MemberService {
  	// 회원 정보 수정
  	void updateMember(Long memId, UpdateRequestDto dto);
  	
+ 	// 회원 정보 삭제
+	boolean deleteMember(Long memId);
+
+ 	
  	// 비밀번호 변경
  	void changePassword(Long memId, PasswordChangeRequestDto dto);
 
  	// DB에서 회원 데이터 조회	
-    Member getMember(Long merId);
+    Member getMember(Long memId);
+    
+    // DB에서 시설제공자 데이터 조회
+    FctProvider getProvider(Long memId);
     
     /*
     
