@@ -2,6 +2,7 @@ package com.metamong.mt.domain.facility.dto.mapper;
 
 import java.time.LocalTime;
 
+import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.model.FacilityState;
 import com.metamong.mt.global.constant.BooleanAlt;
 
@@ -32,4 +33,24 @@ public class FacilityUpdateMapperDto {
     private FacilityState fctState;
     private Double fctLatitude;
     private Double fctLongitude;
+    
+    public static FacilityUpdateMapperDto of(Long fctId, FacilityUpdateRequestDto dto) {
+        return FacilityUpdateMapperDto.builder()
+                .fctId(fctId)
+                .fctName(dto.getFctName())
+                .fctPostalCode(dto.getFctPostalCode())
+                .fctAddress(dto.getFctAddress())
+                .fctDetailAddress(dto.getFctDetailAddress())
+                .fctTel(dto.getFctTel())
+                .catId(dto.getCatId())
+                .fctGuide(dto.getFctGuide())
+                .isOpenOnHolidays(dto.getIsOpenOnHolidays())
+                .fctOpenTime(dto.getFctOpenTime())
+                .fctCloseTime(dto.getFctCloseTime())
+                .unitUsageTime(dto.getUnitUsageTime())
+                .fctState(dto.getFctState())
+                .fctLatitude(dto.getFctLatitude())
+                .fctLongitude(dto.getFctLongitude())
+                .build();
+    }
 }

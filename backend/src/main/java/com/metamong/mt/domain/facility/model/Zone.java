@@ -48,8 +48,12 @@ public class Zone {
     private BooleanAlt isSharedZone;
     
     private Integer hourlyRate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+    
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
     
     @Builder.Default
     @OneToMany(mappedBy = "zone", cascade = CascadeType.PERSIST, orphanRemoval = true)

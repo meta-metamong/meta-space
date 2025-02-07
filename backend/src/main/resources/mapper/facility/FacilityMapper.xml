@@ -182,4 +182,12 @@
         </set>
         WHERE zone_id = #{dto.zoneId: BIGINT}
     </update>
+    
+    <delete id="deleteAdditionalInfosByIds" parameterType="java.util.List">
+        DELETE FROM additional_info
+        WHERE addinfo_id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </delete>
 </mapper>

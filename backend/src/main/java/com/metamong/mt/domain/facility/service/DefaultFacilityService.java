@@ -2,12 +2,19 @@ package com.metamong.mt.domain.facility.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Service;
+import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
+import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
+import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
@@ -18,9 +25,12 @@ import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.model.FacilityImage;
 import com.metamong.mt.domain.facility.model.Zone;
 import com.metamong.mt.domain.facility.model.ZoneImage;
+import com.metamong.mt.domain.facility.repository.jpa.AdditionalInfoRepository;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.facility.repository.mybatis.FacilityMapper;
+import com.metamong.mt.global.apispec.CommonListUpdateRequestDto;
+import com.metamong.mt.global.apispec.CommonUpdateListItemRequestDto;
 import com.metamong.mt.global.file.FileUploader;
 import com.metamong.mt.global.file.FilenameResolver;
 
@@ -28,11 +38,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultFacilityService implements FacilityService {
     private final FacilityRepository facilityRepository;
     private final ZoneRepository zoneRepository;
+    private final AdditionalInfoRepository additionalInfoRepository;
     private final FacilityMapper facilityMapper;
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
@@ -89,6 +101,61 @@ public class DefaultFacilityService implements FacilityService {
 
     @Override
     public FacilityUpdateResponseDto updateFacility(Long fctId, FacilityUpdateRequestDto dto) {
-        throw new UnsupportedOperationException();
+        FacilityUpdateMapperDto facilityUpdateDto = FacilityUpdateMapperDto.of(fctId, dto);
+        if (log.isDebugEnabled()) {
+            log.debug("facilityUpdateDto={}", facilityUpdateDto);
+        }
+        this.facilityMapper.updateFacilityById(facilityUpdateDto);
+        
+        List<Long> generatedNewZoneIds = updateZones(fctId, dto.getZones());
+        List<Long> generatedNewAddinfos = updateAddinfos(fctId, dto.getAddinfos());
+        
+        return new FacilityUpdateResponseDto(generatedNewZoneIds, generatedNewAddinfos);
+    }
+    
+    private List<Long> updateZones(Long fctId, CommonListUpdateRequestDto<ZoneUpdateRequestDto, Long> zones) {
+        // TODO: Zone delete
+        
+        for (CommonUpdateListItemRequestDto<ZoneUpdateRequestDto, Long> zone : zones.getUpdate()) {
+            ZoneUpdateMapperDto zoneUpdateMapperDto = ZoneUpdateMapperDto.of(zone.getId(), zone.getTo());
+            log.debug("zoneUpdateMapperDto={}", zoneUpdateMapperDto);
+            this.facilityMapper.updateZoneById(zoneUpdateMapperDto);
+        }
+        
+        return zones.getCreate().stream()
+                .map((e) -> {
+                    Zone newZone = Zone.builder()
+                            .zoneName(e.getZoneName())
+                            .maxUserCount(e.getMaxUserCount())
+                            .isSharedZone(e.getIsSharedZone())
+                            .hourlyRate(e.getHourlyRate())
+                            .fctId(fctId)
+                            .build();
+                    newZone = this.zoneRepository.save(newZone);
+                    return newZone.getZoneId();
+                })
+                .toList();
+    }
+    
+    private List<Long> updateAddinfos(Long fctId, CommonListUpdateRequestDto<String, Long> addinfos) {
+        if (addinfos.isDeleteAvailable()) {
+            this.facilityMapper.deleteAdditionalInfosByIds(addinfos.getDelete());
+        }
+        
+        for (CommonUpdateListItemRequestDto<String, Long> addinfoUpdate : addinfos.getUpdate()) {
+            Optional<AdditionalInfo> find = this.additionalInfoRepository.findById(addinfoUpdate.getId());
+            find.ifPresent((ai) -> ai.updateAddinfoDesc(addinfoUpdate.getTo()));
+        }
+        
+        return addinfos.getCreate().stream()
+                .map((e) -> {
+                    AdditionalInfo additionalInfo = AdditionalInfo.builder()
+                            .fctId(fctId)
+                            .addinfoDesc(e)
+                            .build();
+                    additionalInfo = this.additionalInfoRepository.save(additionalInfo);
+                    return additionalInfo.getAddinfoId();
+                })
+                .toList();
     }
 }

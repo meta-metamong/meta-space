@@ -1,5 +1,7 @@
 package com.metamong.mt.domain.facility.repository.mybatis;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -20,4 +22,6 @@ public interface FacilityMapper {
     void updateFacilityById(@Param("dto") FacilityUpdateMapperDto dto);
     
     void updateZoneById(@Param("dto") ZoneUpdateMapperDto dto);
+    
+    void deleteAdditionalInfosByIds(@Param("ids") List<Long> ids);
 }

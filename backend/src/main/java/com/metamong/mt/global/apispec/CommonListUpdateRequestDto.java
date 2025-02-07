@@ -14,4 +14,16 @@ public class CommonListUpdateRequestDto<T, ID> {
     private List<T> create;
     private List<CommonUpdateListItemRequestDto<T, ID>> update;
     private List<ID> delete;
+    
+    public boolean isCreateAvailable() {
+        return !this.create.isEmpty();
+    }
+    
+    public boolean isUpdateAvailable() {
+        return !this.update.isEmpty();
+    }
+    
+    public boolean isDeleteAvailable() {
+        return !this.delete.isEmpty();
+    }
 }

@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.facility.dto.mapper;
 
+import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
 import com.metamong.mt.global.constant.BooleanAlt;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +20,14 @@ public class ZoneUpdateMapperDto {
     private Integer maxUserCount;
     private BooleanAlt isSharedZone;
     private Integer hourlyRate;
+    
+    public static ZoneUpdateMapperDto of(Long zoneId, ZoneUpdateRequestDto dto) {
+        return ZoneUpdateMapperDto.builder()
+                .zoneId(zoneId)
+                .zoneName(dto.getZoneName())
+                .maxUserCount(dto.getMaxUserCount())
+                .isSharedZone(dto.getIsSharedZone())
+                .hourlyRate(dto.getHourlyRate())
+                .build();
+    }
 }
