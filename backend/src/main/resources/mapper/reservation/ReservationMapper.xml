@@ -42,13 +42,24 @@
         ]]>
     </select>
 
-    <!-- 예약 내역 이용 시간 조회 -->
+    <!-- 예약 내역 이용 시간 조회(예약 시간 선택 후) -->
     <select id="getHourlyUsageCounts" parameterType="com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto" resultType="com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto">
         <![CDATA[
             SELECT r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", SUM(r.usage_count) AS "totalUsageCount"
             FROM reservation r
             WHERE r.rvt_date = #{rvtDate}
             AND r.usage_start_time < #{usageEndTime} AND r.usage_end_time > #{usageStartTime}
+            AND r.zone_id = #{zoneId}
+            GROUP BY r.usage_start_time, r.usage_end_time
+        ]]>
+    </select>
+
+    <!-- 예약 내역 이용 시간 조회 -->
+    <select id="getReservedTimes" parameterType="com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto" resultType="com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto">
+        <![CDATA[
+            SELECT r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", SUM(r.usage_count) AS "totalUsageCount"
+            FROM reservation r
+            WHERE r.rvt_date = #{rvtDate}
             AND r.zone_id = #{zoneId}
             GROUP BY r.usage_start_time, r.usage_end_time
         ]]>

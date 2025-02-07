@@ -9,12 +9,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HourlyUsageDto {
+public class RemainingCountResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime usageStartTime;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime usageEndTime;
-
-    private int totalUsageCount;
+    private int remainUsageCount;
 }
