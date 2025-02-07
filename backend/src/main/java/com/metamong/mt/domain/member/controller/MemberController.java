@@ -313,7 +313,7 @@ public class MemberController {
         try{
             boolean isSuccess = this.memberService.deleteMember(Long.valueOf(user.getUsername()));
             if(isSuccess) {
-                return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK));
+                return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "회원이 삭제되었습니다."));
             }else {
                 throw new RuntimeException();
             }
