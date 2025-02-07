@@ -1,115 +1,108 @@
 <template>
-	<div class="container mb-4">
-		<h2 class="text-center mb-3" v-text="$t('member.update')"></h2>
-		<form @submit.prevent="handleSubmit">
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="email">{{ $t('member.email') }}</label>
-				<div class="col-sm-10">
-					<input class="form-control" type="email" name="email" id="email" v-model="memberInfo.email" disabled required />
-				</div>
+	<div class="container w-100 mt-4">
+		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
+		<div class="text-center mb-3">
+            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" alt="Profile Image" class="profile-img">
+        </div>
+        <div class="mb-4">
+            <p class="ms-4 text-secondary">{{ $t('member.email') }}</p>
+            <input type="text" class="signup-input w-75 text-secondary ms-5 mx-auto px-3 fs-5" v-model="memberInfo.email" disabled />
+        </div>
+        <div class="mb-4">
+            <p class="ms-4 text-secondary">{{ $t('member.name') }}</p>
+            <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.memName" />
+        </div>
+        <div class="mb-4">
+            <p class="ms-4 text-secondary">{{ $t('member.phone') }}</p>
+            <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.memPhone" />
+        </div>
+        <div class="mb-4">
+            <p class="ms-4 text-secondary">{{ $t('member.birth') }}</p>
+            <input type="date" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.birthDate" />
+        </div>
+		<div class="mb-4">
+			<p class="ms-4 text-secondary">{{ $t('member.gender') }}</p>
+            <p class="w-75 mx-auto px-3 fs-5">
+				<input class="form-check-input" type="radio" value="M" v-model="memberInfo.gender" :checked="memberInfo.gender === 'M'" />
+				<label class="form-check-label" for="male">{{ $t('member.male') }}</label>
+				<input class="form-check-input ms-5" type="radio" value="W" v-model="memberInfo.gender" :checked="memberInfo.gender === 'W'"/>
+				<label class="form-check-label" for="female">{{ $t('member.female') }}</label>
+			</p>
+		</div>
+        <div class="mb-4">
+            <p class="ms-4 text-secondary">{{ $t('member.address') }}</p>
+			<div class="mb-2">
+				<input class="signup-input w-50 text-secondary ms-5 px-3" type="text" v-model="memberInfo.memPostalCode" disabled readonly />
+				<button type="button" class="w-25 h-50 custom-btn" @click="searchPostCode">{{ $t('button.search') }}</button>
 			</div>
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="name">{{ $t('member.name') }}</label>
-				<div class="col-sm-10">
-					<input class="form-control" type="text" name="name" id="name" v-model="memberInfo.name" required />
-				</div>
-			</div>
-			
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="gender">{{ $t('member.gender') }}</label>
-				<div class="d-flex col-sm-4 align-items-center">
-					<div class="form-check me-4">
-						<input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="memberInfo.gender" required>
-						<label class="form-check-label" for="male">{{ $t('member.male') }}</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="memberInfo.gender" required>
-						<label class="form-check-label" for="female">{{ $t('member.female') }}</label>
-					</div>
-				</div>
-			</div>
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="birth">{{ $t('member.birth') }}</label>
-				<div class="col-sm-10">
-					<input class="form-control" type="date" name="birth" id="birth" v-model="memberInfo.birth" required />
-				</div>
-			</div>
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="phone">{{ $t('member.phoneNumber') }}</label>
-				<div class="col-sm-10">
-					<input class="form-control" type="text" name="phone" id="phone" v-model="memberInfo.phone" required />
-				</div>
-			</div>
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="postalCode">{{ $t('member.zipcode') }}</label>
-				<div class="col-sm-5">
-					<div class="input-group">
-						<input type="text" class="form-control" id="postalCode" name="postalCode" v-model="memberInfo.postalCode" readonly required/>
-						<button type="button" class="btn btn-secondary" @click="openPostCode">{{ $t('button.search') }}</button>
-					</div>
-				</div>
-			</div>
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="address">{{ $t('member.addressBasic') }}</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="address" name="address" v-model="memberInfo.address" readonly required />
-				</div>
-			</div>
-			<div class="row mb-3">
-				<label class="col-form-label col-sm-2" for="detailAddress">{{ $t('member.addressDetail') }}</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="detailAddress" name="detailAddress" v-model="memberInfo.detailAddress" required />
-				</div>
-			</div>
-			<button class="btn btn-primary w-100 p-2 mt-3" type="submit">{{ $t('button.save') }}</button>
-		</form>
+            <input type="text" class="signup-input w-75 text-secondary ms-5 px-3" v-model="memberInfo.memAddress" disabled readonly />
+            <input type="text" class="signup-input w-75 text-secondary ms-5 px-3" v-model="memberInfo.memDetailAddress" />
+        </div>
+        <div v-if="memberInfo.role==='ROLE_PROV'">
+            <div class="mb-4">
+                <p class="ms-4 text-secondary">{{ $t('member.businessName') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.bizName" />
+            </div>
+            <div class="mb-4">
+                <p class="ms-4 text-secondary">{{ $t('member.businessNumber') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.bizRegNum" />
+            </div>
+            <div class="mb-4">
+                <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.bankCode" />
+            </div>
+            <div class="mb-4">
+                <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.provAccount" />
+            </div>
+            <div class="mb-4">
+                <p class="ms-4 text-secondary">{{ $t('member.accountOwner') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.provAccountOwner" />
+            </div>
+        </div>
+        <div class="w-100 text-center mb-2">
+            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="handleSubmit">{{ $t('button.save') }}</button>
+			<button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/profile')">{{ $t('button.cancel') }}</button>
+        </div>
 	</div>
 </template>
 <script>
-import { get, post, put } from "../../apis/axios";
-import { toRaw } from 'vue';
+import { get, put } from "../../apis/axios";
 export default {
 	name: 'UpdateMember',
 	data() {
 		return {
-			memberInfo: [],
+			memberInfo: {},
 			errorMessage: ""
 		}
 	},
-	computed: {
-		user(){
-            return toRaw(this.$store.state.user);
-        },
-		role(){
-            return toRaw(this.$store.state.user.role);
-        },
-	},
 	methods: {
 		async handleSubmit() {
-			// gender 추가해야 함
 			let updateDto = {
-				name: this.memberInfo.name,
-				email: this.memberInfo.email,
-				phone: this.memberInfo.phone,
-				birth: this.memberInfo.birth,
-				postalCode: this.memberInfo.postalCode,
-				address: this.memberInfo.address,
-				detailAddress: this.memberInfo.detailAddress,
+				memName: this.memberInfo.memName,
+				memPhone: this.memberInfo.memPhone,
+				gender: this.memberInfo.gender,
+				birthDate: this.memberInfo.birthDate,
+				memPostalCode: this.memberInfo.memPostalCode,
+				memAddress: this.memberInfo.memAddress,
+				memDetailAddress: this.memberInfo.memDetailAddress,
 			}
 
-			// if(this.role === 'ROLE_OWNER'){
-			// 	updateDto = {
-			// 		...updateDto,
-			// 		businessName: this.memberInfo.businessName,
-			// 		businessRegistrationNumber: this.memberInfo.businessRegistrationNumber
-			// 	}
-			// }
-
-			// const response = await put(`/members/${this.user.userId}`, updateDto);
-			const response = await put(`/members/admin`, updateDto);
+			if(this.memberInfo.role === 'ROLE_PROV'){
+				updateDto = {
+					...updateDto,
+					bizName: this.memberInfo.bizName,
+					bizRegNum: this.memberInfo.bizRegNum,
+					bankCode: this.memberInfo.bankCode,
+					provAccount: this.memberInfo.provAccount,
+					provAccountOwner: this.memberInfo.provAccountOwner
+				}
+			}
+			
+			const response = await put(`/members`, updateDto);
 			if (response.status === 200) {
 				alert(response.data.message);
-				this.$router.push("/mypage")
+				this.$router.push("/profile")
 			} else if (response.status === 400) {
 				alert("회원정보 수정 오류 " + response.response.data.message);
 			} else {
@@ -117,15 +110,14 @@ export default {
 			}
 		},
 		async getMemberInfo() {
-			// const response = await get("/members/" + this.user.userId);
-			const response = await get("/members/admin");
+			const response = await get(`/members/${this.$store.state.userId}`);
 			this.memberInfo = response.data.content;
 		},
-		openPostCode(){
+		searchPostCode(){
 			new daum.Postcode({
 				oncomplete: (data) => {
-					this.memberInfo.postalCode = data.zonecode;
-					this.memberInfo.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
+					this.memberInfo.memPostalCode = data.zonecode;
+					this.memberInfo.memAddress = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
 				}
 			}).open();
 		},
@@ -137,6 +129,17 @@ export default {
 </script>
 
 <style scoped>
+.profile-img {
+	width: 100px;
+	height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.profile-content{
+    border-bottom: 1px solid #999;
+}
 .error-message {
 	font-size: 14px;
 	color: #ff0101;

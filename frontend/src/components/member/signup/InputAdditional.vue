@@ -25,7 +25,7 @@
             <h3 class="error-message mt-2" v-if="accountOwner !== '' && !isValidatedName" v-text="$t('signupError.notValidatedName')" />
         </div>
 
-        <button type="button" class="w-100 signup-btn" :disabled="isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>    </div>
+        <button type="button" class="w-100 signup-btn rounded-pill" :disabled="isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>    </div>
 </template>
 
 <script>

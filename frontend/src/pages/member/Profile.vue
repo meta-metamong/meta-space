@@ -26,8 +26,8 @@
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.address') }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.memAddress }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.memDetailAddress }}</p>
+            <p class="profile-content w-75 mx-auto px-3">{{ memberInfo.memAddress }}</p>
+            <p class="profile-content w-75 mx-auto px-3">{{ memberInfo.memDetailAddress }}</p>
         </div>
         <div v-if="memberInfo.role==='ROLE_PROV'">
             <div class="mb-4">
@@ -52,8 +52,9 @@
             </div>
         </div>
         <div class="w-100 text-center mb-2">
-            <button class="signup-btn w-75 h-75 mb-3" @click="route('/update')">{{ $t('button.update') }}</button>
-            <button class="signup-btn w-75 h-75" @click="route('/update')">{{ $t('member.changePw') }}</button>
+            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('button.update') }}</button>
+            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="">{{ $t('member.changePw') }}</button>
+            <button class="signup-btn exit-btn w-75 h-75 rounded-pill" @click="">{{ $t('member.exit') }}</button>
         </div>
 	</div>
 </template>
@@ -75,12 +76,8 @@ export default {
     methods: {
         async getMemberInfo() {
             const response = await get(`/members/${this.$store.state.userId}`);
-            console.log(response);
             this.memberInfo = response.data.content;
-        },
-        route(page){
-			this.$router.push(page);
-		},
+        }
     },
     mounted() {
         this.getMemberInfo();
@@ -96,6 +93,12 @@ export default {
     border-radius: 50%;
     border: 3px solid #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.exit-btn{
+    background: #ec7461;
+    border: 1px solid #fff;
+    color: #fff;
 }
 
 .profile-content{

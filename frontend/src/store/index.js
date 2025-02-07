@@ -64,6 +64,8 @@ const store = createStore({
       if (response.status === 200) {
         context.commit("saveUserId", response.data.content);
         context.dispatch("connectOnlineStatus");
+      }else{
+        return response.response.data.message;
       }
     },
     async logoutRequest(context) {

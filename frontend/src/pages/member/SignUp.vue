@@ -1,5 +1,5 @@
 <template>
-	<div class="container mt-4">
+	<div class="container w-100 mt-4">
 		<component :is="steps[step]" :setUserInfo="setUserInfo" />
 	</div>
 </template>
@@ -31,13 +31,13 @@
 
 	각 역할 별로 마지막 단계까지 끝나면 객체를 담아 백엔드로 회원가입 요청을 전송한다.
 */
-import InputRole from "../components/member/signup/InputRole.vue";
-import InputEmail from "../components/member/signup/InputEmail.vue";
-import InputPassword from "../components/member/signup/InputPassword.vue";
-import InputDetail from "../components/member/signup/InputDetail.vue";
-import InputAdditional from "../components/member/signup/InputAdditional.vue";
+import InputRole from "../../components/member/signup/InputRole.vue";
+import InputEmail from "../../components/member/signup/InputEmail.vue";
+import InputPassword from "../../components/member/signup/InputPassword.vue";
+import InputDetail from "../../components/member/signup/InputDetail.vue";
+import InputAdditional from "../../components/member/signup/InputAdditional.vue";
 
-import { post } from "../apis/axios";
+import { post } from "../../apis/axios";
 
 export default{
     name: "SignUp",
