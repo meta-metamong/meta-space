@@ -1,23 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.metamong.mt.domain.member.repository.mybatis.MemberMapper">	
-	
-	    <!-- 관리자 계정 존재 여부 확인 -->
+<mapper namespace="com.metamong.mt.domain.member.repository.mybatis.MemberMapper">    
+    
+     <!-- 관리자 계정 존재 여부 확인 -->
     <select id="existsAdmin" resultType="boolean">
     <![CDATA[
         SELECT COUNT(*)
         FROM member 
-        WHERE mem_id = 'admin'
+        WHERE role = 'ROLE_ADMN'
     ]]>
     </select>
     
-	<select id="countRoleUserMembers" resultType="int">
+    <!-- 시설 이용자 계정 수 조회 -->
+    <select id="countRoleUserMembers" resultType="int">
     <![CDATA[
         SELECT COUNT(*) FROM member WHERE role = 'ROLE_CONS'
     ]]>
-	</select>
+    </select>
+    
+    <!-- 회원 resultMap -->
+    <resultMap type="com.metamong.mt.domain.member.model.Member" id="memberMap">
+        <result column="mem_id" property="memId" />
+        <result column="email" property="email" />
+        <result column="mem_name" property="memName" />
+        <result column="password" property="password" />
+        <result column="mem_phone" property="memPhone" />
+        <result column="birth_date" property="birthDate" />
+        <result column="gender" property="gender" />
+        <result column="mem_postal_code" property="memPostalCode" />
+        <result column="mem_address" property="memAddress" />
+        <result column="mem_detail_address" property="memDetailAddress" />
+        <result column="role" property="role" />
+        <result column="refresh_token" property="refreshToken" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="mem_banned_until" property="memBannedUntil" />
+        <result column="is_del" property="isDel" />
+    </resultMap>
+    
+    <!-- 탈퇴되지 않은 회원 조회 -->
+    <select id="getMember" parameterType="long" resultMap="memberMap">
+    <![CDATA[
+        SELECT * FROM member WHERE mem_id=#{memId} AND is_del='N'
+    ]]>
+    </select>
 
+    <!-- 회원 탈퇴 -->
+    <update id="deleteMember" parameterType="long">
+    <![CDATA[
+        UPDATE member SET is_del='Y' WHERE mem_id=#{memId}
+    ]]>
+    </update>
 
 </mapper>

@@ -28,9 +28,9 @@ public class MemberResponseDto {
 	private final Role role;
 
 	private final String bizName;
-  private final String bizRegNum;
-  private final String bankCode;
-  private final String provAccount;
-  private final String provAccountOwner;
+    private final String bizRegNum;
+    private final String bankCode;
+    private final String provAccount;
+    private final String provAccountOwner;
     
 }

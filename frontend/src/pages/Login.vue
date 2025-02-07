@@ -10,7 +10,7 @@
 	
 			<!-- 비밀번호 입력 -->
 			<div class="mb-4">
-				<input type="password" id="password" name="userId" class="form-control signup-input" v-model="password" :placeholder="$t('member.password')" required />
+				<input type="password" id="password" name="password" class="form-control signup-input" v-model="password" :placeholder="$t('member.password')" required />
 			</div>	
 	
 			<!-- 로그인 버튼 -->
