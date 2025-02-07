@@ -5,9 +5,9 @@ body {
 }
 
 button{
-  background: #fff;
-  border: 1px solid #19319D;
-  color: #19319D;
+  background: #19319D;
+  border: 1px solid #fff;
+  color: #fff;
   border-radius: 30px;
 }
 
@@ -16,7 +16,6 @@ button{
 .signup-btn {
   height: 45px;
   font-size: 16px;
-  font-weight: bold;
   border-radius: 8px;
 }
 
@@ -38,7 +37,7 @@ button{
 }
 
 .routed{
-  margin-top: 60px;
-  max-height: 785px;
+  margin-top: 50px;
+  max-height: 780px;
   overflow: scroll;
 }

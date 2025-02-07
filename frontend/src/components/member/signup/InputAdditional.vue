@@ -11,7 +11,7 @@
             <input class="signup-input w-100" type="text" v-model="businessNumber" :placeholder="$t('member.businessNumber')" required />
         </div>
         <!-- 은행명 -->
-        <select class="form-select mb-4">
+        <select v-model="bankCode" class="form-select mb-4">
             <option value="" selected disabled>{{ $t('signup.selectBank') }}</option>
             <option v-for="bank in bankList" :key="bank" :value="bank">{{ bank }}</option>
         </select>
@@ -19,14 +19,13 @@
         <div class="mb-4">
             <input class="signup-input w-100" type="text" v-model="account" :placeholder="$t('member.account')" required />
         </div>
-        <!-- 예금주주 -->
+        <!-- 예금주 -->
         <div class="mb-4">
             <input class="signup-input w-100" type="text" v-model="accountOwner" :placeholder="$t('member.accountOwner')" required />
             <h3 class="error-message mt-2" v-if="accountOwner !== '' && !isValidatedName" v-text="$t('signupError.notValidatedName')" />
         </div>
 
-        <button type="button" class="w-100 signup-btn" :disabled="isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>
-    </div>
+        <button type="button" class="w-100 signup-btn" :disabled="isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>    </div>
 </template>
 
 <script>
@@ -51,7 +50,7 @@ export default{
                 key: 'bizName',
                 value: this.businessName
             },{
-                key: 'bizRegNumber',
+                key: 'bizRegNum',
                 value: this.businessNumber
             },{
                 key: 'bankCode',

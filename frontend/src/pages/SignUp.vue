@@ -63,7 +63,7 @@ export default{
 	},
 	computed:{
 		maxStep(){
-			return this.role === 'provider' ? 5 : 4;
+			return this.role === 'provider' ? 4 : 3;
 		},
 		user(){
 			let user = {
@@ -101,7 +101,6 @@ export default{
 				this.user[input.key] = input.value;
 			});
 			try {
-				this.step++;
 				if (this.step === this.maxStep) {
 					const response = await post(`/members/${this.role}`, this.user);
 					if(response.status === 200) {
@@ -112,6 +111,8 @@ export default{
 						this.step--;
 						return;
 					}
+				}else{
+					this.step++;
 				}
 			}catch(exception){
 				console.log(exception);

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/Home.vue';
 import Login from '../pages/Login.vue';
 import SignUp from '../pages/SignUp.vue';
-import MyPage from '../pages/MyPage.vue';
+import Profile from '../pages/Profile.vue';
 import UpdateMember from '../components/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
@@ -13,7 +13,7 @@ import DetailReservation from '../components/reservation/DetailReservation.vue';
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
-	{ path: '/mypage', component: MyPage },
+	{ path: '/profile', component: Profile },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
 	//{ path: '/socket', component: Socket  },

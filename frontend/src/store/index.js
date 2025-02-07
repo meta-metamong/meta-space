@@ -7,7 +7,7 @@ const saveUserIdInLocal = function (userId) {
 };
 
 export const getUserIdInLocal = function () {
-  return JSON.parse(sessionStorage.getItem("user"));
+  return sessionStorage.getItem("userId");
 };
 
 const removeUserIdInLocal = function () {
