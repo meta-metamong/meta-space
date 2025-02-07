@@ -67,4 +67,14 @@ public class DefaultEmailValidationService implements EmailValidationService {
         }
         return String.valueOf(codeCharArray);
     }
+
+    @Override
+    public boolean isValidSignUpValidationCode(String email, String signUpValidationCode) {
+        String codeFromRepository = this.memberVolatileCodeRepository.findSignUpValidationCodeByEmail(email);
+        if (codeFromRepository == null || !codeFromRepository.equals(signUpValidationCode)) {
+            return false;
+        }
+        this.memberVolatileCodeRepository.deleteSignUpValidationCodeByEmail(email);
+        return true;
+    }
 }

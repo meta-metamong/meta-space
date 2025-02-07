@@ -21,4 +21,6 @@ public interface EmailValidationService {
      */
     String validateCode(String email, String emailValidationCode)
             throws InvalidEmailValidationCodeException;
+    
+    boolean isValidSignUpValidationCode(String email, String signUpValidationCode);
 }
