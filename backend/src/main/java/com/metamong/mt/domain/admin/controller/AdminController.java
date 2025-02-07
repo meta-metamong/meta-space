@@ -46,15 +46,27 @@ public class AdminController {
         }
     }
     
-    @PostMapping("/approve")
-    public ResponseEntity<String> approveFacilityRequest(
-            @RequestParam Long provId) {
+    @PostMapping("/approval/registration")
+    public ResponseEntity<String> approveFacilityRequest(@RequestParam Long provId) {
         try {
         	adminService.approveFacilityRequest(provId);
             return ResponseEntity.ok("등록 요청이 승인되었습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("승인이 실패되었습니다.");
+            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
         }
     }
+    
+    @PostMapping("/approval/deletion")
+    public ResponseEntity<String> rejectionFacilityRequest(
+            @RequestParam Long provId) {
+        try {
+        	adminService.rejectFacilityRequest(provId);
+            return ResponseEntity.ok("등록 요청이 반려되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
+        }
+    }
+    
+    // 자정마다 반려된 시설 삭제
     
 }
