@@ -86,7 +86,15 @@ GROUP BY
     <!-- 알림 테이블에 데이터 추가 쿼리 -->
     <insert id="insertNotification" parameterType="map">
         INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
-        VALUES (1,#{receiverId}, #{notiMsg}, 'N')
+        VALUES (2,#{receiverId}, #{notiMsg}, 'N')
     </insert>
+    
+     <!-- 요청 반려 쿼리 -->
+    <update id="updateFacilityState2" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'DELETED'
+        WHERE fct_state = 'REG_REQUESTED'
+        AND prov_id = #{provId}
+    </update>
 
 </mapper>
