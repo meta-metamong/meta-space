@@ -99,7 +99,8 @@
         "signupUser": "Signup as a Member",
         "signupOwner": "Signup as a Owner",
         "membershipDate": "Membership Date",
-        "changePw": "Change Password"
+        "changePw": "Change Password",
+        "confirmPw": "Confirm Password"
     },
     "admin" : {
         "socket":"socket",

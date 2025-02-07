@@ -11,10 +11,12 @@
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.name') }}</p>
             <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.memName" />
+			<h3 class="error-message ms-5 mt-2" v-if="memberInfo.memName !== '' && !isValidatedName" v-text="$t('signupError.notValidatedName')" />
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.phone') }}</p>
             <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.memPhone" />
+			<h3 class="error-message ms-5 mt-2" v-if="memberInfo.memPhone !== '' && !isValidatedPhone" v-text="$t('signupError.notValidatedPhone')" />
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.birth') }}</p>
@@ -61,8 +63,8 @@
             </div>
         </div>
         <div class="w-100 text-center mb-2">
-            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="handleSubmit">{{ $t('button.save') }}</button>
-			<button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/profile')">{{ $t('button.cancel') }}</button>
+            <button class="signup-btn w-75 mb-3 rounded-pill" :disabled="!isValidatedName || !isValidatedPhone || isInputEmpty" @click="handleSubmit">{{ $t('button.save') }}</button>
+			<button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/profile')">{{ $t('button.cancel') }}</button>
         </div>
 	</div>
 </template>
@@ -121,6 +123,21 @@ export default {
 				}
 			}).open();
 		},
+	},
+	computed:{
+		isValidatedName(){
+            return /^[a-zA-Z가-힣]+$/.test(this.memberInfo.memName);
+        },
+        isValidatedPhone(){
+            return /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/.test(this.memberInfo.memPhone);
+        },
+		isInputEmpty(){
+			let isEmpty = this.memberInfo.name === "" || this.memberInfo.memPhone === "" || this.memberInfo.birthgDate === "" || this.memberInfo.gender === "" || this.memberInfo.memDetailAddress === "";
+			if(this.memberInfo.role === "ROLE_PROV"){
+				isEmpty = isEmpty || this.memberInfo.bizName === "" || this.memberInfo.bizRegNum === "" || this.memberInfo.bankCode === "" || this.memberInfo.provAccount === "" || this.memberInfo.provAccountOwner === "";
+			}
+			return this.isEmpty;
+		}	
 	},
 	mounted() {
 		this.getMemberInfo();
