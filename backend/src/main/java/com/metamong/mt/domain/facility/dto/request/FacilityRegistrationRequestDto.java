@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.model.Facility;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -53,7 +54,7 @@ public class FacilityRegistrationRequestDto {
     @NotEmpty
     private String fctGuide;
     
-    private boolean openOnHolidays;
+    private BooleanAlt openOnHolidays;
     
     @NotNull
     private LocalDateTime fctOpenTime;
@@ -83,7 +84,7 @@ public class FacilityRegistrationRequestDto {
                 .fctDetailAddress(this.getFctDetailAddress())
                 .fctTel(this.getFctTel())
                 .fctGuide(this.getFctGuide())
-                .openOnHolidays(this.isOpenOnHolidays())
+                .openOnHolidays(this.getOpenOnHolidays())
                 .fctOpenTime(this.getFctOpenTime())
                 .fctCloseTime(this.getFctCloseTime())
                 .unitUsageTime(this.getUnitUsageTime())

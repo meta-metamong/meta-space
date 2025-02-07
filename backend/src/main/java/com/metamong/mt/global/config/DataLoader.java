@@ -1,10 +1,13 @@
 package com.metamong.mt.global.config;
 
+import java.time.LocalDate;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
@@ -34,6 +37,11 @@ public class DataLoader implements CommandLineRunner {
                     .memPostalCode("00000")
                     .memAddress("서울시 예시구 예시동")
                     .memDetailAddress("상세 주소 예시")
+                    .birthDate(LocalDate.of(1997, 9, 16))
+                    .gender(Gender.M)
+                    .memAddress("admin address")
+                    .memPostalCode("01234")
+                    .memDetailAddress("detail address")
                     .build();
 
             memberRepository.save(admin);

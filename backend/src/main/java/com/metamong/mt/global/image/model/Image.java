@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
         allocationSize = 1
 )
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "img_attatched_to")
+@DiscriminatorColumn(name = "img_attached_to")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Image {

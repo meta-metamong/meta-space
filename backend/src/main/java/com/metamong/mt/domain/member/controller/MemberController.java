@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -299,57 +300,29 @@ public class MemberController {
         return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "비밀번호 변경 성공"));
     }
     
-//    /**
-//     * 아이디 또는 비밀번호 찾기 메서드
-//     * <p>
-//     * 아이디 찾기 시엔 이름, 이메일, 비밀번호 찾기 시엔 아이디, 이름, 이메일을 입력받습니다.
-//     * 둘은 idOrPw라는 데이터를 통해 구분됩니다.
-//     * </p>
-//     * 
-//     * @param FindMemberRequestDto 회원 정보 찾기 요청 정보 (아이디-비밀번호 찾기, 이름, 이메일, 아이디 or 비밀번호 구분)
-//     * @return 정보 찾기 요청 처리 성공 시 응답
-//     */
-//    @PostMapping("/members/find-member")
-//    public ResponseEntity<?> findIdPw(@RequestBody FindMemberRequestDto requestDto){
-//        this.memberService.sendLoginInfoNotificationMail(requestDto);
-//        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "요청하신 정보를 이메일로 전송했습니다."));
-//    }
-//    
-//    
-//    
-//    
-//    
-//    
-//    /**
-//     * 아이디 중복 체크
-//     * <p>
-//     * 아이디를 파라미터로 입력받아, 해당 아이디를 사용하는 회원이 있으면 false를 반환하고, 아니면 true를 반환한다.
-//     * </p>
-//     * @param userId 회원 아이디
-//     * @return isDuplicated 중복 여부
-//     */
-//    @GetMapping("/members/dup-id/{userId}")
-//    public ResponseEntity<?> checkIdDuplicated(@PathVariable String userId){
-//    	boolean isDuplicated = this.memberService.isDuplicatedIdOrEmail(userId, "user");
-//    	return ResponseEntity.ok(BaseResponse.of(isDuplicated, HttpStatus.OK));
-//    }
-//    
-//    /**
-//     * 이메일 중복 체크
-//     * <p>
-//     * 이메일을 파라미터로 입력받아, 해당 이메일을 사용하는 회원이 있으면 false를 반환하고, 아니면 true를 반환한다.
-//     * </p>
-//     * @param userId 회원 아이디
-//     * @return isDuplicated 중복 여부
-//     */
-//    @PostMapping("/members/dup-email")
-//    public ResponseEntity<?> checkEmailDuplicated(@RequestBody Map<String, String> request){
-//    	boolean isDuplicated = this.memberService.isDuplicatedIdOrEmail(request.get("email"), "email");
-//    	return ResponseEntity.ok(BaseResponse.of(isDuplicated, HttpStatus.OK));
-//    }
-//    
-//    
-//
+    /**
+     * 회원 탈퇴 메서드
+     * <p>
+     *   프로필에서 회원 탈퇴 버튼을 누를 때 발생하는 요청을 처리하는 메서드입니다.
+     * </p>
+     * 
+     * @return 삭제 처리 성공 여부
+     */
+    @DeleteMapping("/members")
+    public ResponseEntity<?> deleteMember(@AuthenticationPrincipal User user) {
+        try{
+            boolean isSuccess = this.memberService.deleteMember(Long.valueOf(user.getUsername()));
+            if(isSuccess) {
+                return ResponseEntity.ok(BaseResponse.of(true, HttpStatus.OK, "회원이 삭제되었습니다."));
+            }else {
+                throw new RuntimeException();
+            }
+        }catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
+        }
+    }
+
 //    public void addSession(WebSocketSession session) {
 //        sessions.add(session);
 //    }
