@@ -27,6 +27,8 @@
     인증 코드 검증 후 성공하면 다음 단계 진행 버튼이 활성화된다.
 */
 
+import { post } from '../../../apis/axios';
+
 // 이메일 인증 기능 구현 후 isAuthenticated 변수를 추가해야 한다.
 // isAuthenticated와 isValidated를 동시에 만족하는 경우 nextStep() 함수를 진행할 수 있게 해야 한다..
 
@@ -39,19 +41,32 @@ export default{
             isCodeSent: false,
             code: "",
             answer: "1234",
-            isCorrectCode: false
+            isCorrectCode: false,
+            verificationCode: ""
         }
     },
 	methods:{
-        sendCode(){
+        async sendCode(){
+            const requestDto = {
+                email: this.email
+            }
             // 인증 번호 전송 코드 작성
-            
-            // 코드 전송 성공 여부에 따라 true로 설정할지 안할지 결정
-            this.isCodeSent = true;
+            const response = await post("/members/send-validation-emails", requestDto);
+            if(response.status === 200){
+                alert(response.data.message);
+                this.verificationCode = response.data.content;
+                this.isCodeSent = true;
+            }else{
+                alert("인증 코드 전송이 실패했습니다.");
+            }
         },
         codeValidation(){
             // 코드 검증 성공 여부에 따라 true로 설정할지 안할지 결정
-            this.isCorrectCode = true;
+            if(this.verificationCode === this.code){
+                this.isCorrectCode = true;
+            }else{
+                alert("전송된 인증코드와 다릅니다.");
+            }
         },
         nextStep(){
                 this.setUserInfo([{
