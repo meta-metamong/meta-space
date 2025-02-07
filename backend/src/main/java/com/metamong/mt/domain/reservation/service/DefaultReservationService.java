@@ -40,7 +40,12 @@ public class DefaultReservationService implements ReservationService {
     }
 
     @Override
+    @Transactional
     public Reservation saveReservation(ReservationRequestDto dto) {
+        List<Reservation> overlappingReservations = reservationRepository.findOverlappingReservations(dto.getRvtDate(), dto.getUsageStartTime(), dto.getUsageEndTime());
+        if (!overlappingReservations.isEmpty()) {
+            throw new IllegalArgumentException("이미 예약된 시간입니다.");
+        }
         return this.reservationRepository.save(dto.toEntity());
     }
 
