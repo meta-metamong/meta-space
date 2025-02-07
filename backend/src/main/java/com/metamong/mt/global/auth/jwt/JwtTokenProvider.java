@@ -42,7 +42,7 @@ public class JwtTokenProvider {
     @PostConstruct
     public void init() {
  	
-    	String secretKey = environment.getProperty("jwt.secret.key")+"dsfsdf";
+    	String secretKey = environment.getProperty("jwt.secret.key");
     	
         String encodedKey  = Base64.getEncoder().encodeToString(secretKey.getBytes());  
 
