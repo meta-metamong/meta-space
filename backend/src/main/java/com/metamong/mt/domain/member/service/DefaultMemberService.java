@@ -15,6 +15,7 @@ import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
+import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
@@ -42,6 +43,7 @@ public class DefaultMemberService implements MemberService {
     private final FctProviderRepository providerRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
+    private final EmailValidationService emailValidationService;
     //private final SimpMessagingTemplate messagingTemplate; 
     private Date lastExecutionTime;
     private int roleUserCount; 
@@ -78,6 +80,10 @@ public class DefaultMemberService implements MemberService {
         	throw new EmailAleadyExistException();
         }
         
+        if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {
+            throw new IllegalSignUpRequestException("Not valid signup");
+        }
+        
     	Member member = dto.toEntity();
     	member.setIsDel(BooleanAlt.N);
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
@@ -89,6 +95,10 @@ public class DefaultMemberService implements MemberService {
     public void saveProvider(ProviderSignUpRequestDto dto) {
         if(memberRepository.existsByEmail(dto.getEmail())) {
         	throw new EmailAleadyExistException();
+        }
+        
+        if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {
+            throw new IllegalSignUpRequestException("Not valid signup");
         }
         
         Member member = dto.toEntity();
