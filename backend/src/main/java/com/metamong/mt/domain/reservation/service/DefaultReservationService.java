@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 import com.metamong.mt.domain.reservation.exception.ReservationDuplicatedException;
@@ -20,7 +21,9 @@ import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -50,12 +53,13 @@ public class DefaultReservationService implements ReservationService {
         int maxUserCount = zoneRepository.findMaxUserCountByZoneId(dto.getZoneId());
         
         // 각 시간대별 예약된 인원 조회
-        List<Object[]> existingReservations = reservationRepository.getHourlyUsageCounts(dto.getRvtDate(), dto.getUsageStartTime(), dto.getUsageEndTime(), dto.getZoneId());
+        List<HourlyUsageDto> existingReservations = reservationMapper.getHourlyUsageCounts(dto);
+        log.info("예약 확인 " + existingReservations.toString());
         Map<LocalTime, Integer> reservedCountMap = new HashMap<>();
-        for (Object[] row : existingReservations) {
-            LocalTime startTime = (LocalTime) row[0];
-            LocalTime endTime = (LocalTime) row[1];
-            int reservedCount = ((Number) row[2]).intValue();
+        for (HourlyUsageDto hourUsage : existingReservations) {
+            LocalTime startTime = hourUsage.getUsageStartTime();
+            LocalTime endTime = hourUsage.getUsageEndTime();
+            int reservedCount = hourUsage.getTotalUsageCount();
             
             // 예약된 시간 동안 모든 단위 시간별 인원을 기록
             LocalTime time = startTime;
@@ -72,7 +76,7 @@ public class DefaultReservationService implements ReservationService {
             int newTotal = currentReserved + dto.getUsageCount();
 
             if (newTotal > maxUserCount) {
-                throw new ReservationDuplicatedException();
+                throw new ReservationDuplicatedException("예약 가능한 인원 수를 초과하였습니다.");
             }
 
             checkTime = checkTime.plusHours(1);

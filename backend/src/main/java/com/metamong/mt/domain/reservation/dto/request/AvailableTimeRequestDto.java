@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.reservation.dto.response;
+package com.metamong.mt.domain.reservation.dto.request;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AvailableTimeResponseDto {
+public class AvailableTimeRequestDto {
     private LocalDate rvtDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
@@ -18,6 +18,8 @@ public class AvailableTimeResponseDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime usageEndTime;
+    
+    private Long zoneId;
 
     private int usageCount;
     private int maxUserCount;
