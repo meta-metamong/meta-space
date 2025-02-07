@@ -58,8 +58,8 @@ public class DefaultReservationService implements ReservationService {
     public List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto) {
         Facility fctInfo = facilityRepository.findById(dto.getFctId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 시설이 존재하지 않습니다."));
-        LocalTime openTime = fctInfo.getFctOpenTime().toLocalTime();
-        LocalTime closeTime = fctInfo.getFctCloseTime().toLocalTime();
+        LocalTime openTime = fctInfo.getFctOpenTime();
+        LocalTime closeTime = fctInfo.getFctCloseTime();
         int unitTime = fctInfo.getUnitUsageTime();
         
         List<HourlyUsageDto> reservedTimes = reservationMapper.getReservedTimes(dto);
