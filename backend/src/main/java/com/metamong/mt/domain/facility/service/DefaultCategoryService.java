@@ -12,15 +12,20 @@ import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.repository.jpa.CategoryRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DefaultCategoryService implements CategoryService {
     private final CategoryRepository categoryRepository;
     
     @Override
     public List<CategoryListResponseDto> getAllCategories() {
         List<Category> allCategories = this.categoryRepository.findAll();
+        if (log.isDebugEnabled()) {
+            log.debug("allCategories={}", allCategories);
+        }
         
         Map<String, CategoryListResponseDto> cache = new HashMap<>();
         Map<String, Category> cache2 = new HashMap<>();
