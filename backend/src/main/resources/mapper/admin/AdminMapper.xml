@@ -80,7 +80,7 @@ GROUP BY
         UPDATE facility
         SET fct_state = 'REGISTERED'
         WHERE fct_state = 'REG_REQUESTED'
-        AND prov_id = #{provId}
+        AND fct_id = #{fctId}
     </update>
     
      <!-- 등록 요청 반려 쿼리 -->
@@ -88,7 +88,7 @@ GROUP BY
         UPDATE facility
         SET fct_state = 'DELETED'
         WHERE fct_state = 'REG_REQUESTED'
-        AND prov_id = #{provId}
+        AND fct_id = #{fctId}
     </update>
     
      <!-- 삭제 요청 승인 쿼리 -->
@@ -96,7 +96,7 @@ GROUP BY
         UPDATE facility
         SET fct_state = 'DEL_APPROVED'
         WHERE fct_state = 'DEL_REQUESTED'
-        AND prov_id = #{provId}
+        AND fct_id = #{fctId}
     </update>
     
     <!-- 삭제 요청 반려 쿼리 -->
@@ -104,7 +104,7 @@ GROUP BY
         UPDATE facility
         SET fct_state = 'DEL_REJECTED'
         WHERE fct_state = 'DEL_REQUESTED'
-        AND prov_id = #{provId}
+        AND fct_id = #{fctId}
     </update>
     
     <!-- 알림 테이블에 데이터 추가 쿼리 -->

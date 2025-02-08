@@ -79,15 +79,15 @@ public class DefaultAdminService implements AdminService{
 
 	@Override
 	@Transactional
-	public void approveFacilityRegisterRequest(Long provId) {
+	public void approveFacilityRegisterRequest(Long fctId) {
 		// 1. 요청 승인 (fct_state 업데이트)
         Map<String, Object> updateParams = new HashMap<>();
-        updateParams.put("provId", provId);
+        updateParams.put("fctId", fctId);
         adminMapper.updateFacilityStateRegApproved(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
         Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", provId);
+        notificationParams.put("receiverId", fctId);
         notificationParams.put("notiMsg", "등록요청이 승인되었습니다");
         adminMapper.insertNotification(notificationParams);
 		
@@ -95,30 +95,30 @@ public class DefaultAdminService implements AdminService{
 	
 	@Override
 	@Transactional
-	public void rejectFacilityRegisterRequest(Long provId) {
+	public void rejectFacilityRegisterRequest(Long fctId) {
 		// 1. 요청 승인 (fct_state 업데이트)
         Map<String, Object> updateParams = new HashMap<>();
-        updateParams.put("provId", provId);
+        updateParams.put("fctId", fctId);
         adminMapper.updateFacilityStateRegRejected(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
         Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", provId);
+        notificationParams.put("receiverId", fctId);
         notificationParams.put("notiMsg", "등록요청이 반려되었습니다");
         adminMapper.insertNotification(notificationParams);
 	}
 	
 	@Override
 	@Transactional
-	public void approveFacilityDeleteRequest(Long provId) {
+	public void approveFacilityDeleteRequest(Long fctId) {
 		// 1. 요청 승인 (fct_state 업데이트)
         Map<String, Object> updateParams = new HashMap<>();
-        updateParams.put("provId", provId);
+        updateParams.put("fctId", fctId);
         adminMapper.updateFacilityStateDelApproved(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
         Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", provId);
+        notificationParams.put("receiverId", fctId);
         notificationParams.put("notiMsg", "삭제요청이 승인되었습니다");
         adminMapper.insertNotification(notificationParams);
 		
@@ -126,15 +126,15 @@ public class DefaultAdminService implements AdminService{
 	
 	@Override
 	@Transactional
-	public void rejectFacilityDeleteRequest(Long provId) {
+	public void rejectFacilityDeleteRequest(Long fctId) {
 		// 1. 요청 승인 (fct_state 업데이트)
         Map<String, Object> updateParams = new HashMap<>();
-        updateParams.put("provId", provId);
+        updateParams.put("fctId", fctId);
         adminMapper.updateFacilityStateDelRejected(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
         Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", provId);
+        notificationParams.put("receiverId", fctId);
         notificationParams.put("notiMsg", "삭제요청이 반려되었습니다");
         adminMapper.insertNotification(notificationParams);
 	}

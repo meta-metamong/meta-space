@@ -88,9 +88,9 @@ public class AdminController {
     }
     
     @PostMapping("/registration/approval")
-    public ResponseEntity<String> approveFacilityRegisterRequest(@RequestParam Long provId) {
+    public ResponseEntity<String> approveFacilityRegisterRequest(@RequestParam Long fctId) {
         try {
-        	adminService.approveFacilityRegisterRequest(provId);
+        	adminService.approveFacilityRegisterRequest(fctId);
             return ResponseEntity.ok("등록 요청이 승인되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
@@ -98,9 +98,9 @@ public class AdminController {
     }
     
     @PostMapping("/registration/rejection")
-    public ResponseEntity<String> rejectFacilityRegisterRequest(@RequestParam Long provId) {
+    public ResponseEntity<String> rejectFacilityRegisterRequest(@RequestParam Long fctId) {
         try {
-        	adminService.rejectFacilityRegisterRequest(provId);
+        	adminService.rejectFacilityRegisterRequest(fctId);
             return ResponseEntity.ok("등록 요청이 반려되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
@@ -110,9 +110,9 @@ public class AdminController {
     // 자정마다 반려된 시설 삭제
     
     @PostMapping("/deletion/approval")
-    public ResponseEntity<String> approveFacilityDeleteRequest(@RequestParam Long provId) {
+    public ResponseEntity<String> approveFacilityDeleteRequest(@RequestParam Long fctId) {
         try {
-        	adminService.approveFacilityDeleteRequest(provId);
+        	adminService.approveFacilityDeleteRequest(fctId);
             return ResponseEntity.ok("삭제 요청이 승인되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
@@ -120,9 +120,9 @@ public class AdminController {
     }
     
     @PostMapping("/deletion/rejection")
-    public ResponseEntity<String> rejectFacilityDeleteRequest(@RequestParam Long provId) {
+    public ResponseEntity<String> rejectFacilityDeleteRequest(@RequestParam Long fctId) {
         try {
-        	adminService.rejectFacilityDeleteRequest(provId);
+        	adminService.rejectFacilityDeleteRequest(fctId);
             return ResponseEntity.ok("삭제 요청이 반려되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
