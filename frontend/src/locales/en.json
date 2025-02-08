@@ -138,5 +138,27 @@
         "booked": "Booked",
         "available": "Available",
         "noSlots": "No available time slots for this date."
+    },
+    "facility": {
+        "facilityRegistration": "Facility Registration",
+        "facilityName": "Facility Name",
+        "category": "Category",
+        "majorCategory": "Major category",
+        "minorCategory": "Minor category",
+        "search": "Search",
+        "facilityAddress": "Facility Address",
+        "postalCode": "Postal Code",
+        "address": "Address",
+        "detailAddress": "Detailed address",
+        "facilityTel": "Tel",
+        "facilityOperationTime": "Operation Time",
+        "isOpenOnHolidays": "Is open on holidays?",
+        "unitUsageTime": "Unit Usage Time (Minutes)",
+        "facilityImage": "Image",
+        "addImage": "add image",
+        "imageLimitDescription": "You can add images up to 5",
+        "facilityGuide": "Guide",
+        "next": "Next",
+        "Previous": "Previous"
     }
 }
