@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-    
+
 <mapper namespace="com.metamong.mt.domain.admin.repository.mybatis.AdminMapper">
 
     <select id="searchMembers" resultType="com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto">
@@ -28,13 +28,102 @@ GROUP BY
     m.created_at
     ]]>
 	</select>
-	
+
 
     <!-- 신고된 회원 목록 조회 -->
     <select id="getReportedMembers" resultType="com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto">
         SELECT m.email, r.report_type, r.report_msg
         FROM member m
         JOIN report r ON m.mem_id = r.reported_id
+    </select>
+
+    <!-- 신고된 아이디 정지 기간 업데이트 (배치 처리) -->
+<update id="updateMemberBan" parameterType="list">
+    <![CDATA[
+    <foreach collection="list" item="reportData" separator=";">
+        UPDATE member
+        SET mem_banned_until = 
+            CASE 
+                WHEN #{reportData.reportCount} = 1 THEN SYSDATE + INTERVAL '7' DAY
+                WHEN #{reportData.reportCount} = 2 THEN SYSDATE + INTERVAL '14' DAY
+                WHEN #{reportData.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')
+            END
+        WHERE mem_id = #{reportData.reportedId}
+    </foreach>
+    ]]>
+</update>
+
+<delete id="deleteReportedData" parameterType="list">
+    <![CDATA[
+    <foreach collection="list" item="reportedId" separator=";">
+        DELETE FROM report
+        WHERE reported_id = #{reportedId}
+    </foreach>
+    ]]>
+</delete>
+
+
+    <!-- 신고 횟수 조회 -->
+	<resultMap id="reportCountMap" type="java.util.HashMap">
+	    <result property="reported_id" column="reported_id"/>
+	    <result property="report_count" column="report_count" jdbcType="DECIMAL" javaType="java.lang.Integer"/>
+	</resultMap>
+
+<select id="getReportCounts" resultMap="reportCountMap">
+    SELECT reported_id as reportedId , COUNT(*) AS reportCount
+    FROM report
+    GROUP BY reported_id
+</select>
+
+ <!-- 등록 요청 승인 쿼리 -->
+    <update id="updateFacilityStateRegApproved" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'REGISTERED'
+        WHERE fct_state = 'REG_REQUESTED'
+        AND fct_id = #{fctId}
+    </update>
+
+     <!-- 등록 요청 반려 쿼리 -->
+    <update id="updateFacilityStateRegRejected" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'DELETED'
+        WHERE fct_state = 'REG_REQUESTED'
+        AND fct_id = #{fctId}
+    </update>
+
+     <!-- 삭제 요청 승인 쿼리 -->
+    <update id="updateFacilityStateDelApproved" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'DEL_APPROVED'
+        WHERE fct_state = 'DEL_REQUESTED'
+        AND fct_id = #{fctId}
+    </update>
+
+    <!-- 삭제 요청 반려 쿼리 -->
+    <update id="updateFacilityStateDelRejected" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'DEL_REJECTED'
+        WHERE fct_state = 'DEL_REQUESTED'
+        AND fct_id = #{fctId}
+    </update>
+
+    <!-- 알림 테이블에 데이터 추가 쿼리 -->
+    <insert id="insertNotification" parameterType="map">
+        INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
+        VALUES (2,#{receiverId}, #{notiMsg}, 'N')
+    </insert>
+
+    <select id="searchFacilities" resultType="com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto">
+     SELECT 
+    fct_name, 
+    zone_name,
+    (select COUNT(rvt_id)from reservation where rvt_cancelation_reason IS NULL) as rvt_cnt,
+    (select COUNT(rvt_id)from reservation where rvt_cancelation_reason IS not NULL) as rvt_cancel_cnt,
+    cons_id
+    FROM 
+    reservation r join zone z on r.zone_id = z.zone_id
+    join facility f on z.fct_id = f.fct_id
+     group by fct_name, zone_name,cons_id
     </select>
 
 </mapper>
