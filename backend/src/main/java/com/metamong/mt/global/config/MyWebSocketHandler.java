@@ -19,7 +19,7 @@ import com.metamong.mt.domain.member.dto.response.MessageResponseDto;
 
 @Component
 public class MyWebSocketHandler extends TextWebSocketHandler {
-
+/*
     @Autowired
     private MemberController memberController;
 
@@ -29,7 +29,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     // WebSocket 연결 시 세션을 추가
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        memberController.addSession(session);
+        Controller.addSession(session);
         updateOnlineUsers(); 
     }
 
@@ -108,5 +108,5 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         updateOnlineUsers();
         System.out.println("WebSocket 연결 종료: " + session.getId());
     }
-    
+    */
 }
