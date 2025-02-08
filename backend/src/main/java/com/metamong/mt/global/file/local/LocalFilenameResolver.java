@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author pgd
  */
 @Component
-@Profile("!prod")
+//@Profile("!prod")
 @Slf4j
 public class LocalFilenameResolver extends AbstractFilenameResolver {
     private static final String COMMON_FILE_PATH = "/resources/files/";
