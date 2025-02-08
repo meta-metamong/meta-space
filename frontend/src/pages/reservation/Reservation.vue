@@ -24,7 +24,7 @@
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.fctName') }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">ccc</p>
+            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ fctName }}</p>
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.reservationDate') }}</p>
@@ -37,9 +37,9 @@
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.usageCount') }}</p>
             <div class="d-flex align-items-center w-75 mx-auto px-3 fs-5">
-                <button class="btn btn-outline-secondary" @click="decreaseCount" :disabled="usageCount <= min">−</button>
+                <button class="btn btn-outline-secondary" @click="decreaseCount" :disabled="usageCount <= 1">−</button>
                 <input type="text" class="form-control text-center mx-2" v-model="usageCount" readonly style="width: 50px;" />
-                <button class="btn btn-outline-primary" @click="increaseCount" :disabled="usageCount >= max">+</button>
+                <button class="btn btn-outline-primary" @click="increaseCount" :disabled="usageCount >= maxCount">+</button>
             </div>
         </div>
         <div class="mb-4">
@@ -76,15 +76,15 @@ export default {
             selectedTimes: [],
             firstTime: null,
             secondTime: null,
-            fctInfo: [],
+            fctName: "",
             zoneInfo: [],
             additionalInfo: [],
             date: ref(new Date()),
             reservationTime: "",
             usageCount: 1,
+            maxCount: 1,
             isSharedZone: 0,
             hourlyRate: 5000,
-
         };
     },
     computed: {
@@ -105,15 +105,15 @@ export default {
             return this.selectedTimes.length * this.usageCount * this.hourlyRate + '원';
         }
     },
-    props: {
-        min: { type: Number, default: 1 },
-        max: { type: Number, default: 10 },
-    },
     methods: {
         async getFctInfo() {
             const response = await get(`/facilities/1`);
-            this.fctInfo = response.data.content;
-            console.log(response);
+            const fctInfo = response.data.content;
+            console.log(response.data.content);
+            this.fctName = fctInfo.fctName;
+            this.zoneInfo = fctInfo.zones;
+            this.additionalInfo = fctInfo.additionalInfos;
+            console.log(this.zoneInfo)
         },
         formatTime(date) {
             const hours = date.getHours().toString().padStart(2, '0');
@@ -158,10 +158,10 @@ export default {
             this.secondTime = secondTimeDate.toTimeString().slice(0, 5);
         },
         increaseCount() {
-            if (this.usageCount < this.max) this.usageCount++;
+            if (this.usageCount < this.maxCount) this.usageCount++;
         },
         decreaseCount() {
-            if (this.usageCount > this.min) this.usageCount--;
+            if (this.usageCount > 1) this.usageCount--;
         },
     },
     mounted() {
