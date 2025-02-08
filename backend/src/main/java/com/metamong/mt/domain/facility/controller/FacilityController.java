@@ -9,11 +9,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.metamong.mt.domain.facility.dto.constant.Order;
+import com.metamong.mt.domain.facility.dto.constant.OrderBy;
+import com.metamong.mt.domain.facility.dto.constant.SearchCondition;
 import com.metamong.mt.domain.facility.dto.request.FacilityDeleteRequestDto;
+import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
@@ -68,5 +74,41 @@ public class FacilityController {
             @RequestBody FacilityDeleteRequestDto dto) {
         this.facilityService.deleteFacility(facilityId, dto.getPassword());
         return new ResponseEntity<>(BaseResponse.of(HttpStatus.NO_CONTENT), HttpStatus.NO_CONTENT);
+    }
+    
+    @GetMapping("/facilities")
+    public ResponseEntity<BaseResponse<FacilityListResponseDto>> getFaciltiies(
+            @RequestParam(value = "order-by", defaultValue = "DISTANCE") OrderBy orderBy,
+            @RequestParam(value = "order", defaultValue = "ASC") Order order,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "page-size", defaultValue = "10") int pageSize,
+            @RequestParam(value = "provider-id", required = false) Long providerId,
+            @RequestParam(value = "search-keyword", required = false) String searchKeyword,
+            @RequestParam(value = "search-condition", required = false) SearchCondition searchCondition,
+            @RequestParam(value = "upper-latitude", required = false) Double upperLatitude,
+            @RequestParam(value = "lower-latitude", required = false) Double lowerLatitude,
+            @RequestParam(value = "upper-longitude", required = false) Double upperLongitude,
+            @RequestParam(value = "lower-longitude", required = false) Double lowerLongitude,
+            @RequestParam(value = "center-latitude", required = false) Double centerLatitude,
+            @RequestParam(value = "lowerLatitude", required = false) Double centerLongitude
+    ) {
+        FacilityListRequestDto dto = FacilityListRequestDto.builder()
+                .orderBy(orderBy)
+                .order(order)
+                .page(page)
+                .pageSize(pageSize)
+                .providerId(providerId)
+                .searchKeyword(searchKeyword)
+                .searchCondition(searchCondition)
+                .upperLatitude(upperLatitude)
+                .lowerLatitude(lowerLatitude)
+                .upperLongitude(upperLongitude)
+                .lowerLongitude(lowerLongitude)
+                .centerLatitude(centerLatitude)
+                .centerLongitude(centerLongitude)
+                .build();
+        return ResponseEntity.ok(
+                BaseResponse.of(this.facilityService.getFacilities(dto), HttpStatus.OK)
+        );
     }
 }

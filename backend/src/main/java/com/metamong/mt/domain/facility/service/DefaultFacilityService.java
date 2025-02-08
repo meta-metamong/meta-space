@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
+import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
@@ -172,5 +174,10 @@ public class DefaultFacilityService implements FacilityService {
         }
         
         facility.requestDelete();
+    }
+    
+    @Override
+    public FacilityListResponseDto getFacilities(FacilityListRequestDto dto) {
+        throw new UnsupportedOperationException();
     }
 }
