@@ -16,6 +16,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
+import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -148,6 +149,16 @@ public class DefaultAdminService implements AdminService{
 	@Override
 	public List<ApprovalRequestDto> getRequestFacilities() {
 		return adminMapper.getRequestFacilities();
+	}
+
+	@Override
+	public List<SalesExportDto> getPaymentDetails() {
+		return adminMapper.getPaymentDetails();
+	}
+
+	@Override
+	public BigDecimal getTotalRevenue() {
+		return adminMapper.getTotalRevenue();
 	}
 
 

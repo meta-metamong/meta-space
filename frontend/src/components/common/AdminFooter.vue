@@ -17,8 +17,8 @@
           <router-link to="/admin/memBen" class="nav-link text-center"  v-if="isLogin">
             <i class="bi bi-slash-circle text-primary"></i><br>{{ $t('admin.memberBen') }}
           </router-link>
-          <router-link to="/admin/salesSearch" class="nav-link text-center"  v-if="isLogin">
-            <i class="bi bi-coin text-primary"></i><br>{{ $t('admin.salesSearch') }}
+          <router-link to="/admin/salesExport" class="nav-link text-center"  v-if="isLogin">
+            <i class="bi bi-coin text-primary"></i><br>{{ $t('admin.salesExport') }}
           </router-link>
        </div>
      </nav>

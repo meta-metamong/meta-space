@@ -17,6 +17,8 @@ import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
 import AdminMemberSearch from '../pages/admin/MemberSearch.vue';
 import FacilityApproval from '../pages/admin/FacilityApproval.vue';
+import AdminMemberBen from '../components/admin/AdminMemberBen.vue';
+import AdminSalesExport from '../components/admin/AdminSalesExport.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -35,7 +37,10 @@ const routes = [
 	{ path: '/admin/chatlist', component: ChatList },
 	{ path: '/admin/memSearch', component: AdminMemberSearch },
 	{ path: '/admin/facilityApproval', component: FacilityApproval },
-	
+	{ path: '/admin/memBen', component: AdminMemberBen },
+	{ path: '/admin/salesExport', component: AdminSalesExport },
+
+
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },

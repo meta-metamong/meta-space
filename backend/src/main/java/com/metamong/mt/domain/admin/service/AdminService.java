@@ -1,11 +1,13 @@
 package com.metamong.mt.domain.admin.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
+import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 
 public interface AdminService {
 	List<MemberSearchResponseDto> searchMembers();
@@ -17,4 +19,6 @@ public interface AdminService {
 	void rejectFacilityDeleteRequest(Long fctId);
 	List<FacilitySearchResponseDto> searchFacilities();
 	List<ApprovalRequestDto> getRequestFacilities();
+    List<SalesExportDto> getPaymentDetails();
+    BigDecimal getTotalRevenue();
 }

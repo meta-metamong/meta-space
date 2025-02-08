@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.admin.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
+import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.service.AdminService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
@@ -134,6 +136,20 @@ public class AdminController {
 	public ResponseEntity<BaseResponse<List<FacilitySearchResponseDto>>> searchFacilities() {
 	    return ResponseEntity.ok(BaseResponse.of(adminService.searchFacilities(), HttpStatus.OK));
 	}
+	
+	// 결제 내역 조회
+    @GetMapping("/salesExport")
+    public ResponseEntity<List<SalesExportDto>> getPaymentDetails() {
+        List<SalesExportDto> payments = adminService.getPaymentDetails();
+        return ResponseEntity.ok(payments);
+    }
+
+    // 총금액 조회
+    @GetMapping("/totalAmt")
+    public ResponseEntity<BigDecimal> getTotalRevenue() {
+        BigDecimal totalRevenue = adminService.getTotalRevenue();
+        return ResponseEntity.ok(totalRevenue);
+    }
     
     
 }

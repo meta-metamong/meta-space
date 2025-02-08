@@ -8,7 +8,7 @@
           <th>아이디</th>
           <th>신고유형</th>
           <th>신고내용</th>
-          <th>계정정지</th>
+          <!-- <th>계정정지</th> -->
         </tr>
       </thead>
       <tbody>
@@ -17,13 +17,13 @@
           <td>{{ report.email }}</td>
           <td>{{ report.reportType }}</td>
           <td>{{ report.reportMsg }}</td>
-          <td>
+          <!-- <td>
             <button @click="confirmSuspendAccount(report.id)" class="suspend-button">계정정지</button>
-          </td>
+          </td> -->
         </tr>
       </tbody>
     </table>
-    <button @click="suspendSelectedAccounts" class="suspend-all-button">선택한 계정 정지</button>
+    <button @click="suspendSelectedAccounts" class="suspend-all-button">계정 정지</button>
   </div>
 </template>
 

@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.admin.repository.mybatis;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
+import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 
 @Repository
 @Mapper
@@ -31,4 +33,10 @@ public interface AdminMapper {
     List<FacilitySearchResponseDto> searchFacilities();
     
     List<ApprovalRequestDto> getRequestFacilities();
+    
+    // 시설명, zone명, 결제일, 결제금액, 결제방법
+    List<SalesExportDto> getPaymentDetails();
+
+    // 총금액
+    BigDecimal getTotalRevenue();
 }

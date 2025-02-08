@@ -36,6 +36,7 @@ ORDER BY m.created_at
         SELECT m.email, r.report_type, r.report_msg
         FROM member m
         JOIN report r ON m.mem_id = r.reported_id
+        GROUP BY m.email, r.report_type, r.report_msg
     </select>
 
     <!-- 신고된 아이디 정지 기간 업데이트 (배치 처리) -->
@@ -141,6 +142,34 @@ ORDER BY m.created_at
     reservation r join zone z on r.zone_id = z.zone_id
     join facility f on z.fct_id = f.fct_id
      group by fct_name, zone_name,cons_id
+    </select>
+    
+    <!-- 시설명, zone명, 결제일, 결제금액, 결제방법 -->
+    <select id="getPaymentDetails" resultType="com.metamong.mt.domain.admin.dto.response.SalesExportDto">
+        SELECT 
+            z.fct_id, 
+            z.zone_id, 
+            p.pay_date, 
+            p.pay_price, 
+            p.pay_method 
+        FROM 
+            payment p
+        JOIN 
+            reservation r ON p.rvt_id = r.cons_id
+        JOIN 
+            zone z ON z.zone_id = r.zone_id
+    </select>
+
+    <!-- 총금액 -->
+    <select id="getTotalRevenue" resultType="java.math.BigDecimal">
+        SELECT 
+            NVL(SUM(p.pay_price), 0) AS total_revenue
+        FROM 
+            payment p
+        JOIN 
+            reservation r ON p.rvt_id = r.cons_id
+        JOIN 
+            zone z ON z.zone_id = r.zone_id
     </select>
 
 </mapper>

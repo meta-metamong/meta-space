@@ -112,7 +112,8 @@
         "facilityApproval":"facilityApproval",
         "memberBen":"memberBen",
         "dashboard":"dashboard",
-        "salesSearch":"salesSearch"        
+        "salesSearch":"salesSearch",
+        "salesExport":"salesExport"       
     },
     "reservation": {
         "list": "Reservation List",
