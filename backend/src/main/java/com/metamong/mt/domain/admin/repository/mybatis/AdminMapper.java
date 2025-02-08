@@ -16,9 +16,13 @@ public interface AdminMapper {
 	
 	List<ReportedMemberResponseDto> getReportedMembers();
 	
-    void updateFacilityState(Map<String, Object> params);
+    void updateFacilityStateRegApproved(Map<String, Object> params);
 
     void insertNotification(Map<String, Object> params);
     
-    void updateFacilityState2(Map<String, Object> params);
+    void updateFacilityStateRegRejected(Map<String, Object> params);
+    
+    void updateFacilityStateDelApproved(Map<String, Object> params);
+    
+    void updateFacilityStateDelRejected(Map<String, Object> params);
 }

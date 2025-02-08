@@ -86,21 +86,20 @@ public class AdminController {
         }
     }
     
-    @PostMapping("/approval/registration")
-    public ResponseEntity<String> approveFacilityRequest(@RequestParam Long provId) {
+    @PostMapping("/registration/approval")
+    public ResponseEntity<String> approveFacilityRegisterRequest(@RequestParam Long provId) {
         try {
-        	adminService.approveFacilityRequest(provId);
+        	adminService.approveFacilityRegisterRequest(provId);
             return ResponseEntity.ok("등록 요청이 승인되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
         }
     }
     
-    @PostMapping("/approval/deletion")
-    public ResponseEntity<String> rejectionFacilityRequest(
-            @RequestParam Long provId) {
+    @PostMapping("/registration/rejection")
+    public ResponseEntity<String> rejectFacilityRegisterRequest(@RequestParam Long provId) {
         try {
-        	adminService.rejectFacilityRequest(provId);
+        	adminService.rejectFacilityRegisterRequest(provId);
             return ResponseEntity.ok("등록 요청이 반려되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
@@ -109,4 +108,23 @@ public class AdminController {
     
     // 자정마다 반려된 시설 삭제
     
+    @PostMapping("/deletion/approval")
+    public ResponseEntity<String> approveFacilityDeleteRequest(@RequestParam Long provId) {
+        try {
+        	adminService.approveFacilityDeleteRequest(provId);
+            return ResponseEntity.ok("삭제 요청이 승인되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
+        }
+    }
+    
+    @PostMapping("/deletion/rejection")
+    public ResponseEntity<String> rejectFacilityDeleteRequest(@RequestParam Long provId) {
+        try {
+        	adminService.rejectFacilityDeleteRequest(provId);
+            return ResponseEntity.ok("삭제 요청이 반려되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
+        }
+    }
 }

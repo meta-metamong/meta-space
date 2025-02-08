@@ -75,26 +75,42 @@ GROUP BY
     GROUP BY reported_id
 </select>
 
- <!-- 요청 승인 쿼리 -->
-    <update id="updateFacilityState" parameterType="map">
+ <!-- 등록 요청 승인 쿼리 -->
+    <update id="updateFacilityStateRegApproved" parameterType="map">
         UPDATE facility
         SET fct_state = 'REGISTERED'
         WHERE fct_state = 'REG_REQUESTED'
         AND prov_id = #{provId}
     </update>
-
-    <!-- 알림 테이블에 데이터 추가 쿼리 -->
-    <insert id="insertNotification" parameterType="map">
-        INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
-        VALUES (2,#{receiverId}, #{notiMsg}, 'N')
-    </insert>
     
-     <!-- 요청 반려 쿼리 -->
-    <update id="updateFacilityState2" parameterType="map">
+     <!-- 등록 요청 반려 쿼리 -->
+    <update id="updateFacilityStateRegRejected" parameterType="map">
         UPDATE facility
         SET fct_state = 'DELETED'
         WHERE fct_state = 'REG_REQUESTED'
         AND prov_id = #{provId}
     </update>
+    
+     <!-- 삭제 요청 승인 쿼리 -->
+    <update id="updateFacilityStateDelApproved" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'DEL_APPROVED'
+        WHERE fct_state = 'DEL_REQUESTED'
+        AND prov_id = #{provId}
+    </update>
+    
+         <!-- 삭제 요청 반려 쿼리 -->
+    <update id="updateFacilityStateDelRejected" parameterType="map">
+        UPDATE facility
+        SET fct_state = 'DEL_REJECTED'
+        WHERE fct_state = 'DEL_REQUESTED'
+        AND prov_id = #{provId}
+    </update>
+    
+        <!-- 알림 테이블에 데이터 추가 쿼리 -->
+    <insert id="insertNotification" parameterType="map">
+        INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
+        VALUES (2,#{receiverId}, #{notiMsg}, 'N')
+    </insert>
 
 </mapper>

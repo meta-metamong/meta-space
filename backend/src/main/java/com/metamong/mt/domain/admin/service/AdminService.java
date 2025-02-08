@@ -10,6 +10,8 @@ public interface AdminService {
 	List<MemberSearchResponseDto> searchMembers();
 	List<ReportedMemberResponseDto> getReportedMembers();
 	void processReportBans(List<Long> reportedIds);
-	void approveFacilityRequest(Long provId);
-	void rejectFacilityRequest(Long provId);
+	void approveFacilityRegisterRequest(Long provId);
+	void rejectFacilityRegisterRequest(Long provId);
+	void approveFacilityDeleteRequest(Long provId);
+	void rejectFacilityDeleteRequest(Long provId);
 }
