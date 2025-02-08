@@ -159,6 +159,12 @@
         "imageLimitDescription": "You can add images up to 5",
         "facilityGuide": "Guide",
         "next": "Next",
-        "Previous": "Previous"
+        "previous": "Previous",
+        "zoneRegistration": "Zone Registration",
+        "zoneName": "Zone Name",
+        "maxUserCount": "Max users",
+        "hourlyRate": "Hourly Rate",
+        "isSharedZone": "Is shared zone?",
+        "sharedZoneDescription": "If you set Zone as shared zone, the zone can be shared by any people, and the cost is set per man."
     }
 }

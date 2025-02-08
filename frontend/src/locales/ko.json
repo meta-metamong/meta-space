@@ -158,6 +158,12 @@
         "imageLimitDescription": "이미지는 최대 5개까지 추가할 수 있습니다",
         "facilityGuide": "이용 수칙",
         "next": "다음",
-        "Previous": "이전"
+        "previous": "이전",
+        "zoneRegistration": "Zone 등록",
+        "zoneName": "Zone 이름",
+        "maxUserCount": "최대 이용 인원 수",
+        "hourlyRate": "시간당 가격",
+        "isSharedZone": "공유 Zone 여부",
+        "sharedZoneDescription": "공유 Zone으로 설정할 경우 여러 사람들이 해당 Zone을 공유해서 이용할 수 있으며, 예약 시 인당 요금으로 계산됩니다."
     }
 }
