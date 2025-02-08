@@ -4,17 +4,17 @@
     </div>
     <div class="container long-input">
         <div class="input-box">
-            <input type="text" :placeholder="$t('facility.zoneName')">
+            <input type="text" :placeholder="$t('facility.zoneName')" :value="data.zoneName">
         </div>
         <div class="input-box">
-            <input type="text" :placeholder="$t('facility.maxUserCount')">
+            <input type="text" :placeholder="$t('facility.maxUserCount')" :value="data.maxUserCount">
         </div>
         <div class="input-box">
-            <input type="text" :placeholder="$t('facility.hourlyRate')">
+            <input type="text" :placeholder="$t('facility.hourlyRate')" :value="data.hourlyRate">
         </div>
         <div class="input-box">
             <div>
-                <input type="checkbox">
+                <input type="checkbox" :checked="data.isSharedZone">
                 <label>{{ $t("facility.isSharedZone") }}</label>
             </div>
             <p>{{ $t("facility.sharedZoneDescription") }}</p>
@@ -25,7 +25,9 @@
                 <button>{{ $t("facility.addImage") }}</button>
                 <p>{{ $t("facility.imageLimitDescription") }}</p>
             </div>
-            <div></div>
+            <div>
+                <img v-for="image in data.images">
+            </div>
         </div>
         <!-- TODO: Zone 추가 -->
         <div>
@@ -37,6 +39,16 @@
 
 <script>
 export default {
-    
+    props: {
+        zoneRegistration: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            data: {...this.zoneRegistration}
+        }
+    }
 }
 </script>

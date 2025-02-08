@@ -172,6 +172,8 @@
         "addinfoDesc2": "ex)",
         "addinfoDesc3": "* Showeroom 10h ~ 12h",
         "addinfoDesc4": "* Racket Rent: 1000won",
-        "register": "Register"
+        "register": "Register",
+        "yes": "Yes",
+        "no": "No"
     }
 }

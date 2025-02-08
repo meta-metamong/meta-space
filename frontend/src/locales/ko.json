@@ -171,6 +171,8 @@
         "addinfoDesc2": "ex)",
         "addinfoDesc3": "* 샤워장 이용 가능 시간 10h ~ 12h",
         "addinfoDesc4": "* 라켓 대여비: 1000won",
-        "register": "등록"
+        "register": "등록",
+        "yes": "예",
+        "no": "아뇨"
     }
 }
