@@ -99,7 +99,7 @@ GROUP BY
         AND prov_id = #{provId}
     </update>
     
-         <!-- 삭제 요청 반려 쿼리 -->
+    <!-- 삭제 요청 반려 쿼리 -->
     <update id="updateFacilityStateDelRejected" parameterType="map">
         UPDATE facility
         SET fct_state = 'DEL_REJECTED'
