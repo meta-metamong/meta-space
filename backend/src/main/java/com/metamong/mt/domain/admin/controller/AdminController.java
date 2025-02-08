@@ -127,4 +127,9 @@ public class AdminController {
             return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
         }
     }
+    
+	@GetMapping("/searchFacilities")
+	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchFacilities() {
+	    return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
+	}
 }
