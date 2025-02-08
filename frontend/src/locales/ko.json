@@ -98,7 +98,8 @@
         "signupUser": "일반 회원가입",
         "signupOwner": "업주 회원가입",
         "membershipDate": "가입일",
-        "changePw": "비밀번호 재설정"
+        "changePw": "비밀번호 재설정",
+        "confirmPw": "비밀번호 확인"
     },
     "admin": {
         "socket":"소켓",

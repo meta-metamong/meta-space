@@ -20,7 +20,10 @@ public class HttpRequestAuthorizationDefinition {
 			"/api/members/consumer",
             "/api/members/provider",
             "/api/members/login",
-            "/api/members/reissue"
+            "/api/members/reissue",
+            "/api/members/send-validation-emails",
+            "/api/members/check-email-validation",
+            "/api/members/find-password"
 		);
 	
     private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
@@ -31,7 +34,10 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/find-member",
                     "/api/members/dup-email",
                     "/api/recommends/*",
-                    "/api/reservations"
+                    "/api/reservations",
+                    "/api/members/send-validation-emails",
+                    "/api/members/check-email-validation",
+                    "/api/members/find-password"
             },
             HttpMethod.GET, new String[] {
                     "/api/members/reissue",

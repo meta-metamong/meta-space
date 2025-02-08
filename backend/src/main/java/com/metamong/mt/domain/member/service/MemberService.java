@@ -53,23 +53,4 @@ public interface MemberService {
     // DB에서 시설제공자 데이터 조회
     FctProvider getProvider(Long memId);
     
-    /*
-    
-    
-    // Refresh Token을 DB에 저장하는 메서드 추가
-    
-    // void storeRefreshToken(Member member);
-    
-    // 회원 전체 조회
-	
-	
-	void sendLoginInfoNotificationMail(FindMemberRequestDto request);
-	
-	void getRoleUserCount();
-	
-	String view();
-	
-	// 회원 중복 여부 조회
-	boolean isDuplicatedIdOrEmail(String data, String type);
-	*/
 }
