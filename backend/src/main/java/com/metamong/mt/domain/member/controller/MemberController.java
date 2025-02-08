@@ -369,42 +369,21 @@ public class MemberController {
         }
     }
 
-//    public void addSession(WebSocketSession session) {
-//        sessions.add(session);
-//    }
-//    
-//    @GetMapping("/members/roleUserCount")
-//    public String getRoleUserCount() {
-//        return memberService.view();
-//    }
-//    
-//    @GetMapping("/download/{filename}")
-//    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-//    	
-//        String fileDirectory = "C:/Users/KOSA/Downloads/";
-//        File file = new File(fileDirectory + filename);
-//        
-//        if (!file.exists()) {
-//            return ResponseEntity.notFound().build();  // 파일이 없을 때 처리해놓깅
-//        }
-//
-//        Resource resource = new FileSystemResource(file);
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")  
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))  
-//                .body(resource);
-//    }
-    
-    	public void addSession(WebSocketSession session) {
-    		sessions.add(session);
-    	}
-    	
-    	public void removeSession(WebSocketSession session) {
-            sessions.remove(session);
-        }
 
-        public Set<WebSocketSession> getAllSessions() {
-            return sessions;
-        }
+    
+    /**
+     * 비밀번호 찾기 버튼을 누른 후 이메일을 입력하여 재설정 링크를 전송받습니다.
+     * 
+     * @param email 이메일
+     * @return verification 인증코드
+     */
+//    @PostMapping("/members/find-password")
+//    public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
+//        return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
+//    }
+
+    public Set<WebSocketSession> getAllSessions() {
+        return sessions;
+    }
+
 }

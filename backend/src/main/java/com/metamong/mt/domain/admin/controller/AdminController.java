@@ -31,6 +31,7 @@ public class AdminController {
 	
 	private final AdminService adminService;
 	
+<<<<<<< HEAD
 //  public void addSession(WebSocketSession session) {
 //  sessions.add(session);
 //}
@@ -67,12 +68,15 @@ public class AdminController {
 //    }
 	
 	@GetMapping("/searchMembers")
+=======
+	@GetMapping("/search-members")
+>>>>>>> branch 'develop' of https://github.com/meta-metamong/meta-space.git
 	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchMembers() {
 	    return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
 	}
 
     
-    @GetMapping("/reportedMembers")
+    @GetMapping("/reported-members")
     public ResponseEntity<BaseResponse<List<ReportedMemberResponseDto>>> getReportedMembers() {
         return ResponseEntity.ok(BaseResponse.of(adminService.getReportedMembers(), HttpStatus.OK));
     }
