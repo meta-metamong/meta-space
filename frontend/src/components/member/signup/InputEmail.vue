@@ -74,7 +74,7 @@ export default{
                 value: this.email
             },{
                 key: 'signUpValidationCode',
-                value: this.code
+                value: this.verificationCode
             }]);
         }
 	},

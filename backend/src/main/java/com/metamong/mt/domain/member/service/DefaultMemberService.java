@@ -79,7 +79,7 @@ public class DefaultMemberService implements MemberService {
         if(memberRepository.existsByEmail(dto.getEmail())) {
         	throw new EmailAleadyExistException();
         }
-        
+               
         if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {
             throw new IllegalSignUpRequestException("Not valid signup");
         }
