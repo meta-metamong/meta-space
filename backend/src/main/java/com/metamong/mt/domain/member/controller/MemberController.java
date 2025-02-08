@@ -366,6 +366,7 @@ public class MemberController {
                     .body(BaseResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "로그아웃 처리 중 오류가 발생했습니다."));
         }
     }
+
     
     /**
      * 비밀번호 찾기 버튼을 누른 후 이메일을 입력하여 재설정 링크를 전송받습니다.
@@ -377,4 +378,5 @@ public class MemberController {
     public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
     }
+
 }

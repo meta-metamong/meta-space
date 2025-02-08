@@ -10,6 +10,8 @@ import ChatList  from '../pages/ChatList.vue';
 import DetailReservation from '../components/reservation/DetailReservation.vue';
 import Reservation from '../pages/reservation/Reservation.vue';
 import ReservationList from '../pages/reservation/ReservationList.vue';
+import AdminChat from '../components/admin/OnlineMemberList.vue';
+import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
@@ -20,11 +22,11 @@ const routes = [
 	{ path: '/profile', component: Profile },
 	{ path: '/update', component: UpdateMember },
 	{ path: '/signup', component: SignUp},
+	{ path: '/chat', component: MemberChat },
+	{ path: '/admin/chat', component: AdminChat },
 	{ path: '/confirm-pw/:type', component: ConfirmPassword, props: true },
 	{ path: '/change-pw', component: ChangePassword },
 	{ path: '/find-pw', component: FindPassword },
-
-	//{ path: '/socket', component: Socket  },
 	{ path: '/download', component: Download  },
 
 	{ path: '/admin', component: Admin },

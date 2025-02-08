@@ -72,6 +72,9 @@ export default{
                 this.setUserInfo([{
                 key: 'email',
                 value: this.email
+            },{
+                key: 'signUpValidationCode',
+                value: this.code
             }]);
         }
 	},

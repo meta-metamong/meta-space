@@ -7,15 +7,13 @@
 
     <!-- 사용자 입력을 받는 부분 -->
     <div class="input-container">
-      <span class="user-id">({{ user.userId }})</span>
+      <span class="user-id">({{ userId }})</span> <!-- userId로 변경 -->
       <input v-model="messageText" @keyup.enter="sendMessage" placeholder="Enter message" />
     </div>
   </div>
 </template>
 
 <script>
-import { toRaw } from 'vue';
-
 export default {
   data() {
     return {
@@ -23,28 +21,32 @@ export default {
     };
   },
   computed: {
-    user() {
-      return toRaw(this.$store.state.user);
+    userId() {
+      // 이제 Vuex에서 userId를 직접 가져옴
+      return this.$store.state.userId;
     },
     socket() {
       return this.$store.state.onlineSocket;
     },
     messages() {
-      return this.$store.state.messages; // ✅ Vuex 상태 사용
+      return this.$store.state.messages; // Vuex의 messages 사용
     }
   },
   methods: {
     sendMessage() {
+      if (this.socket) {
+        console.log("WebSocket 상태:", this.socket.readyState); // 상태 확인
+      }
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
         const message = {
-          userId: this.user.userId,
+          userId: this.userId, // userId로 변경
           text: this.messageText
         };
 
-        // ✅ 메시지를 WebSocket을 통해 서버로 전송
+        // 메시지를 WebSocket을 통해 서버로 전송
         this.$store.dispatch("sendMessage", message);
 
-        // ✅ 자기 자신이 보낸 메시지를 즉시 Vuex에 추가
+        // 자기 자신이 보낸 메시지를 즉시 Vuex에 추가
         this.$store.commit("addMessage", message);
 
         this.messageText = ''; // 입력창 초기화
@@ -58,7 +60,7 @@ export default {
       if (newSocket) {
         newSocket.onmessage = (event) => {
           const message = JSON.parse(event.data);
-  
+
           let parsedText;
           try {
             parsedText = JSON.parse(message.text);
@@ -66,7 +68,7 @@ export default {
             parsedText = message.text;
           }
 
-          // ✅ Vuex의 messages에 추가 (this.messages.push 사용 X)
+          // Vuex의 messages에 추가 (this.messages.push 사용 X)
           this.$store.commit("addMessage", { userId: message.userId, text: parsedText.text || parsedText });
         };
       }
