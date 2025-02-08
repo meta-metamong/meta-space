@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h2>회원 목록</h2>
+      <h2>회원 조회</h2>
       <table>
         <thead>
           <tr>
