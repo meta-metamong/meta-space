@@ -14,11 +14,13 @@
                 </select>
             </p>
         </div>
-        <div class="time-buttons mb-4">
-            <button v-for="time in timeSlots" :key="time" :class="{ selected: selectedTimes.includes(time) }"
-                @click="selectTime(time)" :disabled="isUnavailable(time)">
-                {{ time }}
-            </button>
+        <div class="mb-4 d-flex justify-content-center align-item-center">
+            <div class="time-buttons">
+                <button v-for="time in timeSlots" :key="time" :class="{ selected: selectedTimes.includes(time) }"
+                    @click="selectTime(time)" :disabled="isUnavailable(time)">
+                    {{ time }}
+                </button>
+            </div>
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.fctName') }}</p>
@@ -35,9 +37,9 @@
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.usageCount') }}</p>
             <div class="d-flex align-items-center w-75 mx-auto px-3 fs-5">
-                <button class="btn btn-outline-secondary" @click="decreaseCount" :disabled="count <= min">−</button>
-                <input type="text" class="form-control text-center mx-2" v-model="count" readonly style="width: 50px;" />
-                <button class="btn btn-outline-primary" @click="increaseCount" :disabled="count >= max">+</button>
+                <button class="btn btn-outline-secondary" @click="decreaseCount" :disabled="usageCount <= min">−</button>
+                <input type="text" class="form-control text-center mx-2" v-model="usageCount" readonly style="width: 50px;" />
+                <button class="btn btn-outline-primary" @click="increaseCount" :disabled="usageCount >= max">+</button>
             </div>
         </div>
         <div class="mb-4">
@@ -52,11 +54,10 @@
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.totalPrice') }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ }}</p>
+            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}</p>
         </div>
         <div class="w-100 text-center mb-2">
-            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/update')">{{
-                $t('reservation.reserve') }}</button>
+            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('reservation.reserve') }}</button>
         </div>
     </div>
 </template>
@@ -76,9 +77,14 @@ export default {
             firstTime: null,
             secondTime: null,
             fctInfo: [],
+            zoneInfo: [],
+            additionalInfo: [],
             date: ref(new Date()),
             reservationTime: "",
-            count: 1,
+            usageCount: 1,
+            isSharedZone: 0,
+            hourlyRate: 5000,
+
         };
     },
     computed: {
@@ -95,6 +101,9 @@ export default {
         formattedDate() {
             return this.date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 변환
         },
+        payPrice() {
+            return this.selectedTimes.length * this.usageCount * this.hourlyRate + '원';
+        }
     },
     props: {
         min: { type: Number, default: 1 },
@@ -120,13 +129,16 @@ export default {
                 this.selectedTimes = [time];
             } else if (!this.secondTime) {
                 this.secondTime = time;
+                const [start, end] = [this.firstTime, this.secondTime].sort();
+                this.firstTime = start;
+                this.secondTime = end;
+
                 const startIndex = this.timeSlots.indexOf(this.firstTime);
                 const endIndex = this.timeSlots.indexOf(this.secondTime);
-                const [minIndex, maxIndex] = [startIndex, endIndex].sort((a, b) => a - b);
 
                 // 선택된 범위 내에서 이용 불가능한 시간 제외하고 남은 시간들 선택
                 this.selectedTimes = this.timeSlots
-                    .slice(minIndex, maxIndex + 1)
+                    .slice(startIndex, endIndex + 1)
                     .filter((time) => !this.isUnavailable(time));
 
                 this.calculateSecondTime();
@@ -136,7 +148,6 @@ export default {
                 this.secondTime = null;
                 this.selectedTimes = [time];
             }
-            console.log(this.selectedTimes)
         },
         calculateSecondTime() {
             const [hours, minutes] = this.secondTime.split(":").map(Number);
@@ -147,10 +158,10 @@ export default {
             this.secondTime = secondTimeDate.toTimeString().slice(0, 5);
         },
         increaseCount() {
-            if (this.count < this.max) this.count++;
+            if (this.usageCount < this.max) this.usageCount++;
         },
         decreaseCount() {
-            if (this.count > this.min) this.count--;
+            if (this.usageCount > this.min) this.usageCount--;
         },
     },
     mounted() {
@@ -181,7 +192,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    justify-content: center;
+    justify-content: flex-start;
+    max-width: 100%;
+    margin-left: 10px;
+    box-sizing: border-box;
 }
 
 .time-buttons button {
