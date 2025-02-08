@@ -76,6 +76,7 @@ export default{
 				memPostalCode: "",
 				memAddress: "",
 				memDetailAddress: "",
+				signUpValidationCode: ""
 			};
 			if(this.role === 'provider'){
 				user = { ...user, 

@@ -58,6 +58,8 @@ public class SecurityConfig {
         // Spring Security JWT 필터 로드
         http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class);
+        
+        http.cors(corsConfig -> corsConfig.configurationSource(cors("http://localhost:3000")));
 	    
 	    return http.build();
 	}
