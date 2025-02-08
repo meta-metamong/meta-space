@@ -19,7 +19,7 @@
     m.created_at as createdAt
 FROM 
     member m
-JOIN 
+LEFT JOIN 
     reservation r ON m.mem_id = r.cons_id
 GROUP BY  
     m.email, 

@@ -5,10 +5,10 @@
         <thead>
           <tr>
             <th>이메일</th>
-            <th>역할</th>
-            <th>계정 상태</th>
-            <th>예약 수</th>
-            <th>가입 일자</th>
+            <th>회원구분</th>
+            <th>계정상태</th>
+            <th>예약수</th>
+            <th>가입일</th>
           </tr>
         </thead>
         <tbody>
@@ -41,7 +41,7 @@
         try {
           const response = await get('/admin/searchMembers');  
           console.log(response);
-          this.members = response.data.data;  
+          this.members = response.data.content;  
         } catch (error) {
           console.error('Error fetching members:', error);
         }
