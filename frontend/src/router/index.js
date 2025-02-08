@@ -14,6 +14,7 @@ import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
+import AdminMemberSearch from '../pages/admin/MemberSearch.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -30,7 +31,8 @@ const routes = [
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
-
+	{ path: '/admin/memSearch', component: AdminMemberSearch },
+	
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 ];

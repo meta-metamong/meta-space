@@ -5,6 +5,9 @@
          <router-link to="/admin/chat" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
            <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
          </router-link>
+         <router-link to="/admin/memSearch" class="nav-link text-center"  v-if="isLogin">
+            <i class="bi bi-person text-primary"></i><br>{{ $t('footer.profile') }}
+          </router-link>
        </div>
      </nav>
 </template>

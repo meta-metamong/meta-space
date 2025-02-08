@@ -24,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/admin")
 public class AdminController {
 	
+	private final AdminService adminService;
+	
 //  public void addSession(WebSocketSession session) {
 //  sessions.add(session);
 //}
@@ -59,7 +61,6 @@ public class AdminController {
 //        return sessions;
 //    }
 	
-	private final AdminService adminService;
 	
 	@GetMapping("/searchMembers")
 	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchMembers() {
