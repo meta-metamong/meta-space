@@ -7,8 +7,9 @@ import UpdateMember from '../pages/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
-import Reservation from '../pages/Reservation.vue';
 import DetailReservation from '../components/reservation/DetailReservation.vue';
+import Reservation from '../pages/reservation/Reservation.vue';
+import ReservationList from '../pages/reservation/ReservationList.vue';
 import AdminChat from '../components/admin/OnlineMemberList.vue';
 import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
@@ -32,6 +33,7 @@ const routes = [
 	{ path: '/admin/chatlist', component: ChatList },
 
 	{ path: '/reservation', component: Reservation },
+	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 ];
 
