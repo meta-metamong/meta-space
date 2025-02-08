@@ -57,7 +57,7 @@
             <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}</p>
         </div>
         <div class="w-100 text-center mb-2">
-            <button class="signup-btn w-75 h-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('reservation.reserve') }}</button>
+            <button class="rvt-btn w-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('reservation.reserve') }}</button>
         </div>
     </div>
 </template>
@@ -232,4 +232,9 @@ select option {
     color: black;
     font-size: 16px;
 }
+
+.rvt-btn {
+    height: 45px;
+}
+
 </style>
