@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MemberSearchResponseDto {
+	
     private String email;             
     private String role;              
     private String accountStatus;    

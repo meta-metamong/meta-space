@@ -46,7 +46,7 @@ public class DefaultAdminService implements AdminService{
             // 신고 횟수 조회
             List<Map<String, Object>> reportCounts = sqlSession.selectList("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.getReportCounts",reportedIds);
 
-         // 배치 작업 시작
+
             List<Map<String, Object>> updateDataList = new ArrayList<>();
             List<Integer> deleteDataList = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class DefaultAdminService implements AdminService{
             	int reportedId = ((BigDecimal) reportData.get("REPORTEDID")).intValue();
             	int reportCount = ((BigDecimal) reportData.get("REPORTCOUNT")).intValue();
 
-                // 신고 횟수에 따라 배치 처리
+        
                 updateDataList.add(Map.of("reportedId", reportedId, "reportCount", reportCount));
 
                 // 신고 횟수가 3 이상이면 영구 정지 후 신고 데이터 삭제
@@ -63,7 +63,7 @@ public class DefaultAdminService implements AdminService{
                 }
             }
 
-            // 배치 처리
+
             if (!updateDataList.isEmpty()) {
                 sqlSession.update("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.updateMemberBan", updateDataList);
             }

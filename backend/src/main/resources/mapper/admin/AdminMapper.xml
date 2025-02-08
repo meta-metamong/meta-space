@@ -64,10 +64,10 @@ GROUP BY
 
 
     <!-- 신고 횟수 조회 -->
-<resultMap id="reportCountMap" type="java.util.HashMap">
-    <result property="reported_id" column="reported_id"/>
-    <result property="report_count" column="report_count" jdbcType="DECIMAL" javaType="java.lang.Integer"/>
-</resultMap>
+	<resultMap id="reportCountMap" type="java.util.HashMap">
+	    <result property="reported_id" column="reported_id"/>
+	    <result property="report_count" column="report_count" jdbcType="DECIMAL" javaType="java.lang.Integer"/>
+	</resultMap>
 
 <select id="getReportCounts" resultMap="reportCountMap">
     SELECT reported_id as reportedId , COUNT(*) AS reportCount

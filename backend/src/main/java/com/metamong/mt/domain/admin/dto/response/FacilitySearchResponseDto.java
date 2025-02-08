@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class FacilitySearchResponseDto {
+	
 	String fct_name;
 	String zone_name;
 	int rvt_cnt;

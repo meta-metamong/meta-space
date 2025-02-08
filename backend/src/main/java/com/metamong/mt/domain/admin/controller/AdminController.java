@@ -106,8 +106,7 @@ public class AdminController {
             return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
         }
     }
-    
-    // 자정마다 반려된 시설 삭제
+   
     
     @PostMapping("/deletion/approval")
     public ResponseEntity<String> approveFacilityDeleteRequest(@RequestParam Long fctId) {
