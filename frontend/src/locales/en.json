@@ -100,7 +100,9 @@
         "signupOwner": "Signup as a Owner",
         "membershipDate": "Membership Date",
         "changePw": "Change Password",
-        "confirmPw": "Confirm Password"
+        "confirmPw": "Confirm Password",
+        "memberSearch":"Search Member",
+        "facilityApproval":"Approve Facility"
     },
     "admin" : {
         "socket":"socket",

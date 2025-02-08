@@ -6,7 +6,10 @@
            <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
          </router-link>
          <router-link to="/admin/memSearch" class="nav-link text-center"  v-if="isLogin">
-            <i class="bi bi-person text-primary"></i><br>{{ $t('footer.profile') }}
+            <i class="bi bi-person text-primary"></i><br>{{ $t('admin.memberSearch') }}
+          </router-link>
+          <router-link to="/admin/memSearch" class="nav-link text-center"  v-if="isLogin">
+            <i class="bi bi-bookmark-check text-primary"></i><br>{{ $t('admin.facilityApproval') }}
           </router-link>
        </div>
      </nav>
