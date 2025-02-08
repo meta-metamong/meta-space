@@ -105,8 +105,8 @@
         "socket":"소켓",
         "salesList":"매출현황조회",
         "chatlist":"채팅하기",
-        "memberSearch":"회원조회",
-        "facilityApproval":"시설승인"
+        "memberSearch":"회원 조회",
+        "facilityApproval":"시설 승인"
     },
     "reservation": {
         "list": "예약 목록",

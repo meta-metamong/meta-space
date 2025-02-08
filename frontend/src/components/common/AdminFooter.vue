@@ -31,7 +31,7 @@
 
 <style scoped>
 .disabled-link {
- pointer-events: none; /* 클릭 방지 */
+ pointer-events: none; 
  opacity: 0.5; /* 흐리게 표시 */
  cursor: not-allowed; /* 마우스 커서 변경 */
 }

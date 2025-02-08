@@ -101,8 +101,8 @@
         "membershipDate": "Membership Date",
         "changePw": "Change Password",
         "confirmPw": "Confirm Password",
-        "memberSearch":"Search Member",
-        "facilityApproval":"Approve Facility"
+        "memberSearch":"SearchMember",
+        "facilityApproval":"ApproveFacility"
     },
     "admin" : {
         "socket":"socket",
