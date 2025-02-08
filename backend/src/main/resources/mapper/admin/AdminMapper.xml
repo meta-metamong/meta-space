@@ -26,6 +26,7 @@ GROUP BY
     m.role, 
     m.mem_banned_until,  
     m.created_at
+ORDER BY m.created_at
     ]]>
 	</select>
 
@@ -74,6 +75,22 @@ GROUP BY
     FROM report
     GROUP BY reported_id
 </select>
+
+<select id="getRequestFacilities" resultType="com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto">
+        SELECT 
+            fct_name,
+            zone_name,
+            CASE 
+                WHEN fct_state = 'REG_REQUESTED' THEN '등록요청'
+                WHEN fct_state = 'DEL_REQUESTED' THEN '삭제요청'
+            END AS fct_state
+        FROM 
+            zone z
+        JOIN 
+            facility f ON z.fct_id = f.fct_id
+        WHERE 
+            fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
+    </select>
 
  <!-- 등록 요청 승인 쿼리 -->
     <update id="updateFacilityStateRegApproved" parameterType="map">

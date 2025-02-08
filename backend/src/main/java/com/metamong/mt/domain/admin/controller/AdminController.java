@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -83,6 +84,11 @@ public class AdminController {
         }
     }
 
+	@GetMapping("/getRequestFacilities")
+	public ResponseEntity<BaseResponse<List<ApprovalRequestDto>>> getRequestFacilities() {
+	    return ResponseEntity.ok(BaseResponse.of(adminService.getRequestFacilities(), HttpStatus.OK));
+	}
+	
     @PostMapping("/registration/approval")
     public ResponseEntity<String> approveFacilityRegisterRequest(@RequestParam Long fctId) {
         try {

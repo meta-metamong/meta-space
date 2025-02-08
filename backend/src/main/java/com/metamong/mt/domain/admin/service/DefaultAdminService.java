@@ -12,6 +12,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -142,6 +143,11 @@ public class DefaultAdminService implements AdminService{
 	@Override
 	public List<FacilitySearchResponseDto> searchFacilities() {
 		return adminMapper.searchFacilities();
+	}
+
+	@Override
+	public List<ApprovalRequestDto> getRequestFacilities() {
+		return adminMapper.getRequestFacilities();
 	}
 
 
