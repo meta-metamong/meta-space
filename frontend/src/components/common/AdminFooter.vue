@@ -2,7 +2,7 @@
     <!-- 하단 네비게이션 바 -->
     <nav class="navbar fixed-bottom navbar-light bg-white border-top shadow-sm">
        <div class="container-fluid d-flex justify-content-around">
-         <router-link to="/" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
+         <router-link to="/admin/chat" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
            <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
          </router-link>
        </div>
