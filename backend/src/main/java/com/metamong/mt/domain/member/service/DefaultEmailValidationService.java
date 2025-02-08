@@ -71,11 +71,12 @@ public class DefaultEmailValidationService implements EmailValidationService {
 
     @Override
     public boolean isValidSignUpValidationCode(String email, String signUpValidationCode) {
-        String codeFromRepository = this.memberVolatileCodeRepository.findSignUpValidationCodeByEmail(email);
+        String codeFromRepository = this.memberVolatileCodeRepository.findEmailValidationCodeByEmail(email);
+
         if (codeFromRepository == null || !codeFromRepository.equals(signUpValidationCode)) {
             return false;
         }
-        this.memberVolatileCodeRepository.deleteSignUpValidationCodeByEmail(email);
+        this.memberVolatileCodeRepository.deleteByEmail(email);
         return true;
     }
 }
