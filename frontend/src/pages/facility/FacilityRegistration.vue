@@ -1,12 +1,16 @@
 <template>
-    <facility-registration-input v-if="currentComponent === 'facilityRegistrationInput'"
-                                 @component-change="changeComponent" />
+    <facility-registration-input
+        v-if="currentComponent === 'facilityRegistrationInput'"
+        @component-change="changeComponent"
+        :facility-registration="inputs.facilityRegistration" />
     <zone-registration-input
         v-if="currentComponent === 'zoneRegistrationInput'"
-        @component-change="changeComponent" />
+        @component-change="changeComponent"
+        :zone-registration="inputs.zoneRegistration" />
     <additional-information
         v-if="currentComponent === 'addinfoRegistrationInput'"
-        @component-change="changeComponent" />
+        @component-change="changeComponent"
+        :addinfo-registration="inputs.addinfoRegistration" />
 </template>
 
 <script>
@@ -17,7 +21,39 @@ import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInp
 export default {
     data() {
         return {
-            currentComponent: "facilityRegistrationInput"
+            currentComponent: "facilityRegistrationInput",
+            inputs: {
+                "facilityRegistration": {
+                    majorCatId: "0",
+                    minorCatId: "0",
+                    addr: {
+                        postalCode: "",
+                        address: "",
+                        detailAddress: ""
+                    },
+                    tel: {
+                        first: "02",
+                        second: "",
+                        third: ""
+                    },
+                    operationTime: {
+                        openTime: "",
+                        closeTime: ""
+                    },
+                    isOpenOnHolidays: true,
+                    unitUsageTime: "",
+                    images: [],
+                    guide: ""
+                },
+                "zoneRegistration": {
+                    zoneName: "",
+                    maxUserCount: "",
+                    hourlyRate: "",
+                    isSharedZone: false,
+                    images: []
+                },
+                "addinfoRegistration": []
+            }
         };
     },
     components: {

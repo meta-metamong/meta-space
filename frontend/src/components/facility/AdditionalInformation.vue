@@ -9,7 +9,7 @@
             {{ $t("facility.addinfoDesc3") }}<br>
             {{ $t("facility.addinfoDesc4") }}
         </p>
-        <div class="input-box">
+        <div class="input-box" v-for="item in data">
             <input type="text">
         </div>
         <button type="button">{{ $t("facility.add") }}</button>
@@ -22,6 +22,17 @@
 
 <script>
 export default {
+    props: {
+        addinfoRegistration: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            data: {...this.addinfoRegistration}
+        }
+    },
     methods: {
         registerFacility() {
 

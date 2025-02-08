@@ -11,14 +11,16 @@
             <div>
                 <select @change="onChangeMajorCategory">
                     <option>{{ $t("facility.majorCategory") }}</option>
-                    <option :value="category.catId" v-for="category in categories">
+                    <option :value="category.catId" v-for="category in categories"
+                            :selected="data.majorCatId === category.catId">
                         {{ category.catName }}
                     </option>
                 </select>
                 <select>
                     <option>{{ $t("facility.minorCategory") }}</option>
                     <option v-for="minorCategory in selectedMinorCategories"
-                            :value="minorCategory.catId">
+                            :value="minorCategory.catId"
+                            :selected="data.minorCatId === minorCategory.catId">
                         {{ minorCategory.catName }}
                     </option>
                 </select>
@@ -28,27 +30,27 @@
             <h2 class="box-title">{{ $t("facility.facilityAddress") }}</h2>
             <div>
                 <div>
-                    <input type="text" :placeholder="$t('facility.postalCode')" readonly>
+                    <input type="text" :placeholder="$t('facility.postalCode')" :value="data.addr.postalCode" readonly>
                     <button>{{ $t("facility.search") }}</button>
                 </div>
-                <input type="text" :placeholder="$t('facility.address')" readonly>
-                <input type="text" :placeholder="$t('facility.detailAddress')" readonly>
+                <input type="text" :placeholder="$t('facility.address')" :value="data.addr.address" readonly>
+                <input type="text" :placeholder="$t('facility.detailAddress')" :value="data.addr.detailAddress">
             </div>
         </div>
         <div class="input-box">
             <h2 class="box-title">{{ $t("facility.facilityTel") }}</h2>
             <div class="tel">
                 <select>
-                    <option value="010">02</option>
-                    <option value="010">010</option>
-                    <option value="010">011</option>
-                    <option value="010">016</option>
-                    <option value="010">017</option>
+                    <option value="02" :selected="data.tel.first === '02'">02</option>
+                    <option value="010" :selected="data.tel.first === '010'">010</option>
+                    <option value="011" :selected="data.tel.first === '011'">011</option>
+                    <option value="016" :selected="data.tel.first === '016'">016</option>
+                    <option value="017" :selected="data.tel.first === '017'">017</option>
                 </select>
                 <p>-</p>
-                <input type="number">
+                <input type="number" :value="data.tel.second">
                 <p>-</p>
-                <input type="number">
+                <input type="number" :value="data.tel.third">
             </div>
         </div>
         <div class="input-box">
@@ -56,14 +58,16 @@
             <div>
                 <select>
                     <option v-for="operationTimeSelection in operationTimeSelections"
-                            :value="operationTimeSelection">
+                            :value="operationTimeSelection"
+                            :selected="data.operationTime.openTime">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
                 <p>~</p>
                 <select>
                     <option v-for="operationTimeSelection in operationTimeSelections"
-                            :value="operationTimeSelection">
+                            :value="operationTimeSelection"
+                            :selected="data.operationTime.closeTime">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
@@ -74,12 +78,23 @@
                 <p>{{ $t("facility.isOpenOnHolidays") }}</p>
             </div>
             <div>
-                <input type="radio">
-                <input type="radio">
+                <div>
+                    <input type="radio"
+                           name="isOpenOnHolidays"
+                           :checked="data.isOpenOnHolidays">
+                    <label>{{ $t("facility.yes") }}</label>
+                </div>
+                <div>
+                    <input type="radio"
+                           name="isOpenOnHolidays"
+                           :checked="!data.isOpenOnHolidays">
+                    <label>{{ $t("facility.no") }}</label>
+                </div>
             </div>
         </div>
         <div class="input-box">
-            <input type="number" :placeholder="$t('facility.unitUsageTime')">
+            <input type="number" :placeholder="$t('facility.unitUsageTime')"
+                   :value="data.unitUsageTime">
         </div>
         <div class="input-box">
             <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
@@ -87,11 +102,13 @@
                 <button>{{ $t("facility.addImage") }}</button>
                 <p>{{ $t("facility.imageLimitDescription") }}</p>
             </div>
-            <div></div>
+            <div>
+                <img v-for="image in data.images">
+            </div>
         </div>
         <div calss="input-box">
             <h2>{{ $t("facility.facilityGuide") }}</h2>
-            <textarea></textarea>
+            <textarea :value="data.guide"></textarea>
         </div>
         <button type="button" @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t("facility.next") }}</button>
     </div>
@@ -101,6 +118,12 @@
 import { get } from "../../apis/axios";
 
 export default {
+    props: {
+        facilityRegistration: {
+            type: Object,
+            required: true
+        }
+    },
     data() {
         const operationTimeSelections = [];
         let minutes = 0;
@@ -117,7 +140,8 @@ export default {
         return {
             categories: [],
             selectedMinorCategories: [],
-            operationTimeSelections
+            operationTimeSelections,
+            data: {...this.facilityRegistration}
         }
     },
     mounted() {
