@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 
@@ -25,4 +26,6 @@ public interface AdminMapper {
     void updateFacilityStateDelApproved(Map<String, Object> params);
     
     void updateFacilityStateDelRejected(Map<String, Object> params);
+    
+    List<FacilitySearchResponseDto> searchFacilities();
 }

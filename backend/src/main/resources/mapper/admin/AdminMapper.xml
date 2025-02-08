@@ -107,10 +107,23 @@ GROUP BY
         AND prov_id = #{provId}
     </update>
     
-        <!-- 알림 테이블에 데이터 추가 쿼리 -->
+    <!-- 알림 테이블에 데이터 추가 쿼리 -->
     <insert id="insertNotification" parameterType="map">
         INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
         VALUES (2,#{receiverId}, #{notiMsg}, 'N')
     </insert>
+    
+    <select id="searchFacilities" resultType="com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto">
+     SELECT 
+    fct_name, 
+    zone_name,
+    (select COUNT(rvt_id)from reservation where rvt_cancelation_reason IS NULL) as rvt_cnt,
+    (select COUNT(rvt_id)from reservation where rvt_cancelation_reason IS not NULL) as rvt_cancel_cnt,
+    cons_id
+    FROM 
+    reservation r join zone z on r.zone_id = z.zone_id
+    join facility f on z.fct_id = f.fct_id
+     group by fct_name, zone_name,cons_id
+    </select>
 
 </mapper>

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.service.AdminService;
@@ -129,7 +130,7 @@ public class AdminController {
     }
     
 	@GetMapping("/searchFacilities")
-	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchFacilities() {
-	    return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
+	public ResponseEntity<BaseResponse<List<FacilitySearchResponseDto>>> searchFacilities() {
+	    return ResponseEntity.ok(BaseResponse.of(adminService.searchFacilities(), HttpStatus.OK));
 	}
 }

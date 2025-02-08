@@ -2,7 +2,7 @@ package com.metamong.mt.domain.admin.service;
 
 import java.util.List;
 
-import com.metamong.mt.domain.admin.dto.request.MemberSearchRequestDto;
+import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 
@@ -14,4 +14,5 @@ public interface AdminService {
 	void rejectFacilityRegisterRequest(Long provId);
 	void approveFacilityDeleteRequest(Long provId);
 	void rejectFacilityDeleteRequest(Long provId);
+	List<FacilitySearchResponseDto> searchFacilities();
 }
