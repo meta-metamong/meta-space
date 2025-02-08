@@ -165,6 +165,13 @@
         "maxUserCount": "Max users",
         "hourlyRate": "Hourly Rate",
         "isSharedZone": "Is shared zone?",
-        "sharedZoneDescription": "If you set Zone as shared zone, the zone can be shared by any people, and the cost is set per man."
+        "sharedZoneDescription": "If you set Zone as shared zone, the zone can be shared by any people, and the cost is set per man.",
+        "addinfoRegistration": "Additional Information",
+        "add": "Add",
+        "addinfoDesc1": "Please enter additional information/services.",
+        "addinfoDesc2": "ex)",
+        "addinfoDesc3": "* Showeroom 10h ~ 12h",
+        "addinfoDesc4": "* Racket Rent: 1000won",
+        "register": "Register"
     }
 }

@@ -29,8 +29,8 @@
         </div>
         <!-- TODO: Zone 추가 -->
         <div>
-            <button type="button">{{ $t("facility.previous") }}</button>
-            <button type="button">{{ $t("facility.next") }}</button>
+            <button type="button" @click="$emit('component-change', 'facilityRegistrationInput')">{{ $t("facility.previous") }}</button>
+            <button type="button" @click="$emit('component-change', 'addinfoRegistrationInput')">{{ $t("facility.next") }}</button>
         </div>
     </div>
 </template>

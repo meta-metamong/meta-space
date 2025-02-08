@@ -123,7 +123,6 @@ export default {
     mounted() {
         get("/categories").then((response) => {
             this.categories = response.data.content;
-            console.log(this.categories);
         });
     },
     methods: {

@@ -164,6 +164,13 @@
         "maxUserCount": "최대 이용 인원 수",
         "hourlyRate": "시간당 가격",
         "isSharedZone": "공유 Zone 여부",
-        "sharedZoneDescription": "공유 Zone으로 설정할 경우 여러 사람들이 해당 Zone을 공유해서 이용할 수 있으며, 예약 시 인당 요금으로 계산됩니다."
+        "sharedZoneDescription": "공유 Zone으로 설정할 경우 여러 사람들이 해당 Zone을 공유해서 이용할 수 있으며, 예약 시 인당 요금으로 계산됩니다.",
+        "addinfoRegistration": "추가 정보 등록",
+        "add": "추가",
+        "addinfoDesc1": "시설에서 제공하는 추가 정보/서비스를 입력해 주세요.",
+        "addinfoDesc2": "ex)",
+        "addinfoDesc3": "* 샤워장 이용 가능 시간 10h ~ 12h",
+        "addinfoDesc4": "* 라켓 대여비: 1000won",
+        "register": "등록"
     }
 }

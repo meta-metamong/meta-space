@@ -1,13 +1,16 @@
 <template>
-    <!-- <facility-registration-input v-if="currentComponent === 'facilityRegistrationInput'"
+    <facility-registration-input v-if="currentComponent === 'facilityRegistrationInput'"
                                  @component-change="changeComponent" />
     <zone-registration-input
         v-if="currentComponent === 'zoneRegistrationInput'"
-        @component-change="changeComponent" /> -->
-    <zone-registration-input />
+        @component-change="changeComponent" />
+    <additional-information
+        v-if="currentComponent === 'addinfoRegistrationInput'"
+        @component-change="changeComponent" />
 </template>
 
 <script>
+import AdditionalInformation from "../../components/facility/AdditionalInformation.vue";
 import FacilityRegistrationInput from "../../components/facility/FacilityRegistrationInput.vue";
 import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInput.vue";
 
@@ -19,7 +22,8 @@ export default {
     },
     components: {
         FacilityRegistrationInput,
-        ZoneRegistrationInput
+        ZoneRegistrationInput,
+        AdditionalInformation
     },
     methods: {
         changeComponent(componentName) {
