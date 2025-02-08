@@ -107,7 +107,12 @@
     "admin" : {
         "socket":"socket",
         "salesList":"salesList",
-        "chatlist":"chatlist"
+        "chatlist":"chatlist",
+        "memberSearch":"memberSearch",
+        "facilityApproval":"facilityApproval",
+        "memberBen":"memberBen",
+        "dashboard":"dashboard",
+        "salesSearch":"salesSearch"        
     },
     "reservation": {
         "list": "Reservation List",

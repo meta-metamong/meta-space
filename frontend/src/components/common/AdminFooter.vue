@@ -8,8 +8,17 @@
          <router-link to="/admin/memSearch" class="nav-link text-center"  v-if="isLogin">
             <i class="bi bi-person text-primary"></i><br>{{ $t('admin.memberSearch') }}
           </router-link>
-          <router-link to="/admin/memSearch" class="nav-link text-center"  v-if="isLogin">
+          <router-link to="/admin/dashboard" class="nav-link text-center"  v-if="isLogin">
+            <i class="bi bi-house text-primary"></i><br>{{ $t('admin.dashboard') }}
+          </router-link>
+          <router-link to="/admin/facilityApproval" class="nav-link text-center"  v-if="isLogin">
             <i class="bi bi-bookmark-check text-primary"></i><br>{{ $t('admin.facilityApproval') }}
+          </router-link>
+          <router-link to="/admin/memberBen" class="nav-link text-center"  v-if="isLogin">
+            <i class="bi bi-slash-circle text-primary"></i><br>{{ $t('admin.memberBen') }}
+          </router-link>
+          <router-link to="/admin/salesSearch" class="nav-link text-center"  v-if="isLogin">
+            <i class="bi bi-coin text-primary"></i><br>{{ $t('admin.salesSearch') }}
           </router-link>
        </div>
      </nav>
