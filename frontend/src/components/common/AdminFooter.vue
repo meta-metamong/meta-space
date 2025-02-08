@@ -14,7 +14,7 @@
           <router-link to="/admin/facilityApproval" class="nav-link text-center"  v-if="isLogin">
             <i class="bi bi-bookmark-check text-primary"></i><br>{{ $t('admin.facilityApproval') }}
           </router-link>
-          <router-link to="/admin/memberBen" class="nav-link text-center"  v-if="isLogin">
+          <router-link to="/admin/memBen" class="nav-link text-center"  v-if="isLogin">
             <i class="bi bi-slash-circle text-primary"></i><br>{{ $t('admin.memberBen') }}
           </router-link>
           <router-link to="/admin/salesSearch" class="nav-link text-center"  v-if="isLogin">
