@@ -9,10 +9,12 @@
             {{ $t("facility.addinfoDesc3") }}<br>
             {{ $t("facility.addinfoDesc4") }}
         </p>
-        <div class="input-box" v-for="item in data">
-            <input type="text">
+        <div class="input-box" v-for="(item, idx) in data">
+            <input type="text"
+                   :value="item"
+                   @change="(e) => data[idx] = e.target.value">
         </div>
-        <button type="button">{{ $t("facility.add") }}</button>
+        <button type="button" @click="() => data.push('')">{{ $t("facility.add") }}</button>
     </div>
     <div>
         <button type="button" @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t("facility.previous") }}</button>
@@ -30,7 +32,7 @@ export default {
     },
     data() {
         return {
-            data: {...this.addinfoRegistration}
+            data: this.addinfoRegistration
         }
     },
     methods: {
