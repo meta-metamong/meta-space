@@ -38,9 +38,8 @@ public enum PayState {
 
         if (this == PAID) {
             return rvtDate.isBefore(today) ? ReservationState.COMPLETED : ReservationState.RESERVED;
-        } else if (this == REFUNDED) {
+        } else {
             return ReservationState.CANCELED;
         }
-        return ReservationState.RESERVED;
     }
 }

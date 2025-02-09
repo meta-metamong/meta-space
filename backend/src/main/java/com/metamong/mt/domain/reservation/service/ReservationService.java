@@ -19,7 +19,7 @@ public interface ReservationService {
     
     List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto);
     
-    Reservation saveReservation(ReservationNPaymentRequestDto dto);
+    void saveReservation(ReservationNPaymentRequestDto dto);
     
     void cancelReservation(Long rvtId, CancelRequestDto dto);
 }

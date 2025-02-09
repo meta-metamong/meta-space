@@ -6,7 +6,8 @@
         "update": "수정",
         "delete": "삭제",
         "cancel": "취소",
-        "check": "확인"
+        "check": "확인",
+        "report": "신고"
     },
     "validation": {
         "confirmed": "{field} 항목의 값이 일치하지 않습니다.",
@@ -117,6 +118,7 @@
         "usageCount": "인원 수",
         "additionalInfo": "추가 서비스",
         "totalPrice": "총 금액",
+        "selectReason": "취소 사유를 선택해주세요",
         "paymentStatus": "결제 상태",
         "paymentMethod": "결제 방법",
         "paymentSuccess": "결제가 성공적으로 완료되었습니다!",
