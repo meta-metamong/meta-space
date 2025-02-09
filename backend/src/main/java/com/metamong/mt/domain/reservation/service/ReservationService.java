@@ -3,7 +3,7 @@ package com.metamong.mt.domain.reservation.service;
 import java.util.List;
 
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
-import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
@@ -19,7 +19,9 @@ public interface ReservationService {
     
     List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto);
     
-    void saveReservation(ReservationRequestDto dto);
+    void saveReservation(ReservationNPaymentRequestDto dto);
     
     void cancelReservation(Long rvtId, CancelRequestDto dto);
+    
+    Reservation findReservationEntityByRvtId(Long rvtId);
 }

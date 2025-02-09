@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
-import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.RecommendationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
@@ -53,9 +55,9 @@ public class ReservationController {
     }
     
     @PostMapping("/reservations")
-    public ResponseEntity<?> saveResevation(@Validated @RequestBody ReservationRequestDto dto) {
-    	this.reservationService.saveReservation(dto);
-        return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "예약하기 성공"));
+    public ResponseEntity<?> saveResevation(@Validated @RequestBody ReservationNPaymentRequestDto dto) {
+        this.reservationService.saveReservation(dto);
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(BaseResponse.of(HttpStatus.CREATED, "예약하기 성공"));
     }
 
     @PutMapping("/reservations/{reservationId}")

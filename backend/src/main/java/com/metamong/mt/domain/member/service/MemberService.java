@@ -7,6 +7,7 @@ import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
+import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 
@@ -52,5 +53,8 @@ public interface MemberService {
     
     // DB에서 시설제공자 데이터 조회
     FctProvider getProvider(Long memId);
+    
+    // DB에서 시설제공자의 계좌 데이터 조회
+    Account getAccount(Long memId);
     
 }
