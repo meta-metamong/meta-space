@@ -1,5 +1,6 @@
 package com.metamong.mt.global.config.constant;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +35,6 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/find-member",
                     "/api/members/dup-email",
                     "/api/recommends/*",
-                    "/api/reservations",
-                    "/api/reservations/*",
                     "/api/members/send-validation-emails",
                     "/api/members/check-email-validation",
                     "/api/members/find-password"
@@ -44,15 +43,12 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/reissue",
                     "/api/members/*",
                     "/api/members/dup-id/*",
-                    "/api/members/*/reservations",
-                    "/api/reservations/*",
                     "/api/test",
                     "/api/facilities/*"
             },
             HttpMethod.PUT, new String[] {
                     "/api/members",
                     "/api/members/password",
-                    "/api/reservations/*"
             }
     );
     
@@ -60,11 +56,21 @@ public class HttpRequestAuthorizationDefinition {
             "/ws/**"
     };
     
-    private static final Map<Role, Map<HttpMethod, String[]>> AUTHORIZATION_LIST = Map.of(
+    // TODO: 역할 별 메소드와 endpoint 설정 중인데, endpoint 별로 역할과 메소드를 지정하게 바꿔야 함.
+    // WHY: a 엔드포인트에 GET 방식, 시설 이용자로 설정하고, 밑에서 같은 a 엔드포인트에 GET 방식, 시설 제공자로 설정하면
+    //      위에서 a 엔드포인트에 GET 방식, 시설 이용자로 설정한 내용이 사라짐.
+    //      밑에서 해당 엔드포인트에 대한 설정을 GET 방식, 시설 제공자로 바꿨기 때문임.
+    private static final Map<HttpMethod, Map<String, Role[]>> AUTHORIZATION_LIST = Map.of(
+            HttpMethod.GET, Map.of("/api/members/*/reservations", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                   "/api/members/reservations/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                   "/api/payments", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                   "/api/payments/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV }),
+            HttpMethod.POST, Map.of("/api/reservations", new Role[] { Role.ROLE_CONS }),
+            HttpMethod.PUT, Map.of("/api/reservations/*", new Role[] { Role.ROLE_CONS })
     );
     
     private static final Map<Role, String[]> AUTHORIZATION_LIST_FOR_ALL_METHOD = Map.of(
-            Role.ROLE_ADMN, new String[] { "/file/**" } // TODO: what?
+            Role.ROLE_ADMN, new String[] { "/file/**" }
     );
     
     public static final void defineRequestMatcher(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
@@ -74,10 +80,9 @@ public class HttpRequestAuthorizationDefinition {
         registry.requestMatchers(WHITE_LIST_FOR_ALL_METHOD).permitAll();
         
         // TODO: hasAnyRole을 사용할지 hasRole을 사용할지 케이스에 따라 다르게 선택하기
-        AUTHORIZATION_LIST.forEach((role, pathsPerMethod) -> {
-            pathsPerMethod.forEach((method, paths) -> {
-                registry.requestMatchers(method, paths)
-                        .hasAnyRole(role.role());
+        AUTHORIZATION_LIST.forEach((method, pathsPerRole) -> {
+            pathsPerRole.forEach((path, roles) -> {
+                registry.requestMatchers(method, path).hasAnyRole(Arrays.stream(roles).map(Role::role).toArray(String[]::new));
             });
         });
         
