@@ -11,6 +11,7 @@ import com.metamong.mt.domain.payment.exception.AccountNotFoundException;
 import com.metamong.mt.domain.payment.exception.NotEnoughMoneyException;
 import com.metamong.mt.domain.payment.exception.PaymentNotFoundException;
 import com.metamong.mt.domain.payment.model.Payment;
+import com.metamong.mt.domain.payment.model.constant.PaymentState;
 import com.metamong.mt.domain.payment.repository.jpa.PaymentRepository;
 import com.metamong.mt.domain.payment.repository.mybatis.PaymentMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +58,7 @@ public class DefaultPaymentService implements PaymentService{
     @Transactional
     public Long refund(Long rvtId) {
         Payment payment = this.getPaymentByRepository(rvtId);
+        payment.setPayState(PaymentState.R);
         Account account = this.getAccountByReservationId(rvtId);
         if(account.getBalance() < payment.getPayPrice()) {
             throw new NotEnoughMoneyException();
