@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
+import com.metamong.mt.domain.payment.model.Payment;
+import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
-import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
@@ -35,6 +37,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
+    private final PaymentService paymentService;
 
     @Override
     public List<ReservationResponseDto> findReservationByConsId(Long consId) {
@@ -88,9 +91,12 @@ public class DefaultReservationService implements ReservationService {
 
     @Override
     @Transactional
-    public void saveReservation(ReservationRequestDto dto) {
+    public void saveReservation(ReservationNPaymentRequestDto dto) {
+        Reservation reservationDto = dto.getReservation().toEntity();
+        Payment paymentDto = dto.getPayment().toEntity();
+        
         // 각 시간대별 예약된 인원 조회
-        List<HourlyUsageDto> existingReservations = reservationMapper.getHourlyUsageCounts(dto);
+        List<HourlyUsageDto> existingReservations = reservationMapper.getHourlyUsageCounts(dto.getReservation());
         Map<LocalTime, Integer> reservedCountMap = new HashMap<>();
         
         for (HourlyUsageDto hourUsage : existingReservations) {
@@ -102,22 +108,22 @@ public class DefaultReservationService implements ReservationService {
             LocalTime time = startTime;
             while (time.isBefore(endTime)) {
                 reservedCountMap.put(time, reservedCount);
-                time = time.plusMinutes(dto.getUnitUsageTime());
+                time = time.plusMinutes(dto.getReservation().getUnitUsageTime());
             }
         }
 
         // 새로 예약하려는 시간대별 인원 체크
-        LocalTime checkTime = dto.getUsageStartTime();
-        while (checkTime.isBefore(dto.getUsageEndTime())) {
+        LocalTime checkTime = reservationDto.getUsageStartTime();
+        while (checkTime.isBefore(reservationDto.getUsageEndTime())) {
             int currentReserved = reservedCountMap.getOrDefault(checkTime, 0);
             if (currentReserved > 0) {
                 throw new ReservationDuplicatedException("예약 가능한 인원 수를 초과하였습니다.");
             }
 
-            checkTime = checkTime.plusMinutes(dto.getUnitUsageTime());
+            checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
         }
-
-        this.reservationRepository.save(dto.toEntity());
+        Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
+        this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
     }
 
     @Override
@@ -125,6 +131,12 @@ public class DefaultReservationService implements ReservationService {
         Reservation reservation = this.reservationRepository.findById(rvtId)
                 .orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
         reservation.setRvtCancelationReason(dto.getRvtCancelationReason());
+        this.paymentService.reservationCancelRequest(rvtId);
+    }
+
+    @Override
+    public Reservation findReservationEntityByRvtId(Long rvtId) {
+        return this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
     }
 
 }

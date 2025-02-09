@@ -40,6 +40,7 @@ const routes = [
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 	{ path: '/map', component: Map },
+
 ];
 
 const router = createRouter({

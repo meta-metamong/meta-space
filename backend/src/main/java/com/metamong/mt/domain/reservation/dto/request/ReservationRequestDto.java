@@ -36,8 +36,8 @@ public class ReservationRequestDto {
 
     public Reservation toEntity() {
         return Reservation.builder()
-                .zoneId(this.zoneId)
                 .consId(this.consId)
+                .zoneId(this.zoneId)
                 .rvtDate(this.rvtDate)
                 .usageStartTime(this.usageStartTime)
                 .usageEndTime(this.usageEndTime)
