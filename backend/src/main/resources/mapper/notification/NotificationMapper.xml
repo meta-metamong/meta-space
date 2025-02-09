@@ -1,0 +1,6 @@
+<mapper namespace="com.example.mapper.NotificationMapper">
+    <insert id="insertNotification" parameterType="com.example.domain.Notification">
+        INSERT INTO notification (receiver_id, noti_msg, created_at, is_read)
+        VALUES (#{receiverId}, #{notiMsg}, #{createdAt}, #{isRead})
+    </insert>
+</mapper>

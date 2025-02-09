@@ -104,6 +104,7 @@ public class AdminController {
     @PostMapping("/registration/rejection")
     public ResponseEntity<String> rejectFacilityRegisterRequest(@RequestParam Long fctId) {
         try {
+        	// 반려 상
         	adminService.rejectFacilityRegisterRequest(fctId);
             return ResponseEntity.ok("등록 요청이 반려되었습니다.");
         } catch (Exception e) {
@@ -134,7 +135,8 @@ public class AdminController {
 
 	@GetMapping("/searchFacilities")
 	public ResponseEntity<BaseResponse<List<FacilitySearchResponseDto>>> searchFacilities() {
-	    return ResponseEntity.ok(BaseResponse.of(adminService.searchFacilities(), HttpStatus.OK));
+	    // 공유존인지 컬럼있어야함
+		return ResponseEntity.ok(BaseResponse.of(adminService.searchFacilities(), HttpStatus.OK));
 	}
 	
 	// 결제 내역 조회
@@ -151,5 +153,10 @@ public class AdminController {
         return ResponseEntity.ok(totalRevenue);
     }
     
+    // 대시보드
+    // 요일별 / 시간대별 주간 예약현황(히트맵) 
+    // 각 시설 별 실시간 예약 건수 및 매출 및 취소율 (복합 막대 그래프)
+    // 월별 예약 top 5 시설(막대 or 원형 or 파이)
+    // 월별 매출 top 5 시설(막대 or 누적 영역 차트)
     
 }

@@ -18,6 +18,7 @@ import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
+import com.metamong.mt.domain.notification.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,16 @@ public class DefaultAdminService implements AdminService{
 	
 	private final AdminMapper adminMapper;
     private final SqlSessionFactory sqlSessionFactory;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional(readOnly = true)
     public List<MemberSearchResponseDto> searchMembers() {
+        // 알림 생성 서비스 호출
+        notificationService.createNotification(1L, "앙림");
+
+        // 추가적으로 웹소켓을 통한 알림 전달 구현 (필요시)
+        //notificationService.sendNotificationToWebSocket(receiverId, notificationMessage);
         return adminMapper.searchMembers();
     }
 
