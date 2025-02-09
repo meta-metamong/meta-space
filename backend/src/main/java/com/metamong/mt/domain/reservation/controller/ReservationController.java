@@ -7,8 +7,6 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,10 +40,10 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final WebClient webClient;
 
-    @GetMapping("/members/reservations")
-    public ResponseEntity<?> findReservationByConsId(@AuthenticationPrincipal User user) {
+    @GetMapping("/members/{memId}/reservations")
+    public ResponseEntity<?> findReservationByConsId(@PathVariable Long memId) {
         return ResponseEntity.ok(
-                BaseResponse.of(reservationService.findReservationByConsId(Long.parseLong(user.getUsername())), HttpStatus.OK, "예약 목록 조회 성공"));
+                BaseResponse.of(reservationService.findReservationByConsId(memId), HttpStatus.OK, "예약 목록 조회 성공"));
     }
 
     @GetMapping("/reservations/{reservationId}")
@@ -56,8 +54,8 @@ public class ReservationController {
     
     @PostMapping("/reservations")
     public ResponseEntity<?> saveResevation(@Validated @RequestBody ReservationRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED.value()).body(BaseResponse.of(reservationService.saveReservation(dto),
-                HttpStatus.CREATED, "예약하기 성공"));
+    	this.reservationService.saveReservation(dto);
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "예약하기 성공"));
     }
 
     @PutMapping("/reservations/{reservationId}")
@@ -66,15 +64,15 @@ public class ReservationController {
         return ResponseEntity.ok(BaseResponse.of(dto, HttpStatus.OK, "예약 취소 성공"));
     }
     
-    @GetMapping("/reservations/remain")
+    @PostMapping("/reservations/remain")
     public ResponseEntity<?> getAvailableTimes(@RequestBody SelectedInfoRequestDto dto) {
         
         List<RemainingCountResponseDto> availableTimes = reservationService.getRemainingUsageCount(dto);
         return ResponseEntity.ok(BaseResponse.of(availableTimes, HttpStatus.OK));
     }
 
-    @PostMapping("/recommends")
-    public Mono<RecommendationResponseDto> getRecommendations(@AuthenticationPrincipal User user)
+    @PostMapping("/recommends/{memId}")
+    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId)
             throws JsonProcessingException {
         List<ReservationInfoResponseDto> rvtInfo = reservationService.getTotalCount();
 
@@ -86,7 +84,7 @@ public class ReservationController {
             log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
         }
 
-        return webClient.post().uri("/recommend/" + Long.parseLong(user.getUsername()))
+        return webClient.post().uri("/recommend/" + memId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(rvtInfoList) // JSON 형태로 데이터 전송
                 .retrieve() // 요청을 실행하고 응답을 받음

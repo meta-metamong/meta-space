@@ -7,24 +7,26 @@
         <div class="mb-5">
             <p class="ms-4 text-secondary">Zone</p>
             <p class="profile-content w-75 mx-auto px-3 fs-5">
-                <select class="form-select">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                <select class="form-select" v-model="selectedZoneId">
+                    <option value="" disabled>구역을 선택하세요</option>
+                    <option v-for="zone in zoneInfo" :key="zone.zoneId" :value="zone.zoneId">{{ zone.zoneName }}</option>
                 </select>
             </p>
         </div>
-        <div class="mb-4 d-flex justify-content-center align-item-center">
+        <div class="mb-3 d-flex justify-content-center align-item-center">
             <div class="time-buttons">
-                <button v-for="time in timeSlots" :key="time" :class="{ selected: selectedTimes.includes(time) }"
+                <button v-for="(time, index) in timeSlots.slice(0, timeSlots.length - 1)" :key="time" :class="{ selected: selectedTimes.includes(time) }"
                     @click="selectTime(time)" :disabled="isUnavailable(time)">
-                    {{ time }}
+                    {{ formatTimeRange(index) }}
                 </button>
             </div>
         </div>
+        <div class="text-center mb-4">
+            <button class="btn btn-secondary" @click="resetSelection">초기화</button>
+        </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.fctName') }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">ccc</p>
+            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ fctName }}</p>
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.reservationDate') }}</p>
@@ -37,62 +39,55 @@
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.usageCount') }}</p>
             <div class="d-flex align-items-center w-75 mx-auto px-3 fs-5">
-                <button class="btn btn-outline-secondary" @click="decreaseCount" :disabled="usageCount <= min">−</button>
+                <button class="btn btn-outline-secondary" @click="decreaseCount" :disabled="usageCount <= 1">−</button>
                 <input type="text" class="form-control text-center mx-2" v-model="usageCount" readonly style="width: 50px;" />
-                <button class="btn btn-outline-primary" @click="increaseCount" :disabled="usageCount >= max">+</button>
+                <button class="btn btn-outline-primary" @click="increaseCount" :disabled="usageCount >= maxCount">+</button>
             </div>
-        </div>
-        <div class="mb-4">
-            <p class="ms-4 text-secondary">{{ $t('reservation.additionalInfo') }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">
-                <select class="form-select">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select>
-            </p>
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.totalPrice') }}</p>
             <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}</p>
         </div>
         <div class="w-100 text-center mb-2">
-            <button class="rvt-btn w-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('reservation.reserve') }}</button>
+            <button class="rvt-btn w-75 mb-3 rounded-pill" @click="handleSubmit">{{ $t('reservation.reserve') }}</button>
         </div>
     </div>
 </template>
 
 <script>
-import { get } from "../../apis/axios";
+import { get, post } from "../../apis/axios";
 import { ref } from 'vue';
 
+// 시설, 회원 아이디, 단위 시간 수정 필요
 export default {
     data() {
         return {
             unitTime: 30,
-            startTime: new Date(0, 0, 0, 9, 0),
-            endTime: new Date(0, 0, 0, 18, 0),
-            unavailableTimes: ['12:00', '12:30', '13:00', '13:30'],
+            openTime: null,
+            closeTime: null,
+            // unavailableTimes: "",
+            timeInfo: [],
             selectedTimes: [],
             firstTime: null,
             secondTime: null,
-            fctInfo: [],
+            fctName: "",
             zoneInfo: [],
-            additionalInfo: [],
+            selectedZoneId: 0,
             date: ref(new Date()),
             reservationTime: "",
             usageCount: 1,
-            isSharedZone: 0,
-            hourlyRate: 5000,
-
+            maxCount: 1,
+            isSharedZone: "",
+            hourlyRate: 0,
         };
     },
     computed: {
         timeSlots() {
             let times = [];
-            let currentTime = new Date(this.startTime);
-
-            while (currentTime < this.endTime) {
+            let currentTime = new Date("1970-01-01T" + this.openTime);
+            let closeTime = new Date("1970-01-01T" + this.closeTime);
+            
+            while (currentTime <= closeTime) {
                 times.push(this.formatTime(currentTime)); // 시간 문자열로 변환
                 currentTime.setMinutes(currentTime.getMinutes() + this.unitTime); // 단위시간씩 더하기
             }
@@ -102,25 +97,57 @@ export default {
             return this.date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 변환
         },
         payPrice() {
+            if (this.isSharedZone === 'N') {
+                return this.selectedTimes.length * this.hourlyRate + '원';
+            }
             return this.selectedTimes.length * this.usageCount * this.hourlyRate + '원';
+        },
+        unavailableTimes() {
+            return this.timeInfo.filter(time => time.remainUsageCount === 1).map(time => time.usageStartTime);
         }
     },
-    props: {
-        min: { type: Number, default: 1 },
-        max: { type: Number, default: 10 },
+    watch: {
+        selectedZoneId(newZoneId) {
+            const selectedZone = this.zoneInfo.find(zone => zone.zoneId == newZoneId);
+            this.maxCount = selectedZone ? selectedZone.maxUserCount : 1;
+            this.hourlyRate = selectedZone ? selectedZone.hourlyRate : 0;
+            this.isSharedZone = selectedZone ? selectedZone.isSharedZone : "";
+            this.getTimeInfo();
+            this.resetSelection();
+        }
     },
     methods: {
         async getFctInfo() {
             const response = await get(`/facilities/1`);
-            this.fctInfo = response.data.content;
-            console.log(response);
+            const fctInfo = response.data.content;
+            this.fctName = fctInfo.fctName;
+            this.zoneInfo = fctInfo.zones;
+            this.openTime = fctInfo.fctOpenTime;
+            this.closeTime = fctInfo.fctClosetime;
+        },
+        async getTimeInfo() {
+            const requestDto = {
+                rvtDate: this.date,
+                zoneId: this.selectedZoneId,
+                fctId: 1
+            }
+            const response = await post(`/reservations/remain`, requestDto);
+            this.timeInfo = response.data.content;
         },
         formatTime(date) {
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             return `${hours}:${minutes}`;
         },
+        formatTimeRange(index) {
+            const startTime = this.timeSlots[index];
+            const endTime = this.timeSlots[index + 1];
+            return `${startTime}~${endTime}`;
+        },
         isUnavailable(time) {
+            if (this.selectedZoneId === 0) {
+                return this.timeSlots;
+            }
             return this.unavailableTimes.includes(time);
         },
         selectTime(time) {
@@ -157,12 +184,43 @@ export default {
 
             this.secondTime = secondTimeDate.toTimeString().slice(0, 5);
         },
+        resetSelection() {
+            this.selectedTimes = [];
+            this.firstTime = null;
+            this.secondTime = null;
+            this.reservationTime = "";
+        },
         increaseCount() {
-            if (this.usageCount < this.max) this.usageCount++;
+            if (this.usageCount < this.maxCount) this.usageCount++;
         },
         decreaseCount() {
-            if (this.usageCount > this.min) this.usageCount--;
+            if (this.usageCount > 1) this.usageCount--;
         },
+        async handleSubmit() {
+            const requestDto = {
+                zoneId: this.selectedZoneId,
+                consId: 1,
+                rvtDate: this.date,
+                usageStartTime: this.firstTime,
+                usageEndTime: this.secondTime,
+                usageCount: this.usageCount,
+                unitUsageTime: this.unitTime
+            }
+
+            if (requestDto.usageEndTime === null) {
+                alert('종료 시간을 입력해주세요.');
+                return;
+            }
+
+            const response = await post(`/reservations`, requestDto);
+            if (response.status === 200) {
+                alert('예약 성공')
+            } else if (response.status === 409) {
+                alert('예약이 불가능한 시간입니다. 다른 시간을 선택해주세요.');
+                this.getTimeInfo();
+                this.resetSelection();
+            }
+        }
     },
     mounted() {
         this.getFctInfo();
@@ -194,7 +252,7 @@ export default {
     gap: 5px;
     justify-content: flex-start;
     max-width: 100%;
-    margin-left: 10px;
+    margin-left: 8px;
     box-sizing: border-box;
 }
 
