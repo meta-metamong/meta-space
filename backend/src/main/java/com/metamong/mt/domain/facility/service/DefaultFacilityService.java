@@ -10,11 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
+import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
@@ -172,5 +175,25 @@ public class DefaultFacilityService implements FacilityService {
         }
         
         facility.requestDelete();
+    }
+    
+    @Override
+    public FacilityListResponseDto getFacilities(FacilityListRequestDto dto) {
+        List<FacilityListItemResponseDto> facilities =
+                this.facilityMapper.findFacilitiesBySearchCondition(dto);
+        int totalElementCount = this.facilityMapper.countBySearchCondition(dto);
+        
+        int page = dto.getPage();
+        int pageSize = dto.getPageSize();
+        int totalPageCount = totalElementCount / pageSize + (totalElementCount % pageSize == 0 ? 0 : 1);
+        return FacilityListResponseDto.builder()
+                .page(dto.getPage())
+                .pageSize(dto.getPageSize())
+                .totalElementCount(totalElementCount)
+                .totalPageCount(totalPageCount)
+                .isFirst(page == 1)
+                .isLast(page == totalPageCount)
+                .facilities(facilities)
+                .build();
     }
 }
