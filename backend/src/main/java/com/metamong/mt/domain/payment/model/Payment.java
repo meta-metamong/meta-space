@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.metamong.mt.domain.reservation.dto.constant.PayState;
 import com.metamong.mt.domain.reservation.model.Reservation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -28,11 +31,17 @@ public class Payment {
     @Id
     private Long rvtId;
     
+    @OneToOne
+    @MapsId
+    @JoinColumn(name="rvt_id")
+    private Reservation reservation;  
+    
     @Column(name="pay_price")
     private Long payPrice;
     
     @Column(name="pay_state")
-    private Character payState;
+    @Enumerated(EnumType.STRING)
+    private PayState payState;
     
     @Column(name="pay_method")
     private String payMethod;
