@@ -22,7 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
-import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.RecommendationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
@@ -31,6 +31,7 @@ import com.metamong.mt.domain.reservation.service.ReservationService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -55,8 +56,8 @@ public class ReservationController {
     }
     
     @PostMapping("/reservations")
-    public ResponseEntity<?> saveResevation(@Validated @RequestBody ReservationRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED.value()).body(BaseResponse.of(reservationService.saveReservation(dto),
+    public ResponseEntity<?> saveResevation(@Validated @RequestBody ReservationNPaymentRequestDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.of(reservationService.saveReservation(dto),
                 HttpStatus.CREATED, "예약하기 성공"));
     }
 
