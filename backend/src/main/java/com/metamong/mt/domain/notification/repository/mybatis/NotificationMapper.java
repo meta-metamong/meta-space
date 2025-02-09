@@ -8,6 +8,6 @@ import com.metamong.mt.domain.notification.model.Notification;
 @Repository
 @Mapper
 public interface NotificationMapper {
-	void insertNotification(Notification notification);
+	//void insertNotification(Notification notification);
 
 }

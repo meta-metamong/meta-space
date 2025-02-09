@@ -25,7 +25,11 @@
 	},
 	computed: {
 	  headerComponent() {
-		return Header; 
+		if (this.$store.state.userId) {
+		  return /^\/admin/.test(this.$route.path) ? AdminHeader : Header;
+		} else {
+		  return Header;
+		}
 	  },
 	  footerComponent() {
 		if (this.$store.state.userId) {
