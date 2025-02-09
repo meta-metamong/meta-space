@@ -16,6 +16,7 @@ import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
@@ -178,6 +179,21 @@ public class DefaultFacilityService implements FacilityService {
     
     @Override
     public FacilityListResponseDto getFacilities(FacilityListRequestDto dto) {
-        throw new UnsupportedOperationException();
+        List<FacilityListItemResponseDto> facilities =
+                this.facilityMapper.findFacilitiesBySearchCondition(dto);
+        int totalElementCount = this.facilityMapper.countBySearchCondition(dto);
+        
+        int page = dto.getPage();
+        int pageSize = dto.getPageSize();
+        int totalPageCount = totalElementCount / pageSize + (totalElementCount % pageSize == 0 ? 0 : 1);
+        return FacilityListResponseDto.builder()
+                .page(dto.getPage())
+                .pageSize(dto.getPageSize())
+                .totalElementCount(totalElementCount)
+                .totalPageCount(totalPageCount)
+                .isFirst(page == 1)
+                .isLast(page == totalPageCount)
+                .facilities(facilities)
+                .build();
     }
 }
