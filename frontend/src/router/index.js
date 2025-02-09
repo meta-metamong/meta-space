@@ -7,7 +7,7 @@ import UpdateMember from '../pages/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
-import DetailReservation from '../components/reservation/DetailReservation.vue';
+import DetailReservation from '../pages/reservation/DetailReservation.vue';
 import Reservation from '../pages/reservation/Reservation.vue';
 import ReservationList from '../pages/reservation/ReservationList.vue';
 import AdminChat from '../components/admin/OnlineMemberList.vue';
