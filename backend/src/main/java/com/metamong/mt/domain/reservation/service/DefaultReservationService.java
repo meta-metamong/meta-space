@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.payment.model.Payment;
-import com.metamong.mt.domain.payment.repository.jpa.PaymentRepository;
+import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
@@ -37,7 +37,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
-    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     @Override
     public List<ReservationResponseDto> findReservationByConsId(Long consId) {
@@ -122,9 +122,8 @@ public class DefaultReservationService implements ReservationService {
 
             checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
         }
-        Reservation savedResevation = this.reservationRepository.save(reservationDto);
-        paymentDto.setRvtId(savedResevation.getRvtId());
-        this.paymentRepository.save(paymentDto);
+        Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
+        this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
     }
 
     @Override
@@ -132,6 +131,12 @@ public class DefaultReservationService implements ReservationService {
         Reservation reservation = this.reservationRepository.findById(rvtId)
                 .orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
         reservation.setRvtCancelationReason(dto.getRvtCancelationReason());
+        this.paymentService.reservationCancelRequest(rvtId);
+    }
+
+    @Override
+    public Reservation findReservationEntityByRvtId(Long rvtId) {
+        return this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
     }
 
 }

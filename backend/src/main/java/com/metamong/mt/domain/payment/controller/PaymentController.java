@@ -29,4 +29,9 @@ public class PaymentController {
     public ResponseEntity<?> getPayment(@PathVariable Long rvtId){
         return ResponseEntity.ok(BaseResponse.of(paymentService.getPayment(rvtId), HttpStatus.OK, "결제 내역 조회가 완료되었습니다."));
     }
+    
+    @GetMapping("/{rvtId}/refund")
+    public ResponseEntity<?> permitCancelReservation(@PathVariable Long rvtId){
+        return ResponseEntity.ok(BaseResponse.of(paymentService.refund(rvtId), HttpStatus.OK, "환불 요청이 허가되었습니다."));
+    }
 }

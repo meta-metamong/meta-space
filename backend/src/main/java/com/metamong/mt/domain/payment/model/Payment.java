@@ -5,22 +5,19 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.metamong.mt.domain.payment.model.constant.PaymentState;
-import com.metamong.mt.domain.reservation.model.Reservation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name="payment")
@@ -28,6 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Getter @Setter
+@ToString
 public class Payment {
     
     @Id
@@ -59,4 +57,8 @@ public class Payment {
     @Column(name="refund_account_owner")
     private String refundAccountOwner;
 
+    public void reservationCancelRequest() {
+        this.payState = PaymentState.Q;
+        this.cancelDate = LocalDateTime.now();
+    }
 }

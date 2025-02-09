@@ -41,5 +41,15 @@
     WHERE rvt_id=#{rvtId}
     ]]>
     </select>
-
+    
+    <!-- 계좌 조회 -->                                                          
+    <select id="findAccountByReservationId" parameterType="long" resultType="com.metamong.mt.domain.member.model.Account">
+    <![CDATA[
+    SELECT a.* FROM account a 
+    JOIN facility f     ON a.prov_id=f.prov_id
+    JOIN zone z         ON f.fct_id=z.fct_id
+    JOIN reservation r  ON r.zone_id=z.zone_id
+    WHERE r.rvt_id=#{rvtId}
+    ]]>
+    </select>
 </mapper>

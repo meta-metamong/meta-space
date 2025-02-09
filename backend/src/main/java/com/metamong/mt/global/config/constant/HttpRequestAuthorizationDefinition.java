@@ -66,7 +66,9 @@ public class HttpRequestAuthorizationDefinition {
                                    "/api/payments", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/payments/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV }),
             HttpMethod.POST, Map.of("/api/reservations", new Role[] { Role.ROLE_CONS }),
-            HttpMethod.PUT, Map.of("/api/reservations/*", new Role[] { Role.ROLE_CONS })
+            HttpMethod.PUT, Map.of("/api/reservations/*", new Role[] { Role.ROLE_CONS },
+                                   // 현재는 테스트를 위해 모든 역할에 열어놨지만, 관리자만 가능하게 해야 함.
+                                   "/api/*/refund", new Role[] { Role.ROLE_ADMN, Role.ROLE_CONS, Role.ROLE_PROV })
     );
     
     private static final Map<Role, String[]> AUTHORIZATION_LIST_FOR_ALL_METHOD = Map.of(

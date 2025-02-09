@@ -22,4 +22,6 @@ public interface ReservationService {
     void saveReservation(ReservationNPaymentRequestDto dto);
     
     void cancelReservation(Long rvtId, CancelRequestDto dto);
+    
+    Reservation findReservationEntityByRvtId(Long rvtId);
 }
