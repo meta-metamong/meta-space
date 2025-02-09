@@ -7,9 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,15 +23,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Account {
-    
+public class Account {    
     @Id
+    @Column(name="prov_id")
     private Long provId;
-    
-    @OneToOne
-    @MapsId
-    @JoinColumn(name="prov_id")
-    private FctProvider fctProvider;
     
     @Column(name="bank_code")
     private String bankCode;

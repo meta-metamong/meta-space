@@ -5,21 +5,18 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.global.constant.BooleanAlt;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -99,9 +96,6 @@ public class Member {
     @Column(name="is_del", length=1)
     @Enumerated(EnumType.STRING)
     private BooleanAlt isDel;
-    
-    @OneToOne(mappedBy = "member", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private FctProvider fctProvider;
     
     public void updateInfo(Member dto) {
         this.memName = dto.getMemName();

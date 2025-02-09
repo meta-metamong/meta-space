@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
-import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.repository.jpa.PaymentRepository;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
@@ -38,6 +37,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public List<ReservationResponseDto> findReservationByConsId(Long consId) {
@@ -122,11 +122,9 @@ public class DefaultReservationService implements ReservationService {
 
             checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
         }
-
-        paymentDto.setReservation(reservationDto);
-        reservationDto.setPayment(paymentDto);
-        
-        this.reservationRepository.save(reservationDto);
+        Reservation savedResevation = this.reservationRepository.save(reservationDto);
+        paymentDto.setRvtId(savedResevation.getRvtId());
+        this.paymentRepository.save(paymentDto);
     }
 
     @Override

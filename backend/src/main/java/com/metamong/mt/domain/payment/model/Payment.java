@@ -33,20 +33,15 @@ public class Payment {
     @Id
     private Long rvtId;
     
-    @OneToOne
-    @MapsId
-    @JoinColumn(name="rvt_id")
-    private Reservation reservation;  
-    
     @Column(name="pay_price")
     private Long payPrice;
+    
+    @Column(name="pay_method")
+    private String payMethod;
     
     @Column(name="pay_state")
     @Enumerated(EnumType.STRING)
     private PaymentState payState;
-    
-    @Column(name="pay_method")
-    private String payMethod;
     
     @Column(name="pay_date")
     @ColumnDefault(value="SYSDATE")

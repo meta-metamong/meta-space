@@ -7,6 +7,7 @@ import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -79,6 +80,7 @@ public class ProviderSignUpRequestDto {
 			 .memPostalCode(this.memPostalCode)
 			 .memAddress(this.memAddress)
 			 .memDetailAddress(this.memDetailAddress)
+			 .isDel(BooleanAlt.N)
              .role(Role.ROLE_PROV)
              .build();
     }

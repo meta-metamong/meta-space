@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.metamong.mt.domain.payment.dto.request.PaymentRequestDto;
 import com.metamong.mt.domain.payment.dto.response.PaymentResponseDto;
-import com.metamong.mt.domain.payment.repository.jpa.PaymentRepository;
+import com.metamong.mt.domain.payment.repository.mybatis.PaymentMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,16 +13,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultPaymentService implements PaymentService{
     
-    private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
     @Override
-    public void savePayment(PaymentRequestDto dto) {
-
+    public List<PaymentResponseDto> getPayments(Long memId) {
+        return this.paymentMapper.findPaymentsByMemberId(memId);
     }
 
     @Override
-    public List<PaymentResponseDto> getPayments() {
-        return null;
+    public PaymentResponseDto getPayment(Long rvtId) {
+        return this.paymentMapper.findPaymentByReservationId(rvtId);
     }
 
 }

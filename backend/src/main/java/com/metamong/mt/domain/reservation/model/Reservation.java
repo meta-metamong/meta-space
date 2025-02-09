@@ -5,14 +5,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.metamong.mt.domain.payment.model.Payment;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -41,8 +39,13 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rvt_pk_generator")
     private Long rvtId;
 
+    @Column(name="cons_id")
     private Long consId;
+    
+    @Column(name="zone_id")
     private Long zoneId;
+    
+    @Column(name="rvt_date")
     private LocalDate rvtDate;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
@@ -55,7 +58,4 @@ public class Reservation {
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     private String rvtCancelationReason;
-    
-    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Payment payment;
 }

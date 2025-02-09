@@ -88,7 +88,6 @@ public class DefaultMemberService implements MemberService {
         }
         
     	Member member = dto.toEntity();
-    	member.setIsDel(BooleanAlt.N);
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
     	this.memberRepository.save(member);
     }
@@ -104,20 +103,21 @@ public class DefaultMemberService implements MemberService {
             throw new IllegalSignUpRequestException("Not valid signup");
         }
         
+        // 회원 저장
         Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
         member.setIsDel(BooleanAlt.N);
+        Member savedMember = this.memberRepository.save(member);
         
-        Account account = dto.getAccount().toEntity();
+        // 시설 제공자 데이터 저장
         FctProvider provider = dto.toProvider();
+        provider.setProvId(savedMember.getMemId());
+        this.providerRepository.save(provider);
         
-        account.setFctProvider(provider);
-        provider.setAccount(account);
-        
-        provider.setMember(member);
-        member.setFctProvider(provider);
-        
-        this.memberRepository.save(member);
+        // 계좌 정보 저장
+        Account account = dto.getAccount().toEntity();
+        account.setProvId(savedMember.getMemId());        
+        this.accountRepository.save(account);
     }
     
     @Override
@@ -203,7 +203,6 @@ public class DefaultMemberService implements MemberService {
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        FctProvider provider = this.getProvider(memId);
 	        provider.updateInfo(dto.toProvider());
-	        member.setFctProvider(provider);
 	    }
 	    memberRepository.save(member);
 	}

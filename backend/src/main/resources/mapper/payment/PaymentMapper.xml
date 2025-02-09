@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.metamong.mt.domain.payment.repository.mybatis.PaymentMapper">    
+    
+    <!--private String payPrice; 
+    private PayState payState;
+    private String payMethod;
+    private LocalDateTime payDate;
+    private String refundBankCode;
+    private String refundAccount;
+    private String refundAccountOwner; -->
+    
+    <!-- 결제 응답 DTO -->
+    <resultMap type="com.metamong.mt.domain.payment.dto.response.PaymentResponseDto" id="paymentResponse">
+        <result column="rvt_id" property="rvtId" />
+        <result column="pay_price" property="payPrice" />
+        <result column="pay_method" property="payMethod" />
+        <result column="pay_state" property="payState" />
+        <result column="pay_date" property="payDate" />
+        <result column="refund_bank_code" property="refundBankCode" />
+        <result column="refund_account" property="refundAccount" />
+        <result column="refund_account_owner" property="refundAccountOwner" />
+    </resultMap>
+    
+    <!-- 결제 내역 조회 -->
+    <select id="findPaymentsByMemberId" parameterType="long" resultMap="paymentResponse">
+    <![CDATA[
+    SELECT p.rvt_id, pay_price, pay_method, pay_state, pay_date, refund_bank_code, refund_account, refund_account_owner FROM payment p
+    LEFT JOIN reservation r
+    ON p.rvt_id=r.rvt_id
+    WHERE r.cons_id = #{memId}
+    ]]>
+    </select>
+    
+    <!-- 결제 내역 상세 조회 -->
+    <select id="findPaymentByReservationId" parameterType="long" resultMap="paymentResponse">
+    <![CDATA[
+    SELECT rvt_id, pay_price, pay_method, pay_state, pay_date, refund_bank_code, refund_account, refund_account_owner FROM payment
+    WHERE rvt_id=#{rvtId}
+    ]]>
+    </select>
+
+</mapper>
