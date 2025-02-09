@@ -21,9 +21,11 @@ import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInp
 export default {
     data() {
         return {
-            currentComponent: "facilityRegistrationInput",
+            // currentComponent: "facilityRegistrationInput",
+            currentComponent: "addinfoRegistrationInput",
             inputs: {
                 "facilityRegistration": {
+                    fctName: "",
                     majorCatId: "0",
                     minorCatId: "0",
                     addr: {
@@ -45,13 +47,15 @@ export default {
                     images: [],
                     guide: ""
                 },
-                "zoneRegistration": {
-                    zoneName: "",
-                    maxUserCount: "",
-                    hourlyRate: "",
-                    isSharedZone: false,
-                    images: []
-                },
+                "zoneRegistration": [
+                    {
+                        zoneName: "",
+                        maxUserCount: "",
+                        hourlyRate: "",
+                        isSharedZone: false,
+                        images: []
+                    }
+                ],
                 "addinfoRegistration": []
             }
         };
