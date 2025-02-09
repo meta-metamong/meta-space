@@ -49,7 +49,7 @@ CREATE TABLE notification (
 
 CREATE TABLE bank (
     bank_code CHAR(3),
-    bank_name VARCHAR2(15) NOT NULL,
+    bank_name VARCHAR2(30) NOT NULL,
     
     CONSTRAINT pk_bank PRIMARY KEY (bank_code)
 );
@@ -58,15 +58,25 @@ CREATE TABLE fct_provider (
     prov_id            NUMBER(4, 0),
     biz_name           VARCHAR2(30) NOT NULL,
     biz_reg_num        VARCHAR2(30) NOT NULL,
-    bank_code          CHAR(3) NOT NULL,
-    prov_account       VARCHAR2(20) NOT NULL,
-    prov_account_owner VARCHAR2(30) NOT NULL,
 
     CONSTRAINT pk_fct_provider PRIMARY KEY (prov_id),
     CONSTRAINT fk_fct_provider_prov_id FOREIGN KEY (prov_id)
-        REFERENCES member (mem_id),
-    CONSTRAINT fk_fct_provider_bank_code FOREIGN KEY (bank_code)
-        REFERENCES bank (bank_code)
+        REFERENCES member (mem_id)
+);
+
+CREATE TABLE account (
+    prov_id            NUMBER(4, 0),
+    bank_code          CHAR(3)       NOT NULL,
+    account_number     VARCHAR2(20)  NOT NULL,
+    balance            NUMBER(10, 0) DEFAULT 0,
+    is_agreed_info     CHAR(1)       DEFAULT 'N',
+
+    CONSTRAINT pk_account PRIMARY KEY (prov_id),
+    CONSTRAINT fk_account_prov_id FOREIGN KEY (prov_id)
+        REFERENCES fct_provider (prov_id),
+    CONSTRAINT fk_account_bank_code FOREIGN KEY (bank_code)
+        REFERENCES bank (bank_code),
+    CONSTRAINT account_is_agreed_info_domain CHECK (is_agreed_info IN ('Y', 'N'))
 );
 
 CREATE TABLE report (

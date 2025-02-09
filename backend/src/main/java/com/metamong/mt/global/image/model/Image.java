@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "image")
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorColumn(name = "img_attached_to")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class Image {
 
     @Id

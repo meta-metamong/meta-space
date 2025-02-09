@@ -9,11 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.domain.facility.dto.constant.Order;
+import com.metamong.mt.domain.facility.dto.constant.OrderBy;
+import com.metamong.mt.domain.facility.dto.constant.SearchCondition;
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
+import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
@@ -39,6 +46,7 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.global.constant.BooleanAlt;
 import com.metamong.mt.global.image.repository.ImageRepository;
+
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,12 +81,13 @@ class FacilityMapperTest {
     
     @Autowired
     EntityManager em;
-
-    @Test
-    @DisplayName("findFacilityById - success")
-    void findFacilityById_success() throws Exception {
-        log.info("em class={}", this.em.getClass());
-        // Given
+    
+    Long generatedProvId;
+    Category category;
+    
+    @BeforeEach
+    void initData() throws Exception {
+     // Given
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -198,9 +207,18 @@ class FacilityMapperTest {
         
         Category category = new Category("100", "Category1");
         category = this.categoryRepository.save(category);
+        
+        this.generatedProvId = generatedProvId;
+        this.category = category;
+    }
+
+    @Test
+    @DisplayName("findFacilityById - success")
+    void findFacilityById_success() throws Exception {
+        
         Facility facility = Facility.builder()
-                .cat(category)
-                .provId(generatedProvId)
+                .cat(this.category)
+                .provId(this.generatedProvId)
                 .fctName("facility")
                 .fctPostalCode("01234")
                 .fctDetailAddress("haleaow")
@@ -281,129 +299,9 @@ class FacilityMapperTest {
     @DisplayName("updateFacilityById - success")
     void updateFacilityById_success() throws Exception {
         // Given
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        
-        try {
-            conn = DataSourceUtils.getConnection(this.dataSource);
-            stmt = conn.prepareStatement("DELETE FROM member");
-            stmt.executeUpdate();
-        } finally {
-            stmt.close();
-            DataSourceUtils.releaseConnection(conn, this.dataSource);
-        }
-        
-        try {
-            conn = DataSourceUtils.getConnection(this.dataSource);
-            String sql = """
-                    INSERT INTO member (
-                        mem_id,
-                        email,
-                        mem_name,
-                        password,
-                        mem_phone,
-                        birth_date,
-                        gender,
-                        mem_postal_code,
-                        mem_address,
-                        mem_detail_address,
-                        role
-                    ) VALUES (
-                        mem_pk_seq.NEXTVAL,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?
-                    )
-                    """;
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, "test@gmail.com");
-            stmt.setString(2, "조나단");
-            stmt.setString(3, "1q2w3e4r");
-            stmt.setString(4, "010-1234-1234");
-            stmt.setDate(5, new Date(System.currentTimeMillis()));
-            stmt.setString(6, Gender.M.name());
-            stmt.setString(7, "01234");
-            stmt.setString(8, "address");
-            stmt.setString(9, "detail address");
-            stmt.setString(10, Role.ROLE_PROV.name());
-            stmt.executeUpdate();
-        } finally {
-            stmt.close();
-            DataSourceUtils.releaseConnection(conn, this.dataSource);
-        }
-        
-        try {
-            conn = DataSourceUtils.getConnection(this.dataSource);
-            stmt = conn.prepareStatement("""
-                    INSERT INTO bank (bank_code, bank_name)
-                    VALUES ('014', 'MY_BANK')
-                    """);
-            stmt.executeUpdate();
-        } finally {
-            stmt.close();
-            DataSourceUtils.releaseConnection(conn, this.dataSource);
-        }
-        
-        Long generatedProvId;
-        ResultSet rs = null;
-        try {
-            conn = DataSourceUtils.getConnection(this.dataSource);
-            stmt = conn.prepareStatement("SELECT mem_pk_seq.CURRVAL AS generated_prov_id FROM DUAL");
-            rs = stmt.executeQuery();
-            if (!rs.next()) {
-                throw new RuntimeException("Something wrong");
-            }
-            generatedProvId = rs.getLong("generated_prov_id");
-        } finally {
-            rs.close();
-            stmt.close();
-            DataSourceUtils.releaseConnection(conn, this.dataSource);
-        }
-        
-        try {
-            conn = DataSourceUtils.getConnection(this.dataSource);
-            stmt = conn.prepareStatement("""
-                    INSERT INTO fct_provider (
-                        prov_id,
-                        biz_name,
-                        biz_reg_num,
-                        bank_code,
-                        prov_account,
-                        prov_account_owner
-                    ) VALUES (
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?
-                    )
-                    """);
-            stmt.setLong(1, generatedProvId);
-            stmt.setString(2, "sample biz name");
-            stmt.setString(3, "asdf");
-            stmt.setString(4, "014");
-            stmt.setString(5, "110-123-123456");
-            stmt.setString(6, "MyMy");
-            stmt.executeUpdate();
-        } finally {
-            stmt.close();
-            DataSourceUtils.releaseConnection(conn, this.dataSource);
-        }
-        
-        Category category = new Category("600", "카테고리");
-        category = this.categoryRepository.save(category);
-        
         Facility facility = Facility.builder()
-                .cat(category)
-                .provId(generatedProvId)
+                .cat(this.category)
+                .provId(this.generatedProvId)
                 .fctName("FACILITY")
                 .fctPostalCode("01234")
                 .fctAddress("ADDR")
@@ -455,5 +353,132 @@ class FacilityMapperTest {
         assertThat(findFacility.getFctDetailAddress()).isEqualTo(facility.getFctDetailAddress());
         assertThat(findFacility.getFctGuide()).isEqualTo(facility.getFctGuide());
         assertThat(findFacility.getFctLatitude()).isEqualTo(facility.getFctLatitude(), offset(0.01));
+    }
+    
+    @Test
+    @DisplayName("findFacilitiesBySearchCondition() - success")
+    void findFacilitiesBySearchCondition_success() throws Exception {
+        // Given
+        final int facilityCount = 50;
+        List<Facility> facilities = new ArrayList<>(facilityCount);
+        for (int i = 0; i < facilityCount; i++) {
+            int num = i + 1;
+            LocalDateTime now = LocalDateTime.now();
+            Facility facility = Facility.builder()
+                    .cat(this.category)
+                    .provId(this.generatedProvId)
+                    .fctName("FACILITY" + num)
+                    .fctPostalCode("0" + (1234 + num))
+                    .fctAddress("ADDR")
+                    .fctDetailAddress("DADDR")
+                    .fctTel("02-2671-1234")
+                    .fctGuide("My Guide")
+                    .openOnHolidays(BooleanAlt.Y)
+                    .fctOpenTime(LocalTime.of(12, 0))
+                    .fctCloseTime(LocalTime.of(18, 0))
+                    .unitUsageTime(30 + num)
+                    .fctLatitude(38.351542 + num / 10)
+                    .fctLongitude(128.555363 + num / 10)
+                    .createdAt(now.plusHours(num))
+                    .updatedAt(now.plusHours(num))
+                    .build();
+            facilities.add(facility);
+        }
+        
+        this.facilityRepository.saveAll(facilities);
+        
+        facilities.sort((f1, f2) -> {
+            if (f1.getCreatedAt().isBefore(f2.getCreatedAt())) {
+                return 1;
+            } else if (f1.getCreatedAt().isAfter(f2.getCreatedAt())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        
+        this.em.flush();
+        
+        // When
+        FacilityListRequestDto dto = FacilityListRequestDto.builder()
+                .order(Order.DESC)
+                .orderBy(OrderBy.CREATION_TIME)
+                .page(1)
+                .pageSize(10)
+                .providerId(null)
+                .searchKeyword("ILITY")
+                .searchCondition(SearchCondition.FACILITY_NAME)
+                .build();
+        List<FacilityListItemResponseDto> result =
+                this.facilityMapper.findFacilitiesBySearchCondition(dto);
+        
+        // Then
+        List<Facility> expectedFacilities = facilities.subList(0, 10);
+        assertThat(result.stream().map(FacilityListItemResponseDto::getFctId))
+                .containsExactly(expectedFacilities.stream().map(Facility::getFctId).toArray(Long[]::new));
+    }
+    
+    @Test
+    @DisplayName("countBySearchCondition() - success")
+    void countBySearchCondition_success() {
+        // Given
+        Category category2 = new Category("101", "category2");
+        category2 = this.categoryRepository.save(category2);
+        
+        final int facilityCount = 50;
+        List<Facility> facilities = new ArrayList<>(facilityCount);
+        for (int i = 0; i < facilityCount; i++) {
+            int num = i + 1;
+            LocalDateTime now = LocalDateTime.now();
+            Facility facility = Facility.builder()
+                    .cat(num % 2 == 0 ? this.category : category2)
+                    .provId(this.generatedProvId)
+                    .fctName("FACILITY" + num)
+                    .fctPostalCode("0" + (1234 + num))
+                    .fctAddress("ADDR")
+                    .fctDetailAddress("DADDR")
+                    .fctTel("02-2671-1234")
+                    .fctGuide("My Guide")
+                    .openOnHolidays(BooleanAlt.Y)
+                    .fctOpenTime(LocalTime.of(12, 0))
+                    .fctCloseTime(LocalTime.of(18, 0))
+                    .unitUsageTime(30 + num)
+                    .fctLatitude(38.351542 + num / 10)
+                    .fctLongitude(128.555363 + num / 10)
+                    .createdAt(now.plusHours(num))
+                    .updatedAt(now.plusHours(num))
+                    .build();
+            facilities.add(facility);
+        }
+        
+        this.facilityRepository.saveAll(facilities);
+        
+        facilities.sort((f1, f2) -> {
+            if (f1.getCreatedAt().isBefore(f2.getCreatedAt())) {
+                return 1;
+            } else if (f1.getCreatedAt().isAfter(f2.getCreatedAt())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        
+        this.em.flush();
+        
+        // When
+        FacilityListRequestDto dto = FacilityListRequestDto.builder()
+                .order(Order.DESC)
+                .orderBy(OrderBy.CREATION_TIME)
+                .page(1)
+                .pageSize(10)
+                .providerId(null)
+                .searchKeyword("ILITY")
+                .searchCondition(SearchCondition.FACILITY_NAME)
+                .catIds(List.of(category2.getCatId()))
+                .build();
+        int result = this.facilityMapper.countBySearchCondition(dto);
+        
+        // Then
+        assertThat(result).isEqualTo(facilityCount / 2);
     }
 }
