@@ -15,7 +15,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class FacilityListResponseDto {
-    private int number;
+    private int page;
     private int pageSize;
     private int totalElementCount;
     private int totalPageCount;

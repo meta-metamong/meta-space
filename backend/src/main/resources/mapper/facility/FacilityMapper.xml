@@ -190,4 +190,70 @@
                 #{id}
             </foreach>
     </delete>
+    
+    <select id="findFacilitiesBySearchCondition"
+            parameterType="com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto"
+            resultType="com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto">
+        SELECT
+            s.fct_id AS "fctId",
+            s.fct_name AS "fctName",
+            s.cat_id AS "catId",
+            s.cat_name AS "catName",
+            s.img_path AS "repImgUrl"
+        FROM (
+            SELECT
+                ROW_NUMBER() OVER () AS "rnum",
+                s.fct_id AS "fct_id",
+                s.fct_name AS "fct_name",
+                s.cat_id AS "cat_id",
+                s.cat_name AS "cat_name",
+                s.img_path AS "img_path"
+            FROM (
+                SELECT
+                    fct.fct_id AS "fct_id",
+                    fct.fct_name AS "fct_name",
+                    cat.cat_id AS "cat_id",
+                    cat.cat_name AS "cat_name",
+                    img.img_path AS "img_path"
+                FROM facility fct
+                INNER JOIN category cat ON cat.cat_id = fct.cat_id
+                LEFT JOIN image img ON img.img_attached_to = 'F'
+                <where>
+                    <if test="dto.providerId != null">
+                        fct.prov_id == #{dto.providerId}
+                    </if> AND
+                    <if test="dto.searchKeyword != null">
+                        <if test="dto.searchCondition == 'FACILITY_NAME'">
+                            fct.fct_name = '%' || #{dto.searchKeyword} || '%'
+                        </if> AND
+                    </if>
+                    <if test="dto.upperLatitude != null and dto.lowerLatitude != null and dto.upperLongitude != null and dto.lowerLongitude != null">
+                        <![CDATA[
+                            fct.fct_latitude <= #{dto.upperLatitude}
+                                AND fct.fct_latitude >= #{dto.lowerLatitude}
+                                AND fct.fct_longitude <= #{dto.upperLongitude}
+                                AND fct.fct_longitude >= #{dto.lowerLongitude}
+                        ]]> 
+                    </if>
+                </where>
+                ORDER BY
+                    <if test="dto.orderBy == 'DISTANCE'">
+                        POWER(fct.fct_latitude - #{dto.centerLatitude}, 2)
+                            + POWER(fct.fct_longitude - #{dto.centerLongitude}, 2)
+                    </if>
+                    <if test="dto.orderBy == 'RECENT'">
+                        fct.created_at
+                    </if>
+                    
+                    <if test="order == 'ASC'">
+                        ASC
+                    </if>
+                    <if test="order == 'DESC'">
+                        DESC
+                    </if>
+            ) s
+        ) s
+        WHERE s BETWEEN #{dto.page} - 1) * #{dto.pageSize} + 1 AND #{dto.page} * #{dto.pageSize}
+        ORDER BY s.rnum
+    </select>
 </mapper>

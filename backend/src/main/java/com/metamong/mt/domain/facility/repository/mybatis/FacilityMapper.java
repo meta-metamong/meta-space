@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
+import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
 
@@ -24,4 +26,6 @@ public interface FacilityMapper {
     void updateZoneById(@Param("dto") ZoneUpdateMapperDto dto);
     
     void deleteAdditionalInfosByIds(@Param("ids") List<Long> ids);
+    
+    List<FacilityListItemResponseDto> findFacilitiesBySearchCondition(@Param("dto") FacilityListRequestDto dto);
 }
