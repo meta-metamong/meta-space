@@ -21,8 +21,7 @@ import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInp
 export default {
     data() {
         return {
-            // currentComponent: "facilityRegistrationInput",
-            currentComponent: "addinfoRegistrationInput",
+            currentComponent: "facilityRegistrationInput",
             inputs: {
                 "facilityRegistration": {
                     fctName: "",

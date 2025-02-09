@@ -114,13 +114,9 @@
                 <p>{{ $t("facility.imageLimitDescription") }}</p>
             </div>
             <div>
-                <input type="file"
-                       ref="file-0"
-                       @change="(e) => onImageUpload(e, 0)"
-                       hidden>
-                <input v-for="(image, index) in this.data.images"
+                <input v-for="(_, index) in fileInput"
                        type="file"
-                       :ref="`file-${index + 1}`"
+                       :ref="`file-${index}`"
                        @change="(e) => onImageUpload(e, index)"
                        hidden>
                 <img v-for="image in data.images" :src="image.fileData">
@@ -161,13 +157,19 @@ export default {
             categories: [],
             selectedMinorCategories: [],
             operationTimeSelections,
-            data: this.facilityRegistration
+            data: this.facilityRegistration,
+            fileInput: []
         }
     },
     mounted() {
         get("/categories").then((response) => {
             this.categories = response.data.content;
         });
+        const a = [];
+        for (let i = 0; i < this.data.images.length + 1; i++) {
+            a.push(0);
+        }
+        this.fileInput = a;
     },
     methods: {
         onChangeMajorCategory(e) {
@@ -185,7 +187,8 @@ export default {
         },
         onAddImageBtnClick() {
             const indexToOpen = this.data.images.length;
-            this.$refs[`file-${indexToOpen}`].click();
+            console.log(this.$refs);
+            this.$refs[`file-${indexToOpen}`][0].click();
         },
         onImageUpload(e, imageNo) {
             const fileReader = new FileReader();
@@ -195,6 +198,7 @@ export default {
                     fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
                     fileData: fileReader.result
                 });
+                this.fileInput.push(0);
                 console.log(this.data.images);
             }
             fileReader.readAsDataURL(e.target.files[0]);
