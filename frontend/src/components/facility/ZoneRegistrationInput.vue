@@ -22,11 +22,16 @@
         <div class="input-box">
             <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
             <div>
-                <button>{{ $t("facility.addImage") }}</button>
+                <button @click="onAddImageBtnClick">{{ $t("facility.addImage") }}</button>
                 <p>{{ $t("facility.imageLimitDescription") }}</p>
             </div>
             <div>
-                <img v-for="image in data.images">
+                <input v-for="(_, idx) in fileInputs"
+                       type="file"
+                       :ref="`file-${idx}`"
+                       @change="(e) => onImageUpload(e, index)"
+                       hidden>
+                <img v-for="image in data.images" :src="image.fileData">
             </div>
         </div>
         <!-- TODO: Zone 추가 -->
@@ -47,7 +52,29 @@ export default {
     },
     data() {
         return {
-            data: {...this.zoneRegistration}
+            data: {...this.zoneRegistration},
+            fileInputs: [0]
+        }
+    },
+    methods: {
+        onAddImageBtnClick() {
+            const indexToOpen = this.data.images.length;
+            console.log(indexToOpen);
+            console.log(this.$refs);
+            this.$refs[`file-${indexToOpen}`][0].click();
+        },
+        onImageUpload(e) {
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                const filename = e.target.files[0].name;
+                this.data.images.push({
+                    fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
+                    fileData: fileReader.result
+                });
+                this.fileInputs.push(0);
+                console.log(this.data.images);
+            }
+            fileReader.readAsDataURL(e.target.files[0]);
         }
     }
 }
