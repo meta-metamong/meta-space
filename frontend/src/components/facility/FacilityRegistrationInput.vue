@@ -99,11 +99,20 @@
         <div class="input-box">
             <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
             <div>
-                <button>{{ $t("facility.addImage") }}</button>
+                <button @click="onAddImageBtnClick">{{ $t("facility.addImage") }}</button>
                 <p>{{ $t("facility.imageLimitDescription") }}</p>
             </div>
             <div>
-                <img v-for="image in data.images">
+                <input type="file"
+                       ref="file-0"
+                       @change="(e) => onImageUpload(e, 0)"
+                       hidden>
+                <input v-for="(image, index) in this.data.images"
+                       type="file"
+                       :ref="`file-${index + 1}`"
+                       @change="(e) => onImageUpload(e, index)"
+                       hidden>
+                <img v-for="image in data.images" :src="image.fileData">
             </div>
         </div>
         <div calss="input-box">
@@ -161,6 +170,22 @@ export default {
                 }
             }
             return [];
+        },
+        onAddImageBtnClick() {
+            const indexToOpen = this.data.images.length;
+            this.$refs[`file-${indexToOpen}`].click();
+        },
+        onImageUpload(e, imageNo) {
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                const filename = e.target.files[0].name;
+                this.data.images.push({
+                    fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
+                    fileData: fileReader.result
+                });
+                console.log(this.data.images);
+            }
+            fileReader.readAsDataURL(e.target.files[0]);
         }
     }
 };
