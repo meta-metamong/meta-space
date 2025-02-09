@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,18 +22,22 @@ public class LoggingAspect {
         Signature signature = joinPoint.getSignature();
         if (log.isDebugEnabled()) {
             log.debug("==================================");
-            log.debug("Method name: {}.{}", joinPoint.getTarget().getClass(), signature.getName());
+            log.debug("Method name: {}.{}", AopProxyUtils.ultimateTargetClass(joinPoint.getTarget()), signature.getName());
             log.debug("Arguments: {}", Arrays.toString(args));
             log.debug("{} Start!", signature.getName());
             log.debug("==================================");
         }
+        long startTime = System.nanoTime();
         Object returnValue = joinPoint.proceed(args);
+        long endTime = System.nanoTime();
+        log.info("##################################");
+        log.info("Method end: {}.{}", AopProxyUtils.ultimateTargetClass(joinPoint.getTarget()), signature.getName());
+        log.info("Operation time: {} ns", endTime - startTime);
         if (log.isDebugEnabled()) {
-            log.debug("##################################");
-            log.debug("Method end: {}.{}", joinPoint.getTarget().getClass(), signature.getName());
             log.debug("Returns: {}", returnValue);
-            log.debug("##################################");
         }
+        log.info("##################################");
+        
         return returnValue;
     }
 }
