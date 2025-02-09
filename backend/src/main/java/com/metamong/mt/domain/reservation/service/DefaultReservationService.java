@@ -91,11 +91,9 @@ public class DefaultReservationService implements ReservationService {
 
     @Override
     @Transactional
-    public Reservation saveReservation(ReservationNPaymentRequestDto dto) {
+    public void saveReservation(ReservationNPaymentRequestDto dto) {
         Reservation reservationDto = dto.getReservation().toEntity();
         Payment paymentDto = dto.getPayment().toEntity();
-
-        int maxUserCount = zoneRepository.findMaxUserCountByZoneId(reservationDto.getZoneId());
         
         // 각 시간대별 예약된 인원 조회
         List<HourlyUsageDto> existingReservations = reservationMapper.getHourlyUsageCounts(dto.getReservation());
@@ -110,7 +108,7 @@ public class DefaultReservationService implements ReservationService {
             LocalTime time = startTime;
             while (time.isBefore(endTime)) {
                 reservedCountMap.put(time, reservedCount);
-                time = time.plusMinutes(dto.getUnitUsageTime());
+                time = time.plusMinutes(dto.getReservation().getUnitUsageTime());
             }
         }
 
@@ -122,7 +120,7 @@ public class DefaultReservationService implements ReservationService {
                 throw new ReservationDuplicatedException("예약 가능한 인원 수를 초과하였습니다.");
             }
 
-            checkTime = checkTime.plusMinutes(dto.getUnitUsageTime());
+            checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
         }
 
         paymentDto.setReservation(reservationDto);

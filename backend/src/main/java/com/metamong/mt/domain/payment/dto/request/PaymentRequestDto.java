@@ -1,5 +1,7 @@
 package com.metamong.mt.domain.payment.dto.request;
 
+import java.time.LocalDateTime;
+
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.model.constant.PaymentState;
 
@@ -25,6 +27,7 @@ public class PaymentRequestDto {
                       .payPrice(this.payPrice)
                       .payMethod(this.payMethod)
                       .payState(PaymentState.P)
+                      .payDate(LocalDateTime.now())
                       .build();
     }
 }

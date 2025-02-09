@@ -58,14 +58,7 @@ public class ProviderSignUpRequestDto {
     @NotEmpty(message = "사업자등록번호는 필수입니다.")
     private String bizRegNum;
     
-    @NotEmpty(message = "은행코드는 필수입니다.")
-    private String bankCode;
-    
-    @NotEmpty(message = "계좌번호는 필수입니다.")
-    private String provAccount;
-    
-    @NotEmpty(message = "예금주명은 필수입니다.")
-    private String provAccountOwner;
+    private ProviderSignupAccountRequestDto account;
     
     @NotNull
     @NotEmpty
@@ -94,9 +87,6 @@ public class ProviderSignUpRequestDto {
         return FctProvider.builder()
                 .bizName(this.bizName)
                 .bizRegNum(this.bizRegNum)
-                .bankCode(this.bankCode)
-                .provAccount(this.provAccount)
-                .provAccountOwner(this.provAccountOwner)
                 .build();
     }
 }

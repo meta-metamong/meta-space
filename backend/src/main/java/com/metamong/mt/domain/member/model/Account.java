@@ -1,9 +1,11 @@
 package com.metamong.mt.domain.member.model;
 
-import jakarta.persistence.CascadeType;
+import com.metamong.mt.global.constant.BooleanAlt;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -17,14 +19,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "fct_provider")
+@Table(name = "account")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class FctProvider {
+public class Account {
     
     @Id
     private Long provId;
@@ -32,19 +34,23 @@ public class FctProvider {
     @OneToOne
     @MapsId
     @JoinColumn(name="prov_id")
-    private Member member;
-
-    @Column(name="biz_name")
-    private String bizName;
+    private FctProvider fctProvider;
     
-    @Column(name="biz_reg_num")
-    private String bizRegNum;
+    @Column(name="bank_code")
+    private String bankCode;
     
-    @OneToOne(mappedBy = "fctProvider", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Account account;
+    @Column(name="account_number")
+    private String accountNumber;
     
-    public void updateInfo(FctProvider provider) {
-        this.bizName = provider.getBizName();
-        this.bizRegNum = provider.getBizRegNum();
+    @Column(name="balance")
+    private Long balance;
+    
+    @Column(name="is_agreed_info")
+    @Enumerated(EnumType.STRING)
+    private BooleanAlt isAgreedInfo;
+    
+    public void updateInfo(Account dto) {
+        this.bankCode = dto.bankCode;
+        this.accountNumber = dto.getAccountNumber();
     }
 }

@@ -21,9 +21,11 @@ import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
+import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Role;
+import com.metamong.mt.domain.member.repository.jpa.AccountRepository;
 import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
@@ -41,6 +43,7 @@ public class DefaultMemberService implements MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
     private final FctProviderRepository providerRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
     private final EmailValidationService emailValidationService;
@@ -105,7 +108,12 @@ public class DefaultMemberService implements MemberService {
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
         member.setIsDel(BooleanAlt.N);
         
+        Account account = dto.getAccount().toEntity();
         FctProvider provider = dto.toProvider();
+        
+        account.setFctProvider(provider);
+        provider.setAccount(account);
+        
         provider.setMember(member);
         member.setFctProvider(provider);
         
@@ -148,14 +156,24 @@ public class DefaultMemberService implements MemberService {
         return this.providerRepository.findById(memId)
                 .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
     }
+    
+    @Override
+    @Transactional (readOnly = true)
+    public Account getAccount(Long memId) {
+        return this.accountRepository.findById(memId)
+                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+    }
 
 	@Override
 	@Transactional(readOnly = true)
 	public MemberResponseDto searchMember(Long memId) {
 	    Member member = getMemberByMapper(memId);
 	    FctProvider provider = null;
+	    Account account = null;
+	    
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        provider = this.getProvider(memId);
+	        account = this.getAccount(memId);
 	    }
         return MemberResponseDto.builder()
                                 .memId(member.getMemId())
@@ -170,9 +188,9 @@ public class DefaultMemberService implements MemberService {
                                 .role(member.getRole())
                                 .bizName(provider == null ? null : provider.getBizName())
                                 .bizRegNum(provider == null ? null : provider.getBizRegNum())
-                                .bankCode(provider == null ? null : provider.getBankCode())
-                                .provAccount(provider == null ? null : provider.getProvAccount())
-                                .provAccountOwner(provider == null ? null : provider.getProvAccountOwner())
+                                .bankCode(provider == null ? null : account.getBankCode())
+                                .accountNumber(provider == null ? null : account.getAccountNumber())
+                                .balance(provider == null ? null : account.getBalance())
                                 .build();	   
 	}
 	
