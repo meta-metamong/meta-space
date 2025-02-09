@@ -194,7 +194,7 @@ export default {
     gap: 5px;
     justify-content: flex-start;
     max-width: 100%;
-    margin-left: 10px;
+    margin-left: 8px;
     box-sizing: border-box;
 }
 

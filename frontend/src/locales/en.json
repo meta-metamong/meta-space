@@ -6,7 +6,8 @@
         "update": "update",
         "delete": "delete",
         "cancel": "cancel",
-        "check": "check"
+        "check": "check",
+        "report": "report"
     },
     "validation": {
         "confirmed": "The {field} field confirmation does not match",
@@ -118,6 +119,7 @@
         "usageCount": "Number of people",
         "additionalInfo": "Additional Information",
         "totalPrice": "Total Price",
+        "selectReason": "Select cancel reason",
         "paymentStatus": "Payment Status",
         "paymentMethod": "Payment Method",
         "paymentSuccess": "Payment Successful!",
