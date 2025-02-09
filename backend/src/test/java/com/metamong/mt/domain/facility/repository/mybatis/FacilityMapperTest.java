@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.dto.constant.Order;
@@ -417,5 +416,69 @@ class FacilityMapperTest {
         List<Facility> expectedFacilities = facilities.subList(0, 10);
         assertThat(result.stream().map(FacilityListItemResponseDto::getFctId))
                 .containsExactly(expectedFacilities.stream().map(Facility::getFctId).toArray(Long[]::new));
+    }
+    
+    @Test
+    @DisplayName("countBySearchCondition() - success")
+    void countBySearchCondition_success() {
+        // Given
+        Category category2 = new Category("101", "category2");
+        category2 = this.categoryRepository.save(category2);
+        
+        final int facilityCount = 50;
+        List<Facility> facilities = new ArrayList<>(facilityCount);
+        for (int i = 0; i < facilityCount; i++) {
+            int num = i + 1;
+            LocalDateTime now = LocalDateTime.now();
+            Facility facility = Facility.builder()
+                    .cat(num % 2 == 0 ? this.category : category2)
+                    .provId(this.generatedProvId)
+                    .fctName("FACILITY" + num)
+                    .fctPostalCode("0" + (1234 + num))
+                    .fctAddress("ADDR")
+                    .fctDetailAddress("DADDR")
+                    .fctTel("02-2671-1234")
+                    .fctGuide("My Guide")
+                    .openOnHolidays(BooleanAlt.Y)
+                    .fctOpenTime(LocalTime.of(12, 0))
+                    .fctCloseTime(LocalTime.of(18, 0))
+                    .unitUsageTime(30 + num)
+                    .fctLatitude(38.351542 + num / 10)
+                    .fctLongitude(128.555363 + num / 10)
+                    .createdAt(now.plusHours(num))
+                    .updatedAt(now.plusHours(num))
+                    .build();
+            facilities.add(facility);
+        }
+        
+        this.facilityRepository.saveAll(facilities);
+        
+        facilities.sort((f1, f2) -> {
+            if (f1.getCreatedAt().isBefore(f2.getCreatedAt())) {
+                return 1;
+            } else if (f1.getCreatedAt().isAfter(f2.getCreatedAt())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        
+        this.em.flush();
+        
+        // When
+        FacilityListRequestDto dto = FacilityListRequestDto.builder()
+                .order(Order.DESC)
+                .orderBy(OrderBy.CREATION_TIME)
+                .page(1)
+                .pageSize(10)
+                .providerId(null)
+                .searchKeyword("ILITY")
+                .searchCondition(SearchCondition.FACILITY_NAME)
+                .catIds(List.of(category2.getCatId()))
+                .build();
+        int result = this.facilityMapper.countBySearchCondition(dto);
+        
+        // Then
+        assertThat(result).isEqualTo(facilityCount / 2);
     }
 }

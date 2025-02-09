@@ -1,8 +1,10 @@
 package com.metamong.mt.domain.facility.dto.request;
 
+import java.util.List;
+
+import com.metamong.mt.domain.facility.dto.constant.Order;
 import com.metamong.mt.domain.facility.dto.constant.OrderBy;
 import com.metamong.mt.domain.facility.dto.constant.SearchCondition;
-import com.metamong.mt.domain.facility.dto.constant.Order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,7 @@ public class FacilityListRequestDto {
     private final Long providerId;
     private final String searchKeyword;
     private final SearchCondition searchCondition;
+    private final List<String> catIds;
     private final Double upperLatitude;
     private final Double lowerLatitude;
     private final Double upperLongitude;

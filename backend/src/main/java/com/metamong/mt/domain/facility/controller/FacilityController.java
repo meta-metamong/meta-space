@@ -1,5 +1,7 @@
 package com.metamong.mt.domain.facility.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +25,7 @@ import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
+import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
@@ -90,7 +93,8 @@ public class FacilityController {
             @RequestParam(value = "upper-longitude", required = false) Double upperLongitude,
             @RequestParam(value = "lower-longitude", required = false) Double lowerLongitude,
             @RequestParam(value = "center-latitude", required = false) Double centerLatitude,
-            @RequestParam(value = "lowerLatitude", required = false) Double centerLongitude
+            @RequestParam(value = "lowerLatitude", required = false) Double centerLongitude,
+            @RequestParam(value = "cat-id", required = false) List<String> catIds
     ) {
         FacilityListRequestDto dto = FacilityListRequestDto.builder()
                 .orderBy(orderBy)
@@ -106,6 +110,7 @@ public class FacilityController {
                 .lowerLongitude(lowerLongitude)
                 .centerLatitude(centerLatitude)
                 .centerLongitude(centerLongitude)
+                .catIds(catIds)
                 .build();
         return ResponseEntity.ok(
                 BaseResponse.of(this.facilityService.getFacilities(dto), HttpStatus.OK)

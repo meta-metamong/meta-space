@@ -28,4 +28,6 @@ public interface FacilityMapper {
     void deleteAdditionalInfosByIds(@Param("ids") List<Long> ids);
     
     List<FacilityListItemResponseDto> findFacilitiesBySearchCondition(@Param("dto") FacilityListRequestDto dto);
+    
+    int countBySearchCondition(@Param("dto") FacilityListRequestDto dto);
 }
