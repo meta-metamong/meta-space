@@ -30,7 +30,6 @@ public class MemberResponseDto {
 	private final String bizName;
     private final String bizRegNum;
     private final String bankCode;
-    private final String provAccount;
-    private final String provAccountOwner;
-    
+    private final String accountNumber;
+    private final Long balance;    
 }

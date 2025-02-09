@@ -6,6 +6,7 @@ import java.time.LocalTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,8 +39,13 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rvt_pk_generator")
     private Long rvtId;
 
+    @Column(name="cons_id")
     private Long consId;
+    
+    @Column(name="zone_id")
     private Long zoneId;
+    
+    @Column(name="rvt_date")
     private LocalDate rvtDate;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

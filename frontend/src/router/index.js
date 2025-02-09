@@ -15,6 +15,7 @@ import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
+import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 
 const routes = [
 	{ path: '/', component: Home },
@@ -28,6 +29,8 @@ const routes = [
 	{ path: '/change-pw', component: ChangePassword },
 	{ path: '/find-pw', component: FindPassword },
 	{ path: '/download', component: Download  },
+
+	{ path: '/facilities/register', component: FacilityRegistration },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },

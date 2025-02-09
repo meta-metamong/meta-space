@@ -1,14 +1,14 @@
 package com.metamong.mt.domain.member.model.constant;
 
 public enum Role {
-    ROLE_CONS,
-    ROLE_PROV,
-    ROLE_ADMN;
+    ROLE_CONS("CONS"),
+    ROLE_PROV("PROV"),
+    ROLE_ADMN("ADMN");
     
     private final String role;
     
-    Role() {
-        this.role = name().substring("ROLE_".length());
+    Role(String role) {
+        this.role = role;
     }
     
     public String role() {

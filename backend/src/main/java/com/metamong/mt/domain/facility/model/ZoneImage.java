@@ -25,4 +25,9 @@ public class ZoneImage extends Image {
         super(imgPath, imgDisplayOrder);
         this.zone = zone;
     }
+
+    @Override
+    public String toString() {
+        return "ZoneImage [" + super.toString() + ", zone.zoneId=" + zone.getZoneId() + "]";
+    }
 }

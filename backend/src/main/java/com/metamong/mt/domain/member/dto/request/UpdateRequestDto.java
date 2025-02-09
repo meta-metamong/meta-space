@@ -45,8 +45,7 @@ public class UpdateRequestDto {
     private String bizRegNum;
     
     private String bankCode;
-    private String provAccount;
-    private String provAccountOwner;
+    private String account;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);
@@ -68,9 +67,6 @@ public class UpdateRequestDto {
         return FctProvider.builder()
                 .bizName(this.bizName)
                 .bizRegNum(this.bizRegNum)
-                .bankCode(this.bankCode)
-                .provAccount(this.provAccount)
-                .provAccountOwner(this.provAccountOwner)
                 .build();
     }
 }
