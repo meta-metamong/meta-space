@@ -54,8 +54,8 @@ public class ReservationController {
     
     @PostMapping("/reservations")
     public ResponseEntity<?> saveResevation(@Validated @RequestBody ReservationRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED.value()).body(BaseResponse.of(reservationService.saveReservation(dto),
-                HttpStatus.CREATED, "예약하기 성공"));
+    	this.reservationService.saveReservation(dto);
+        return ResponseEntity.ok(BaseResponse.of(HttpStatus.CREATED, "예약하기 성공"));
     }
 
     @PutMapping("/reservations/{reservationId}")
@@ -64,7 +64,7 @@ public class ReservationController {
         return ResponseEntity.ok(BaseResponse.of(dto, HttpStatus.OK, "예약 취소 성공"));
     }
     
-    @GetMapping("/reservations/remain")
+    @PostMapping("/reservations/remain")
     public ResponseEntity<?> getAvailableTimes(@RequestBody SelectedInfoRequestDto dto) {
         
         List<RemainingCountResponseDto> availableTimes = reservationService.getRemainingUsageCount(dto);

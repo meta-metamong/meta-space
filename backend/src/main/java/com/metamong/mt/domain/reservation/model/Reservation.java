@@ -18,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "reservation")
@@ -31,6 +32,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Getter @Setter
+@ToString
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rvt_pk_generator")
