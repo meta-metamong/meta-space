@@ -15,6 +15,7 @@ import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
+import Map from '../pages/Map.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -35,6 +36,7 @@ const routes = [
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
+	{ path: '/map', component: Map },
 ];
 
 const router = createRouter({

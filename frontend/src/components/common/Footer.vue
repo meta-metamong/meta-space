@@ -5,7 +5,7 @@
           <router-link to="/" class="nav-link text-center">
             <i class="bi bi-search text-primary"></i><br>{{ $t('footer.search') }}
           </router-link>
-          <router-link to="/" class="nav-link text-center">
+          <router-link to="/map" class="nav-link text-center">
             <i class="bi bi-map text-primary"></i><br>{{ $t('footer.map') }}
           </router-link>
           <router-link to="/" class="nav-link text-center">
