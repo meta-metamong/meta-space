@@ -6,7 +6,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class LoggingAspect {
-
-    @Pointcut("execution(public * com.metamong.mt.domain..service.*.*(..)) || execution(public * com.metamong.mt.domain..repository..*.*(..))")
-    private void debugPointcut() {
-    }
     
-    @Around("domainPointcut()")
+    @Around("execution(public * com.metamong.mt.domain..service..*.*(..)) || execution(public * com.metamong.mt.domain..repository..*.*(..))")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         Signature signature = joinPoint.getSignature();
@@ -33,10 +28,10 @@ public class LoggingAspect {
         }
         Object returnValue = joinPoint.proceed(args);
         if (log.isDebugEnabled()) {
-            log.debug("==================================");
+            log.debug("##################################");
             log.debug("Method end: {}.{}", joinPoint.getTarget().getClass(), signature.getName());
             log.debug("Returns: {}", returnValue);
-            log.debug("==================================");
+            log.debug("##################################");
         }
         return returnValue;
     }
