@@ -25,4 +25,9 @@ public class FacilityImage extends Image {
         super(imgPath, imgDisplayOrder);
         this.fct = fct;
     }
+
+    @Override
+    public String toString() {
+        return "FacilityImage [" + super.toString() + ", fct.fctId=" + fct.getFctId() + "]";
+    }
 }
