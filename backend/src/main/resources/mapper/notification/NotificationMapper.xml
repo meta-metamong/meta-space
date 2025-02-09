@@ -1,5 +1,10 @@
-<mapper namespace="com.example.mapper.NotificationMapper">
-    <insert id="insertNotification" parameterType="com.example.domain.Notification">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.metamong.mt.domain.notification.repository.mybatis.NotificationMapper">
+    <insert id="insertNotification" parameterType="com.metamong.mt.domain.notification.model.Notification">
         INSERT INTO notification (receiver_id, noti_msg, created_at, is_read)
         VALUES (#{receiverId}, #{notiMsg}, #{createdAt}, #{isRead})
     </insert>

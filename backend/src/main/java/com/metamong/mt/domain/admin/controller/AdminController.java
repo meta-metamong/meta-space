@@ -2,6 +2,7 @@ package com.metamong.mt.domain.admin.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
+import com.metamong.mt.domain.admin.dto.response.DashBoardDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -158,5 +160,10 @@ public class AdminController {
     // 각 시설 별 실시간 예약 건수 및 매출 및 취소율 (복합 막대 그래프)
     // 월별 예약 top 5 시설(막대 or 원형 or 파이)
     // 월별 매출 top 5 시설(막대 or 누적 영역 차트)
+    @GetMapping("/reservations/this-week")
+    public ResponseEntity<List<DashBoardDto>> getThisWeekReservations() {
+    	List<DashBoardDto> reservations = adminService.getThisWeekReservations();
+        return ResponseEntity.ok(reservations);
+    }
     
 }

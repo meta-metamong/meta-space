@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
+import com.metamong.mt.domain.admin.dto.response.DashBoardDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -39,4 +40,6 @@ public interface AdminMapper {
 
     // 총금액
     BigDecimal getTotalRevenue();
+    
+    List<DashBoardDto> getReservationsThisWeek();
 }

@@ -172,4 +172,28 @@ ORDER BY m.created_at
             zone z ON z.zone_id = r.zone_id
     </select>
 
+<select id="getReservationsThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.DashBoardDto">
+<![CDATA[
+        SELECT z.fct_id,
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 4 THEN 1 ELSE 0 END) AS "Wednes",
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 5 THEN 1 ELSE 0 END) AS "Thurs",
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 6 THEN 1 ELSE 0 END) AS "Fri",
+            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
+        FROM
+            reservation r
+        JOIN
+            zone z ON r.zone_id = z.zone_id
+        WHERE
+            r.rvt_date >= TRUNC(SYSDATE, 'WW')
+            AND r.rvt_date < TRUNC(SYSDATE, 'WW') + 7
+        GROUP BY
+            z.fct_id
+]]>
+</select>
+
+
+
 </mapper>
