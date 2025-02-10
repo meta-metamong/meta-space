@@ -32,10 +32,12 @@ public class ReservationRequestDto {
     @Min(value = 1, message = "이용 인원 수는 1 이상이어야 합니다.")
     private int usageCount;
 
+    private int unitUsageTime;
+
     public Reservation toEntity() {
         return Reservation.builder()
-                .zoneId(this.zoneId)
                 .consId(this.consId)
+                .zoneId(this.zoneId)
                 .rvtDate(this.rvtDate)
                 .usageStartTime(this.usageStartTime)
                 .usageEndTime(this.usageEndTime)

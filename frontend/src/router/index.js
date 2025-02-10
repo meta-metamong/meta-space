@@ -7,7 +7,7 @@ import UpdateMember from '../pages/member/UpdateMember.vue';
 import Download from '../pages/Download.vue';
 import Admin from '../pages/AdminHome.vue';
 import ChatList  from '../pages/ChatList.vue';
-import DetailReservation from '../components/reservation/DetailReservation.vue';
+import DetailReservation from '../pages/reservation/DetailReservation.vue';
 import Reservation from '../pages/reservation/Reservation.vue';
 import ReservationList from '../pages/reservation/ReservationList.vue';
 import AdminChat from '../components/admin/OnlineMemberList.vue';
@@ -19,6 +19,7 @@ import AdminMemberSearch from '../pages/admin/MemberSearch.vue';
 import FacilityApproval from '../pages/admin/FacilityApproval.vue';
 import AdminMemberBen from '../components/admin/AdminMemberBen.vue';
 import AdminSalesExport from '../components/admin/AdminSalesExport.vue';
+import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 
 const routes = [
 	{ path: '/', component: Home },
@@ -33,6 +34,8 @@ const routes = [
 	{ path: '/find-pw', component: FindPassword },
 	{ path: '/download', component: Download  },
 
+	{ path: '/facilities/register', component: FacilityRegistration },
+
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
 	{ path: '/admin/memSearch', component: AdminMemberSearch },
@@ -44,6 +47,7 @@ const routes = [
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
+
 ];
 
 const router = createRouter({

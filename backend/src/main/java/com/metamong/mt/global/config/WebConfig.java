@@ -4,10 +4,12 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.metamong.mt.global.commons.HttpMethodOverrideFilter;
+import com.metamong.mt.global.logging.LoggingInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -25,4 +27,9 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addViewController("/ai").setViewName("ai");
 	}
 
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+	    registry.addInterceptor(new LoggingInterceptor())
+	            .addPathPatterns("/api/**");
+	}
 }

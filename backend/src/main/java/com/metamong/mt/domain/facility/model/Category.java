@@ -54,4 +54,10 @@ public class Category {
     public boolean isRoot() {
         return this.parentCat == null;
     }
+
+    @Override
+    public String toString() {
+        return "Category [catId=" + catId + ", parentCat.catId=" + (parentCat != null ? parentCat.getCatId() : null) + ", catName=" + catName + ", children="
+                + children + "]";
+    }
 }
