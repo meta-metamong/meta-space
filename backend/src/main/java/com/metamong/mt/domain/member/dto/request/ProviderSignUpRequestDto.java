@@ -3,6 +3,7 @@ package com.metamong.mt.domain.member.dto.request;
 import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
+import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
@@ -59,7 +60,15 @@ public class ProviderSignUpRequestDto {
     @NotEmpty(message = "사업자등록번호는 필수입니다.")
     private String bizRegNum;
     
-    private ProviderSignupAccountRequestDto account;
+    @NotEmpty(message = "은행코드는 필수입니다.")
+    private String bankCode;
+    
+    @NotEmpty(message = "계좌번호는 필수입니다.")
+    private String accountNumber;
+    
+    @NotEmpty(message = "동의 여부는 필수입니다.")
+    @EnumValidator(enumClass=BooleanAlt.class, message="값은 'Y' 또는 'N'만 가능합니다.")
+    private String isAgreedInfo;
     
     @NotNull
     @NotEmpty
@@ -90,5 +99,14 @@ public class ProviderSignUpRequestDto {
                 .bizName(this.bizName)
                 .bizRegNum(this.bizRegNum)
                 .build();
+    }
+    
+    public Account toAccount() {
+        return Account.builder()
+                      .bankCode(this.bankCode)
+                      .accountNumber(this.accountNumber)
+                      .isAgreedInfo(BooleanAlt.valueOf(isAgreedInfo))
+                      .balance((long) 0)
+                      .build();
     }
 }

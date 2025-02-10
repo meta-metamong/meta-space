@@ -8,9 +8,11 @@ import com.metamong.mt.global.constant.BooleanAlt;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class ZoneRegistrationRequestDto {
     private int zoneNo;
     private String zoneName;
@@ -19,11 +21,13 @@ public class ZoneRegistrationRequestDto {
     private int hourlyRate;
     private List<ImageRequestDto> images;
     
-    public Zone toEntity() {
+    public Zone toEntity(Long fctId) {
         return Zone.builder()
                 .zoneName(this.zoneName)
+                .fctId(fctId)
                 .isSharedZone(this.isSharedZone)
                 .hourlyRate(this.hourlyRate)
+                .maxUserCount(this.maxUserCount)
                 .build();
     }
 }

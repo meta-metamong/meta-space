@@ -155,7 +155,7 @@
         "detailAddress": "상세 주소",
         "facilityTel": "시설 전화번호",
         "facilityOperationTime": "영업 시간",
-        "isOpenOnHolidays": "공휴일 엽업 여부",
+        "isOpenOnHolidays": "공휴일 영업 여부",
         "unitUsageTime": "단위 이용 시간 (분)",
         "facilityImage": "시설 이미지",
         "addImage": "이미지 추가",
@@ -178,6 +178,7 @@
         "register": "등록",
         "yes": "예",
         "no": "아뇨",
-        "addZone": "Zone 추가"
+        "addZone": "Zone 추가",
+        "delete": "Delete"
     }
 }
