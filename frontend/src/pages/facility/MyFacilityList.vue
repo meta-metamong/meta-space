@@ -7,24 +7,42 @@
                 to="/facilities/register"
             ><i class="bi bi-plus"></i> {{ $t("myFacility.registerNewFaciltiy") }}</router-link>
         </div>
-        <div class="list-item">
-            <h2><!-- TODO -->광장동실내배드민턴장</h2>
-            <p>서울시 OO구</p>
+        <div class="list-item" v-for="facility in facilities">
+            <h2>{{ facility.fctName }}</h2>
+            <p>{{ facility.address }}</p>
             <div class="list-item-button-container">
-                <button class="edit-button">{{ $t("myFacility.edit") }}</button>
-                <button class="delete-button">{{ $t("myFacility.delete") }}</button>
-            </div>
-        </div>
-        <div class="list-item">
-            <h2><!-- TODO -->광장동실내배드민턴장</h2>
-            <p>서울시 OO구</p>
-            <div class="list-item-button-container">
-                <button class="edit-button">{{ $t("myFacility.edit") }}</button>
-                <button class="delete-button">{{ $t("myFacility.delete") }}</button>
+                <button class="edit-button">{{ $t("myFacility.edit") }}</button> <!-- To edit -->
+                <button class="delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
             </div>
         </div>
     </div>
 </template>
+
+<script>
+import { get } from "../../apis/axios";
+
+export default {
+    data() {
+        return {
+            facilities: []
+        }
+    },
+    computed: {
+        userId() {
+            // return this.$store.state.userId;
+            return 21;
+        }
+    },
+    mounted() {
+        get(`/members/${this.userId}/facilities`).then((response) => {
+            const responseBody = response.data;
+            const content = responseBody.content;
+            console.log(content);
+            this.facilities = content;
+        });
+    }
+}
+</script>
 
 <style scoped>
 .header {
