@@ -10,10 +10,10 @@
         <div class="mb-4">
             <input class="signup-input w-100" type="text" v-model="businessNumber" :placeholder="$t('member.businessNumber')" required />
         </div>
-        <!-- 은행명 -->
+        <!-- 은행코드 -->
         <select v-model="bankCode" class="form-select mb-4">
             <option value="" selected disabled>{{ $t('signup.selectBank') }}</option>
-            <option v-for="bank in bankList" :key="bank" :value="bank">{{ bank }}</option>
+            <option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
         </select>
         <!-- 계좌 -->
         <div class="mb-4">
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { bankList } from '../../../assets/banks';
+import { get } from '../../../apis/axios';
 
 export default{
     name: 'InputAdditional',
@@ -34,7 +34,7 @@ export default{
             businessNumber:"",
             bankCode: "",
             accountNumber: "",
-            bankList: bankList
+            bankList: []
         }
     },
     methods:{
@@ -52,7 +52,11 @@ export default{
                 key: 'accountNumber',
                 value: this.accountNumber
             }]);
-		}
+		},
+        async getAllBanks(){
+            const response = await get('/banks');
+            this.bankList = response.data.content;
+        }
 	},
     computed:{
         isValidatedName(){
@@ -61,6 +65,9 @@ export default{
         isInputEmpty(){
             return this.businessName === "" || this.businessNumber === "" || this.bankCode === "" || this.accountNumber === "";
         }
+    },
+    mounted() {
+        this.getAllBanks();
     }
 }
 </script>

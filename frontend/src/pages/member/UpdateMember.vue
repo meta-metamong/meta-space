@@ -52,7 +52,9 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.bankCode" />
+				<select class="ms-5 w-75 form-select" @change="(e) => test(e)" v-model="memberInfo.bankCode">
+					<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
+				</select>
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
@@ -78,6 +80,7 @@ export default {
 			memberInfo: {},
 			errorMessage: "",
 			profileImage: "",
+			bankList: []
 		}
 	},
 	methods: {
@@ -102,6 +105,7 @@ export default {
 				}
 			}
 			
+			console.log(updateDto);
 			const response = await put(`/members`, updateDto);
 			if (response.status === 200) {
 				alert(response.data.message);
@@ -124,6 +128,10 @@ export default {
 				}
 			}).open();
 		},
+		async getAllBanks(){
+			const response = await get('/banks');
+			this.bankList = response.data.content;
+		},
 		/*
 			<이미지 업로드 프로세스>
 			1. 프로필 이미지 클릭
@@ -135,7 +143,6 @@ export default {
 		},
 		onImageUpload(e){
 			alert("업로드 해보시지 ㅋㅋ");
-			console.log(e);
 			return;
 			const fileReader = new FileReader();
             fileReader.onload = () => {
@@ -148,6 +155,9 @@ export default {
                 console.log(this.data.images);
             }
             fileReader.readAsDataURL(e.target.files[0]);
+		},
+		test(e){
+			console.log(e.target.value);
 		}
 	},
 	computed:{
@@ -167,6 +177,7 @@ export default {
 	},
 	mounted() {
 		this.getMemberInfo();
+		this.getAllBanks();
 	}
 };
 </script>

@@ -40,7 +40,7 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
-                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.bankCode }}</p>
+                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.bankName }}</p>
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>

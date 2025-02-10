@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.member.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,7 @@ import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.dto.response.BankResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
@@ -28,6 +30,7 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.AccountRepository;
 import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
+import com.metamong.mt.domain.member.repository.mybatis.BankMapper;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.constant.BooleanAlt;
 import com.metamong.mt.global.mail.MailAgent;
@@ -44,6 +47,8 @@ public class DefaultMemberService implements MemberService {
     private final MemberRepository memberRepository;
     private final FctProviderRepository providerRepository;
     private final AccountRepository accountRepository;
+    private final BankMapper bankMapper;
+    
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
     private final EmailValidationService emailValidationService;
@@ -173,10 +178,12 @@ public class DefaultMemberService implements MemberService {
 	    Member member = getMemberByMapper(memId);
 	    FctProvider provider = null;
 	    Account account = null;
+	    BankResponseDto bank = null;
 	    
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        provider = this.getProvider(memId);
 	        account = this.getAccount(memId);
+	        bank = this.bankMapper.findNameByCode(account.getBankCode());
 	    }
         return MemberResponseDto.builder()
                                 .memId(member.getMemId())
@@ -191,7 +198,8 @@ public class DefaultMemberService implements MemberService {
                                 .role(member.getRole())
                                 .bizName(provider == null ? null : provider.getBizName())
                                 .bizRegNum(provider == null ? null : provider.getBizRegNum())
-                                .bankCode(provider == null ? null : account.getBankCode())
+                                .bankCode(provider == null ? null : bank.getBankCode())
+                                .bankName(provider == null ? null : bank.getBankName())
                                 .accountNumber(provider == null ? null : account.getAccountNumber())
                                 .balance(provider == null ? null : account.getBalance())
                                 .build();	   
@@ -207,7 +215,8 @@ public class DefaultMemberService implements MemberService {
 	        FctProvider provider = this.getProvider(memId);
 	        provider.updateInfo(dto.toProvider());
 	        Account account = this.getAccount(memId);
-	        if(!dto.getAccountNumber().equals(account.getAccountNumber())) {
+	        if(!dto.getAccountNumber().equals(account.getAccountNumber()) 
+	                || !dto.getBankCode().equals(account.getBankCode())) {
 	            account.updateInfo(dto.toAccount());
 	        }
 	    }
@@ -256,6 +265,11 @@ public class DefaultMemberService implements MemberService {
 
     public String view() {
     	return "개수"+roleUserCount;
+    }
+
+    @Override
+    public List<BankResponseDto> getAllBanks() {
+        return this.bankMapper.findAllBanks();
     }
 
 }
