@@ -2,7 +2,8 @@
 	<div class="container w-100 mt-4">
 		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
 		<div class="text-center mb-3">
-            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" alt="Profile Image" class="profile-img">
+            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" @click="uploadImage" alt="Profile Image" class="profile-img">
+			<input type="file" :ref="'file-member-image'" @change="(e) => onImageUpload(e)" hidden/>
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.email') }}</p>
@@ -51,7 +52,9 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.bankCode" />
+				<select class="ms-5 w-75 form-select" @change="(e) => test(e)" v-model="memberInfo.bankCode">
+					<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
+				</select>
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
@@ -62,7 +65,7 @@
                 <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.balance" />
             </div>
         </div>
-        <div class="w-100 text-center mb-2">
+        <div class="w-100 text-center mb-2 pt-3">
             <button class="signup-btn w-75 mb-3 rounded-pill" :disabled="!isValidatedName || !isValidatedPhone || isInputEmpty" @click="handleSubmit">{{ $t('button.save') }}</button>
 			<button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/profile')">{{ $t('button.cancel') }}</button>
         </div>
@@ -75,7 +78,9 @@ export default {
 	data() {
 		return {
 			memberInfo: {},
-			errorMessage: ""
+			errorMessage: "",
+			profileImage: "",
+			bankList: []
 		}
 	},
 	methods: {
@@ -100,6 +105,7 @@ export default {
 				}
 			}
 			
+			console.log(updateDto);
 			const response = await put(`/members`, updateDto);
 			if (response.status === 200) {
 				alert(response.data.message);
@@ -122,6 +128,37 @@ export default {
 				}
 			}).open();
 		},
+		async getAllBanks(){
+			const response = await get('/banks');
+			this.bankList = response.data.content;
+		},
+		/*
+			<이미지 업로드 프로세스>
+			1. 프로필 이미지 클릭
+			2. 등록할 파일 입력
+			3. 파일의 확장자을 값으로 요청 후 파일 주소를 응답으로 받는다.
+		*/
+		uploadImage(){
+			this.$refs['file-member-image'].click();
+		},
+		onImageUpload(e){
+			alert("업로드 해보시지 ㅋㅋ");
+			return;
+			const fileReader = new FileReader();
+            fileReader.onload = () => {
+                const filename = e.target.files[0].name;
+                this.profileImage = {
+                    fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
+                    fileData: fileReader.result
+                };
+                this.fileInput.push(0);
+                console.log(this.data.images);
+            }
+            fileReader.readAsDataURL(e.target.files[0]);
+		},
+		test(e){
+			console.log(e.target.value);
+		}
 	},
 	computed:{
 		isValidatedName(){
@@ -140,6 +177,7 @@ export default {
 	},
 	mounted() {
 		this.getMemberInfo();
+		this.getAllBanks();
 	}
 };
 </script>

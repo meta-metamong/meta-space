@@ -134,6 +134,22 @@
         "completed": "완료됨",
         "noAvailability": "선택한 날짜/시간에 예약 가능한 자리가 없습니다."
     },
+    "payment": {
+        "list": "결제 목록",
+        "detail": "결제 상세정보",
+        "P": "예약 완료",
+        "Q": "예약 취소",
+        "R": "환불 완료",
+        "payId": "결제 ID",
+        "payPrice": "결제 금액",
+        "payMethod": "결제 수단",
+        "payDate": "결제일",
+        "payState": "결제 상태",
+        "refundBankCode": "환불 은행",
+        "refundAccount": "환불 계좌",
+        "refundAccountOwner": "환불 계좌 예금주명",
+        "rvtCancelationReason": "예약 취소 이유"
+    },
     "calendar": {
         "selectDate": "날짜 선택",
         "selectTime": "시간 선택",

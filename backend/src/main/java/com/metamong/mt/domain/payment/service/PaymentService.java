@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.metamong.mt.domain.payment.dto.response.PaymentResponseDto;
 import com.metamong.mt.domain.payment.model.Payment;
+import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 
 public interface PaymentService {
     
@@ -32,7 +33,7 @@ public interface PaymentService {
      * 예약 취소시 환불 처리하는 메서드입니다.
      * @param rvtId
      */
-    void reservationCancelRequest(Long rvtId);
+    void reservationCancelRequest(Long rvtId, CancelRequestDto dto);
     
     /**
      * 관리자가 환불 허가시 환불하는 메서드입니다.
