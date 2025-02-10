@@ -128,7 +128,7 @@
                        hidden>
             <div class="image-list">
                 <div class="image-box" v-for="image in data.images">
-                    <img :src="image.fileData">
+                    <img :src="image.fileDataInBase64">
                 </div>
             </div>
         </div>
@@ -213,7 +213,8 @@ export default {
                 const filename = e.target.files[0].name;
                 this.data.images.push({
                     fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
-                    fileData: fileReader.result
+                    fileDataInBase64: fileReader.result,
+                    fileData: e.target.files[0]
                 });
                 this.fileInput.push(0);
                 console.log(this.data.images);

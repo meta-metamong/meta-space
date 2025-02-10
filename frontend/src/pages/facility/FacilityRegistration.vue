@@ -28,7 +28,8 @@ import { computed } from "vue";
 import AdditionalInformation from "../../components/facility/AdditionalInformation.vue";
 import FacilityRegistrationInput from "../../components/facility/FacilityRegistrationInput.vue";
 import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInput.vue";
-import { post } from "../../apis/axios";
+import apiClient, { post } from "../../apis/axios";
+import axios from "axios";
 
 export default {
     data() {
@@ -109,21 +110,6 @@ export default {
                         order: idx + 1
                     };
                 }),
-                zones: [
-                    {
-                        zoneNo: 1,
-                        zoneName: "",
-                        maxUserCount: 30,
-                        isSharedZone: "",
-                        hourlyRate: 3000,
-                        images: [
-                            {
-                                fileType: "",
-                                order: 1
-                            }
-                        ]
-                    },
-                ],
                 zones: this.inputs.zoneRegistration.map((z, idx) => {
                     return {
                         zoneNo: idx + 1,
@@ -147,9 +133,41 @@ export default {
             post("/facilities", requestBody).then((response) => {
                 const responseBody = response.data;
                 console.log(responseBody);
-                const fctImageUploadUrls = responseBody.fctImageUploadUrls;
-                const zoneImageUploadUrls = responseBody.zoneImageUploadUrls;
-
+                const content = responseBody.content;
+                const fctImageUploadUrls = content.fctImageUploadUrls;
+                const zoneImageUploadUrls = content.zoneImageUploadUrls;
+                for (const fctImageUploadUrl of fctImageUploadUrls) {
+                    const image = this.inputs.facilityRegistration.images[fctImageUploadUrl.order - 1];
+                    console.log("fctImage", image);
+                    axios.put(
+                        fctImageUploadUrl.uploadUrl,
+                        image.fileData,
+                        {
+                            headers: {
+                                "Content-Type": `image/${image.fileExtension}`
+                            }
+                        }
+                    )
+                }
+                for (const zoneImageUploadUrl of zoneImageUploadUrls) {
+                    const zoneNo = zoneImageUploadUrl.zoneNo;
+                    const uploadUrls = zoneImageUploadUrl.uploadUrls;
+                    const zoneImages = this.inputs.zoneRegistration[zoneNo - 1].images;
+                    for (const uploadUrl of uploadUrls) {
+                        const zoneImage = zoneImages[uploadUrl.order - 1];
+                        const imageData = zoneImage.fileData;
+                        console.log("zoneImage", zoneImage);
+                        axios.put(
+                            uploadUrl.uploadUrl,
+                            imageData,
+                            {
+                                headers: {
+                                    "Content-Type": `image/${zoneImage.fileExtension}`
+                                }
+                            }
+                        )
+                    }
+                }
             });
         }
     }

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LocalFileUploader implements FileUploader {
     private static final int BUFFER_SIZE = 1024;
-    private static final String PATH = "resources/file/";
+    private static final String PATH = "resources/files/";
     
     private final String fileSystemPath;
     
@@ -41,8 +41,7 @@ public class LocalFileUploader implements FileUploader {
 
     @Override
     public String generateUploadUrl(String filename) {
-        // TODO 파일 업로드 컨트롤러 구현 후 설정 
-        return null;
+        return "http://localhost:8080/api/files/" + filename;
     }
 
     @Override

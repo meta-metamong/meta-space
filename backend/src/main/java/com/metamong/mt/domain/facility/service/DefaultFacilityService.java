@@ -96,9 +96,7 @@ public class DefaultFacilityService implements FacilityService {
         
         return new FacilityRegistrationResponseDto(
                 newFacility.getFctId(),
-                newFacility.getFctImages().stream()
-                        .map((image) -> new ImageUploadUrlResponseDto(image.getImgDisplayOrder(), image.getImgPath()))
-                        .toList(),
+                fctImageUploadUrlResponseDtos,
                 zoneImageUploadUrls
         );
     }
