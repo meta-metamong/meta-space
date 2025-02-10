@@ -11,12 +11,24 @@
         v-if="currentComponent === 'addinfoRegistrationInput'"
         @component-change="changeComponent"
         :addinfo-registration="inputs.addinfoRegistration" />
+
+    <div style="display: flex; justify-content: center;">
+        <button v-if="currentComponent === 'addinfoRegistrationInput'"
+                class="btn btn-outline-success"
+                type="button"
+                id="register-button"
+                @click="registerFacility">
+            {{ $t("facility.register") }}
+        </button>
+    </div>
 </template>
 
 <script>
+import { computed } from "vue";
 import AdditionalInformation from "../../components/facility/AdditionalInformation.vue";
 import FacilityRegistrationInput from "../../components/facility/FacilityRegistrationInput.vue";
 import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInput.vue";
+import { post } from "../../apis/axios";
 
 export default {
     data() {
@@ -28,8 +40,10 @@ export default {
                     majorCatId: "0",
                     minorCatId: "0",
                     addr: {
-                        postalCode: "",
-                        address: "",
+                        // postalCode: "",
+                        // address: "",
+                        postalCode: "01234",
+                        address: "ADDR",
                         detailAddress: ""
                     },
                     tel: {
@@ -38,8 +52,8 @@ export default {
                         third: ""
                     },
                     operationTime: {
-                        openTime: "",
-                        closeTime: ""
+                        openTime: "00:00",
+                        closeTime: "00:00"
                     },
                     isOpenOnHolidays: true,
                     unitUsageTime: "",
@@ -57,17 +71,80 @@ export default {
                 ],
                 "addinfoRegistration": []
             }
-        };
+        }
     },
     components: {
         FacilityRegistrationInput,
         ZoneRegistrationInput,
         AdditionalInformation
     },
+    computed: {
+        userId() {
+            // return this.$store.state.userId;
+            return 21;
+        }
+    },
     methods: {
         changeComponent(componentName) {
             console.log(componentName);
             this.currentComponent = componentName;
+        },
+        registerFacility() {
+            const requestBody = {
+                fctName: this.inputs.facilityRegistration.fctName,
+                fctPostalCode: this.inputs.facilityRegistration.addr.postalCode,
+                fctAddress: this.inputs.facilityRegistration.addr.postalCode,
+                fctDetailAddress: this.inputs.facilityRegistration.addr.postalCode,
+                catId: this.inputs.facilityRegistration.minorCatId ? this.inputs.facilityRegistration.minorCatId : this.inputs.facilityRegistration.majorCatId,
+                provId: this.userId,
+                fctTel: `${this.inputs.facilityRegistration.tel.first}-${this.inputs.facilityRegistration.tel.second}-${this.inputs.facilityRegistration.tel.third}`,
+                fctGuide: this.inputs.facilityRegistration.guide,
+                openOnHolidays: this.inputs.facilityRegistration.isOpenOnHolidays ? "Y" : "N",
+                fctOpenTime: this.inputs.facilityRegistration.operationTime.openTime,
+                fctCloseTime: this.inputs.facilityRegistration.operationTime.closeTime,
+                unitUsageTime: this.inputs.facilityRegistration.unitUsageTime,
+                images: this.inputs.facilityRegistration.images.map((img, idx) => {
+                    return {
+                        fileType: img.fileExtension,
+                        order: idx + 1
+                    };
+                }),
+                zones: [
+                    {
+                        zoneNo: 1,
+                        zoneName: "",
+                        maxUserCount: 30,
+                        isSharedZone: "",
+                        hourlyRate: 3000,
+                        images: [
+                            {
+                                fileType: "",
+                                order: 1
+                            }
+                        ]
+                    },
+                ],
+                zones: this.inputs.zoneRegistration.map((z, idx) => {
+                    return {
+                        zoneNo: idx + 1,
+                        zoneName: z.zoneName,
+                        maxUserCount: z.maxUserCount,
+                        hourlyRate: z.hourlyRate,
+                        isSharedZone: z.isSharedZone ? "Y" : "N",
+                        images: z.images.map((img, imgIdx) => {
+                            return {
+                                fileType: img.fileExtension,
+                                order: imgIdx + 1
+                            };
+                        })
+                    }
+                }),
+                addinfos: this.inputs.addinfoRegistration
+            }
+
+            console.log(requestBody);
+
+            post("/facilities", requestBody);
         }
     }
 };
@@ -83,5 +160,14 @@ export default {
 .long-input {
     display: flex;
     flex-direction: column;
+}
+
+#register-button {
+    margin-top: 12px;
+    font-size: 24px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 8px 48px;
+    border-radius: 5px;
 }
 </style>

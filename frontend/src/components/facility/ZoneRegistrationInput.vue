@@ -41,7 +41,7 @@
                     </button>
                     <p>{{ $t("facility.imageLimitDescription") }}</p>
                 </div>
-                <div>
+                <div class="image-list">
                     <input v-for="(_, idx) in fileInputs"
                         type="file"
                         :ref="`file-${zoneIdx}-${idx}`"

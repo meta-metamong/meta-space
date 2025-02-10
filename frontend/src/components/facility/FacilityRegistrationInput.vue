@@ -84,7 +84,7 @@
                         @change="(e) => onValueChange(e.target.value, 'operationTime.openTime')">
                     <option v-for="operationTimeSelection in operationTimeSelections"
                             :value="operationTimeSelection"
-                            :selected="data.operationTime.openTime">
+                            :selected="data.operationTime.openTime === operationTimeSelection">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
@@ -93,7 +93,7 @@
                         @change="(e) => onValueChange(e.target.value, 'operationTime.closeTime')">
                     <option v-for="operationTimeSelection in operationTimeSelections"
                             :value="operationTimeSelection"
-                            :selected="data.operationTime.closeTime">
+                            :selected="data.operationTime.closeTime === operationTimeSelection">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
@@ -112,6 +112,7 @@
         </div>
         <div class="input-box">
             <input type="number" :placeholder="$t('facility.unitUsageTime')"
+                   @change="(e) => onValueChange(e.target.value, 'unitUsageTime')"
                    :value="data.unitUsageTime">
         </div>
         <div class="input-box">
