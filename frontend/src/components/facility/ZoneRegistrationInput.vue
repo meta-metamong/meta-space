@@ -26,14 +26,11 @@
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'hourlyRate')">
             </div>
             <div class="form-section">
-                <label class="toggle">
-                    <input type="checkbox"
-                            id="shared-zone"
-                            :checked="zone.isSharedZone"
-                            @change="(e) => onValueChange(zoneIdx, e.target.checked, 'isSharedZone')">
-                    <span class="slider round"></span>
-                    {{ $t("facility.isSharedZone") }}
-                </label>
+                <input type="checkbox"
+                        id="shared-zone"
+                        :checked="zone.isSharedZone"
+                        @change="(e) => onValueChange(zoneIdx, e.target.checked, 'isSharedZone')">
+                {{ $t("facility.isSharedZone") }}
                 <p class="helper-text">
                     {{ $t("facility.sharedZoneDescription") }}
                 </p>
@@ -261,7 +258,6 @@ export default {
     background-color: #fff;
     color: #4a66e6;
     border: 1px solid #4a66e6;
-    font-size: 18px;
     padding: 6px 36px;
     margin-left: auto;
     margin-right: auto;
@@ -306,52 +302,6 @@ label {
   font-size: 0.9em;
   color: #6c757d;
   margin-top: 5px;
-}
-
-/* 체크박스 토글 스타일 */
-.toggle input[type="checkbox"] {
-    display: none;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.toggle .slider {
-  width: 40px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 20px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.toggle .slider.round {
-  border-radius: 20px;
-}
-
-.toggle input[type="checkbox"]:checked + .slider {
-  background-color: #4a66e6;
-}
-
-.toggle .slider::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  background-color: #fff;
-  border-radius: 50%;
-  transition: all 0.3s;
-}
-
-.toggle input[type="checkbox"]:checked + .slider::after {
-  transform: translateX(20px);
 }
 
 /* 이미지 업로드 영역 */

@@ -1,96 +1,74 @@
 <template>
     <div class="container">
         <h2 class="text-center mb-4" v-text="$t('facility.facilityRegistration')"></h2>
-    
+
         <div class="mb-4">
-            <input class="signup-input w-100" type="text"
-                   :placeholder="$t('facility.facilityName')"
-                   :value="data.fctName"
-                   @change="(e) => onValueChange(e.target.value, 'fctName')">
+            <input class="signup-input w-100" type="text" :placeholder="$t('facility.facilityName')"
+                :value="data.fctName" @change="(e) => onValueChange(e.target.value, 'fctName')">
         </div>
         <div class="mb-4">
             <p class="text-black">{{ $t('facility.category') }}</p>
             <select class="form-select mb-2" @change="onChangeMajorCategory">
                 <option>{{ $t("facility.majorCategory") }}</option>
                 <option :value="category.catId" v-for="category in categories"
-                        :selected="data.majorCatId === category.catId">
+                    :selected="data.majorCatId === category.catId">
                     {{ category.catName }}
                 </option>
             </select>
             <select class="form-select mb-4" @change="(e) => onValueChange(e.target.value, 'minorCatId')">
                 <option>{{ $t("facility.minorCategory") }}</option>
-                <option v-for="minorCategory in selectedMinorCategories"
-                        :value="minorCategory.catId"
-                        :selected="data.minorCatId === minorCategory.catId">
+                <option v-for="minorCategory in selectedMinorCategories" :value="minorCategory.catId"
+                    :selected="data.minorCatId === minorCategory.catId">
                     {{ minorCategory.catName }}
                 </option>
             </select>
         </div>
         <div class="mb-3">
             <p class="text-black">{{ $t('facility.facilityAddress') }}</p>
-            <input type="text" class="signup-input w-75"
-                           :placeholder="$t('facility.postalCode')"
-                           :value="data.addr.postalCode"
-                           readonly>
-            <button type="button" class="w-25 h-50 custom-btn" @click="searchPostCode">{{ $t('button.search') }}</button>
+            <input type="text" class="signup-input w-75" :placeholder="$t('facility.postalCode')"
+                :value="data.addr.postalCode" readonly>
+            <button type="button" class="w-25 h-50 custom-btn" @click="searchPostCode">{{ $t('button.search')
+                }}</button>
         </div>
         <div class="mb-3">
-            <input type="text" class="signup-input w-100"
-                       :placeholder="$t('facility.address')"
-                       :value="data.addr.address"
-                       readonly>
+            <input type="text" class="signup-input w-100" :placeholder="$t('facility.address')"
+                :value="data.addr.address" readonly>
         </div>
         <div class="mb-4">
-            <input type="text" class="signup-input w-100"
-                       :placeholder="$t('facility.detailAddress')"
-                       :value="data.addr.detailAddress"
-                       @change="(e) => onValueChange(e.target.value, 'addr.detailAddress')">
+            <input type="text" class="signup-input w-100" :placeholder="$t('facility.detailAddress')"
+                :value="data.addr.detailAddress" @change="(e) => onValueChange(e.target.value, 'addr.detailAddress')">
         </div>
         <div class="mb-4">
             <p class="text-black">{{ $t('facility.facilityTel') }}</p>
             <div class="horizontal-input">
-                <select class="form-select"
-                        @change="(e) => onValueChange(e.target.value, 'tel.first')">
-                    <option value="02"
-                            :selected="data.tel.first === '02'">02</option>
-                    <option value="010"
-                            :selected="data.tel.first === '010'">010</option>
-                    <option value="011"
-                            :selected="data.tel.first === '011'">011</option>
-                    <option value="016"
-                            :selected="data.tel.first === '016'">016</option>
-                    <option value="017"
-                            :selected="data.tel.first === '017'">017</option>
+                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'tel.first')">
+                    <option value="02" :selected="data.tel.first === '02'">02</option>
+                    <option value="010" :selected="data.tel.first === '010'">010</option>
+                    <option value="011" :selected="data.tel.first === '011'">011</option>
+                    <option value="016" :selected="data.tel.first === '016'">016</option>
+                    <option value="017" :selected="data.tel.first === '017'">017</option>
                 </select>
                 <p>-</p>
-                <input class="form-control"
-                       type="number"
-                       :value="data.tel.second"
-                       @change="(e) => onValueChange(e.target.value, 'tel.second')">
+                <input class="form-control" type="number" :value="data.tel.second"
+                    @change="(e) => onValueChange(e.target.value, 'tel.second')">
                 <p>-</p>
-                <input class="form-control"
-                       type="number"
-                       :value="data.tel.third"
-                       @change="(e) => onValueChange(e.target.value, 'tel.third')">
+                <input class="form-control" type="number" :value="data.tel.third"
+                    @change="(e) => onValueChange(e.target.value, 'tel.third')">
             </div>
         </div>
         <div class="mb-4">
             <p class="text-black">{{ $t('facility.facilityOperationTime') }}</p>
             <div class="horizontal-input">
-                <select class="form-select"
-                        @change="(e) => onValueChange(e.target.value, 'operationTime.openTime')">
-                    <option v-for="operationTimeSelection in operationTimeSelections"
-                            :value="operationTimeSelection"
-                            :selected="data.operationTime.openTime === operationTimeSelection">
+                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'operationTime.openTime')">
+                    <option v-for="operationTimeSelection in operationTimeSelections" :value="operationTimeSelection"
+                        :selected="data.operationTime.openTime === operationTimeSelection">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
                 <p>~</p>
-                <select class="form-select"
-                        @change="(e) => onValueChange(e.target.value, 'operationTime.closeTime')">
-                    <option v-for="operationTimeSelection in operationTimeSelections"
-                            :value="operationTimeSelection"
-                            :selected="data.operationTime.closeTime === operationTimeSelection">
+                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'operationTime.closeTime')">
+                    <option v-for="operationTimeSelection in operationTimeSelections" :value="operationTimeSelection"
+                        :selected="data.operationTime.closeTime === operationTimeSelection">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
@@ -98,19 +76,12 @@
         </div>
         <div class="mb-4">
             <input class="signup-input w-100" type="number" :placeholder="$t('facility.unitUsageTime')"
-                   @change="(e) => onValueChange(e.target.value, 'unitUsageTime')"
-                   :value="data.unitUsageTime">
+                @change="(e) => onValueChange(e.target.value, 'unitUsageTime')" :value="data.unitUsageTime">
         </div>
         <div class="form-section mb-4">
-            <label class="toggle">
-                <input id="is-open-on-holidays"
-                       type="checkbox"
-                       name="isOpenOnHolidays"
-                       :checked="data.isOpenOnHolidays"
-                       @change="(e) => onValueChange(e.target.checked, 'isOpenOnHolidays')">
-                <span class="slider round"></span>
-                {{ $t("facility.isOpenOnHolidays") }}
-            </label>
+            <input id="is-open-on-holidays" type="checkbox" name="isOpenOnHolidays" :checked="data.isOpenOnHolidays"
+                @change="(e) => onValueChange(e.target.checked, 'isOpenOnHolidays')">
+            {{ $t("facility.isOpenOnHolidays") }}
         </div>
         <div class="mb-4">
             <label>{{ $t('facility.facilityImage') }}</label>
@@ -119,11 +90,8 @@
                 <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>
             </div>
             <div class="uploaded-images">
-                <input v-for="(_, index) in fileInput"
-                        type="file"
-                        :ref="`file-${index}`"
-                        @change="(e) => onImageUpload(e, index)"
-                        hidden>
+                <input v-for="(_, index) in fileInput" type="file" :ref="`file-${index}`"
+                    @change="(e) => onImageUpload(e, index)" hidden>
                 <div class="image-list">
                     <div class="image-box" v-for="image in data.images">
                         <img :src="image.fileDataInBase64">
@@ -133,13 +101,11 @@
         </div>
         <div class="mb-4">
             <p class="text-black">{{ $t('facility.facilityGuide') }}</p>
-            <textarea class="form-control"
-                      id="guide-input"
-                      :value="data.guide"
-                      @change="(e) => onValueChange(e.target.value, 'guide')"
-                      placeholder="이용 수칙을 입력해주세요."></textarea>
+            <textarea class="form-control" id="guide-input" :value="data.guide"
+                @change="(e) => onValueChange(e.target.value, 'guide')" placeholder="이용 수칙을 입력해주세요."></textarea>
         </div>
-        <button type="button" class="w-100 signup-btn rounded-pill mb-3" @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t('signup.next') }}</button>
+        <button type="button" class="w-100 signup-btn rounded-pill mb-3"
+            @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t('signup.next') }}</button>
     </div>
 </template>
 
@@ -225,13 +191,13 @@ export default {
             }
             obj[ladder[ladder.length - 1]] = val;
         },
-        searchPostCode(){
+        searchPostCode() {
             new daum.Postcode({
-				oncomplete: (data) => {
-					this.postalCode = data.zonecode;
-					this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
-				}
-			}).open();
+                oncomplete: (data) => {
+                    this.postalCode = data.zonecode;
+                    this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
+                }
+            }).open();
         }
     }
 };
@@ -252,7 +218,8 @@ export default {
     gap: 24px;
 }
 
-.input-box input[type="text"], .input-box input[type="number"] {
+.input-box input[type="text"],
+.input-box input[type="number"] {
     border: none;
     border-bottom: 1px solid #999999;
     font-size: 1rem;
@@ -349,70 +316,24 @@ export default {
     font-size: 18px;
 }
 
-/* 체크박스 토글 스타일 */
-.toggle input[type="checkbox"] {
-    display: none;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.toggle .slider {
-  width: 40px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 20px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.toggle .slider.round {
-  border-radius: 20px;
-}
-
-.toggle input[type="checkbox"]:checked + .slider {
-  background-color: #4a66e6;
-}
-
-.toggle .slider::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  background-color: #fff;
-  border-radius: 50%;
-  transition: all 0.3s;
-}
-
-.toggle input[type="checkbox"]:checked + .slider::after {
-  transform: translateX(20px);
-}
-
 /* 이미지 업로드 영역 */
 .image-upload-area {
-  padding: 10px;
-  border: 2px dashed #ddd;
-  border-radius: 5px;
-  text-align: center;
-  margin-top: 10px;
+    padding: 10px;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
 }
 
 .uploaded-images {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .helper-text {
-  font-size: 0.9em;
-  color: #6c757d;
-  margin-top: 5px;
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: 5px;
 }
 </style>

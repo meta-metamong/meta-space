@@ -140,7 +140,6 @@ export default {
     background-color: #fff;
     color: #4a66e6;
     border: 1px solid #4a66e6;
-    font-size: 18px;
     padding: 6px 36px;
     margin-left: auto;
     margin-right: auto;
@@ -223,7 +222,7 @@ export default {
 }
 
 .btn-delete {
-    font-size: 22px;
+    font-size: 20px;
     color: #ee0000;
 }
 </style>
