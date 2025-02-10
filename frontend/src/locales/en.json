@@ -137,6 +137,7 @@
     },
     "payment": {
         "list": "Payment List",
+        "detail": "Payment Detail",
         "P": "Reservation Completed",
         "Q": "Cancel Requested",
         "R": "Refund Comleted",

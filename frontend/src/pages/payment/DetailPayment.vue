@@ -1,5 +1,6 @@
 <template>
 	<div class="container w-100 mt-4">
+        <h2 class="text-center mb-4" v-text="$t('payment.detail')"></h2>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('payment.payId') }}</p>
             <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payInfo.rvtId }}</p>
