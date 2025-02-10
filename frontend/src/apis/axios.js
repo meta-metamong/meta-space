@@ -127,3 +127,5 @@ export const del = async function(endpoint){
         return error
     }
 }
+
+export default apiClient;
