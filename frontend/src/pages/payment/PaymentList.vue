@@ -2,7 +2,7 @@
 	<div class="container w-100 mt-4">
 		<h2 class="text-center mb-4" v-text="$t('payment.list')"></h2>
 		<div class="col-md-6 mb-4" v-for="pay in payInfo" :key="pay.rvtId">
-			<router-link to="#" class="card">
+			<div @click="$router.push(`/payment/${pay.rvtId}`)" class="card">
 				<div class="card-header text-white fw-bold" :class="getHeaderColor(pay.payState)"><h5 class="mb-1 mt-1">{{ $t(`payment.${pay.payState}`) }}</h5></div>
 				<div class="card-body">
 					<table class="table table-borderless mb-0">
@@ -26,7 +26,7 @@
 						</tbody>
 					</table>
 				</div>
-			</router-link>
+			</div>
 		</div>
 	</div>
 </template>
@@ -49,8 +49,8 @@ export default {
 	methods: {
 		async getPayInfo() {
 			const response = await get(`/payments`);
-            console.log(response);
 			this.payInfo = response.data.content;
+            this.payInfo.sort((a, b) => new Date(b.payDate) - new Date(a.payDate));
 		},
         getHeaderColor(payState){
             switch(payState){

@@ -143,7 +143,12 @@
         "payId": "Pay ID",
         "payPrice": "Pay Price",
         "payMethod": "Pay Method",
-        "payDate": "Pay Date"
+        "payDate": "Pay Date",
+        "payState": "Pay State",
+        "refundBankCode": "Bank for Refund",
+        "refundAccount": "Account for Refund",
+        "refundAccountOwner": "Account Owner for Refund",
+        "rvtCancelationReason": "Why Canceled"
     },
     "calendar": {
         "selectDate": "Select Date",

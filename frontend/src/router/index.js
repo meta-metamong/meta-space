@@ -17,6 +17,7 @@ import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 import PaymentList from '../pages/payment/PaymentList.vue';
+import DetailPayment from '../pages/payment/DetailPayment.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -40,7 +41,8 @@ const routes = [
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 
-	{ path: '/payment/list', component: PaymentList }
+	{ path: '/payment/list', component: PaymentList },
+	{ path: '/payment/:rvtId', component: DetailPayment, props: true }
 
 ];
 

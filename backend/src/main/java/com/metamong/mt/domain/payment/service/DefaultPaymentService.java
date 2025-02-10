@@ -64,9 +64,9 @@ public class DefaultPaymentService implements PaymentService{
             throw new NotEnoughMoneyException();
         }
         
-        Long changed = account.updateBalance(payment.getPayPrice() * -1);
+        account.updateBalance(payment.getPayPrice() * -1);
         accountRepository.save(account);
-        return changed;
+        return payment.getPayPrice();
     }
     
     @Transactional(readOnly=true)
