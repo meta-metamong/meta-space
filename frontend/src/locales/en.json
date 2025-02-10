@@ -178,6 +178,7 @@
         "register": "Register",
         "yes": "Yes",
         "no": "No",
-        "addZone": "Add Zone"
+        "addZone": "Add Zone",
+        "delete": "Delete"
     }
 }
