@@ -196,5 +196,11 @@
         "no": "아뇨",
         "addZone": "Zone 추가",
         "delete": "Delete"
+    },
+    "myFacility": {
+        "myFacilityList": "보유 시설 목록",
+        "registerNewFaciltiy": "새로운 시설 등록",
+        "edit": "수정하기",
+        "delete": "삭제하기"
     }
 }

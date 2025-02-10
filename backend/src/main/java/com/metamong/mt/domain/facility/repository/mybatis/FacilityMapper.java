@@ -10,6 +10,7 @@ import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
 
@@ -30,4 +31,6 @@ public interface FacilityMapper {
     List<FacilityListItemResponseDto> findFacilitiesBySearchCondition(@Param("dto") FacilityListRequestDto dto);
     
     int countBySearchCondition(@Param("dto") FacilityListRequestDto dto);
+    
+    List<FacilityListOfMemberResponseDto> findFacilityOfMemberByMemId(@Param("memId") Long memId);
 }
