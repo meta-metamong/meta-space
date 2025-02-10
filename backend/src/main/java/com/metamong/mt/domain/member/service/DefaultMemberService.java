@@ -58,6 +58,9 @@ public class DefaultMemberService implements MemberService {
         try {
             member = memberRepository.findByEmail(dto.getEmail())
             		.orElseThrow(() -> new MemberNotFoundException(dto.getEmail(), "회원을 찾을 수 없습니다."));
+            if(member.getIsDel().equals(BooleanAlt.Y)) {
+                throw new MemberNotFoundException(dto.getEmail(), "메타 스페이스를 떠난 회원입니다.");
+            }
         } catch (MemberNotFoundException e) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS, e);
         }
