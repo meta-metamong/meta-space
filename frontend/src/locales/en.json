@@ -135,6 +135,16 @@
         "completed": "Completed",
         "noAvailability": "No availability for the selected date/time."
     },
+    "payment": {
+        "list": "Payment List",
+        "P": "Reservation Completed",
+        "Q": "Cancel Requested",
+        "R": "Refund Comleted",
+        "payId": "Pay ID",
+        "payPrice": "Pay Price",
+        "payMethod": "Pay Method",
+        "payDate": "Pay Date"
+    },
     "calendar": {
         "selectDate": "Select Date",
         "selectTime": "Select Time",

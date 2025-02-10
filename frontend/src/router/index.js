@@ -16,6 +16,7 @@ import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
+import PaymentList from '../pages/payment/PaymentList.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -38,6 +39,8 @@ const routes = [
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
+
+	{ path: '/payment/list', component: PaymentList }
 
 ];
 
