@@ -55,11 +55,11 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.provAccount" />
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.accountNumber" />
             </div>
             <div class="mb-4">
-                <p class="ms-4 text-secondary">{{ $t('member.accountOwner') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.provAccountOwner" />
+                <p class="ms-4 text-secondary">{{ $t('member.balance') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.balance" />
             </div>
         </div>
         <div class="w-100 text-center mb-2">
@@ -96,8 +96,7 @@ export default {
 					bizName: this.memberInfo.bizName,
 					bizRegNum: this.memberInfo.bizRegNum,
 					bankCode: this.memberInfo.bankCode,
-					provAccount: this.memberInfo.provAccount,
-					provAccountOwner: this.memberInfo.provAccountOwner
+					accountNumber: this.memberInfo.accountNumber,
 				}
 			}
 			
