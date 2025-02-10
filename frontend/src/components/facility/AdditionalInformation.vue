@@ -25,9 +25,6 @@
     <div id="page-move-button-container">
         <button class="btn-page-move"
                 type="button"
-                @click="registerFacility">{{ $t("facility.register") }}</button>    
-        <button class="btn-page-move"
-                type="button"
                 style="background-color: #999999;"
                 @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t("facility.previous") }}</button>
     </div>
@@ -44,11 +41,6 @@ export default {
     data() {
         return {
             data: this.addinfoRegistration
-        }
-    },
-    methods: {
-        registerFacility() {
-
         }
     }
 }

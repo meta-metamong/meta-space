@@ -19,11 +19,13 @@ public class ZoneRegistrationRequestDto {
     private int hourlyRate;
     private List<ImageRequestDto> images;
     
-    public Zone toEntity() {
+    public Zone toEntity(Long fctId) {
         return Zone.builder()
                 .zoneName(this.zoneName)
+                .fctId(fctId)
                 .isSharedZone(this.isSharedZone)
                 .hourlyRate(this.hourlyRate)
+                .maxUserCount(this.maxUserCount)
                 .build();
     }
 }
