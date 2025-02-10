@@ -14,9 +14,16 @@
           <router-link to="/chat" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
             <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
           </router-link>
-          <router-link to="/profile" class="nav-link text-center"  v-if="isLogin">
+          <div class="profile-menu text-center" v-if="isProfileMenuVisible">
+            <ul class="list-group" @click="toggleIsProfileMenuVisible"> 
+              <li class="list-group-item"><router-link to="/profile">{{ $t('member.profile') }}</router-link></li>
+              <li class="list-group-item"><router-link to="/reservation/list">{{ $t('reservation.list') }}</router-link></li>
+              <li class="list-group-item"><router-link to="/payment/list">{{ $t('payment.list') }}</router-link></li>
+            </ul>
+          </div>
+          <div class="nav-link text-center" @click="toggleIsProfileMenuVisible"  v-if="isLogin">
             <i class="bi bi-person text-primary"></i><br>{{ $t('footer.profile') }}
-          </router-link>
+          </div>
           <router-link to="/login" class="nav-link text-center" v-if="!isLogin">
             <i class="bi bi-person text-primary"></i><br>{{ $t('member.login')}}
           </router-link>
@@ -27,13 +34,20 @@
 <script>
     export default{
         name: "Footer",
-        methods:{
-
+        data(){
+          return{
+            isProfileMenuVisible: false
+          }
         },
         computed:{
             isLogin(){
               return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
              }
+        },
+        methods: {
+          toggleIsProfileMenuVisible(){
+            this.isProfileMenuVisible = !this.isProfileMenuVisible;
+          }
         }
     }
 </script>
@@ -51,6 +65,32 @@
 
 .nav-link {
   font-size: 1rem;
+}
+
+.profile-menu{
+  width: 140px;
+  height: 130px;
+  position: fixed;
+  right: 0;
+  bottom: 40px;
+}
+
+.list-group-item {
+  border: 1px solid #4a66e6;
+  padding: 5px 5px;
+  text-align: center;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+ul, li{
+  list-style: none;
+  padding: 0px;
+}
+
+a{
+  text-decoration: none;
+  color: #333;
 }
 
 </style>

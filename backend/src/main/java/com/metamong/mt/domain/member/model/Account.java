@@ -46,8 +46,7 @@ public class Account {
         this.accountNumber = dto.getAccountNumber();
     }
     
-    public Long updateBalance(Long amount) {
+    public void updateBalance(Long amount) {
         this.balance += amount;
-        return this.balance;
     }
 }
