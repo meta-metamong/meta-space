@@ -144,7 +144,13 @@ export default {
 
             console.log(requestBody);
 
-            post("/facilities", requestBody);
+            post("/facilities", requestBody).then((response) => {
+                const responseBody = response.data;
+                console.log(responseBody);
+                const fctImageUploadUrls = responseBody.fctImageUploadUrls;
+                const zoneImageUploadUrls = responseBody.zoneImageUploadUrls;
+
+            });
         }
     }
 };
