@@ -181,5 +181,11 @@
         "no": "No",
         "addZone": "Add Zone",
         "delete": "Delete"
+    },
+    "myFacility": {
+        "myFacilityList": "My Facility List",
+        "registerNewFaciltiy": "Register new facility",
+        "edit": "Edit",
+        "delete": "Delete"
     }
 }

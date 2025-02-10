@@ -16,6 +16,7 @@ import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
+import MyFacilityList from "../pages/facility/MyFacilityList.vue";
 
 const routes = [
 	{ path: '/', component: Home },
@@ -31,6 +32,7 @@ const routes = [
 	{ path: '/download', component: Download  },
 
 	{ path: '/facilities/register', component: FacilityRegistration },
+	{ path: '/facilities/my-facility-list', component: MyFacilityList },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
