@@ -180,14 +180,8 @@ class FacilityMapperTest {
                     INSERT INTO fct_provider (
                         prov_id,
                         biz_name,
-                        biz_reg_num,
-                        bank_code,
-                        prov_account,
-                        prov_account_owner
+                        biz_reg_num
                     ) VALUES (
-                        ?,
-                        ?,
-                        ?,
                         ?,
                         ?,
                         ?
@@ -195,10 +189,7 @@ class FacilityMapperTest {
                     """);
             stmt.setLong(1, generatedProvId);
             stmt.setString(2, "sample biz name");
-            stmt.setString(3, "asdf");
-            stmt.setString(4, "014");
-            stmt.setString(5, "110-123-123456");
-            stmt.setString(6, "MyMy");
+            stmt.setString(3, "1201252-1324125");
             stmt.executeUpdate();
         } finally {
             stmt.close();
