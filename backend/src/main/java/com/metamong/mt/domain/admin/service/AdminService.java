@@ -11,6 +11,7 @@ import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 
@@ -30,4 +31,6 @@ public interface AdminService {
     List<FacilityReservationResponseDto> getTotalReservations();
     List<FacilityReservationResponseDto> getCancelledReservations();
     List<FacilityReservationResponseDto> getTotalByFacility();
+    List<RankReservationDto> getRankReservation();
+    List<WeekReservationDto> getReservationsByHourThisWeek();
 }

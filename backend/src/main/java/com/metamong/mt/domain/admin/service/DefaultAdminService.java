@@ -19,6 +19,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
@@ -200,10 +201,18 @@ public class DefaultAdminService implements AdminService{
 
     public List<FacilityReservationResponseDto> getCancelledReservations() {
         return adminMapper.getCancelledReservations();
-    }
+    }	
 
     public List<FacilityReservationResponseDto> getTotalByFacility() {
         return adminMapper.getTotalByFacility();
+    }
+    
+    public List<RankReservationDto> getRankReservation() {
+        return adminMapper.getRankReservation();
+    }
+    
+    public List<WeekReservationDto> getReservationsByHourThisWeek() {
+        return adminMapper.getReservationsByHourThisWeek();
     }
 	
 }

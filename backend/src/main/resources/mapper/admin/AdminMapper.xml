@@ -228,5 +228,49 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
         WHERE r.rvt_cancelation_reason IS NULL
         GROUP BY f.fct_name, f.fct_id
     </select>
+    
+     <!-- 월별 예약 Top 5 시설 조회 -->
+    <select id="getRankReservation" resultType="com.metamong.mt.domain.admin.dto.response.RankReservationDto">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT
+            fct.fct_name,                       
+            COUNT(r.rvt_id) AS tot_rvt          
+        FROM
+            reservation r
+        JOIN
+            zone z ON r.zone_id = z.zone_id
+        JOIN
+            facility fct ON fct.fct_id = z.fct_id
+        WHERE
+            TO_CHAR(r.rvt_date, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')  
+        GROUP BY
+            fct.fct_id, fct.fct_name
+        ORDER BY
+            tot_rvt DESC
+    )
+    WHERE ROWNUM <= 5 
+    ]]>
+
+
+    </select>
+    
+      <select id="getReservationsByHourThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekHourReservationDto">
+       <![CDATA[
+        SELECT 
+            TO_CHAR(rvt_date, 'HH24') AS rvt_hour, 
+            COUNT(*) AS rvt_count                   
+        FROM 
+            reservation
+        WHERE 
+            rvt_date >= TRUNC(SYSDATE, 'IW') 
+            AND rvt_date < TRUNC(SYSDATE, 'IW') + 7 
+        GROUP BY 
+            TO_CHAR(rvt_date, 'HH24')               
+        ORDER BY 
+            rvt_hour                             
+   
+ ]]>
+ </select>
 
 </mapper>

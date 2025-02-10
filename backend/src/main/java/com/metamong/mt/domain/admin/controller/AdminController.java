@@ -18,6 +18,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
@@ -184,8 +185,16 @@ public class AdminController {
         stats.put("cancelledReservations", cancelledReservations);
         stats.put("totalRevenue", totalRevenue);
 
+        // 상위 5개 시설 예약 현황 가져오기
+        List<RankReservationDto> rankedReservation = adminService.getRankReservation();
+        stats.put("rankedReservation", rankedReservation);
+        
+        List<WeekReservationDto> weekHourReservations = adminService.getReservationsByHourThisWeek();
+        stats.put("weekHourReservations", weekHourReservations);
+
         return ResponseEntity.ok(stats);
     }
+
 
     
 }

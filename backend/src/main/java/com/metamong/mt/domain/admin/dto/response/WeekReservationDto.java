@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DashBoardDto {
+public class WeekReservationDto {
 	private String fctId;
     private int sun;
     private int mon;
