@@ -1,6 +1,6 @@
 <template>
 	<div class="container w-100 mt-4">
-		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
+		<h2 class="text-center mb-3" v-text="$t('member.update')"></h2>
 		<div class="text-center mb-3">
             <img :src="memImage.fileDataInBase64" @click="uploadImage" alt="Profile Image" class="profile-img">
 			<input type="file" :ref="'file-member-image'" @change="(e) => onImageUpload(e)" hidden/>
