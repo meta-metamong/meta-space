@@ -29,7 +29,7 @@ public class NotificationService {
         notification.setReceiverId(receiverId);
         notification.setNotiMsg(message);
         notification.setCreatedAt(LocalDateTime.now());
-        notification.setIsRead(false);  // 처음에는 읽지 않음
+        notification.setIsRead('N');  // 처음에는 읽지 않음
 
         // 알림 저장
         //notificationMapper.insertNotification(notification);

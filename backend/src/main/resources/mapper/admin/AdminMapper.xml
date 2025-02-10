@@ -78,19 +78,19 @@ ORDER BY m.created_at
 </select>
 
 <select id="getRequestFacilities" resultType="com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto">
-        SELECT 
-            fct_name,
-            zone_name,
-            CASE 
-                WHEN fct_state = 'REG_REQUESTED' THEN '등록요청'
-                WHEN fct_state = 'DEL_REQUESTED' THEN '삭제요청'
-            END AS fct_state
-        FROM 
-            zone z
-        JOIN 
-            facility f ON z.fct_id = f.fct_id
-        WHERE 
-            fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
+SELECT 
+fct_id,
+    fct_name, 
+    ('(' || fct_postal_code || ') ' || fct_address || ' ' || fct_detail_address) AS full_address,
+    fct_tel, 
+    is_open_on_holidays,
+    CASE 
+        WHEN fct_state = 'REG_REQUESTED' THEN '등록요청' 
+        WHEN fct_state = 'DEL_REQUESTED' THEN '삭제요청' 
+    END AS fct_state 
+FROM facility
+WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
+
     </select>
 
  <!-- 등록 요청 승인 쿼리 -->
@@ -126,13 +126,15 @@ ORDER BY m.created_at
     </update>
 
     <!-- 알림 테이블에 데이터 추가 쿼리 -->
-    <insert id="insertNotification" parameterType="map">
-        INSERT INTO notification (receiver_id, noti_msg, is_read)
-        VALUES (#{receiverId}, #{notiMsg}, 'N')
-    </insert>
+<insert id="insertNotification" parameterType="map">
+    INSERT INTO notification (receiver_id, noti_msg, is_read, created_at)
+    VALUES (#{receiverId}, #{notiMsg}, 'N', CURRENT_TIMESTAMP)
+</insert>
+
 
     <select id="searchFacilities" resultType="com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto">
      SELECT 
+     fct_id,
     fct_name, 
     zone_name,
     (select COUNT(rvt_id)from reservation where rvt_cancelation_reason IS NULL) as rvt_cnt,

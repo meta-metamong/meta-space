@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApprovalRequestDto {
+	private String fctId;
     private String fctName;
     private String zoneName;
     private String fctState;

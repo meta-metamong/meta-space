@@ -2,11 +2,11 @@ package com.metamong.mt.domain.admin.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,8 +93,8 @@ public class AdminController {
 	    return ResponseEntity.ok(BaseResponse.of(adminService.getRequestFacilities(), HttpStatus.OK));
 	}
 	
-    @PostMapping("/registration/approval")
-    public ResponseEntity<String> approveFacilityRegisterRequest(@RequestParam Long fctId) {
+    @PostMapping("/facility/{fctId}/approval")
+    public ResponseEntity<String> approveFacilityRegisterRequest(@PathVariable Long fctId) {
         try {
         	adminService.approveFacilityRegisterRequest(fctId);
             return ResponseEntity.ok("등록 요청이 승인되었습니다.");
@@ -103,8 +103,8 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/registration/rejection")
-    public ResponseEntity<String> rejectFacilityRegisterRequest(@RequestParam Long fctId) {
+    @PostMapping("/facility/{fctId}/rejection")
+    public ResponseEntity<String> rejectFacilityRegisterRequest(@PathVariable Long fctId) {
         try {
         	// 반려 상
         	adminService.rejectFacilityRegisterRequest(fctId);
@@ -115,8 +115,8 @@ public class AdminController {
     }
 
 
-    @PostMapping("/deletion/approval")
-    public ResponseEntity<String> approveFacilityDeleteRequest(@RequestParam Long fctId) {
+    @PostMapping("/facility/{fctId}/deletion/approval")
+    public ResponseEntity<String> approveFacilityDeleteRequest(@PathVariable Long fctId) {
         try {
         	adminService.approveFacilityDeleteRequest(fctId);
             return ResponseEntity.ok("삭제 요청이 승인되었습니다.");
@@ -125,8 +125,8 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/deletion/rejection")
-    public ResponseEntity<String> rejectFacilityDeleteRequest(@RequestParam Long fctId) {
+    @PostMapping("/facility/{fctId}/deletion/rejection")
+    public ResponseEntity<String> rejectFacilityDeleteRequest(@PathVariable Long fctId) {
         try {
         	adminService.rejectFacilityDeleteRequest(fctId);
             return ResponseEntity.ok("삭제 요청이 반려되었습니다.");

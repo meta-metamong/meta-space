@@ -19,6 +19,8 @@ import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
+import com.metamong.mt.domain.notification.model.Notification;
+import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.domain.notification.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class DefaultAdminService implements AdminService{
 	private final AdminMapper adminMapper;
     private final SqlSessionFactory sqlSessionFactory;
     private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -96,11 +99,13 @@ public class DefaultAdminService implements AdminService{
         adminMapper.updateFacilityStateRegApproved(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
-        Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", fctId);
-        notificationParams.put("notiMsg", "등록요청이 승인되었습니다");
-        adminMapper.insertNotification(notificationParams);
-
+        Notification notification = new Notification();
+        notification.setReceiverId(fctId);
+        notification.setNotiMsg("등록 요청이 승인되었습니다.");
+        notification.setIsRead('N');  // 기본값 'N' 설정
+        notificationRepository.save(notification);
+        // Notification 저장 (JPA 사용)
+       
 	}
 
 	@Override

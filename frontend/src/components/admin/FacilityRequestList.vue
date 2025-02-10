@@ -11,18 +11,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="facility in facilities" :key="facility.fctName">
+        <tr v-for="facility in facilities" :key="facility.fctId">
           <td>{{ facility.fctName }}</td>
           <td>{{ facility.zoneName }}</td>
           <td>{{ facility.fctState }}</td>
           <td>
             <!-- 등록 승인 버튼 -->
-            <button v-if="facility.fctState === '등록요청'" @click="confirmApproveFacility(facility.id, 'register')" class="approve-button">등록승인</button>
-            <button v-if="facility.fctState === '등록요청'" @click="confirmRejectFacility(facility.id, 'register')" class="reject-button">등록반려</button>
+            <button v-if="facility.fctState === '등록요청'" @click="confirmApproveFacility(facility.fctId, 'register')" class="approve-button">등록승인</button>
+            <button v-if="facility.fctState === '등록요청'" @click="confirmRejectFacility(facility.fctId, 'register')" class="reject-button">등록반려</button>
             
             <!-- 삭제 승인 버튼 -->
-            <button v-if="facility.fctState === '삭제요청'" @click="confirmApproveFacility(facility.id, 'delete')" class="approve-button">삭제승인</button>
-            <button v-if="facility.fctState === '삭제요청'" @click="confirmRejectFacility(facility.id, 'delete')" class="reject-button">삭제반려</button>
+            <button v-if="facility.fctState === '삭제요청'" @click="confirmApproveFacility(facility.fctId, 'delete')" class="approve-button">삭제승인</button>
+            <button v-if="facility.fctState === '삭제요청'" @click="confirmRejectFacility(facility.fctId, 'delete')" class="reject-button">삭제반려</button>
           </td>
         </tr>
       </tbody>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { get } from '../../apis/axios'; // axios 경로를 수정하세요.
+import { get, post } from '../../apis/axios'; // axios 경로를 수정하세요.
 
 export default {
   data() {
@@ -48,6 +48,7 @@ export default {
       try {
         const response = await get('/admin/getRequestFacilities'); // API 경로에 맞춰서 호출
         if (response && response.data) {
+          console.log("시설 리스트 (content):", response.data.content);
           this.facilities = response.data.content; // 응답 데이터에서 시설 리스트를 받는다.
         }
       } catch (error) {
@@ -56,9 +57,10 @@ export default {
     },
     // 등록승인 또는 삭제승인 버튼 클릭시 확인을 요청하는 메소드
     confirmApproveFacility(facilityId, actionType) {
+      console.log("facilityId:", facilityId);
       let confirmMessage = '';
       if (actionType === 'register') {
-        confirmMessage = '등록 승인하시겠습니까?';
+        confirmMessage = facilityId+'등록 승인하시겠습니까?';
       } else if (actionType === 'delete') {
         confirmMessage = '삭제 승인하시겠습니까?';
       }
@@ -87,13 +89,16 @@ export default {
       try {
         let response;
         if (actionType === 'register') {
-          response = await get(`/approveFacility/register/${facilityId}`); // 등록 승인 처리 API 호출
+          console.log("호출" + facilityId);
+          response = await post(`/admin/facility/${facilityId}/approval`); // 등록 승인 처리 API 호출
+          console.log('API Response:', response); // 응답 확인
         } else if (actionType === 'delete') {
-          response = await get(`/approveFacility/delete/${facilityId}`); // 삭제 승인 처리 API 호출
+          response = await post(`/admin/facility/${facilityId}/deletion/approval`); // 삭제 승인 처리 API 호출
         }
 
         if (response && response.data) {
-          this.$toast.success('시설이 승인되었습니다!');
+          //this.$toast.success('시설이 승인되었습니다!');
+          alert('승인완료');
           this.fetchRequestFacilities(); // 승인 후 리스트 갱신
         }
       } catch (error) {
@@ -106,9 +111,9 @@ export default {
       try {
         let response;
         if (actionType === 'register') {
-          response = await get(`/rejectFacility/register/${facilityId}`); // 등록 반려 처리 API 호출
+          response = await post(`/admin/facility/${facilityId}/rejection`); // 등록 반려 처리 API 호출
         } else if (actionType === 'delete') {
-          response = await get(`/rejectFacility/delete/${facilityId}`); // 삭제 반려 처리 API 호출
+          response = await post(`/admin/facility/${facilityId}/deletion/rejection`); // 삭제 반려 처리 API 호출
         }
 
         if (response && response.data) {

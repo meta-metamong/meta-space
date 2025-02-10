@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -22,7 +23,6 @@ public class Notification {
 
     @Id    
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_seq")
-    //@SequenceGenerator(name = "notification_seq", sequenceName = "SEQ_NOTIFICATION", allocationSize = 1)
     @Column(name = "noti_id")  // 'noti_id' 컬럼에 매핑
     private Long notiId;        // 알림 아이디
 
@@ -35,14 +35,14 @@ public class Notification {
     @Column(name = "created_at", nullable = false)  // 'created_at' 컬럼에 매핑
     private LocalDateTime createdAt;  // 등록 시간
 
-    @Column(name = "is_read", nullable = false)  // 'is_read' 컬럼에 매핑
-    private Boolean isRead;     // 알림 읽음 여부
+    @Column(name = "is_read", nullable = false, columnDefinition = "CHAR(1)")  // 'is_read' 컬럼에 매핑
+    private Character isRead;     // 알림 읽음 여부 (CHAR(1))
 
     // 기본 생성자
     public Notification() {}
 
     // 생성자
-    public Notification(Long receiverId, String notiMsg, LocalDateTime createdAt, Boolean isRead) {
+    public Notification(Long receiverId, String notiMsg, LocalDateTime createdAt, Character isRead) {
         this.receiverId = receiverId;
         this.notiMsg = notiMsg;
         this.createdAt = createdAt;
@@ -82,11 +82,19 @@ public class Notification {
         this.createdAt = createdAt;
     }
 
-    public Boolean getIsRead() {
+    public Character getIsRead() {
         return isRead;
     }
 
-    public void setIsRead(Boolean isRead) {
+    public void setIsRead(Character isRead) {
         this.isRead = isRead;
+    }
+
+    // 엔티티가 저장되기 전에 createdAt을 현재 시간으로 설정하는 메소드
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();  // 저장 전에 현재 시간을 설정
+        }
     }
 }
