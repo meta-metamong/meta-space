@@ -1,5 +1,9 @@
 <template>
-    <div class="container">
+    <div class="container header-container">
+        <div class="arrow-container">
+            <i class="bi bi-arrow-right" id="right-arrow"
+               @click="$emit('component-change', 'zoneRegistrationInput')"></i>
+        </div>
         <h1 class="header">{{ $t("facility.facilityRegistration") }}</h1>
     </div>
     <div class="container long-input">
@@ -139,11 +143,6 @@
                       @change="(e) => onValueChange(e.target.value, 'guide')"></textarea>
             <label for="guide-input">{{ $t("facility.facilityGuide") }}</label>
         </div>
-        <button class="btn-page-move"
-                type="button"
-                @click="$emit('component-change', 'zoneRegistrationInput')">
-            {{ $t("facility.next") }}
-        </button>
     </div>
 </template>
 
@@ -343,5 +342,25 @@ export default {
     padding-bottom: 8px;
     border-radius: 8px;
     font-size: 18px;
+}
+
+.header-container {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.arrow-container {
+    position: absolute;
+    left: 5%;
+    display: flex;
+    gap: 8px;
+}
+
+.arrow-container i {
+    font-size: 24px;
+    background-color: #19319d;
+    color: #fff;
+    padding: 0px 6px;
+    border-radius: 5px;
 }
 </style>

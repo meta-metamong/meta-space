@@ -81,8 +81,8 @@ export default {
     },
     computed: {
         userId() {
-            // return this.$store.state.userId;
-            return 21;
+            return this.$store.state.userId;
+            // return 21;
         }
     },
     methods: {

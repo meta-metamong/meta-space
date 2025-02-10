@@ -18,6 +18,8 @@ import FindPassword from '../pages/member/FindPassword.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 import MyFacilityList from "../pages/facility/MyFacilityList.vue";
 import FacilityEdit from "../pages/facility/FacilityEdit.vue";
+import PaymentList from '../pages/payment/PaymentList.vue';
+import DetailPayment from '../pages/payment/DetailPayment.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -42,6 +44,9 @@ const routes = [
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
+
+	{ path: '/payment/list', component: PaymentList },
+	{ path: '/payment/:rvtId', component: DetailPayment, props: true }
 
 ];
 

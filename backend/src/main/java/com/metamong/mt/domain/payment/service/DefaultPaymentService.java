@@ -3,6 +3,7 @@ package com.metamong.mt.domain.payment.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.repository.jpa.AccountRepository;
@@ -14,7 +15,7 @@ import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.model.constant.PaymentState;
 import com.metamong.mt.domain.payment.repository.jpa.PaymentRepository;
 import com.metamong.mt.domain.payment.repository.mybatis.PaymentMapper;
-import org.springframework.transaction.annotation.Transactional;
+import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,8 +51,8 @@ public class DefaultPaymentService implements PaymentService{
     }
     
     @Override
-    public void reservationCancelRequest(Long rvtId) {
-        this.getPaymentByRepository(rvtId).reservationCancelRequest();
+    public void reservationCancelRequest(Long rvtId, CancelRequestDto dto) {
+        this.getPaymentByRepository(rvtId).reservationCancelRequest(dto);
     }
 
     @Override
@@ -64,9 +65,9 @@ public class DefaultPaymentService implements PaymentService{
             throw new NotEnoughMoneyException();
         }
         
-        Long changed = account.updateBalance(payment.getPayPrice() * -1);
+        account.updateBalance(payment.getPayPrice() * -1);
         accountRepository.save(account);
-        return changed;
+        return payment.getPayPrice();
     }
     
     @Transactional(readOnly=true)

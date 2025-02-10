@@ -378,5 +378,15 @@ public class MemberController {
     public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
     }
+    
+    /**
+     * 회원가입, 회원 정보, 예약 취소 시 사용할 은행 정보 목록입니다.
+     * 
+     * @return List<BankResponseDto> 은행 목록
+     */
+    @GetMapping("/banks")
+    public ResponseEntity<?> getAllBanks(){
+        return ResponseEntity.ok(BaseResponse.of(this.memberService.getAllBanks(), HttpStatus.OK, "은행 목록이 조회되었습니다."));
+    }
 
 }

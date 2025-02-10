@@ -154,11 +154,13 @@ CREATE TABLE zone (
     hourly_rate        NUMBER(5, 0)  NOT NULL,
     created_at         DATE          DEFAULT SYSDATE,
     updated_at         DATE          DEFAULT SYSDATE,
+    is_del             CHAR(1)       DEFAULT 'N',
 
     CONSTRAINT pk_zone PRIMARY KEY (zone_id),
     CONSTRAINT fk_zone_fct_id FOREIGN KEY (fct_id)
         REFERENCES facility (fct_id),
-    CONSTRAINT zone_is_shared_zone_domain CHECK (is_shared_zone IN ('Y', 'N'))
+    CONSTRAINT zone_is_shared_zone_domain CHECK (is_shared_zone IN ('Y', 'N')),
+    CONSTRAINT zone_is_del_domain CHECK (is_del IN ('Y', 'N'))
 );
 
 CREATE TABLE image (

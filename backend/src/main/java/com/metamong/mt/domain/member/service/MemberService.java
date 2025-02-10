@@ -1,11 +1,14 @@
 package com.metamong.mt.domain.member.service;
 
+import java.util.List;
+
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.dto.response.BankResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
@@ -57,4 +60,6 @@ public interface MemberService {
     // DB에서 시설제공자의 계좌 데이터 조회
     Account getAccount(Long memId);
     
+    // DB에서 모든 은행 정보 데이터 조회
+    List<BankResponseDto> getAllBanks();
 }

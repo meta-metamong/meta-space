@@ -12,7 +12,7 @@
             <p>{{ facility.address }}</p>
             <div class="list-item-button-container">
                 <router-link class="button edit-button"
-                             :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link> <!-- To edit -->
+                             :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link>
                 <button class="button delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
             </div>
         </div>
