@@ -1,60 +1,53 @@
 <template>
-    <div class="container header-container">
-        <div class="arrow-container">
-            <i class="bi bi-arrow-right" id="right-arrow"
-               @click="$emit('component-change', 'zoneRegistrationInput')"></i>
-        </div>
-        <h1 class="header">{{ $t("facility.facilityRegistration") }}</h1>
-    </div>
-    <div class="container long-input">
-        <div class="input-box">
-            <input type="text"
+    <div class="container">
+        <h2 class="text-center mb-4" v-text="$t('facility.facilityRegistration')"></h2>
+    
+        <div class="mb-4">
+            <input class="signup-input w-100" type="text"
                    :placeholder="$t('facility.facilityName')"
                    :value="data.fctName"
                    @change="(e) => onValueChange(e.target.value, 'fctName')">
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.category") }}</h2>
-            <div class="category-select-box">
-                <select class="form-select" @change="onChangeMajorCategory">
-                    <option>{{ $t("facility.majorCategory") }}</option>
-                    <option :value="category.catId" v-for="category in categories"
-                            :selected="data.majorCatId === category.catId">
-                        {{ category.catName }}
-                    </option>
-                </select>
-                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'minorCatId')">
-                    <option>{{ $t("facility.minorCategory") }}</option>
-                    <option v-for="minorCategory in selectedMinorCategories"
-                            :value="minorCategory.catId"
-                            :selected="data.minorCatId === minorCategory.catId">
-                        {{ minorCategory.catName }}
-                    </option>
-                </select>
-            </div>
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.category') }}</p>
+            <select class="form-select mb-2" @change="onChangeMajorCategory">
+                <option>{{ $t("facility.majorCategory") }}</option>
+                <option :value="category.catId" v-for="category in categories"
+                        :selected="data.majorCatId === category.catId">
+                    {{ category.catName }}
+                </option>
+            </select>
+            <select class="form-select mb-4" @change="(e) => onValueChange(e.target.value, 'minorCatId')">
+                <option>{{ $t("facility.minorCategory") }}</option>
+                <option v-for="minorCategory in selectedMinorCategories"
+                        :value="minorCategory.catId"
+                        :selected="data.minorCatId === minorCategory.catId">
+                    {{ minorCategory.catName }}
+                </option>
+            </select>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityAddress") }}</h2>
-            <div class="facility-address-container">
-                <div class="postal-code">
-                    <input type="text"
+        <div class="mb-3">
+            <p class="text-black">{{ $t('facility.facilityAddress') }}</p>
+            <input type="text" class="signup-input w-75"
                            :placeholder="$t('facility.postalCode')"
                            :value="data.addr.postalCode"
                            readonly>
-                    <button>{{ $t("facility.search") }}</button>
-                </div>
-                <input type="text"
+            <button type="button" class="w-25 h-50 custom-btn" @click="searchPostCode">{{ $t('button.search') }}</button>
+        </div>
+        <div class="mb-3">
+            <input type="text" class="signup-input w-100"
                        :placeholder="$t('facility.address')"
                        :value="data.addr.address"
                        readonly>
-                <input type="text"
+        </div>
+        <div class="mb-4">
+            <input type="text" class="signup-input w-100"
                        :placeholder="$t('facility.detailAddress')"
                        :value="data.addr.detailAddress"
                        @change="(e) => onValueChange(e.target.value, 'addr.detailAddress')">
-            </div>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityTel") }}</h2>
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.facilityTel') }}</p>
             <div class="horizontal-input">
                 <select class="form-select"
                         @change="(e) => onValueChange(e.target.value, 'tel.first')">
@@ -81,8 +74,8 @@
                        @change="(e) => onValueChange(e.target.value, 'tel.third')">
             </div>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityOperationTime") }}</h2>
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.facilityOperationTime') }}</p>
             <div class="horizontal-input">
                 <select class="form-select"
                         @change="(e) => onValueChange(e.target.value, 'operationTime.openTime')">
@@ -103,46 +96,50 @@
                 </select>
             </div>
         </div>
-        <div class="input-box">
-            <div class="label-with-input">
-                <label for="is-open-on-holidays">{{ $t("facility.isOpenOnHolidays") }}</label>
+        <div class="mb-4">
+            <input class="signup-input w-100" type="number" :placeholder="$t('facility.unitUsageTime')"
+                   @change="(e) => onValueChange(e.target.value, 'unitUsageTime')"
+                   :value="data.unitUsageTime">
+        </div>
+        <div class="form-section mb-4">
+            <label class="toggle">
                 <input id="is-open-on-holidays"
-                       class="form-check"
                        type="checkbox"
                        name="isOpenOnHolidays"
                        :checked="data.isOpenOnHolidays"
                        @change="(e) => onValueChange(e.target.checked, 'isOpenOnHolidays')">
-            </div>
+                <span class="slider round"></span>
+                {{ $t("facility.isOpenOnHolidays") }}
+            </label>
         </div>
-        <div class="input-box">
-            <input type="number" :placeholder="$t('facility.unitUsageTime')"
-                   @change="(e) => onValueChange(e.target.value, 'unitUsageTime')"
-                   :value="data.unitUsageTime">
-        </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
-            <div>
-                <button class="image-add-button" @click="onAddImageBtnClick">{{ $t("facility.addImage") }}</button>
-                <p style="color: #999999;">{{ $t("facility.imageLimitDescription") }}</p>
+        <div class="mb-4">
+            <label>{{ $t('facility.facilityImage') }}</label>
+            <div class="image-upload-area" @click="onAddImageBtnClick">
+                <p class="mb-0 mt-2">{{ $t("facility.addImage") }}</p>
+                <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>
             </div>
-            <input v-for="(_, index) in fileInput"
-                       type="file"
-                       :ref="`file-${index}`"
-                       @change="(e) => onImageUpload(e, index)"
-                       hidden>
-            <div class="image-list">
-                <div class="image-box" v-for="image in data.images">
-                    <img :src="image.fileDataInBase64">
+            <div class="uploaded-images">
+                <input v-for="(_, index) in fileInput"
+                        type="file"
+                        :ref="`file-${index}`"
+                        @change="(e) => onImageUpload(e, index)"
+                        hidden>
+                <div class="image-list">
+                    <div class="image-box" v-for="image in data.images">
+                        <img :src="image.fileDataInBase64">
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="input-box form-floating">
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.facilityGuide') }}</p>
             <textarea class="form-control"
                       id="guide-input"
                       :value="data.guide"
-                      @change="(e) => onValueChange(e.target.value, 'guide')"></textarea>
-            <label for="guide-input">{{ $t("facility.facilityGuide") }}</label>
+                      @change="(e) => onValueChange(e.target.value, 'guide')"
+                      placeholder="이용 수칙을 입력해주세요."></textarea>
         </div>
+        <button type="button" class="w-100 signup-btn rounded-pill mb-3" @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t('signup.next') }}</button>
     </div>
 </template>
 
@@ -227,6 +224,14 @@ export default {
                 obj = obj[ladder[i]];
             }
             obj[ladder[ladder.length - 1]] = val;
+        },
+        searchPostCode(){
+            new daum.Postcode({
+				oncomplete: (data) => {
+					this.postalCode = data.zonecode;
+					this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
+				}
+			}).open();
         }
     }
 };
@@ -344,23 +349,70 @@ export default {
     font-size: 18px;
 }
 
-.header-container {
-    position: relative;
-    margin-bottom: 18px;
+/* 체크박스 토글 스타일 */
+.toggle input[type="checkbox"] {
+    display: none;
 }
 
-.arrow-container {
-    position: absolute;
-    left: 5%;
-    display: flex;
-    gap: 8px;
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.arrow-container i {
-    font-size: 24px;
-    background-color: #19319d;
-    color: #fff;
-    padding: 0px 6px;
-    border-radius: 5px;
+.toggle .slider {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle .slider.round {
+  border-radius: 20px;
+}
+
+.toggle input[type="checkbox"]:checked + .slider {
+  background-color: #4a66e6;
+}
+
+.toggle .slider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.toggle input[type="checkbox"]:checked + .slider::after {
+  transform: translateX(20px);
+}
+
+/* 이미지 업로드 영역 */
+.image-upload-area {
+  padding: 10px;
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.uploaded-images {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.helper-text {
+  font-size: 0.9em;
+  color: #6c757d;
+  margin-top: 5px;
 }
 </style>

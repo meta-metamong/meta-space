@@ -1,16 +1,13 @@
 <template>
-    <div class="container header-container">
+    <div class="container">
         <div class="arrow-container">
             <i class="bi bi-arrow-left disabled-arrow" id="left-arrow"
             @click="$emit('component-change', 'facilityRegistrationInput')"></i>
-            <i class="bi bi-arrow-right" id="right-arrow"
-            @click="$emit('component-change', 'addinfoRegistrationInput')"></i>
         </div>
-        <h1 class="header">{{ $t("facility.zoneRegistration") }}</h1>
-    </div>
-    <div class="container zone-container">
-        <div class="zone-wrapper long-input" v-for="(zone, zoneIdx) in data">
-            <div class="input-box">
+        <h2 class="text-center mb-4" v-text="$t('facility.zoneRegistration')"></h2>
+        
+        <div class="zone-wrapper long-input mb-4" v-for="(zone, zoneIdx) in data">
+            <div class="input-box mt-2">
                 <input type="text"
                     :placeholder="$t('facility.zoneName')"
                     :value="zone.zoneName"
@@ -28,48 +25,48 @@
                     :value="zone.hourlyRate"
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'hourlyRate')">
             </div>
-            <div class="input-box">
-                <div class="label-with-input">
+            <div class="form-section">
+                <label class="toggle">
                     <input type="checkbox"
-                        class="form-check"
-                        :checked="zone.isSharedZone"
-                        @change="(e) => onValueChange(zoneIdx, e.target.checked, 'isSharedZone')">
-                    <label>{{ $t("facility.isSharedZone") }}</label>
-                </div>
-                <p class="form-text">{{ $t("facility.sharedZoneDescription") }}</p>
+                            id="shared-zone"
+                            :checked="zone.isSharedZone"
+                            @change="(e) => onValueChange(zoneIdx, e.target.checked, 'isSharedZone')">
+                    <span class="slider round"></span>
+                    {{ $t("facility.isSharedZone") }}
+                </label>
+                <p class="helper-text">
+                    {{ $t("facility.sharedZoneDescription") }}
+                </p>
             </div>
-            <div class="input-box">
-                <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
-                <div>
-                    <button class="image-add-button"
-                            @click="() => onAddImageBtnClick(zoneIdx)">
-                        {{ $t("facility.addImage") }}
-                    </button>
-                    <p>{{ $t("facility.imageLimitDescription") }}</p>
+            <div class="form-section">
+                <label>{{ $t('facility.facilityImage') }}</label>
+                <div class="image-upload-area" @click="() => onAddImageBtnClick(zoneIdx)">
+                    <p class="mb-0 mt-2">{{ $t("facility.addImage") }}</p>
+                    <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>
                 </div>
-                <input v-for="(_, idx) in fileInputs[zoneIdx]"
+                <div class="uploaded-images">
+                    <input v-for="(_, idx) in fileInputs[zoneIdx]"
                         type="file"
                         :ref="`file-${zoneIdx}-${idx}`"
                         @change="(e) => onImageUpload(zoneIdx, e)"
                         hidden>
-                <div class="image-list">
-                    <img v-for="image in data[zoneIdx].images" :src="image.fileDataInBase64">
+                    <div class="image-list">
+                        <img v-for="image in data[zoneIdx].images" :src="image.fileDataInBase64">
+                    </div>
                 </div>
             </div>
             <div v-if="zoneIdx !== 0">
-                <button type="button"
-                        class="btn btn-danger"
-                        @click="() => data.splice(zoneIdx, 1)"
-                ><i class="bi bi-trash3-fill"></i></button>
+                <div @click="() => data.splice(zoneIdx, 1)" class="btn-delete"><i class="bi bi-trash3-fill"></i></div>
             </div>
         </div>
         <div id="zone-button-wrapper">
-            <button type="button"
+            <button type="button" class="w-100 signup-btn rounded-pill mb-3"
                     id="zone-add-button"
                     @click="onAddZoneButtonClick">
                 {{ $t("facility.addZone") }}
             </button>
         </div>
+        <button type="button" class="w-100 signup-btn rounded-pill mb-3" @click="$emit('component-change', 'addinfoRegistrationInput')">{{ $t('signup.next') }}</button>
     </div>
 </template>
 
@@ -261,7 +258,9 @@ export default {
 
 #zone-add-button {
     border-radius: 100px;
-    background-color: #19319d;
+    background-color: #fff;
+    color: #4a66e6;
+    border: 1px solid #4a66e6;
     font-size: 18px;
     padding: 6px 36px;
     margin-left: auto;
@@ -295,9 +294,83 @@ export default {
 
 .arrow-container i {
     font-size: 24px;
-    background-color: #19319d;
-    color: #fff;
-    padding: 0px 6px;
-    border-radius: 5px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.helper-text {
+  font-size: 0.9em;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+/* 체크박스 토글 스타일 */
+.toggle input[type="checkbox"] {
+    display: none;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.toggle .slider {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle .slider.round {
+  border-radius: 20px;
+}
+
+.toggle input[type="checkbox"]:checked + .slider {
+  background-color: #4a66e6;
+}
+
+.toggle .slider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.toggle input[type="checkbox"]:checked + .slider::after {
+  transform: translateX(20px);
+}
+
+/* 이미지 업로드 영역 */
+.image-upload-area {
+  padding: 10px;
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.uploaded-images {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-delete {
+    font-size: 22px;
+    color: #ee0000;
 }
 </style>

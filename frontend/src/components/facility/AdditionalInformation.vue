@@ -1,30 +1,29 @@
 <template>
-    <div class="container header-container">
+    <div class="container">
         <div class="arrow-container">
             <i class="bi bi-arrow-left disabled-arrow" id="left-arrow"
                @click="$emit('component-change', 'zoneRegistrationInput')"></i>
         </div>
-        <h1 class="header">{{ $t("facility.addinfoRegistration") }}</h1>
-    </div>
-    <div class="container long-input">
-        <p class="form-text">
+        <h2 class="text-center mb-4" v-text="$t('facility.addinfoRegistration')"></h2>
+        <p class="helper-text">
             {{ $t("facility.addinfoDesc1") }}<br>
             {{ $t("facility.addinfoDesc2") }}<br>
             {{ $t("facility.addinfoDesc3") }}<br>
             {{ $t("facility.addinfoDesc4") }}
         </p>
         <div class="input-box" v-for="(item, idx) in data">
-            <div class="text-input-set">
+            <div class="text-input-set mb-3">
                 <input type="text"
                        :value="item"
                        @change="(e) => data[idx] = e.target.value">
-                <button type="button"
-                        class="btn btn-danger"
-                        @click="() => data.splice(idx, 1)"><i class="bi bi-trash3-fill"></i></button>
+                <div class="btn-delete"
+                        @click="() => data.splice(idx, 1)"><i class="bi bi-trash3-fill"></i></div>
             </div>
         </div>
-        <button id="addinfo-button"
-                type="button" @click="() => data.push('')">{{ $t("facility.add") }}</button>
+        <div class="mt-4">
+            <button id="addinfo-button" class="w-100 signup-btn rounded-pill mb-3"
+                    type="button" @click="() => data.push('')">{{ $t("facility.add") }}</button>
+        </div>
     </div>
 </template>
 
@@ -138,7 +137,9 @@ export default {
 
 #addinfo-button {
     border-radius: 100px;
-    background-color: #19319d;
+    background-color: #fff;
+    color: #4a66e6;
+    border: 1px solid #4a66e6;
     font-size: 18px;
     padding: 6px 36px;
     margin-left: auto;
@@ -204,6 +205,12 @@ export default {
     margin-bottom: 18px;
 }
 
+.helper-text {
+  font-size: 0.9em;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
 .arrow-container {
     position: absolute;
     left: 5%;
@@ -213,9 +220,10 @@ export default {
 
 .arrow-container i {
     font-size: 24px;
-    background-color: #19319d;
-    color: #fff;
-    padding: 0px 6px;
-    border-radius: 5px;
+}
+
+.btn-delete {
+    font-size: 22px;
+    color: #ee0000;
 }
 </style>
