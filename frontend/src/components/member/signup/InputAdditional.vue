@@ -17,14 +17,8 @@
         </select>
         <!-- 계좌 -->
         <div class="mb-4">
-            <input class="signup-input w-100" type="text" v-model="account" :placeholder="$t('member.account')" required />
+            <input class="signup-input w-100" type="text" v-model="accountNumber" :placeholder="$t('member.account')" required />
         </div>
-        <!-- 예금주 -->
-        <div class="mb-4">
-            <input class="signup-input w-100" type="text" v-model="accountOwner" :placeholder="$t('member.accountOwner')" required />
-            <h3 class="error-message mt-2" v-if="accountOwner !== '' && !isValidatedName" v-text="$t('signupError.notValidatedName')" />
-        </div>
-
         <button type="button" class="w-100 signup-btn rounded-pill" :disabled="isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>    </div>
 </template>
 
@@ -39,8 +33,7 @@ export default{
             businessName: "",
             businessNumber:"",
             bankCode: "",
-            account: "",
-            accountOwner: "",
+            accountNumber: "",
             bankList: bankList
         }
     },
@@ -56,11 +49,8 @@ export default{
                 key: 'bankCode',
                 value: this.bankCode
             },{
-                key: 'provAccount',
-                value: this.account
-            },{
-                key: 'provAccountOwner',
-                value: this.accountOwner
+                key: 'accountNumber',
+                value: this.accountNumber
             }]);
 		}
 	},
@@ -69,7 +59,7 @@ export default{
             return /^[a-zA-Z가-힣]+$/.test(this.accountOwner);
         },
         isInputEmpty(){
-            return this.businessName === "" || this.businessNumber === "" || this.bankCode === "" || this.account === "" || this.accountOwner === "";
+            return this.businessName === "" || this.businessNumber === "" || this.bankCode === "" || this.accountNumber === "";
         }
     }
 }
