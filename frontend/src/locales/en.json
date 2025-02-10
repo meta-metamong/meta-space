@@ -203,5 +203,8 @@
         "registerNewFaciltiy": "Register new facility",
         "edit": "Edit",
         "delete": "Delete"
+    },
+    "editFacility": {
+        "editComplete": "Edit"
     }
 }

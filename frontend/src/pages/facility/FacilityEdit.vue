@@ -15,13 +15,13 @@
         :addinfo-registration="inputs.addinfoRegistration"
         is-edit="true" />
 
-    <div style="display: flex; justify-content: center;">
+    <div id="submit-container" style="display: flex; justify-content: center;">
         <button v-if="currentComponent === 'addinfoRegistrationInput'"
-                class="btn btn-outline-success"
+                class="btn btn-primary w-50"
                 type="button"
-                id="register-button"
-                @click="registerFacility">
-            {{ $t("facility.register") }}
+                id="submit-button"
+                @click="submitEdit">
+            {{ $t("editFacility.editComplete") }}
         </button>
     </div>
 </template>
@@ -172,7 +172,37 @@ export default {
         changeComponent(componentName) {
             console.log(componentName);
             this.currentComponent = componentName;
+        },
+        submitEdit() {
+            
         }
     }
 }
 </script>
+
+<style scoped>
+#submit-container {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#submit-button {
+    background-color: #4a66e6;
+    border-radius: 80px;
+    font-size: 18px;
+}
+/* #submit-container {
+    margin-top: 50%;
+}
+
+#submit-button {
+    background-color: #4a66e6;
+    border-radius: 80px;
+    font-size: 18px;
+} */
+</style>
