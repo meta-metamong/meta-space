@@ -81,7 +81,7 @@ INSERT INTO facility (
     TO_DATE('08:00:00', 'HH24:MI:SS'),
     TO_DATE('18:00:00', 'HH24:MI:SS'),
     30,
-    'REGISTERED',
+    'REG_APPROVED',
     37.513513,
     129.415341 
 );

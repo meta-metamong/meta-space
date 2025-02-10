@@ -131,7 +131,7 @@ CREATE TABLE facility (
         REFERENCES category (cat_id),
     CONSTRAINT fk_facility_prov_id FOREIGN KEY (prov_id)
         REFERENCES fct_provider (prov_id),
-    CONSTRAINT chk_fct_state CHECK (fct_state IN ('REG_REQUESTED', 'REGISTERED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED')),
+    CONSTRAINT chk_fct_state CHECK (fct_state IN ('REG_REQUESTED', 'REG_APPROVED', 'REG_REJECTED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED')),
     CONSTRAINT fct_is_open_on_holidays_domain CHECK (is_open_on_holidays IN ('Y', 'N'))
 );
 
