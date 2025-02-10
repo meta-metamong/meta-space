@@ -3,7 +3,7 @@
 		<h2 class="text-center mb-4" v-text="$t('reservation.list')"></h2>
 		<div class="col-md-6 mb-4" v-for="rvt in rvtInfo" :key="rvt.rvtId">
 			<div class="card" @click="$router.push(`/reservation/${rvt.rvtId}`)">
-				<div class="card-header fw-bold"><h5 class="mb-1 mt-1">{{ rvt.fctName }}</h5></div>
+				<div class="card-header"><h5 class="mb-1 mt-1 fw-bold">{{ rvt.fctName }}</h5></div>
 				<div class="card-body">
 					<table class="table table-borderless mb-0">
 						<tbody>
@@ -25,7 +25,7 @@
 							</tr>
 							<tr>
 								<td class="fw-bold">{{ $t('reservation.state') }}</td>
-								<td>{{ rvt.rvtState }}</td>
+								<td><span class="badge rounded-pill" :class="getColor(rvt.rvtState)">{{ rvt.rvtState }}</span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -81,6 +81,16 @@ export default {
 				this.getRvtInfo(page);
 			}
 		},
+		getColor(rvtState){
+            switch(rvtState){
+                case "예약 완료":
+                    return " text-bg-success";
+                case "예약 취소":
+                    return "text-bg-danger";
+                default:
+                    return "text-bg-secondary";
+            }
+        }
 	},
 	mounted() {
 		this.getRvtInfo();

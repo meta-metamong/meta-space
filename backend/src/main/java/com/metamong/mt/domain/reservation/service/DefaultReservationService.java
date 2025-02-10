@@ -39,7 +39,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
     private final PaymentService paymentService;
-    private static final int PAGE_SIZE = 1;
+    private static final int PAGE_SIZE = 2;
     
     @Override
     public ReservationListRequestDto<ReservationResponseDto> findReservationByConsId(Long consId, int page) {
