@@ -201,7 +201,6 @@ public class DefaultFacilityService implements FacilityService {
     
     @Override
     public List<FacilityListOfMemberResponseDto> getFacilityOfMember(Long memId) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.facilityMapper.findFacilityOfMemberByMemId(memId);
     }
 }
