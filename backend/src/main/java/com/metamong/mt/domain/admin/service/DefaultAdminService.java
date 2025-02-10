@@ -3,21 +3,25 @@ package com.metamong.mt.domain.admin.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
-import com.metamong.mt.domain.admin.dto.response.DashBoardDto;
+import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
+import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
 import com.metamong.mt.domain.notification.model.Notification;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
@@ -35,7 +39,8 @@ public class DefaultAdminService implements AdminService{
     private final SqlSessionFactory sqlSessionFactory;
     private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
-
+    private final Set<WebSocketSession> sessions = new HashSet<>();
+    
     @Override
     @Transactional(readOnly = true)
     public List<MemberSearchResponseDto> searchMembers() {
@@ -57,18 +62,23 @@ public class DefaultAdminService implements AdminService{
     public void processReportBans(List<Long> reportedIds) {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             // 신고 횟수 조회
-            List<Map<String, Object>> reportCounts = sqlSession.selectList("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.getReportCounts",reportedIds);
-
+            List<Map<String, Object>> reportCounts = sqlSession.selectList(
+                "com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.getReportCounts", 
+                reportedIds
+            );
 
             List<Map<String, Object>> updateDataList = new ArrayList<>();
-            List<Integer> deleteDataList = new ArrayList<>();
+            List<Long> deleteDataList = new ArrayList<>();
 
             for (Map<String, Object> reportData : reportCounts) {
-            	int reportedId = ((BigDecimal) reportData.get("REPORTEDID")).intValue();
-            	int reportCount = ((BigDecimal) reportData.get("REPORTCOUNT")).intValue();
+                long reportedId = reportData.get("REPORTEDID") != null ? ((BigDecimal) reportData.get("REPORTEDID")).longValue() : 0;
+                int reportCount = reportData.get("REPORTCOUNT") != null ? ((BigDecimal) reportData.get("REPORTCOUNT")).intValue() : 0;
 
-
-                updateDataList.add(Map.of("reportedId", reportedId, "reportCount", reportCount));
+                // Map으로 변환하여 MyBatis가 인식할 수 있게 처리
+                Map<String, Object> data = new HashMap<>();
+                data.put("reportedId", reportedId);
+                data.put("reportCount", reportCount);
+                updateDataList.add(data);
 
                 // 신고 횟수가 3 이상이면 영구 정지 후 신고 데이터 삭제
                 if (reportCount >= 3) {
@@ -76,19 +86,24 @@ public class DefaultAdminService implements AdminService{
                 }
             }
 
-
+            // updateDataList를 MyBatis가 인식할 수 있도록 Map으로 변환
             if (!updateDataList.isEmpty()) {
-                sqlSession.update("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.updateMemberBan", updateDataList);
+                Map<String, Object> paramMap = new HashMap<>();
+                paramMap.put("list", updateDataList); // "list"라는 키로 전달
+
+                sqlSession.update("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.updateMemberBan", paramMap);
             }
+
+            // delete 쿼리 실행
             if (!deleteDataList.isEmpty()) {
                 sqlSession.delete("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.deleteReportedData", deleteDataList);
             }
 
             sqlSession.commit();  // 트랜잭션 커밋
         }
-
-
     }
+
+
 
 	@Override
 	@Transactional
@@ -175,9 +190,20 @@ public class DefaultAdminService implements AdminService{
 	}
 
 	@Override
-	public List<DashBoardDto> getThisWeekReservations() {
+	public List<WeekReservationDto> getThisWeekReservations() {
 		return adminMapper.getReservationsThisWeek();
 	}
 	
+    public List<FacilityReservationResponseDto> getTotalReservations() {
+        return adminMapper.getTotalReservations();
+    }
 
+    public List<FacilityReservationResponseDto> getCancelledReservations() {
+        return adminMapper.getCancelledReservations();
+    }
+
+    public List<FacilityReservationResponseDto> getTotalByFacility() {
+        return adminMapper.getTotalByFacility();
+    }
+	
 }

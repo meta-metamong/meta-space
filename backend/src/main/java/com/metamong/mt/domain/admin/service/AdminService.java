@@ -2,9 +2,13 @@ package com.metamong.mt.domain.admin.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
+
+import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
-import com.metamong.mt.domain.admin.dto.response.DashBoardDto;
+import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
+import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -22,5 +26,8 @@ public interface AdminService {
 	List<ApprovalRequestDto> getRequestFacilities();
     List<SalesExportDto> getPaymentDetails();
     BigDecimal getTotalRevenue();
-    List<DashBoardDto> getThisWeekReservations();
+    List<WeekReservationDto> getThisWeekReservations();
+    List<FacilityReservationResponseDto> getTotalReservations();
+    List<FacilityReservationResponseDto> getCancelledReservations();
+    List<FacilityReservationResponseDto> getTotalByFacility();
 }
