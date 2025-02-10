@@ -60,7 +60,7 @@
                 <button type="button"
                         class="btn btn-danger"
                         @click="() => data.splice(zoneIdx, 1)"
-                >{{ $t("facility.delete") }}</button>
+                ><i class="bi bi-trash3-fill"></i></button>
             </div>
         </div>
         <div id="zone-button-wrapper">

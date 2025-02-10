@@ -20,7 +20,7 @@
                        @change="(e) => data[idx] = e.target.value">
                 <button type="button"
                         class="btn btn-danger"
-                        @click="() => data.splice(idx, 1)">{{ $t("facility.delete") }}</button>
+                        @click="() => data.splice(idx, 1)"><i class="bi bi-trash3-fill"></i></button>
             </div>
         </div>
         <button id="addinfo-button"
