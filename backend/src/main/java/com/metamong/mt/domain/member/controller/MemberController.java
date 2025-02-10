@@ -1,5 +1,10 @@
 package com.metamong.mt.domain.member.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +28,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
@@ -284,9 +291,9 @@ public class MemberController {
       * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
       */
      @PutMapping("/members")
-     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {
-       this.memberService.updateMember(Long.parseLong(user.getUsername()), dto);
-       return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {       
+       return ResponseEntity.ok(BaseResponse.of(this.memberService.updateMember(Long.parseLong(user.getUsername()), dto), 
+                               HttpStatus.OK, "회원 수정 성공"));
      }
     
 
@@ -388,5 +395,4 @@ public class MemberController {
     public ResponseEntity<?> getAllBanks(){
         return ResponseEntity.ok(BaseResponse.of(this.memberService.getAllBanks(), HttpStatus.OK, "은행 목록이 조회되었습니다."));
     }
-
 }

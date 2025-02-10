@@ -2,6 +2,7 @@ package com.metamong.mt.domain.member.service;
 
 import java.util.List;
 
+import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
@@ -13,6 +14,7 @@ import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.MemberImage;
 
 public interface MemberService {
 
@@ -37,7 +39,7 @@ public interface MemberService {
  	MemberResponseDto searchMember(Long memId);
 
  	// 회원 정보 수정
- 	void updateMember(Long memId, UpdateRequestDto dto);
+ 	ImageUploadUrlResponseDto updateMember(Long memId, UpdateRequestDto dto);
  	
  	// 회원 정보 삭제
 	boolean deleteMember(Long memId);

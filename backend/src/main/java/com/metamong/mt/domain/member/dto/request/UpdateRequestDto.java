@@ -2,6 +2,7 @@ package com.metamong.mt.domain.member.dto.request;
 
 import java.time.LocalDate;
 
+import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
@@ -46,6 +47,8 @@ public class UpdateRequestDto {
     
     private String bankCode;
     private String accountNumber;
+    
+    private ImageRequestDto memImage;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);

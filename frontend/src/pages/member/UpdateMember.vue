@@ -2,7 +2,7 @@
 	<div class="container w-100 mt-4">
 		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
 		<div class="text-center mb-3">
-            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" @click="uploadImage" alt="Profile Image" class="profile-img">
+            <img :src="memImage.fileDataInBase64" @click="uploadImage" alt="Profile Image" class="profile-img">
 			<input type="file" :ref="'file-member-image'" @change="(e) => onImageUpload(e)" hidden/>
         </div>
         <div class="mb-4">
@@ -73,13 +73,18 @@
 </template>
 <script>
 import { get, put } from "../../apis/axios";
+import axios from "axios";
 export default {
 	name: 'UpdateMember',
 	data() {
 		return {
 			memberInfo: {},
 			errorMessage: "",
-			profileImage: "",
+			memImage: {
+				fileExtension: "png",
+				fileDataInBase64: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png",
+				fileData: {}
+			},
 			bankList: []
 		}
 	},
@@ -102,23 +107,33 @@ export default {
 					bizRegNum: this.memberInfo.bizRegNum,
 					bankCode: this.memberInfo.bankCode,
 					accountNumber: this.memberInfo.accountNumber,
+					memImage: (this.memImage.fileData === null || this.memImage.fileData === undefined) ? null : { fileType: this.memImage.fileExtension, order: 1 }
 				}
 			}
-			
-			console.log(updateDto);
-			const response = await put(`/members`, updateDto);
-			if (response.status === 200) {
-				alert(response.data.message);
-				this.$router.push("/profile")
-			} else if (response.status === 400) {
-				alert("회원정보 수정 오류 " + response.response.data.message);
-			} else {
-				return;
-			}
-		},
+			await put(`/members`, updateDto)
+			.then(response => {
+				const uploadUrl = response.data.content.uploadUrl
+				axios.put(uploadUrl, this.memImage.fileData, {
+					headers: {
+						"Content-Type": `image/${this.memImage.fileExtension}`
+					}
+				}).then(response => {
+				if (response.status === 200) {
+					alert("정보가 수정되었습니다.");
+					this.$router.push("/profile")
+				} else if (response.status === 400) {
+					alert("회원정보 수정 오류 " + response.response.data.message);
+				} else {
+					return;
+				}
+			}).catch(error => {
+				console.error(error);
+			})
+		})},
 		async getMemberInfo() {
 			const response = await get(`/members/${this.$store.state.userId}`);
 			this.memberInfo = response.data.content;
+			if(this.memberInfo.imgPath !== null) this.memImage.fileDataInBase64 = this.memberInfo.imgPath
 		},
 		searchPostCode(){
 			new daum.Postcode({
@@ -142,19 +157,16 @@ export default {
 			this.$refs['file-member-image'].click();
 		},
 		onImageUpload(e){
-			alert("업로드 해보시지 ㅋㅋ");
-			return;
 			const fileReader = new FileReader();
-            fileReader.onload = () => {
-                const filename = e.target.files[0].name;
-                this.profileImage = {
-                    fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
-                    fileData: fileReader.result
-                };
-                this.fileInput.push(0);
-                console.log(this.data.images);
-            }
-            fileReader.readAsDataURL(e.target.files[0]);
+			fileReader.onload = () => {
+				const filename = e.target.files[0].name;
+				this.memImage = {
+					fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
+                    fileDataInBase64: fileReader.result,
+                    fileData: e.target.files[0]
+				}
+			};
+			fileReader.readAsDataURL(e.target.files[0]);
 		},
 		test(e){
 			console.log(e.target.value);
