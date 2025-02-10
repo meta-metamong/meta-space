@@ -25,7 +25,7 @@
                 </select>
                 <select class="form-select" @change="(e) => onValueChange(e.target.value, 'minorCatId')">
                     <option>{{ $t("facility.minorCategory") }}</option>
-                    <option v-for="minorCategory in selectedMinorCategories"
+                    <option v-for="minorCategory in data.selectedMinorCategories"
                             :value="minorCategory.catId"
                             :selected="data.minorCatId === minorCategory.catId">
                         {{ minorCategory.catName }}
@@ -154,9 +154,15 @@ export default {
         facilityRegistration: {
             type: Object,
             required: true
+        },
+        isEdit: {
+            type: Boolean,
+            required: true
         }
     },
     data() {
+        console.log(this.facilityRegistration);
+
         const operationTimeSelections = [];
         let minutes = 0;
         const convertMinutesTo24HourTime = (minute) => {
@@ -171,7 +177,6 @@ export default {
 
         return {
             categories: [],
-            selectedMinorCategories: [],
             operationTimeSelections,
             data: this.facilityRegistration,
             fileInput: []
@@ -194,8 +199,8 @@ export default {
             for (const major of this.categories) {
                 console.log(major);
                 if (major.catId === e.target.value) {
-                    this.selectedMinorCategories = major.children;
-                    console.log(this.selectedMinorCategories);
+                    this.data.selectedMinorCategories = major.children;
+                    console.log(this.data.selectedMinorCategories);
                     return;
                 }
             }

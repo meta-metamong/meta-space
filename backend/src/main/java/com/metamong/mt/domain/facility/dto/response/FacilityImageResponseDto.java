@@ -11,6 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class FacilityImageResponseDto {
+    private Long imgId;
     private int fctImgDisplayOrder;
     private String fctImgUrl;
 }

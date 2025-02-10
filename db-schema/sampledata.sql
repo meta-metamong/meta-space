@@ -47,7 +47,17 @@ INSERT INTO category (
     cat_name
 ) VALUES (
     '300',
-    'Some category'
+    'What'
+);
+
+INSERT INTO category (
+    cat_id,
+    parent_cat_id,
+    cat_name
+) VALUES (
+    '301',
+    '300',
+    'Sub What'
 );
 
 INSERT INTO facility (
@@ -69,7 +79,7 @@ INSERT INTO facility (
     fct_longitude
 ) VALUES (
     fct_pk_seq.NEXTVAL,
-    '300',
+    '301',
     21,
     'FACILITY',
     '54321',
@@ -147,7 +157,7 @@ INSERT INTO image (
 ) VALUES (
     img_pk_seq.NEXTVAL,
     fct_pk_seq.CURRVAL,
-    'http://localhost:8080/resources/images/zone-image1.jpg',
+    'http://localhost:8080/resources/files/zone-image1.jpg',
     'F',
     1
 );

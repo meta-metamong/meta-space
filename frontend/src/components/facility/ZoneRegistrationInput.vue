@@ -79,6 +79,10 @@ export default {
         zoneRegistration: {
             type: Object,
             required: true
+        },
+        isEdit: {
+            type: Boolean,
+            required: true
         }
     },
     data() {
