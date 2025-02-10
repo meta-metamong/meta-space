@@ -199,7 +199,11 @@
             s.fct_name AS "fctName",
             s.cat_id AS "catId",
             s.cat_name AS "catName",
-            s.img_path AS "repImgUrl"
+            s.img_path AS "repImgUrl",
+            s.fct_latitude AS "fctLatitude",
+            s.fct_longitude AS "fctLongitude",
+            s.fct_address AS "fctAddress",
+            s.fct_detail_address AS "fctDetailAddress"
         FROM (
             SELECT
                 ROWNUM AS rnum,
@@ -207,14 +211,22 @@
                 s.fct_name AS fct_name,
                 s.cat_id AS cat_id,
                 s.cat_name AS cat_name,
-                s.img_path AS img_path
+                s.img_path AS img_path,
+                s.fct_latitude AS fct_latitude,
+                s.fct_longitude AS fct_longitude,
+                s.fct_address AS fct_address,
+                s.fct_detail_address AS fct_detail_address
             FROM (
                 SELECT
                     fct.fct_id AS fct_id,
                     fct.fct_name AS fct_name,
                     cat.cat_id AS cat_id,
                     cat.cat_name AS cat_name,
-                    img.img_path AS img_path
+                    img.img_path AS img_path,
+                    fct.fct_latitude AS fct_latitude,
+                    fct.fct_longitude AS fct_longitude,
+                    fct.fct_address AS fct_address,
+                    fct.fct_detail_address AS fct_detail_address
                 FROM facility fct
                 INNER JOIN category cat ON cat.cat_id = fct.cat_id
                 LEFT JOIN image img ON img.img_attached_to = 'F'

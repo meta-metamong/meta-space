@@ -14,6 +14,7 @@ import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
@@ -38,14 +39,22 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
     private final PaymentService paymentService;
-
+    private static final int PAGE_SIZE = 2;
+    
     @Override
-    public List<ReservationResponseDto> findReservationByConsId(Long consId) {
-        return this.reservationMapper.findReservationByConsId(consId);
+    public ReservationListRequestDto<ReservationResponseDto> findReservationByConsId(Long consId, int page) {
+        int totalCount = this.reservationMapper.countReservations(consId);
+        int totalPages = (int) Math.ceil((double) totalCount / PAGE_SIZE);
+        
+        int startRow = (page - 1) * PAGE_SIZE + 1;
+        int endRow = startRow + PAGE_SIZE - 1;
+        List<ReservationResponseDto> reservations = this.reservationMapper.findReservationByConsId(consId, startRow, endRow);
+        return new ReservationListRequestDto<>(reservations, page, totalPages, PAGE_SIZE, endRow);
     }
 
     @Override
     public ReservationResponseDto findReservationByRvtId(Long rvtId) {
+        this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
         return this.reservationMapper.findReservationByRvtId(rvtId);
     }
 

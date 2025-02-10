@@ -94,7 +94,7 @@ public class FacilityController {
             @RequestParam(value = "upper-longitude", required = false) Double upperLongitude,
             @RequestParam(value = "lower-longitude", required = false) Double lowerLongitude,
             @RequestParam(value = "center-latitude", required = false) Double centerLatitude,
-            @RequestParam(value = "lowerLatitude", required = false) Double centerLongitude,
+            @RequestParam(value = "center-longitude", required = false) Double centerLongitude,
             @RequestParam(value = "cat-id", required = false) List<String> catIds
     ) {
         FacilityListRequestDto dto = FacilityListRequestDto.builder()
