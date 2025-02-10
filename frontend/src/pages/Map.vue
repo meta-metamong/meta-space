@@ -6,19 +6,13 @@
 
 <script>
 import { toRaw } from "vue";
+import { get } from "../apis/axios";
 export default {
     name: "KakaoMap",
     data() {
         return {
-            markerPositions: [
-                [37.499590490909185, 127.0263723554437],
-                [37.499427948430814, 127.02794423197847],
-                [37.498553760499505, 127.02882598822454],
-                [37.497625593121384, 127.02935713582038],
-                [37.49629291770947, 127.02587362608637],
-                [37.49754540521486, 127.02546694890695],
-                [37.49646391248451, 127.02675574250912],
-            ],
+            fctInfo: [],
+            markerPositions: [],
             markers: [],
             clusterer: null,
             overlays: [],
@@ -33,6 +27,7 @@ export default {
             script.src = "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=ed39086327d2b4332a5533af606ec521&libraries=clusterer";
             document.head.appendChild(script);
         }
+        this.getFctInfo();
     },
     methods: {
         initMap() {
@@ -64,9 +59,9 @@ export default {
             this.markers = [];
             this.overlays = [];
 
-            this.markerPositions.forEach((position) => {
+            this.fctInfo.forEach((fct) => {
                 let marker = new kakao.maps.Marker({
-                    position: new kakao.maps.LatLng(...position),
+                    position: new kakao.maps.LatLng(fct.fctLatitude, fct.fctLongitude),
                     map: this.map,
                 });
 
@@ -75,17 +70,17 @@ export default {
                 overlayContent.innerHTML = `
                     <div class="info">
                         <div class="title">
-                            카카오 스페이스닷원
+                            ${fct.fctName}
                             <div class="close" title="닫기"></div>
                         </div>
                         <div class="body">
                             <div class="img">
-                                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
+                                <img src="${fct.repImgUrl}" width="73" height="70">
                             </div>
                             <div class="desc">
-                                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>
-                                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>
-                                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>
+                                <div class="jibun ellipsis">${fct.catName}</div>
+                                <div class="ellipsis">${fct.fctAddress} ${fct.fctDetailAddress}</div>
+                                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">바로가기</a></div>
                             </div>
                         </div>
                     </div>
@@ -118,6 +113,13 @@ export default {
                 var level = this.map.getLevel() - 2;
                 toRaw(this.map).setLevel(level, { anchor: cluster.getCenter() });
             });
+        },
+        async getFctInfo() {
+            const response = await get(`/facilities?center-latitude=37.583842&center-longitude=126.999969`);
+            this.fctInfo = response.data.content.facilities;
+            this.markerPositions = this.fctInfo.map(fct => [fct.fctLatitude, fct.fctLongitude]);
+
+            console.log(this.fctInfo);
         }
     },
 };
@@ -163,8 +165,8 @@ export default {
 }
 
 .info .title {
-    padding: 5px 0 0 10px;
-    height: 30px;
+    padding: 5px 0 2px 10px;
+    /* height: 30px; */
     background: #eee;
     border-bottom: 1px solid #ddd;
     font-size: 18px;
@@ -200,6 +202,7 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-bottom: 3px;
 }
 
 .desc .jibun {
