@@ -17,6 +17,7 @@ import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
@@ -196,5 +197,11 @@ public class DefaultFacilityService implements FacilityService {
                 .isLast(page == totalPageCount)
                 .facilities(facilities)
                 .build();
+    }
+    
+    @Override
+    public List<FacilityListOfMemberResponseDto> getFacilityOfMember(Long memId) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

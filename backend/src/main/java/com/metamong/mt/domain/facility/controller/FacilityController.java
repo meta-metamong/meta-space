@@ -25,6 +25,7 @@ import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.global.apispec.BaseResponse;
@@ -115,5 +116,10 @@ public class FacilityController {
         return ResponseEntity.ok(
                 BaseResponse.of(this.facilityService.getFacilities(dto), HttpStatus.OK)
         );
+    }
+    
+    @GetMapping("/members/{memId}/facilities")
+    public ResponseEntity<BaseResponse<List<FacilityListOfMemberResponseDto>>> getFacilityOfMember(@PathVariable("memId") Long memId) {
+        return ResponseEntity.ok(BaseResponse.of(this.facilityService.getFacilityOfMember(memId), HttpStatus.OK));
     }
 }
