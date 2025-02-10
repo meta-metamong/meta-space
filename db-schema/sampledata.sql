@@ -35,15 +35,15 @@ INSERT INTO bank (
 INSERT INTO fct_provider (
     prov_id,
     biz_name,
-    biz_reg_name,
+    biz_reg_num,
     bank_code,
     prov_account,
     prov_account_owner
 ) VALUES (
-    mem_pk_seq.CURRVAL,
-    'BIZ NAME',
+    21,
+    '363857357-462624',
     'BIZ REG NAME',
-    '500',
+    '001',
     '123-456-123456',
     'BIZ NAME'
 );

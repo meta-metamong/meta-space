@@ -56,7 +56,7 @@ class LocalFileUploaderTest {
         
         // Then
         try (BufferedInputStream origBis = new BufferedInputStream(getClass().getResourceAsStream(TEST_FILENAME));
-                BufferedInputStream generatedFileBis = new BufferedInputStream(new FileInputStream(new File(this.fileSystemPath + "resources/file/" + TEST_FILENAME)))) {
+                BufferedInputStream generatedFileBis = new BufferedInputStream(new FileInputStream(new File(this.fileSystemPath + "resources/files/" + TEST_FILENAME)))) {
             int readSize1;
             int readSize2;
             final int bufferSize = 1024;

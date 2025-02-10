@@ -101,7 +101,8 @@
         "signupOwner": "Signup as a Owner",
         "membershipDate": "Membership Date",
         "changePw": "Change Password",
-        "confirmPw": "Confirm Password"
+        "confirmPw": "Confirm Password",
+        "balance": "Balance"
     },
     "admin" : {
         "socket":"socket",
@@ -178,6 +179,7 @@
         "register": "Register",
         "yes": "Yes",
         "no": "No",
-        "addZone": "Add Zone"
+        "addZone": "Add Zone",
+        "delete": "Delete"
     }
 }

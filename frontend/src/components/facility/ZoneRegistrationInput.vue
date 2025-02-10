@@ -2,8 +2,8 @@
     <div class="container">
         <h1 class="header">{{ $t("facility.zoneRegistration") }}</h1>
     </div>
-    <div class="container long-input">
-        <div v-for="(zone, zoneIdx) in data">
+    <div class="container zone-container">
+        <div class="zone-wrapper long-input" v-for="(zone, zoneIdx) in data">
             <div class="input-box">
                 <input type="text"
                     :placeholder="$t('facility.zoneName')"
@@ -13,44 +13,60 @@
             <div class="input-box">
                 <input type="text"
                     :placeholder="$t('facility.maxUserCount')"
-                    :value="data.maxUserCount"
+                    :value="zone.maxUserCount"
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'maxUserCount')">
             </div>
             <div class="input-box">
                 <input type="text"
                     :placeholder="$t('facility.hourlyRate')"
-                    :value="data.hourlyRate"
+                    :value="zone.hourlyRate"
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'hourlyRate')">
             </div>
             <div class="input-box">
-                <div>
+                <div class="label-with-input">
                     <input type="checkbox"
-                        :checked="data.isSharedZone"
+                        class="form-check"
+                        :checked="zone.isSharedZone"
                         @change="(e) => onValueChange(zoneIdx, e.target.checked, 'isSharedZone')">
                     <label>{{ $t("facility.isSharedZone") }}</label>
                 </div>
-                <p>{{ $t("facility.sharedZoneDescription") }}</p>
+                <p class="form-text">{{ $t("facility.sharedZoneDescription") }}</p>
             </div>
             <div class="input-box">
                 <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
                 <div>
-                    <button @click="() => onAddImageBtnClick(zoneIdx)">{{ $t("facility.addImage") }}</button>
+                    <button class="image-add-button"
+                            @click="() => onAddImageBtnClick(zoneIdx)">
+                        {{ $t("facility.addImage") }}
+                    </button>
                     <p>{{ $t("facility.imageLimitDescription") }}</p>
                 </div>
-                <div>
-                    <input v-for="(_, idx) in fileInputs"
+                <input v-for="(_, idx) in fileInputs[zoneIdx]"
                         type="file"
                         :ref="`file-${zoneIdx}-${idx}`"
                         @change="(e) => onImageUpload(zoneIdx, e)"
                         hidden>
-                    <img v-for="image in data[zoneIdx].images" :src="image.fileData">
+                <div class="image-list">
+                    <img v-for="image in data[zoneIdx].images" :src="image.fileDataInBase64">
                 </div>
             </div>
+            <div v-if="zoneIdx !== 0">
+                <button type="button"
+                        class="btn btn-danger"
+                        @click="() => data.splice(zoneIdx, 1)"
+                >{{ $t("facility.delete") }}</button>
+            </div>
         </div>
-        <button type="button" @click="onAddZoneButtonClick">{{ $t("facility.addZone") }}</button>
-        <div>
-            <button type="button" @click="$emit('component-change', 'facilityRegistrationInput')">{{ $t("facility.previous") }}</button>
-            <button type="button" @click="$emit('component-change', 'addinfoRegistrationInput')">{{ $t("facility.next") }}</button>
+        <div id="zone-button-wrapper">
+            <button type="button"
+                    id="zone-add-button"
+                    @click="onAddZoneButtonClick">
+                {{ $t("facility.addZone") }}
+            </button>
+        </div>
+        <div id="page-move-button-container">
+            <button class="btn-page-move" type="button" @click="$emit('component-change', 'addinfoRegistrationInput')">{{ $t("facility.next") }}</button>
+            <button style="background-color: #999999;" class="btn-page-move" type="button" @click="$emit('component-change', 'facilityRegistrationInput')">{{ $t("facility.previous") }}</button>
         </div>
     </div>
 </template>
@@ -85,6 +101,7 @@ export default {
             const indexToOpen = this.data[zoneIdx].images.length;
             console.log(indexToOpen);
             console.log(this.$refs);
+            console.log(this.fileInputs);
             this.$refs[`file-${zoneIdx}-${indexToOpen}`][0].click();
         },
         onImageUpload(zoneIdx, e) {
@@ -93,11 +110,11 @@ export default {
                 const filename = e.target.files[0].name;
                 this.data[zoneIdx].images.push({
                     fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
-                    fileData: fileReader.result
+                    fileDataInBase64: fileReader.result,
+                    fileData: e.target.files[0]
                 });
-                this.fileInputs[zoneIdx].push(0);
-                console.log("zoneIdx=" + zoneIdx);
-                console.log(this.data[zoneIdx].images);
+                this.fileInputs[zoneIdx] = [...this.fileInputs[zoneIdx], 0];
+                console.log(this.fileInputs[zoneIdx]);
             }
             fileReader.readAsDataURL(e.target.files[0]);
         },
@@ -123,3 +140,143 @@ export default {
     }
 }
 </script>
+
+<style lang="css" scoped>
+.zone-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.zone-wrapper {
+    padding: 16px 12px;
+    border: 1px solid #999999;
+    border-radius: 8px;
+}
+
+.header {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.long-input {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5%;
+    padding-right: 5%;
+    gap: 24px;
+}
+
+.input-box input[type="text"], .input-box input[type="number"] {
+    border: none;
+    border-bottom: 1px solid #999999;
+    font-size: 1rem;
+    padding-bottom: 0.3rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: 100%;
+}
+
+.box-title {
+    font-size: 1rem;
+}
+
+.category-select-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px
+}
+
+.category-select-box select {
+    color: #999999
+}
+
+.postal-code {
+    display: flex;
+    gap: 15px;
+}
+
+.postal-code button {
+    width: 150px;
+    border-radius: 10px;
+    background-color: #19319d;
+}
+
+.facility-address-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+.horizontal-input {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 8px
+}
+
+.horizontal-input p {
+    padding: 0;
+    margin: 0;
+}
+
+.horizontal-input .form-select {
+    width: fit-content;
+}
+
+.label-with-input {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.label-with-input input[type="checkbox"] {
+    width: 1.1rem;
+}
+
+.image-add-button {
+    border-radius: 10px;
+    background-color: #19319d;
+}
+
+.image-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.image-list img {
+    width: 70%;
+    max-height: 500px;
+}
+
+#zone-button-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#zone-add-button {
+    border-radius: 100px;
+    background-color: #19319d;
+    font-size: 18px;
+    padding: 6px 36px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-page-move {
+    background-color: #19319d;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+#page-move-button-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+</style>
