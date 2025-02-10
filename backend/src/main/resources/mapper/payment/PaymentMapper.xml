@@ -22,12 +22,14 @@
         <result column="refund_bank_code" property="refundBankCode" />
         <result column="refund_account" property="refundAccount" />
         <result column="refund_account_owner" property="refundAccountOwner" />
+        <result column="rvt_cancelation_reason" property="rvtCancelationReason" />
     </resultMap>
     
     <!-- 결제 내역 조회 -->
     <select id="findPaymentsByMemberId" parameterType="long" resultMap="paymentResponse">
     <![CDATA[
-    SELECT p.rvt_id, pay_price, pay_method, pay_state, pay_date, refund_bank_code, refund_account, refund_account_owner FROM payment p
+    SELECT p.rvt_id, pay_price, pay_method, pay_state, pay_date, refund_bank_code, refund_account, refund_account_owner, r.rvt_cancelation_reason 
+    FROM payment p
     LEFT JOIN reservation r
     ON p.rvt_id=r.rvt_id
     WHERE r.cons_id = #{memId}
@@ -37,8 +39,11 @@
     <!-- 결제 내역 상세 조회 -->
     <select id="findPaymentByReservationId" parameterType="long" resultMap="paymentResponse">
     <![CDATA[
-    SELECT rvt_id, pay_price, pay_method, pay_state, pay_date, refund_bank_code, refund_account, refund_account_owner FROM payment
-    WHERE rvt_id=#{rvtId}
+    SELECT p.rvt_id, pay_price, pay_method, pay_state, pay_date, refund_bank_code, refund_account, refund_account_owner, r.rvt_cancelation_reason 
+    FROM payment p
+    LEFT JOIN reservation r
+    ON p.rvt_id=r.rvt_id
+    WHERE p.rvt_id=#{rvtId}
     ]]>
     </select>
     

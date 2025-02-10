@@ -1,5 +1,11 @@
 <template>
-    <div class="container">
+    <div class="container header-container">
+        <div class="arrow-container">
+            <i class="bi bi-arrow-left disabled-arrow" id="left-arrow"
+            @click="$emit('component-change', 'facilityRegistrationInput')"></i>
+            <i class="bi bi-arrow-right" id="right-arrow"
+            @click="$emit('component-change', 'addinfoRegistrationInput')"></i>
+        </div>
         <h1 class="header">{{ $t("facility.zoneRegistration") }}</h1>
     </div>
     <div class="container zone-container">
@@ -54,7 +60,7 @@
                 <button type="button"
                         class="btn btn-danger"
                         @click="() => data.splice(zoneIdx, 1)"
-                >{{ $t("facility.delete") }}</button>
+                ><i class="bi bi-trash3-fill"></i></button>
             </div>
         </div>
         <div id="zone-button-wrapper">
@@ -63,10 +69,6 @@
                     @click="onAddZoneButtonClick">
                 {{ $t("facility.addZone") }}
             </button>
-        </div>
-        <div id="page-move-button-container">
-            <button class="btn-page-move" type="button" @click="$emit('component-change', 'addinfoRegistrationInput')">{{ $t("facility.next") }}</button>
-            <button style="background-color: #999999;" class="btn-page-move" type="button" @click="$emit('component-change', 'facilityRegistrationInput')">{{ $t("facility.previous") }}</button>
         </div>
     </div>
 </template>
@@ -278,5 +280,24 @@ export default {
     display: flex;
     justify-content: center;
     flex-direction: column;
+}
+.header-container {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.arrow-container {
+    position: absolute;
+    left: 5%;
+    display: flex;
+    gap: 8px;
+}
+
+.arrow-container i {
+    font-size: 24px;
+    background-color: #19319d;
+    color: #fff;
+    padding: 0px 6px;
+    border-radius: 5px;
 }
 </style>

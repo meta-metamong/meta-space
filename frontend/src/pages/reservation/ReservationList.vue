@@ -52,7 +52,7 @@ export default {
 	},
 	methods: {
 		async getRvtInfo() {
-			const response = await get(`/members/1/reservations`);
+			const response = await get(`/members/3/reservations`);
 			this.rvtInfo = response.data.content;
 		},
 	},
