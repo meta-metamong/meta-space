@@ -13,20 +13,20 @@
             <div class="input-box">
                 <input type="text"
                     :placeholder="$t('facility.maxUserCount')"
-                    :value="data.maxUserCount"
+                    :value="zone.maxUserCount"
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'maxUserCount')">
             </div>
             <div class="input-box">
                 <input type="text"
                     :placeholder="$t('facility.hourlyRate')"
-                    :value="data.hourlyRate"
+                    :value="zone.hourlyRate"
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'hourlyRate')">
             </div>
             <div class="input-box">
                 <div class="label-with-input">
                     <input type="checkbox"
                         class="form-check"
-                        :checked="data.isSharedZone"
+                        :checked="zone.isSharedZone"
                         @change="(e) => onValueChange(zoneIdx, e.target.checked, 'isSharedZone')">
                     <label>{{ $t("facility.isSharedZone") }}</label>
                 </div>
@@ -41,13 +41,13 @@
                     </button>
                     <p>{{ $t("facility.imageLimitDescription") }}</p>
                 </div>
-                <div class="image-list">
-                    <input v-for="(_, idx) in fileInputs"
+                <input v-for="(_, idx) in fileInputs[zoneIdx]"
                         type="file"
                         :ref="`file-${zoneIdx}-${idx}`"
                         @change="(e) => onImageUpload(zoneIdx, e)"
                         hidden>
-                    <img v-for="image in data[zoneIdx].images" :src="image.fileData">
+                <div class="image-list">
+                    <img v-for="image in data[zoneIdx].images" :src="image.fileDataInBase64">
                 </div>
             </div>
             <div v-if="zoneIdx !== 0">
@@ -101,6 +101,7 @@ export default {
             const indexToOpen = this.data[zoneIdx].images.length;
             console.log(indexToOpen);
             console.log(this.$refs);
+            console.log(this.fileInputs);
             this.$refs[`file-${zoneIdx}-${indexToOpen}`][0].click();
         },
         onImageUpload(zoneIdx, e) {
@@ -109,11 +110,11 @@ export default {
                 const filename = e.target.files[0].name;
                 this.data[zoneIdx].images.push({
                     fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
-                    fileData: fileReader.result
+                    fileDataInBase64: fileReader.result,
+                    fileData: e.target.files[0]
                 });
-                this.fileInputs[zoneIdx].push(0);
-                console.log("zoneIdx=" + zoneIdx);
-                console.log(this.data[zoneIdx].images);
+                this.fileInputs[zoneIdx] = [...this.fileInputs[zoneIdx], 0];
+                console.log(this.fileInputs[zoneIdx]);
             }
             fileReader.readAsDataURL(e.target.files[0]);
         },
