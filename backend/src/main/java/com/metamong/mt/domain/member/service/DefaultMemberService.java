@@ -107,7 +107,7 @@ public class DefaultMemberService implements MemberService {
         Member member = dto.toEntity();
         member.setPassword(this.passwordEncoder.encode(dto.getPassword()));
         member.setIsDel(BooleanAlt.N);
-        Member savedMember = this.memberRepository.save(member);
+        Member savedMember = this.memberRepository.saveAndFlush(member);
         
         // 시설 제공자 데이터 저장
         FctProvider provider = dto.toProvider();
@@ -115,7 +115,7 @@ public class DefaultMemberService implements MemberService {
         this.providerRepository.save(provider);
         
         // 계좌 정보 저장
-        Account account = dto.getAccount().toEntity();
+        Account account = dto.toAccount();
         account.setProvId(savedMember.getMemId());        
         this.accountRepository.save(account);
     }
@@ -203,6 +203,10 @@ public class DefaultMemberService implements MemberService {
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        FctProvider provider = this.getProvider(memId);
 	        provider.updateInfo(dto.toProvider());
+	        Account account = this.getAccount(memId);
+	        if(!dto.getAccountNumber().equals(account.getAccountNumber())) {
+	            account.updateInfo(dto.toAccount());
+	        }
 	    }
 	    memberRepository.save(member);
 	}

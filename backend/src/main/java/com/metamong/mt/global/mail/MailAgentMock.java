@@ -18,6 +18,8 @@ public class MailAgentMock extends AbstractMailAgentBean {
     @Override
     public void send(MailType mailType, String subject, String receiverEmail, Object... params) {
         MailMessageFormatter formatter = super.getMessageFormatter(mailType);
+        log.info("formatter={}", formatter);
+        log.info("mailType={}", mailType);
         log.info("subject={}", subject);
         log.info("receiver={}", receiverEmail);
         log.info("mail text={}", formatter.format(params));

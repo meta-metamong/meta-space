@@ -3,13 +3,13 @@ package com.metamong.mt.domain.member.dto.request;
 import java.time.LocalDate;
 
 import com.metamong.mt.domain.member.dto.request.validation.EnumValidator;
+import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +45,7 @@ public class UpdateRequestDto {
     private String bizRegNum;
     
     private String bankCode;
-    private String account;
+    private String accountNumber;
     
     public Gender getGender() {
         return Gender.valueOf(this.gender);
@@ -67,6 +67,13 @@ public class UpdateRequestDto {
         return FctProvider.builder()
                 .bizName(this.bizName)
                 .bizRegNum(this.bizRegNum)
+                .build();
+    }
+    
+    public Account toAccount() {
+        return Account.builder()
+                .bankCode(this.bankCode)
+                .accountNumber(this.accountNumber)
                 .build();
     }
 }

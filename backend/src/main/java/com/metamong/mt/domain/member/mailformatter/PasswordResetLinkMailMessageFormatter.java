@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.member.service.mailformatter;
+package com.metamong.mt.domain.member.mailformatter;
 
 import org.springframework.stereotype.Component;
 
