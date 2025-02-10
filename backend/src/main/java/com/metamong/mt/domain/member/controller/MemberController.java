@@ -284,9 +284,9 @@ public class MemberController {
       * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
       */
      @PutMapping("/members")
-     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {
-       this.memberService.updateMember(Long.parseLong(user.getUsername()), dto);
-       return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {       
+       return ResponseEntity.ok(BaseResponse.of(this.memberService.updateMember(Long.parseLong(user.getUsername()), dto), 
+                               HttpStatus.OK, "회원 수정 성공"));
      }
     
 
@@ -388,5 +388,4 @@ public class MemberController {
     public ResponseEntity<?> getAllBanks(){
         return ResponseEntity.ok(BaseResponse.of(this.memberService.getAllBanks(), HttpStatus.OK, "은행 목록이 조회되었습니다."));
     }
-
 }

@@ -2,7 +2,7 @@
 	<div class="container w-100 mt-4">
 		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
 		<div class="text-center mb-3">
-            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" alt="Profile Image" class="profile-img">
+            <img :src="profileImage" alt="Profile Image" class="profile-img">
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.email') }}</p>
@@ -66,6 +66,7 @@ export default {
     data() {
         return {
             memberInfo: [],
+            profileImage: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png"
         };
     },
     computed: {
@@ -77,6 +78,7 @@ export default {
         async getMemberInfo() {
             const response = await get(`/members/${this.$store.state.userId}`);
             this.memberInfo = response.data.content;
+			if(response.data.content.imgPath !== null) this.profileImage = response.data.content.imgPath;
         }
     },
     mounted() {

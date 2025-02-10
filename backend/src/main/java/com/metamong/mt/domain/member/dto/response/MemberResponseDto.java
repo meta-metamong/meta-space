@@ -25,6 +25,7 @@ public class MemberResponseDto {
 	private final String memPostalCode;
 	private final String memAddress;
 	private final String memDetailAddress;
+	private final String imgPath;
 	private final Role role;
 
 	private final String bizName;

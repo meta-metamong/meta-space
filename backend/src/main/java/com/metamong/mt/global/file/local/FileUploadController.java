@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 public class FileUploadController {
     private final FileUploader fileUploader;
     
-    @PutMapping("/{*filePath}")
+    @PutMapping("/{filePath:.+}")
     public ResponseEntity<BaseResponse<Void>> putFile(
-            @PathVariable("filePath") String filePath,
+            @PathVariable String filePath,
             InputStream is) throws IOException { // TODO: IOException을 어떻게 처리할 것인가
+        
+        System.out.println("\n\n\n\n\n들어오긴 하나?");
         if (log.isDebugEnabled()) {
             log.debug("filePath={}", filePath);
         }
