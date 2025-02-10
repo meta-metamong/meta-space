@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.metamong.mt.domain.payment.model.constant.PaymentState;
+import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,8 +58,11 @@ public class Payment {
     @Column(name="refund_account_owner")
     private String refundAccountOwner;
 
-    public void reservationCancelRequest() {
+    public void reservationCancelRequest(CancelRequestDto dto) {
         this.payState = PaymentState.Q;
         this.cancelDate = LocalDateTime.now();
+        this.refundBankCode = dto.getRefundBankCode();
+        this.refundAccount = dto.getRefundAccount();
+        this.refundAccountOwner = dto.getRefundAccountOwner();
     }
 }

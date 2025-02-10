@@ -136,11 +136,12 @@ public class DefaultReservationService implements ReservationService {
     }
 
     @Override
+    @Transactional
     public void cancelReservation(Long rvtId, CancelRequestDto dto) {
         Reservation reservation = this.reservationRepository.findById(rvtId)
                 .orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
         reservation.setRvtCancelationReason(dto.getRvtCancelationReason());
-        this.paymentService.reservationCancelRequest(rvtId);
+        this.paymentService.reservationCancelRequest(rvtId, dto);
     }
 
     @Override

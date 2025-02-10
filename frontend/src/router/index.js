@@ -17,6 +17,9 @@ import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
 import Map from '../pages/Map.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
+import MyFacilityList from "../pages/facility/MyFacilityList.vue";
+import PaymentList from '../pages/payment/PaymentList.vue';
+import DetailPayment from '../pages/payment/DetailPayment.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -32,6 +35,7 @@ const routes = [
 	{ path: '/download', component: Download  },
 
 	{ path: '/facilities/register', component: FacilityRegistration },
+	{ path: '/facilities/my-facility-list', component: MyFacilityList },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
@@ -40,6 +44,9 @@ const routes = [
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 	{ path: '/map', component: Map },
+
+	{ path: '/payment/list', component: PaymentList },
+	{ path: '/payment/:rvtId', component: DetailPayment, props: true }
 
 ];
 

@@ -11,7 +11,7 @@ INSERT INTO member (
     mem_detail_address,
     role
 ) VALUES (
-    mem_pk_seq.NEXTVAL,
+    21,
     'testprov@gmail.com',
     'testprov',
     '1q2w3e4r',
@@ -35,17 +35,11 @@ INSERT INTO bank (
 INSERT INTO fct_provider (
     prov_id,
     biz_name,
-    biz_reg_num,
-    bank_code,
-    prov_account,
-    prov_account_owner
+    biz_reg_num
 ) VALUES (
     21,
     '363857357-462624',
-    'BIZ REG NAME',
-    '001',
-    '123-456-123456',
-    'BIZ NAME'
+    'BIZ REG NAME'
 );
 
 INSERT INTO category (
@@ -76,7 +70,7 @@ INSERT INTO facility (
 ) VALUES (
     fct_pk_seq.NEXTVAL,
     '300',
-    mem_pk_seq.CURRVAL,
+    21,
     'FACILITY',
     '54321',
     'Somewhere',

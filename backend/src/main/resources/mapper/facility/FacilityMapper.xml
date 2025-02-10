@@ -316,4 +316,15 @@
             </if>
         </where>
     </select>
+    
+    <select id="findFacilityOfMemberByMemId"
+            parameterType="long"
+            resultType="com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto">
+        SELECT
+            fct_id AS "fctId",
+            fct_name AS "fctName",
+            fct_address AS "address"
+        FROM facility
+        WHERE prov_id = #{memId}
+    </select>
 </mapper>

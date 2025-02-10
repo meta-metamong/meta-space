@@ -135,6 +135,22 @@
         "completed": "Completed",
         "noAvailability": "No availability for the selected date/time."
     },
+    "payment": {
+        "list": "Payment List",
+        "detail": "Payment Detail",
+        "P": "Reservation Completed",
+        "Q": "Cancel Requested",
+        "R": "Refund Comleted",
+        "payId": "Pay ID",
+        "payPrice": "Pay Price",
+        "payMethod": "Pay Method",
+        "payDate": "Pay Date",
+        "payState": "Pay State",
+        "refundBankCode": "Bank for Refund",
+        "refundAccount": "Account for Refund",
+        "refundAccountOwner": "Account Owner for Refund",
+        "rvtCancelationReason": "Why Canceled"
+    },
     "calendar": {
         "selectDate": "Select Date",
         "selectTime": "Select Time",
@@ -180,6 +196,12 @@
         "yes": "Yes",
         "no": "No",
         "addZone": "Add Zone",
+        "delete": "Delete"
+    },
+    "myFacility": {
+        "myFacilityList": "My Facility List",
+        "registerNewFaciltiy": "Register new facility",
+        "edit": "Edit",
         "delete": "Delete"
     }
 }
