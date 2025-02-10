@@ -1,4 +1,5 @@
 <template>
+    <button class="location-btn" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
     <div class="w-100">
         <div id="map"></div>
     </div>
@@ -113,6 +114,28 @@ export default {
                 var level = this.map.getLevel() - 2;
                 toRaw(this.map).setLevel(level, { anchor: cluster.getCenter() });
             });
+        },
+        findLocation() {
+            // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
+            if (navigator.geolocation) {
+
+                // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+                navigator.geolocation.getCurrentPosition((position) => {
+
+                    var lat = position.coords.latitude, // 위도
+                        lon = position.coords.longitude; // 경도
+
+                    var locPosition = new kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+
+                    this.map.setCenter(locPosition);
+                });
+
+            } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+
+                var locPosition = new kakao.maps.LatLng(37.583842, 126.999969);
+
+                this.map.setCenter(locPosition);
+            }
         },
         async getFctInfo() {
             const response = await get(`/facilities?center-latitude=37.583842&center-longitude=126.999969`);
@@ -235,5 +258,14 @@ export default {
 
 .info .link {
     color: #5085BB;
+}
+
+.location-btn {
+    background: #fff;
+    color: #000;
+    /* border: 1px solid #5085BB; */
+    border-radius: 5px;
+    margin: 0px 0 8px 10px;
+    padding: 5px 15px;
 }
 </style>
