@@ -44,11 +44,11 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
-                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.provAccount }}</p>
+                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.accountNumber }}</p>
             </div>
             <div class="mb-4">
-                <p class="ms-4 text-secondary">{{ $t('member.accountOwner') }}</p>
-                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.provAccountOwner }}</p>
+                <p class="ms-4 text-secondary">{{ $t('member.balance') }}</p>
+                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.balance }}</p>
             </div>
         </div>
         <div class="w-100 text-center mb-2">

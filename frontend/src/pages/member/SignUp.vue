@@ -83,8 +83,8 @@ export default{
 					bizName: "",
 					bizRegNum: "",
 					bankCode: "",
-					provAccount: "",
-					provAccountOwner: ""
+					accountNumber: "",
+					isAgreedInfo: "Y"
 				}
 			}
 			return user;
@@ -103,6 +103,11 @@ export default{
 			});
 			try {
 				if (this.step === this.maxStep) {
+					if(!confirm("제 3자 정보 제공에 동의하십니까?\n제공에 동의하지 않으면 회원가입이 불가능합니다.")){
+						alert("회원가입이 취소되었습니다.");
+						this.$router.push('/');
+						return;
+					}
 					const response = await post(`/members/${this.role}`, this.user);
 					if(response.status === 200) {
 						alert(response.data.message);
