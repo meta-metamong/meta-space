@@ -32,28 +32,54 @@
 				</div>
 			</div>
 		</div>
+		<div class="d-flex justify-content-center">
+			<Pagination :current-page="currentPage"
+						:start-page-no="startPageNo"
+						:end-page-no="endPageNo"
+						:is-previous-available="startPageNo !== 1"
+						:is-next-available="endPageNo < totalPages"
+						@click-page-item="changePage"
+						@click-previous="() => { startPageNo -= 5; endPageNo -= 5 }"
+						@click-next="() => { startPageNo += 5; Math.min(endPageNo + 5, totalPages) }" />
+		</div>
 	</div>
 </template>
 
 <script>
 import { get } from "../../apis/axios";
-import { toRaw } from 'vue';
+import Pagination from "../../components/common/Pagination.vue";
 export default {
 	name: "ReservationList",
+	components: {
+		Pagination
+	},
 	data() {
 		return {
 			rvtInfo: [],
+			currentPage: 1,
+            startPageNo: 1,
+			totalPages: 10,
+			pageSize: 1,
 		};
 	},
 	computed: {
-		user() {
-			return toRaw(this.$store.state.user);
-		},
+		endPageNo() {
+			return Math.min(this.startPageNo + 4, this.totalPages);
+		}
 	},
 	methods: {
-		async getRvtInfo() {
-			const response = await get(`/members/1/reservations`);
-			this.rvtInfo = response.data.content;
+		async getRvtInfo(page = 1) {
+			const response = await get(`/members/${this.$store.state.userId}/reservations?page=${page}`);
+			const content = response.data.content;
+			this.rvtInfo = content.rvtInfo;
+			this.currentPage = content.currentPage;
+			this.totalPages = content.totalPages;
+			this.pageSize = content.pageSize;
+		},
+		changePage(page) {
+			if (page !== this.currentPage) {
+				this.getRvtInfo(page);
+			}
 		},
 	},
 	mounted() {

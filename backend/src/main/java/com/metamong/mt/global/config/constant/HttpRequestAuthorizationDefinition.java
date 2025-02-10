@@ -44,7 +44,8 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/members/*",
                     "/api/members/dup-id/*",
                     "/api/test",
-                    "/api/facilities/*"
+                    "/api/facilities/*",
+                    "/api/facilities"
             },
             HttpMethod.PUT, new String[] {
                     "/api/members",
