@@ -48,12 +48,47 @@
 
     <!-- 예약 내역 개수 조회 -->
     <select id="getTotalCount" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto">
-        <![CDATA[
             SELECT r.cons_id AS "consId", f.fct_id AS "fctId", count(*) AS "totalCount"
 			FROM reservation r
 			JOIN zone z ON r.zone_id = z.zone_id
 			JOIN facility f ON z.fct_id = f.fct_id
+			<!-- JOIN payment p ON p.rvt_id = r.rvt_id
+            WHERE p.pay_state = 'P' OR p.pay_state = 'Q' -->
 			GROUP BY r.cons_id, f.fct_id
+    </select>
+    
+    <!-- 인기 순위 조회 -->
+    <select id="getTopFacilities" resultType="com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto">
+        <![CDATA[
+            SELECT 
+			    f.fct_name AS "fctName",
+			    f.fct_id AS "fctId",
+			    img.img_path AS "repImgUrl", 
+			    cat.cat_name AS "catName", 
+			    f.fct_address AS "fctAddress"
+			FROM (
+			    SELECT 
+			        f.fct_id, 
+			        f.fct_name, 
+			        f.fct_address,
+			        COUNT(*) AS totalCount
+			    FROM reservation r
+			    JOIN zone z ON r.zone_id = z.zone_id
+			    JOIN facility f ON z.fct_id = f.fct_id
+			    JOIN payment p ON p.rvt_id = r.rvt_id
+			    WHERE p.pay_state IN ('P', 'Q')
+			    GROUP BY f.fct_id, f.fct_name, f.fct_address
+			    ORDER BY totalCount DESC
+			    FETCH FIRST 10 ROWS ONLY
+			) r
+			JOIN facility f ON r.fct_id = f.fct_id
+			JOIN category cat ON cat.cat_id = f.cat_id
+			LEFT JOIN (
+			    SELECT img.fct_id, img.img_path AS img_path
+			    FROM image img
+			    WHERE img.img_attached_to = 'F'
+			    AND img_display_order = 1
+			) img ON img.fct_id = f.fct_id
         ]]>
     </select>
 
@@ -62,9 +97,11 @@
         <![CDATA[
             SELECT r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", COUNT(*) AS "totalUsageCount"
             FROM reservation r
+            JOIN payment p ON p.rvt_id = r.rvt_id
             WHERE r.rvt_date = #{rvtDate, jdbcType=DATE}
             AND r.usage_start_time < #{usageEndTime} AND r.usage_end_time > #{usageStartTime}
             AND r.zone_id = #{zoneId}
+            AND p.pay_state = 'P' OR p.pay_state = 'Q'
             GROUP BY r.usage_start_time, r.usage_end_time
         ]]>
     </select>
@@ -74,8 +111,10 @@
         <![CDATA[
             SELECT r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", SUM(r.usage_count) AS "totalUsageCount"
             FROM reservation r
+            JOIN payment p ON p.rvt_id = r.rvt_id
             WHERE r.rvt_date = #{rvtDate, jdbcType=DATE}
             AND r.zone_id = #{zoneId}
+            AND p.pay_state = 'P' OR p.pay_state = 'Q'
             GROUP BY r.usage_start_time, r.usage_end_time
         ]]>
     </select>

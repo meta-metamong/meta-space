@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.reservation.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
@@ -17,6 +18,8 @@ public interface ReservationService {
     ReservationResponseDto findReservationByRvtId(Long rvtId);
 
     List<ReservationInfoResponseDto> getTotalCount();
+    
+    List<ReservationInfoResponseDto> getTopFacilities();
     
     List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto);
     

@@ -47,6 +47,7 @@
         <result property="fctLatitude" column="fct_latitude" jdbcType="DOUBLE" />
         <result property="fctLongitude" column="fct_longitude" jdbcType="DOUBLE" />
         <result property="fctTel" column="fct_tel" jdbcType="VARCHAR" />
+        <result property="unitUsageTime" column="unit_usage_time" jdbcType="INTEGER" />
         <result property="catId" column="cat_id" jdbcType="CHAR" />
         <result property="catName" column="cat_name" jdbcType="VARCHAR" />
         <result property="fctGuide" column="fct_guide" jdbcType="VARCHAR" />

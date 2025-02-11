@@ -7,8 +7,6 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,23 +67,30 @@ public class ReservationController {
     
     @PostMapping("/reservations/remain")
     public ResponseEntity<?> getAvailableTimes(@RequestBody SelectedInfoRequestDto dto) {
-        
         List<RemainingCountResponseDto> availableTimes = reservationService.getRemainingUsageCount(dto);
         return ResponseEntity.ok(BaseResponse.of(availableTimes, HttpStatus.OK));
     }
-
-    @PostMapping("/recommends/{memId}")
-    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId)
-            throws JsonProcessingException {
+    
+    @GetMapping("/facilities/top")
+    public ResponseEntity<?> getTopFacilities() {
+        return ResponseEntity.ok(BaseResponse.of(reservationService.getTopFacilities(), HttpStatus.OK, "인기 시설 불러오기"));
+    }
+    
+    public Map<String, Object> findReservationInfo() throws JsonProcessingException {
         List<ReservationInfoResponseDto> rvtInfo = reservationService.getTotalCount();
 
         Map<String, Object> rvtInfoList = new HashMap<>();
         rvtInfoList.put("reservation_info", rvtInfo);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        if (log.isDebugEnabled()) {
-            log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
-        }
+        log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
+        
+        return rvtInfoList;
+    }
+
+    @PostMapping("/recommends/{memId}")
+    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId) throws JsonProcessingException {
+        Map<String, Object> rvtInfoList = findReservationInfo();
 
         return webClient.post().uri("/recommend/" + memId)
                 .contentType(MediaType.APPLICATION_JSON)
