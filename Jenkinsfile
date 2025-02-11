@@ -132,6 +132,12 @@ pipeline {
                 withCredentials([string(credentialsId: 'worker_node_ip', variable: 'workerNodeIp'),
                         file(credentialsId: 'docker-compose-env-file', variable: 'envFile'),
                         string(credentialsId: 'docker_hub_access_token', variable: 'dockerHubAccesstoken')]) {
+                    sh "ssh ubuntu@${workerNodeIp} \"docker stop nginx-proxy\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker rm nginx-proxy\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker stop backend-blue\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker rm backend-blue\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker stop redis-container\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker rm redis-container\" | true"
                     sh "scp docker-compose.yml ubuntu@${workerNodeIp}:~"
                     sh "scp ${WORKSPACE}/nginx/nginx.conf ubuntu@${workerNodeIp}:~"
                     sh "ssh ubuntu@${workerNodeIp} \"mkdir nginx\" | true"
