@@ -33,7 +33,6 @@ public class FacilityResponseDto {
     private String fctGuide;
     private BooleanAlt isOpenOnHolidays;
     private LocalTime fctOpenTime;
-    private LocalTime fctClosetime;
     private LocalTime fctCloseTime;
     private FacilityState fctState;
     private List<FacilityImageResponseDto> fctImages;

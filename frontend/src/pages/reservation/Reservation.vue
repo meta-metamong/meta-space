@@ -46,7 +46,7 @@
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.totalPrice') }}</p>
-            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}</p>
+            <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}원</p>
             <p class="helper-text w-75 mx-auto px-3">{{ $t('reservation.priceDescription') }}</p>
         </div>
         <div class="w-100 text-center mb-2">
@@ -58,6 +58,7 @@
 <script>
 import { get, post } from "../../apis/axios";
 import { ref } from 'vue';
+import { toRaw } from "vue";
 
 export default {
     data() {
@@ -97,9 +98,9 @@ export default {
         },
         payPrice() {
             if (this.isSharedZone === 'N') {
-                return this.selectedTimes.length * this.hourlyRate + '원';
+                return this.selectedTimes.length * this.hourlyRate;
             }
-            return this.selectedTimes.length * this.usageCount * this.hourlyRate + '원';
+            return this.selectedTimes.length * this.usageCount * this.hourlyRate;
         },
         unavailableTimes() {
             return this.timeInfo.filter(time => time.remainUsageCount === 1).map(time => time.usageStartTime);
@@ -124,14 +125,14 @@ export default {
             this.fctName = fctInfo.fctName;
             this.zoneInfo = fctInfo.zones;
             this.openTime = fctInfo.fctOpenTime;
-            this.closeTime = fctInfo.fctClosetime;
+            this.closeTime = fctInfo.fctCloseTime;
             this.unitTime = fctInfo.unitUsageTime;
         },
         async getTimeInfo() {
             const requestDto = {
                 rvtDate: this.date,
                 zoneId: this.selectedZoneId,
-                fctId: 1
+                fctId: this.fctId
             }
             const response = await post(`/reservations/remain`, requestDto);
             this.timeInfo = response.data.content;
@@ -211,7 +212,7 @@ export default {
             if (this.usageCount > 1) this.usageCount--;
         },
         async handleSubmit() {
-            const requestDto = {
+            const reservationDto = {
                 zoneId: this.selectedZoneId,
                 consId: this.$store.state.userId,
                 rvtDate: this.date,
@@ -221,13 +222,23 @@ export default {
                 unitUsageTime: this.unitTime
             }
 
-            if (requestDto.usageEndTime === null) {
+            const paymentDto = {
+                payPrice: this.payPrice,
+                payMethod: 'toss'
+            }
+
+            const requestDto = {
+                reservation: reservationDto,
+                payment: paymentDto
+            }
+
+            if (reservationDto.usageEndTime === null) {
                 alert('종료 시간을 선택해주세요.');
                 return;
             }
 
             const response = await post(`/reservations`, requestDto);
-            if (response.status === 200) {
+            if (response.status === 201) {
                 alert('예약 성공')
             } else if (response.status === 409) {
                 alert('예약이 불가능한 시간입니다. 다른 시간을 선택해주세요.');
