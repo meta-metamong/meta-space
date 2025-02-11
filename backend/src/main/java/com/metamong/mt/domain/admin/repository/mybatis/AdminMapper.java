@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
@@ -12,6 +13,7 @@ import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
@@ -54,4 +56,15 @@ public interface AdminMapper {
     List<RankReservationDto> getRankReservation();
     
     List<WeekReservationDto> getReservationsByHourThisWeek();
+    
+    //void updateMemberBan(List<Long> reportIds, Map<Long, Integer> reportCounts);
+//    void updateMemberBan(@Param("reportIds") List<Long> reportIds, 
+//            @Param("reportCounts") Map<Long, Integer> reportCounts);
+//    
+    List<ReportDetailResponseDto> selectReportDetails(@Param("memId") Long memId);
+
+    //void updateMemberBan(Map<String, Object> params);
+    
+
+	void updateMemberBan(Map<String, Object> params);
 }

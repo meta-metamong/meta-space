@@ -1,99 +1,139 @@
 <template>
   <div>
     <h2>신고 회원 정지</h2>
+    <!-- 신고된 회원 목록 테이블 -->
     <table>
       <thead>
         <tr>
           <th><input type="checkbox" @change="toggleSelectAll" :checked="isAllSelected" /></th>
           <th>아이디</th>
-          <th>신고유형</th>
-          <th>신고내용</th>
-          <!-- <th>계정정지</th> -->
+          <th>신고당한 횟수</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="report in reports" :key="report.id">
-          <td><input type="checkbox" v-model="selectedReports" :value="report.id" /></td>
+        <tr v-for="report in reports" :key="report.memId">
+          <td>
+            <input type="checkbox" v-model="selectedReports" :value="report.memId" @click.stop="handleRowClick(report.memId)" />
+          </td>
           <td>{{ report.email }}</td>
-          <td>{{ report.reportType }}</td>
-          <td>{{ report.reportMsg }}</td>
-          <!-- <td>
-            <button @click="confirmSuspendAccount(report.id)" class="suspend-button">계정정지</button>
-          </td> -->
+          <td>{{ report.reportedCnt }}</td>
         </tr>
       </tbody>
     </table>
-    <button @click="suspendSelectedAccounts" class="suspend-all-button">계정 정지</button>
+
+    <button @click="suspendSelectedAccounts" class="suspend-all-button">회원 정지</button>
+
+    <!-- 신고 상세 내역 테이블 -->
+    <h3>신고 상세 내역</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>아이디</th>
+          <th>신고유형</th>
+          <th>신고내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="detail in selectedReportDetails" :key="detail.memId">
+          <td>{{ detail.email }}</td>
+          <td>{{ detail.reportType }}</td>
+          <td>{{ detail.reportMsg }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
-import { get, post } from '../../apis/axios'; // axios 경로를 수정하세요.
+import { get, post } from '../../apis/axios'; // axios 경로 수정
 
 export default {
   data() {
     return {
       reports: [], // 신고된 회원 목록
-      selectedReports: [], // 선택된 회원 IDs
+      selectedReports: [], // 선택된 회원 memId 목록
+      selectedReportDetails: [], // 선택된 회원에 대한 상세 내역
       isAllSelected: false // 전체 선택 여부
     };
   },
   created() {
-    this.fetchReports(); // 컴포넌트 생성 시 신고된 회원 리스트를 조회
+    this.fetchReports(); // 컴포넌트 생성 시 신고된 회원 리스트 조회
   },
   methods: {
     // 신고된 회원 목록을 가져오는 메소드
     async fetchReports() {
       try {
-        const response = await get('/admin/reportedMembers'); // 신고된 회원 API 호출
+        const response = await get('/admin/reportedMembers');
+        console.log('response', response);
         if (response && response.data) {
-          this.reports = response.data.content; // 응답에서 신고된 회원 목록을 받는다.
+          this.reports = response.data.content;
         }
       } catch (error) {
         console.error('Error fetching reported users:', error);
       }
     },
-    // 계정 정지 확인 후 처리하는 메소드
-    confirmSuspendAccount(userId) {
-      const confirmed = window.confirm('이 계정을 정지하시겠습니까?');
-      if (confirmed) {
-        this.suspendAccount(userId); // 계정 정지 처리
-      }
-    },
-    // 선택한 회원들의 계정을 정지 처리하는 메소드
-    async suspendAccount(userId) {
+
+    // 특정 신고 회원의 상세 정보를 가져오는 메소드
+    async fetchReportDetails(memId) {
       try {
-        const response = await post(`/admin/suspendAccount/${userId}`); // 계정 정지 API 호출
+        const response = await get(`/admin/reportDetails/${memId}`);
         if (response && response.data) {
-          this.$toast.success('회원이 정지되었습니다!');
-          this.fetchReports(); // 정지 후 목록 갱신
+          this.selectedReportDetails = response.data;
         }
       } catch (error) {
-        console.error('Error suspending account:', error);
-        this.$toast.error('계정 정지 중 오류가 발생했습니다.');
+        console.error('Error fetching report details:', error);
       }
     },
+
+    // 행 클릭 시 상세 정보를 가져오는 메소드
+    handleRowClick(memId) {
+      this.fetchReportDetails(memId);
+    },
+
     // 전체 선택/해제 기능
     toggleSelectAll() {
       if (this.isAllSelected) {
-        this.selectedReports = this.reports.map(report => report.id); // 모든 회원 선택
+        this.selectedReports = this.reports.map(report => report.memId);
       } else {
-        this.selectedReports = []; // 모든 회원 선택 해제
+        this.selectedReports = [];
       }
     },
+
     // 선택된 회원들의 계정을 정지하는 메소드
     async suspendSelectedAccounts() {
       if (this.selectedReports.length === 0) {
         this.$toast.error('정지할 회원을 선택해 주세요.');
         return;
       }
-      
+
       const confirmed = window.confirm('선택한 회원들의 계정을 정지하시겠습니까?');
       if (confirmed) {
         try {
-          const response = await post('/admin/suspendAccounts', { userIds: this.selectedReports }); // 여러 회원 정지 API 호출
+          // 서버에 보낼 데이터 준비
+          const reportedIds = this.selectedReports;
+
+          // selectedReports에서 reportedCnt 값을 찾는 방법
+          const reportCounts = this.selectedReports.map(memId => {
+            const report = this.reports.find(r => r.memId === memId);
+            return report ? report.reportedCnt : 0; // report가 없다면 기본값 0
+          });
+
+          // 확인된 값들 출력 (디버깅용)
+          console.log('reportedIds:', reportedIds);
+          console.log('reportCounts:', reportCounts);
+
+          // 서버 요청
+          const response = await post('/admin/banMembers', {
+            reportedIds,  // 신고된 회원 ID 목록
+            reportCounts  // 신고된 횟수 정보
+          });
+
+          console.log('response:', response);
+          console.log('response.data:', response.data);
+
           if (response && response.data) {
-            this.$toast.success('선택한 회원들이 정지되었습니다!');
+            //this.$toast.success('선택한 회원들이 정지되었습니다!');
+            alert('선택한 회원들이 정지되었습니다!');
             this.fetchReports(); // 정지 후 목록 갱신
           }
         } catch (error) {
@@ -110,7 +150,9 @@ export default {
         return this.selectedReports.length === this.reports.length;
       },
       set(value) {
-        this.selectedReports = value ? this.reports.map(report => report.id) : [];
+        this.selectedReports = value
+          ? this.reports.map(report => report.memId)
+          : [];
       }
     }
   }
@@ -129,19 +171,8 @@ th, td {
   text-align: left;
   border: 1px solid #ddd;
 }
-button.suspend-button {
-  background-color: #f44336;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-button.suspend-button:hover {
-  background-color: #e53935;
-}
 button.suspend-all-button {
-  background-color: #4CAF50;
+  background-color: #f44336;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -150,7 +181,7 @@ button.suspend-all-button {
   margin-top: 20px;
 }
 button.suspend-all-button:hover {
-  background-color: #45a049;
+  background-color: #e53935;
 }
 input[type="checkbox"] {
   cursor: pointer;

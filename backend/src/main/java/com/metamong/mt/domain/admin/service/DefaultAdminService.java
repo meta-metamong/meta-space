@@ -20,6 +20,7 @@ import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
@@ -58,9 +59,12 @@ public class DefaultAdminService implements AdminService{
         return adminMapper.getReportedMembers();
     }
 
+    public List<ReportDetailResponseDto> getReportDetails(Long memId) {
+        return adminMapper.selectReportDetails(memId);
+    }
     @Override
     @Transactional
-    public void processReportBans(List<Long> reportedIds) {
+    public void processReportBansBatch(List<Long> reportedIds) {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             // 신고 횟수 조회
             List<Map<String, Object>> reportCounts = sqlSession.selectList(
@@ -92,7 +96,7 @@ public class DefaultAdminService implements AdminService{
                 Map<String, Object> paramMap = new HashMap<>();
                 paramMap.put("list", updateDataList); // "list"라는 키로 전달
 
-                sqlSession.update("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.updateMemberBan", paramMap);
+                sqlSession.update("com.metamong.mt.domain.admin.repository.mybatis.AdminMapper.updateMemberBanBatch", paramMap);
             }
 
             // delete 쿼리 실행
@@ -214,5 +218,15 @@ public class DefaultAdminService implements AdminService{
     public List<WeekReservationDto> getReservationsByHourThisWeek() {
         return adminMapper.getReservationsByHourThisWeek();
     }
-	
+
+
+    public void updateMemberBan(List<Map<String, Integer>> reportData) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("reportData", reportData);
+        
+        adminMapper.updateMemberBan(params);
+    }
+
+
+
 }

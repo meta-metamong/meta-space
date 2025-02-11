@@ -2,23 +2,22 @@ package com.metamong.mt.domain.admin.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
-
-import org.springframework.web.socket.WebSocketSession;
+import java.util.Map;
 
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
-import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
+import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 
 public interface AdminService {
 	List<MemberSearchResponseDto> searchMembers();
 	List<ReportedMemberResponseDto> getReportedMembers();
-	void processReportBans(List<Long> reportedIds);
+	//void processReportBans(List<Long> reportedIds);
 	void approveFacilityRegisterRequest(Long fctId);
 	void rejectFacilityRegisterRequest(Long fctId);
 	void approveFacilityDeleteRequest(Long fctId);
@@ -33,4 +32,8 @@ public interface AdminService {
     List<FacilityReservationResponseDto> getTotalByFacility();
     List<RankReservationDto> getRankReservation();
     List<WeekReservationDto> getReservationsByHourThisWeek();
+    void processReportBansBatch(List<Long> reportedIds);
+    //void updateMemberBan(List<Long> reportedIds, Map<Long, Integer> reportCounts);
+    List<ReportDetailResponseDto> getReportDetails(Long memId);
+    void updateMemberBan(List<Map<String, Integer>> reportData);
 }

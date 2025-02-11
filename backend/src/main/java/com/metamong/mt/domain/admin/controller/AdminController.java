@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.admin.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
@@ -45,23 +47,7 @@ public class AdminController {
 //  return memberService.view();
 //}
 //
-//@GetMapping("/download/{filename}")
-//public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-//	
-//  String fileDirectory = "C:/Users/KOSA/Downloads/";
-//  File file = new File(fileDirectory + filename);
-//  
-//  if (!file.exists()) {
-//      return ResponseEntity.notFound().build();  // 파일이 없을 때 처리해놓깅
-//  }
-//
-//  Resource resource = new FileSystemResource(file);
-//
-//  return ResponseEntity.ok()
-//          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")  
-//          .contentType(MediaType.parseMediaType("application/octet-stream"))  
-//          .body(resource);
-//}
+
 //
 //	public void removeSession(WebSocketSession session) {
 //        sessions.remove(session);
@@ -83,15 +69,32 @@ public class AdminController {
         return ResponseEntity.ok(BaseResponse.of(adminService.getReportedMembers(), HttpStatus.OK));
     }
 
+    @GetMapping("/reportDetails/{memId}")
+    public ResponseEntity<List<ReportDetailResponseDto>> getReportDetails(@PathVariable Long memId) {
+        List<ReportDetailResponseDto> reportDetails = adminService.getReportDetails(memId);
+        return ResponseEntity.ok(reportDetails);
+    }
+    
     @PostMapping("/banMembers")
-    public ResponseEntity<String> processReportBans(@RequestBody List<Long> reportedIds) {
-        try {
-        	adminService.processReportBans(reportedIds);
+    public ResponseEntity<String> banMembers(@RequestBody Map<String, Object> requestBody) {
+        // requestBody에서 값 가져오기
+        List<Integer> reportedIds = (List<Integer>) requestBody.get("reportedIds");
+        List<Integer> reportCountsList = (List<Integer>) requestBody.get("reportCounts");
 
-            return ResponseEntity.ok("정지 작업이 완료되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("정지 작업 중 오류가 발생했습니다.");
+        // List<Map<String, Integer>> 형식으로 변환
+        List<Map<String, Integer>> reportData = new ArrayList<>();
+        
+        for (int i = 0; i < reportedIds.size(); i++) {
+            Map<String, Integer> data = new HashMap<>();
+            data.put("reportedId", reportedIds.get(i));
+            data.put("reportCount", reportCountsList.get(i));
+            reportData.add(data);
         }
+
+        // 서비스 호출
+        adminService.updateMemberBan(reportData);
+
+        return ResponseEntity.ok("선택한 회원들이 정지되었습니다!");
     }
 
 

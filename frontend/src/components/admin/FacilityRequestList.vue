@@ -4,16 +4,26 @@
     <table>
       <thead>
         <tr>
+          <th>카테고리</th>
           <th>시설명</th>
           <th>Zone명</th>
+          <th>단위이용시간</th>
+          <th>공휴일 영업 여부</th>
+          <th>주소</th>
+          <th>전화번호</th>
           <th>요청종류</th>
           <th>승인/반려</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="facility in facilities" :key="facility.fctId">
+          <td>{{ facility.catName }}</td>
           <td>{{ facility.fctName }}</td>
           <td>{{ facility.zoneName }}</td>
+          <td>{{ facility.unitUsageTime }}</td>
+          <td>{{ facility.isOpenOnHolidays }}</td>
+          <td>{{ facility.fullAddress }}</td>
+          <td>{{ facility.fctTel }}</td>
           <td>{{ facility.fctState }}</td>
           <td>
             <!-- 등록 승인 버튼 -->
@@ -136,11 +146,13 @@ table {
   border-collapse: collapse;
   margin-top: 20px;
 }
+
 th, td {
   padding: 10px;
-  text-align: left;
+  text-align: center; /* 가운데 정렬 */
   border: 1px solid #ddd;
 }
+
 button.approve-button {
   background-color: #4CAF50;
   color: white;
@@ -152,6 +164,7 @@ button.approve-button {
 button.approve-button:hover {
   background-color: #45a049;
 }
+
 button.reject-button {
   background-color: #f44336;
   color: white;

@@ -1,5 +1,6 @@
 <template>
 	<div id="app">
+	  <!-- Header 컴포넌트 -->
 	  <Component :is="headerComponent" />
   
 	  <!-- Main content area with sidebar -->
@@ -15,7 +16,8 @@
 		</div>
 	  </div>
   
-	  <Component :is="footerComponent" />
+	  <!-- Footer 컴포넌트 (관리자가 아닐 때만 보이도록 설정) -->
+	  <Component v-if="!isAdmin" :is="footerComponent" />
 	</div>
   </template>
   
@@ -61,11 +63,12 @@
   #app {
 	display: flex;
 	flex-direction: column;
+	height: 100vh; /* 화면 전체 높이를 사용 */
   }
   
   .main-content {
 	display: flex;
-	height: 100vh; /* 화면 전체 높이를 사용 */
+	flex: 1; /* 메인 컨텐츠 영역이 화면을 꽉 채우게 설정 */
   }
   
   .sidebar {
@@ -81,13 +84,14 @@
 	overflow-y: auto; /* 컨텐츠가 넘치면 스크롤 가능 */
   }
   
-  /* If not admin, make routed area full width (remove sidebar) */
+  /* 관리자가 아니면 사이드바를 없애고 routed 영역이 전체 너비를 차지하도록 설정 */
   .routed.full-width {
 	width: 100%; /* 사이드바가 없을 경우 전체 너비 차지 */
   }
   
   footer {
 	margin-top: auto; /* footer는 맨 아래로 고정 */
+	width: 100%; /* footer를 화면 전체 너비로 설정 */
   }
   </style>
   
