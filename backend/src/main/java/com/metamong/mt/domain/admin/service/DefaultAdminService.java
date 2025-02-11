@@ -168,10 +168,11 @@ public class DefaultAdminService implements AdminService{
         adminMapper.updateFacilityStateDelRejected(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
-        Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", fctId);
-        notificationParams.put("notiMsg", "삭제요청이 반려되었습니다");
-        adminMapper.insertNotification(notificationParams);
+        Notification notification = new Notification();
+        notification.setReceiverId(fctId);
+        notification.setNotiMsg("삭제요청이 반려되었습니다");
+        notification.setIsRead('N');  // 기본적으로 'N' (읽지 않음)으로 설정
+        notificationRepository.save(notification);  // JPA를 통해 저장
 	}
 
 	@Override
