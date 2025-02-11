@@ -5,6 +5,7 @@
     </div>
 </template>
 <script>
+import { post } from '../../apis/axios';
 export default{
     name: 'SearchBox',
     data(){
@@ -12,15 +13,33 @@ export default{
             keyword: ""
         }
     },
+    props: {
+        keywordProp: {
+            type: String,
+            required: false
+        }
+    },
     methods: {
-        search(){
+        async search(){
             if(this.keyword === ""){
                 alert(this.$t('search.enterFct'));
                 return;
             }
-            // TODO: 검색어를 레디스에 저장
-
-            this.$router.push(`/search-fct-list/${this.keyword}`);
+            const requestDto = {
+                keyword: this.keyword
+            }
+            const response = await post("/search", requestDto);
+            if(response.status === 200){
+                this.$router.push(`/search-fct-list/${this.keyword}`);
+            }else{
+                alert("검색어 저장에 실패했습니다.");
+                return;
+            }
+        }
+    },
+    mounted(){
+        if(this.keywordProp !== null || this.keywordProp !== undefined) {
+            this.keyword = this.keywordProp;
         }
     }
 }
