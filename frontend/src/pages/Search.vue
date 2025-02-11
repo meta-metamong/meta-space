@@ -1,6 +1,6 @@
 <template>
     <div class="container w-100">
-        <SearchBox />
+        <SearchBox @do-search="search" />
         <div class="hot-keywords mt-5">
             <h1 class="fw-bold">{{ $t('search.hotKeywords') }}</h1>
             <div class="mt-5 popular-searches">
@@ -29,6 +29,11 @@ export default{
     mounted(){
         for(let i = 0; i < 10; i++){
             this.popularKeywords.push(`인기검색어`);
+        }
+    },
+    methods: {
+        search(keyword) {
+            this.$router.push({ path: "/facilities" , query: { "search-keyword": keyword} });
         }
     }
 }

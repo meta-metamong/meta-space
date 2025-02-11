@@ -1,7 +1,7 @@
 <template>
     <div class="searched-list">
         <div class="search-box ps-2 mb-2">
-            <SearchBox />
+            <SearchBox :searchKeyword="searchKeyword" @do-search="search" />
         </div>
         <div class="searched-body">
             <div class="d-flex justify-content-between mt-2 mb-4 fs-5 text-muted w-100">
@@ -19,10 +19,13 @@ import SearchBox from '../../components/common/SearchBox.vue';
 import FctCard from '../../components/facility/FctCard.vue';
 export default{
     name: 'SearchedFacilityList',
-    data(){
+    data() {
+        const searchKeywordParam = this.$route.query["search-keyword"];
+        this.$router.push({ path: "/facilities", query: {} });
         return{
             fctDatas: [],
-            isDistanceAsc: true
+            isDistanceAsc: true,
+            searchKeyword: searchKeywordParam || ""
         }
     },
     props:{
@@ -57,6 +60,9 @@ export default{
         },
         toggleSort(){
             this.isDistanceAsc = !this.isDistanceAsc;
+        },
+        search(keyword) {
+            console.log(keyword);
         }
     },
     mounted(){

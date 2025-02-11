@@ -6,10 +6,16 @@
 </template>
 <script>
 export default{
+    props: {
+        searchKeyword: {
+            type: String,
+            required: false
+        }
+    },
     name: 'SearchBox',
     data(){
         return{
-            keyword: ""
+            keyword: this.searchKeyword || ""
         }
     },
     methods: {
@@ -19,8 +25,7 @@ export default{
                 return;
             }
             // TODO: 검색어를 레디스에 저장
-
-            this.$router.push(`/search-fct-list/${this.keyword}`);
+            this.$emit("doSearch", this.keyword);
         }
     }
 }
