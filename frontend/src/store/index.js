@@ -28,7 +28,7 @@ const store = createStore({
       state.userId = payload.memId;
       state.userRole = payload.role;
       state.userName = payload.name;
-      saveUserIdInLocal(payload);
+      saveUserIdInLocal(payload.memId);
       if (state.userId === "admin") {
         router.push("/admin");
       } else {
