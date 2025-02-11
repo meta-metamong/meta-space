@@ -67,23 +67,30 @@ public class ReservationController {
     
     @PostMapping("/reservations/remain")
     public ResponseEntity<?> getAvailableTimes(@RequestBody SelectedInfoRequestDto dto) {
-        
         List<RemainingCountResponseDto> availableTimes = reservationService.getRemainingUsageCount(dto);
         return ResponseEntity.ok(BaseResponse.of(availableTimes, HttpStatus.OK));
     }
-
-    @PostMapping("/recommends/{memId}")
-    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId)
-            throws JsonProcessingException {
+    
+    @GetMapping("/facilities/top")
+    public ResponseEntity<?> getTopFacilities() {
+        return ResponseEntity.ok(BaseResponse.of(reservationService.getTopFacilities(), HttpStatus.OK, "인기 시설 불러오기"));
+    }
+    
+    public void saveReservationInfo() throws JsonProcessingException {
         List<ReservationInfoResponseDto> rvtInfo = reservationService.getTotalCount();
 
         Map<String, Object> rvtInfoList = new HashMap<>();
         rvtInfoList.put("reservation_info", rvtInfo);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        if (log.isDebugEnabled()) {
-            log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
-        }
+        log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
+        
+        this.reservationService.saveReservationInfo(rvtInfoList);
+    }
+
+    @PostMapping("/recommends/{memId}")
+    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId) {
+        Map<String, Object> rvtInfoList = this.reservationService.getReservationInfo();
 
         return webClient.post().uri("/recommend/" + memId)
                 .contentType(MediaType.APPLICATION_JSON)

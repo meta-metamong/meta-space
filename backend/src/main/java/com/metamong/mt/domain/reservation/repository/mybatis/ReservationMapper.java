@@ -23,6 +23,8 @@ public interface ReservationMapper {
 
     List<ReservationInfoResponseDto> getTotalCount();
     
+    List<ReservationInfoResponseDto> getTopFacilities();
+    
     List<HourlyUsageDto> getHourlyUsageCounts(ReservationRequestDto dto);
     
     List<HourlyUsageDto> getReservedTimes(SelectedInfoRequestDto dto);
