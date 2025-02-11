@@ -59,7 +59,6 @@
 import { get, post } from "../../apis/axios";
 import { ref } from 'vue';
 
-// 시설 아이디 수정 필요
 export default {
     data() {
         return {
@@ -104,7 +103,10 @@ export default {
         },
         unavailableTimes() {
             return this.timeInfo.filter(time => time.remainUsageCount === 1).map(time => time.usageStartTime);
-        }
+        },
+        fctId() {
+            return this.$route.params.fctId;
+        },
     },
     watch: {
         selectedZoneId(newZoneId) {
@@ -117,7 +119,7 @@ export default {
     },
     methods: {
         async getFctInfo() {
-            const response = await get(`/facilities/1`);
+            const response = await get(`/facilities/${this.fctId}`);
             const fctInfo = response.data.content;
             this.fctName = fctInfo.fctName;
             this.zoneInfo = fctInfo.zones;

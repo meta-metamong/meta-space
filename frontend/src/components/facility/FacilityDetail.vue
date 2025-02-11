@@ -32,6 +32,7 @@
             <div class="w-100" id="reserve-button-container">
                 <button type="button"
                         class="btn btn-primary"
+                        @click="goToReservationPage()"
                         id="reserve-button">{{ $t("reservation.reserve") }}</button>
             </div>
         </div>
@@ -162,7 +163,10 @@ export default {
                 console.log(idx);
             }
             return formatted;
-        }
+        },
+        goToReservationPage() {
+            this.$router.push(`/reserve/${this.fctId}`);
+        },
     }
 };
 </script>

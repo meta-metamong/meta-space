@@ -49,7 +49,7 @@ const routes = [
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
 
-	{ path: '/reservation', component: Reservation },
+	{ path: '/reserve/:fctId', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 	{ path: '/map', component: Map },
