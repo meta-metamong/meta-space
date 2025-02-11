@@ -206,5 +206,20 @@
         "registerNewFaciltiy": "새로운 시설 등록",
         "edit": "수정하기",
         "delete": "삭제하기"
+    },
+    "search": {
+        "enterFct": "시설의 이름을 검색하세요!",
+        "hotKeywords": "인기 검색어",
+        "searchedCount": "검색 결과",
+        "distance": "거리",
+        "count": "개"
+    },
+    "main": {
+        "best": "추천",
+        "hot": "핫 플레이스",
+        "close": "내 주변 시설"
+    },
+    "editFacility": {
+        "editComplete": "수정 완료"
     }
 }

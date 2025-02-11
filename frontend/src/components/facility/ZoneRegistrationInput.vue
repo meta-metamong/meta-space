@@ -14,16 +14,16 @@
                     @change="(e) => onValueChange(zoneIdx, e.target.value, 'zoneName')">
             </div>
             <div class="input-box">
-                <input type="text"
+                <input type="number"
                     :placeholder="$t('facility.maxUserCount')"
                     :value="zone.maxUserCount"
-                    @change="(e) => onValueChange(zoneIdx, e.target.value, 'maxUserCount')">
+                    @change="(e) => onValueChange(zoneIdx, parseInt(e.target.value), 'maxUserCount')">
             </div>
             <div class="input-box">
                 <input type="text"
                     :placeholder="$t('facility.hourlyRate')"
                     :value="zone.hourlyRate"
-                    @change="(e) => onValueChange(zoneIdx, e.target.value, 'hourlyRate')">
+                    @change="(e) => onValueChange(zoneIdx, parseInt(e.target.value), 'hourlyRate')">
             </div>
             <div class="form-section">
                 <input type="checkbox"
@@ -72,6 +72,10 @@ export default {
     props: {
         zoneRegistration: {
             type: Object,
+            required: true
+        },
+        isEdit: {
+            type: Boolean,
             required: true
         }
     },

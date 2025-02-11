@@ -43,3 +43,5 @@ INSERT INTO bank (bank_code, bank_name) VALUES ('042', '유진투자증권');
 INSERT INTO bank (bank_code, bank_name) VALUES ('043', '메리츠증권');
 INSERT INTO bank (bank_code, bank_name) VALUES ('044', '엔에이치투자증권');
 INSERT INTO bank (bank_code, bank_name) VALUES ('045', '부국증권');
+
+COMMIT;

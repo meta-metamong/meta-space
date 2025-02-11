@@ -50,12 +50,14 @@
         <result property="catId" column="cat_id" jdbcType="CHAR" />
         <result property="catName" column="cat_name" jdbcType="VARCHAR" />
         <result property="fctGuide" column="fct_guide" jdbcType="VARCHAR" />
+        <result property="unitUsageTime" column="unit_usage_time" jdbcType="INTEGER" />
         <result property="isOpenOnHolidays" column="is_open_on_holidays" jdbcType="CHAR" />
         <result property="fctOpenTime" column="fct_open_time" jdbcType="DATE" />
         <result property="fctCloseTime" column="fct_close_time" jdbcType="DATE" />
         <result property="fctState" column="fct_state" jdbcType="VARCHAR" />
         <collection property="fctImages" ofType="com.metamong.mt.domain.facility.dto.response.FacilityImageResponseDto">
-            <id property="fctImgDisplayOrder" column="fct_img_display_order" jdbcType="INTEGER" />
+            <result property="imgId" column="fct_img_id" jdbcType="BIGINT" />
+            <result property="fctImgDisplayOrder" column="fct_img_display_order" jdbcType="INTEGER" />
             <result property="fctImgUrl" column="fct_img_path" jdbcType="VARCHAR" />
         </collection>
         <collection property="zones" ofType="com.metamong.mt.domain.facility.dto.response.ZoneResponseDto">
@@ -65,6 +67,7 @@
             <result property="hourlyRate" column="hourly_rate" jdbcType="INTEGER" />
             <result property="isSharedZone" column="is_shared_zone" jdbcType="CHAR" />
             <collection property="zoneImgs" ofType="com.metamong.mt.domain.facility.dto.response.ZoneImageResponseDto">
+                <result property="imgId" column="zone_img_id" jdbcType="BIGINT" />
                 <result property="zoneImgDisplayOrder" column="zone_img_display_order" jdbcType="INTEGER" />
                 <result property="zoneImgUrl" column="zone_img_path" jdbcType="VARCHAR" />
             </collection>
@@ -87,6 +90,7 @@
                 fct.fct_longitude AS "fct_longitude",
                 fct.unit_usage_time AS "unit_usage_time",
                 fct.fct_tel AS "fct_tel",
+                fct.unit_usage_time AS "unit_usage_time",
                 cat.cat_id AS "cat_id",
                 cat.cat_name AS "cat_name",
                 fct.fct_guide AS "fct_guide",
@@ -94,6 +98,7 @@
                 fct.fct_open_time AS "fct_open_time",
                 fct.fct_close_time AS "fct_close_time",
                 fct.fct_state AS "fct_state",
+                fi.img_id AS "fct_img_id",
                 fi.img_path AS "fct_img_path",
                 fi.img_display_order AS "fct_img_display_order",
                 z.zone_id AS "zone_id",
@@ -101,6 +106,7 @@
                 z.max_user_count AS "max_user_count",
                 z.hourly_rate AS "hourly_rate",
                 z.is_shared_zone AS "is_shared_zone",
+                zi.img_id AS "zone_img_id",
                 zi.img_path AS "zone_img_path",
                 zi.img_display_order AS "zone_img_display_order",
                 addinfo.addinfo_id AS "addinfo_id",

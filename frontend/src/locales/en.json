@@ -207,5 +207,20 @@
         "registerNewFaciltiy": "Register new facility",
         "edit": "Edit",
         "delete": "Delete"
+    },
+    "search": {
+        "enterFct": "Search for a facility!",
+        "hotKeywords": "Hot Keywords",
+        "searchedCount": "Searched",
+        "distance": "distance",
+        "count": ""
+    },
+    "main": {
+        "best": "Recommend",
+        "hot": "Hot Place",
+        "close": "Nearby"
+    },
+    "editFacility": {
+        "editComplete": "Edit"
     }
 }
