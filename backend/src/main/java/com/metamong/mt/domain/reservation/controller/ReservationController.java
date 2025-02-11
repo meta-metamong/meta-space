@@ -76,7 +76,7 @@ public class ReservationController {
         return ResponseEntity.ok(BaseResponse.of(reservationService.getTopFacilities(), HttpStatus.OK, "인기 시설 불러오기"));
     }
     
-    public void saveReservationInfo() throws JsonProcessingException {
+    public Map<String, Object> findReservationInfo() throws JsonProcessingException {
         List<ReservationInfoResponseDto> rvtInfo = reservationService.getTotalCount();
 
         Map<String, Object> rvtInfoList = new HashMap<>();
@@ -85,12 +85,12 @@ public class ReservationController {
         ObjectMapper objectMapper = new ObjectMapper();
         log.info("Sending request with body: " + objectMapper.writeValueAsString(rvtInfoList));
         
-        this.reservationService.saveReservationInfo(rvtInfoList);
+        return rvtInfoList;
     }
 
     @PostMapping("/recommends/{memId}")
-    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId) {
-        Map<String, Object> rvtInfoList = this.reservationService.getReservationInfo();
+    public Mono<RecommendationResponseDto> getRecommendations(@PathVariable Long memId) throws JsonProcessingException {
+        Map<String, Object> rvtInfoList = findReservationInfo();
 
         return webClient.post().uri("/recommend/" + memId)
                 .contentType(MediaType.APPLICATION_JSON)

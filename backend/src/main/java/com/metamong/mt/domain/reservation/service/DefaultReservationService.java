@@ -26,7 +26,6 @@ import com.metamong.mt.domain.reservation.exception.ReservationNotFoundException
 import com.metamong.mt.domain.reservation.model.Reservation;
 import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
-import com.metamong.mt.domain.reservation.repository.redis.ReservationInfoRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
     private final PaymentService paymentService;
-    private final ReservationInfoRepository reservationInfoRepository;
     private static final int PAGE_SIZE = 5;
     
     @Override
@@ -65,16 +63,6 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public List<ReservationInfoResponseDto> getTotalCount() {
         return this.reservationMapper.getTotalCount();
-    }
-    
-    @Override
-    public void saveReservationInfo(Map<String, Object> rvtInfo) {
-        this.reservationInfoRepository.saveReservationInfo(rvtInfo);
-    }
-    
-    @Override
-    public Map<String, Object> getReservationInfo() {
-        return this.reservationInfoRepository.findReservationInfo();
     }
     
     @Override

@@ -7,13 +7,13 @@
         <div class="d-flex flex-column gap-2">
             <h2 class="fw-bold">👍 {{ $t('main.best') }}</h2>
             <div class="card-list d-flex gap-4">
-                <FctCard v-for="fctData in fctDatas" :key="fctData.fctId" :fctData="fctData" />
+                <FctCard v-for="fctData in recommendFct" :key="fctData.fctId" :fctData="fctData" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
             <h2 class="fw-bold">🔥{{ $t('main.hot') }}</h2>
             <div class="card-list d-flex gap-4">
-                <FctCard v-for="fct in topFct" :key="fct.fctId" :fctData="fct" />
+                <FctCard v-for="fctData in topFct" :key="fctData.fctId" :fctData="fctData" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
@@ -27,13 +27,14 @@
 
 <script>
 import FctCard from '../components/facility/FctCard.vue';
-import { get } from '../apis/axios'
+import { get, post } from '../apis/axios'
 export default{
     name: "Home",
     data(){
         return{
             fctDatas : [],
             topFct: [],
+            recommendFct: [],
             bannerStep: 0
         }
     },
@@ -60,11 +61,30 @@ export default{
             this.topFct = response.data.content;
             console.log(this.topFct)
             console.log(response)
+        },
+        async getRecommendFct() {
+            try {
+                const response = await post('/recommends/2');
+
+                const facilityIds = response.data.recommended_facilities;
+
+                const facilityRequests = facilityIds.map(fctId => get(`/facilities/${fctId}`));
+
+                // 모든 요청이 끝날 때까지 기다림
+                const facilityResponses = await Promise.all(facilityRequests);
+
+                this.recommendFct = facilityResponses.map(res => res.data.content);
+
+                console.log(this.recommendFct);
+            } catch (error) {
+                console.error("추천 시설 정보를 가져오는 중 오류 발생:", error);
+            }
         }
     },
     mounted() {
         this.testDataInit();
         this.getTopFct();
+        this.getRecommendFct();
         setInterval(() => {
             this.bannerStep++;
             if(this.bannerStep === 2){

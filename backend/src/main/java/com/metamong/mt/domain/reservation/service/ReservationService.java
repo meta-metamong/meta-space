@@ -19,10 +19,6 @@ public interface ReservationService {
 
     List<ReservationInfoResponseDto> getTotalCount();
     
-    void saveReservationInfo(Map<String, Object> rvtInfo);
-    
-    Map<String, Object> getReservationInfo();
-    
     List<ReservationInfoResponseDto> getTopFacilities();
     
     List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto);

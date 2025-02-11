@@ -45,8 +45,8 @@ def recommend(id: int, data: ReservationInfoList):
         similar_facilities = df[df['cons_id'].isin(similar_consumers)]['fct_id']
         recommendations = list(OrderedDict.fromkeys([f for f in similar_facilities if f not in consumer_facilities]))
 
-        # 추천 상품 상위 5개
-        return pd.Series(recommendations).value_counts().head(5).index.tolist()
+        # 추천 상품 상위 10개
+        return pd.Series(recommendations).value_counts().head(10).index.tolist()
 
     # 고객 ID가 유효한지 확인하고 추천 결과 생성
     try:
