@@ -9,17 +9,17 @@
             <th>Zone명</th>
             <th>결제일</th>
             <th>결제금액</th>
-            <th>시설제공자ID</th>
+            <th>시설제공자명</th>
             <th>결제방법</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="payment in payments" :key="payment.zoneId">
-            <td>{{ payment.fctId }}</td>
-            <td>{{ payment.zoneId }}</td>
+          <tr v-for="payment in payments" :key="payment.fctId">
+            <td>{{ payment.fctName }}</td>
+            <td>{{ payment.zoneName }}</td>
             <td>{{ formatDate(payment.payDate) }}</td>
             <td>{{ formatPrice(payment.payPrice) }}</td>
-            <td>{{ payment.fctId }}</td>
+            <td>{{ payment.fctName }}</td>
             <td>{{ payment.payMethod }}</td>
           </tr>
           <!-- 총 매출을 마지막에 추가 -->
@@ -28,14 +28,14 @@
             <td colspan="3">{{ formatPrice(totalRevenue) }}</td>
           </tr>
           <!-- 시설 개수 및 Zone 개수를 마지막에 추가 -->
-          <tr>
+          <!-- <tr>
             <td colspan="3" style="text-align: right; font-weight: bold;">시설 개수:</td>
             <td colspan="3">{{ totalFacilities }}</td>
           </tr>
           <tr>
             <td colspan="3" style="text-align: right; font-weight: bold;">Zone 개수:</td>
             <td colspan="3">{{ totalZones }}</td>
-          </tr>
+          </tr> -->
         </tbody>
       </table>
   

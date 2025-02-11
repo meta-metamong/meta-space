@@ -53,15 +53,16 @@ ORDER BY m.created_at
 <update id="updateMemberBan" parameterType="java.util.Map">
 <foreach collection="reportData" item="data" separator=";">
 <![CDATA[
-    UPDATE member
-    SET mem_banned_until = 
-        CASE
-            WHEN #{data.reportCount} = 1 THEN SYSDATE + INTERVAL '7' DAY
-            WHEN #{data.reportCount} = 2 THEN SYSDATE + INTERVAL '14' DAY
-            WHEN #{data.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')
-            ELSE mem_banned_until
-        END
-    WHERE mem_id = #{data.reportedId}
+UPDATE member
+SET mem_banned_until = 
+    CASE
+        WHEN #{data.reportCount} = 1 THEN TRUNC(SYSDATE) + INTERVAL '7' DAY  -- 7일 뒤 자정
+        WHEN #{data.reportCount} = 2 THEN TRUNC(SYSDATE) + INTERVAL '14' DAY  -- 14일 뒤 자정
+        WHEN #{data.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')  -- 2999년 12월 31일 자정
+        ELSE mem_banned_until
+    END
+WHERE mem_id = #{data.reportedId}
+
      ]]>
 </foreach>
 </update>
@@ -162,18 +163,29 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
     
     <!-- 시설명, zone명, 결제일, 결제금액, 결제방법 -->
     <select id="getPaymentDetails" resultType="com.metamong.mt.domain.admin.dto.response.SalesExportDto">
-        SELECT 
+                 SELECT 
             z.fct_id, 
+            f.fct_name,
             z.zone_id, 
+            z.zone_name,
+            m.mem_name,
             p.pay_date, 
             p.pay_price, 
             p.pay_method 
-        FROM 
-            payment p
-        JOIN 
-            reservation r ON p.rvt_id = r.cons_id
-        JOIN 
-            zone z ON z.zone_id = r.zone_id
+                 FROM facility f
+        JOIN zone z ON f.fct_id = z.fct_id
+        JOIN reservation r ON r.zone_id = z.zone_id
+        join payment p on r.rvt_id = p.rvt_id
+        join member m on f.prov_id = mem_id
+        WHERE r.rvt_cancelation_reason IS NULL
+        GROUP BY  z.fct_id, 
+          f.fct_name,
+            z.zone_id, 
+            p.pay_date, 
+            p.pay_price, 
+            p.pay_method ,
+              z.zone_name,
+              m.mem_name
     </select>
 
     <!-- 총금액 -->
@@ -266,6 +278,33 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
 
     </select>
     
+     <select id="getRankPayment" resultType="com.metamong.mt.domain.admin.dto.response.RankPaymentDto">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT
+            f.fct_name,                       
+            sum(p.pay_price) AS tot_pay       
+        FROM
+            payment p
+        JOIN
+            reservation r ON p.rvt_id = r.rvt_id
+        JOIN
+            zone z ON z.zone_id = r.zone_id
+        JOIN facility f on z.fct_id = f.fct_id
+        WHERE
+            TO_CHAR(r.rvt_date, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')  
+        GROUP BY
+             f.fct_name
+        ORDER BY
+            tot_pay DESC
+    )
+    WHERE ROWNUM <= 5 
+
+    ]]>
+
+
+    </select>
+    
       <select id="getReservationsByHourThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekHourReservationDto">
        <![CDATA[
         SELECT 
@@ -283,5 +322,12 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
    
  ]]>
  </select>
+ 
+     <!-- 시설 이용자 계정 수 조회 -->
+    <select id="countRoleUserMembers" resultType="int">
+    <![CDATA[
+        SELECT COUNT(*) FROM member WHERE role = 'ROLE_CONS'
+    ]]>
+    </select>
 
 </mapper>

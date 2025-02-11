@@ -12,6 +12,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -55,6 +56,8 @@ public interface AdminMapper {
     
     List<RankReservationDto> getRankReservation();
     
+    List<RankPaymentDto> getRankPayment();
+    
     List<WeekReservationDto> getReservationsByHourThisWeek();
     
     //void updateMemberBan(List<Long> reportIds, Map<Long, Integer> reportCounts);
@@ -62,9 +65,10 @@ public interface AdminMapper {
 //            @Param("reportCounts") Map<Long, Integer> reportCounts);
 //    
     List<ReportDetailResponseDto> selectReportDetails(@Param("memId") Long memId);
-
-    //void updateMemberBan(Map<String, Object> params);
     
 
 	void updateMemberBan(Map<String, Object> params);
+	// 시설 이용자 수를 조회하는 쿼리
+		int countRoleUserMembers();
+		
 }
