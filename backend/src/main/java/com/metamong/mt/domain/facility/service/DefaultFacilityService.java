@@ -203,4 +203,9 @@ public class DefaultFacilityService implements FacilityService {
     public List<FacilityListOfMemberResponseDto> getFacilityOfMember(Long memId) {
         return this.facilityMapper.findFacilityOfMemberByMemId(memId);
     }
+
+    @Override
+    public Long getMemberIdByZoneId(Long zoneId) {
+        return this.facilityMapper.findMemIdByZoneId(zoneId);
+    }
 }
