@@ -82,7 +82,7 @@ public class FacilityController {
     
     @GetMapping("/facilities")
     public ResponseEntity<BaseResponse<FacilityListResponseDto>> getFaciltiies(
-            @RequestParam(value = "order-by", defaultValue = "DISTANCE") OrderBy orderBy,
+            @RequestParam(value = "order-by", defaultValue = "CREATION_TIME") OrderBy orderBy,
             @RequestParam(value = "order", defaultValue = "ASC") Order order,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "page-size", defaultValue = "10") int pageSize,

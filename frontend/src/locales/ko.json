@@ -39,7 +39,8 @@
         "map": "지도",
         "home": "홈",
         "chat": "채팅",
-        "profile": "프로필"
+        "profile": "프로필",
+        "facility": "시설"
     },
     "signup":{
         "signup": "회원가입",

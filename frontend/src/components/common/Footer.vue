@@ -11,9 +11,12 @@
           <router-link to="/" class="nav-link text-center">
             <i class="bi bi-house text-primary"></i><br>{{ $t('footer.home') }}
           </router-link>
-          <router-link to="/chat" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
+          <!-- <router-link to="/chat" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
             <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
-          </router-link>
+          </router-link> -->
+          <a href="/facilities" class="nav-link text-center">
+            <i class="fa-solid fa-person-running text-primary"></i><br>{{ $t('footer.facility') }}
+          </a>
           <div class="profile-menu text-center" v-if="isProfileMenuVisible">
             <ul class="list-group" @click="toggleIsProfileMenuVisible"> 
               <li class="list-group-item"><router-link to="/profile">{{ $t('member.profile') }}</router-link></li>

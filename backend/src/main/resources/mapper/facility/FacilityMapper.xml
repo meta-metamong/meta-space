@@ -237,10 +237,11 @@
                     fct.fct_detail_address AS fct_detail_address
                 FROM facility fct
                 INNER JOIN category cat ON cat.cat_id = fct.cat_id
-                LEFT JOIN image img ON img.img_attached_to = 'F'
+                LEFT JOIN image img ON img.fct_id = fct.fct_id
                 <where>
+                    (img.img_id IS NULL OR img.img_display_order = 1)
                     <if test="dto.providerId != null">
-                        fct.prov_id = #{dto.providerId}
+                        AND fct.prov_id = #{dto.providerId}
                     </if>
                     <if test="dto.searchKeyword != null">
                         <if test="dto.searchCondition.name() == 'FACILITY_NAME'">
@@ -267,23 +268,29 @@
                     </if>
                 </where>
                 ORDER BY
-                    <if test="dto.orderBy == null or dto.orderBy.name() == 'DISTANCE'">
+                    <if test="dto.orderBy.name() == 'DISTANCE'">
                         POWER(fct.fct_latitude - #{dto.centerLatitude}, 2)
                             + POWER(fct.fct_longitude - #{dto.centerLongitude}, 2)
+                            
+                        <if test="dto.order == null or dto.order.name() == 'ASC'">
+                            ASC
+                        </if>
+                        <if test="dto.order.name() == 'DESC'">
+                            DESC
+                        </if>
                     </if>
-                    <if test="dto.orderBy.name() == 'CREATION_TIME'">
+                    <if test="dto.orderBy == null or dto.orderBy.name() == 'CREATION_TIME'">
                         fct.created_at
-                    </if>
-                    
-                    <if test="dto.order == null or dto.order.name() == 'ASC'">
-                        ASC
-                    </if>
-                    <if test="dto.order.name() == 'DESC'">
-                        DESC
+                        <if test="dto.order.name() == 'ASC'">
+                            ASC
+                        </if>
+                        <if test="dto.order == null or dto.order.name() == 'DESC'">
+                            DESC
+                        </if>
                     </if>
             ) s
         ) s
-        WHERE s.rnum BETWEEN #{dto.page} - 1 * #{dto.pageSize} + 1 AND #{dto.page} * #{dto.pageSize}
+        WHERE s.rnum BETWEEN (#{dto.page} - 1) * #{dto.pageSize} + 1 AND #{dto.page} * #{dto.pageSize}
         ORDER BY s.rnum
     </select>
     
@@ -294,8 +301,9 @@
             COUNT(*) 
         FROM facility fct
         INNER JOIN category cat ON cat.cat_id = fct.cat_id
-        LEFT JOIN image img ON img.img_attached_to = 'F'
+        LEFT JOIN image img ON img.fct_id = fct.fct_id
         <where>
+            (img.img_id IS NULL OR img.img_display_order = 1)
             <if test="dto.providerId != null">
                 fct.prov_id = #{dto.providerId}
             </if>

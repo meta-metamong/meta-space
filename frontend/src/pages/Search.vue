@@ -1,6 +1,6 @@
 <template>
     <div class="container w-100">
-        <SearchBox />
+        <SearchBox @do-search="search" />
         <div class="hot-keywords mt-5">
             <h1 class="fw-bold">{{ $t('search.hotKeywords') }}</h1>
             <div class="mt-5 popular-searches">
@@ -46,6 +46,11 @@ export default{
         }else{
             alert("인기 검색어 조회가 실패됐습니다.");
             return;
+        }
+    },
+    methods: {
+        search(keyword) {
+            this.$router.push({ path: "/facilities" , query: { "search-keyword": keyword} });
         }
     }
 }
