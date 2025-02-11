@@ -33,4 +33,6 @@ public interface FacilityMapper {
     int countBySearchCondition(@Param("dto") FacilityListRequestDto dto);
     
     List<FacilityListOfMemberResponseDto> findFacilityOfMemberByMemId(@Param("memId") Long memId);
+    
+    Long findMemIdByZoneId(Long zoneId);
 }

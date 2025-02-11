@@ -24,4 +24,6 @@ public interface FacilityService {
     FacilityListResponseDto getFacilities(FacilityListRequestDto dto);
     
     List<FacilityListOfMemberResponseDto> getFacilityOfMember(Long memId);
+    
+    Long getMemberIdByZoneId(Long zoneId);
 }

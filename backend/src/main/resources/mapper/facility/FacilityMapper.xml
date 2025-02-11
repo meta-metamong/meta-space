@@ -344,4 +344,13 @@
         FROM facility
         WHERE prov_id = #{memId}
     </select>
+    
+    <select id="findMemIdByZoneId" parameterType="long" resultType="long">
+    <![CDATA[
+    SELECT m.mem_id FROM member m
+    LEFT JOIN facility f ON f.prov_id=m.mem_id
+    LEFT JOIN zone z ON z.fct_id=f.fct_id
+    WHERE z.zone_id=#{zoneId} 
+    ]]>
+    </select>
 </mapper>
