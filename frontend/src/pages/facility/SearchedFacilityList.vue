@@ -52,16 +52,13 @@ export default{
         },
         async search(keyword) {
             this.searchKeyword = keyword;
-            console.log(keyword);
             const params = {};
             if (this.searchKeyword && this.searchKeyword !== "") {
                 params["search-keyword"] = this.searchKeyword;
                 params["search-condition"] = "FACILITY_NAME"; // TODO: search condition variation
             }
-            console.log(params);
             const responseBody = (await apiClient.get("/facilities", {params})).data;
             const content = responseBody.content;
-            console.log(content);
             this.fctContent = content;
         }
     },
@@ -71,10 +68,8 @@ export default{
             params["search-keyword"] = this.searchKeyword;
             params["search-condition"] = "FACILITY_NAME"; // TODO: search condition variation
         }
-        console.log(params);
         const responseBody = (await apiClient.get("/facilities", {params})).data;
         const content = responseBody.content;
-        console.log(content);
         this.fctContent = content;
     }
 }

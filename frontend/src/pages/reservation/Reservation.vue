@@ -49,16 +49,28 @@
             <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}원</p>
             <p class="helper-text w-75 mx-auto px-3">{{ $t('reservation.priceDescription') }}</p>
         </div>
-        <div class="w-100 text-center mb-2">
-            <button class="rvt-btn w-75 mb-3 rounded-pill" @click="handleSubmit">{{ $t('reservation.reserve') }}</button>
+        <div v-if="!isPayOpen" class="w-100 text-center mb-2">
+            <button class="rvt-btn w-75 mb-3 rounded-pill" @click="toggleIsPayOpen">{{ $t('reservation.reserve') }}</button>
+        </div>
+        <div class="w-75 mx-auto text-center" v-if="isPayOpen">
+            <div class="w-100 text-start mb-1">{{ $t('payment.payMethod') }}</div>
+            <select class="form-select pay-select w-100" v-model="payMethod">
+                <option value="" selected disabled >결제방법을 선택하세요</option>
+                <option value='카드'>{{ $t('payment.card') }}</option>
+                <option value='계좌이체'>{{ $t('payment.account_transfer') }}</option>
+                <option value='가상계좌'>{{ $t('payment.virtual_account') }}</option>
+                <option value='토스머니'>{{ $t('payment.toss_money') }}</option>
+                <option value='휴대폰'>{{ $t('payment.mobile_phone') }}</option>
+                <option value='간편결제'>{{ $t('payment.easy_pay') }}</option>
+            </select>
+            <button class="rvt-btn w-100 mt-3 rounded-pill" @click="handleSubmit">{{ $t('payment.pay') }}</button>
         </div>
     </div>
 </template>
 
 <script>
 import { get, post } from "../../apis/axios";
-import { ref } from 'vue';
-import { toRaw } from "vue";
+import { ref, toRaw } from 'vue';
 
 export default {
     data() {
@@ -79,6 +91,8 @@ export default {
             maxCount: 1,
             isSharedZone: "",
             hourlyRate: 0,
+            payMethod: "",
+            isPayOpen: false
         };
     },
     computed: {
@@ -224,7 +238,7 @@ export default {
 
             const paymentDto = {
                 payPrice: this.payPrice,
-                payMethod: 'toss'
+                payMethod: this.payMethod
             }
 
             const requestDto = {
@@ -232,18 +246,26 @@ export default {
                 payment: paymentDto
             }
 
-            if (reservationDto.usageEndTime === null) {
+            sessionStorage.setItem('reservation', JSON.stringify(requestDto));
+            sessionStorage.setItem('fctId', this.fctId);
+
+            var tossPayments = TossPayments(import.meta.env.VITE_TOSS_CLIENT_KEY);
+            const tossRequestObject = {
+                amount: this.payPrice,
+                orderId: 12345678,
+                orderName: this.zoneInfo[this.selectedZoneId].zoneName,
+                customerName: this.$store.state.userName,
+                successUrl: 'http://localhost:3000/payment/result',
+                failUrl: 'http://localhost:3000/payment/result'
+            }
+            tossPayments.requestPayment(this.payMethod, tossRequestObject);
+        },
+        toggleIsPayOpen(){
+            if (this.secondTime === null) {
                 alert('종료 시간을 선택해주세요.');
                 return;
             }
-
-            const response = await post(`/reservations`, requestDto);
-            if (response.status === 201) {
-                alert('예약 성공')
-            } else if (response.status === 409) {
-                alert('예약이 불가능한 시간입니다. 다른 시간을 선택해주세요.');
-                this.resetSelection();
-            }
+            this.isPayOpen = !this.isPayOpen;
         }
     },
     mounted() {
@@ -322,5 +344,9 @@ select option {
   font-size: 0.9em;
   color: #6c757d;
   margin-top: 5px;
+}
+
+.pay-select{
+    border: 1px solid #333;
 }
 </style>
