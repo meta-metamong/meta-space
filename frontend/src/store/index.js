@@ -17,13 +17,17 @@ const removeUserIdInLocal = function () {
 const store = createStore({
   state: {
     userId: null,
+    userRole: null,
+    userName: null,
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
     messages: []  // WebSocket으로 받은 메시지를 저장
   },
   mutations: {
     saveUserId(state, payload) {
-      state.userId = payload;
+      state.userId = payload.memId;
+      state.userRole = payload.role;
+      state.userName = payload.name;
       saveUserIdInLocal(payload);
       if (state.userId === "admin") {
         router.push("/admin");
