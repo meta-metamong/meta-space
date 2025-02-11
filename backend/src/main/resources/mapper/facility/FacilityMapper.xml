@@ -43,6 +43,7 @@
         <result property="fctPostalCode" column="fct_postal_code" jdbcType="CHAR" />
         <result property="fctAddress" column="fct_address" jdbcType="VARCHAR" />
         <result property="fctDetailAddress" column="fct_detail_address" jdbcType="VARCHAR" />
+        <result property="unitUsageTime" column="unit_usage_time" jdbcType="INTEGER" />
         <result property="fctLatitude" column="fct_latitude" jdbcType="DOUBLE" />
         <result property="fctLongitude" column="fct_longitude" jdbcType="DOUBLE" />
         <result property="fctTel" column="fct_tel" jdbcType="VARCHAR" />
@@ -51,7 +52,7 @@
         <result property="fctGuide" column="fct_guide" jdbcType="VARCHAR" />
         <result property="isOpenOnHolidays" column="is_open_on_holidays" jdbcType="CHAR" />
         <result property="fctOpenTime" column="fct_open_time" jdbcType="DATE" />
-        <result property="fctClosetime" column="fct_close_time" jdbcType="DATE" />
+        <result property="fctCloseTime" column="fct_close_time" jdbcType="DATE" />
         <result property="fctState" column="fct_state" jdbcType="VARCHAR" />
         <collection property="fctImages" ofType="com.metamong.mt.domain.facility.dto.response.FacilityImageResponseDto">
             <id property="fctImgDisplayOrder" column="fct_img_display_order" jdbcType="INTEGER" />
@@ -84,6 +85,7 @@
                 fct.fct_detail_address AS "fct_detail_address",
                 fct.fct_latitude AS "fct_latitude",
                 fct.fct_longitude AS "fct_longitude",
+                fct.unit_usage_time AS "unit_usage_time",
                 fct.fct_tel AS "fct_tel",
                 cat.cat_id AS "cat_id",
                 cat.cat_name AS "cat_name",

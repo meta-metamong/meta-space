@@ -198,7 +198,9 @@
         "addZone": "Add Zone",
         "delete": "Delete",
         "won": "won",
-        "availableZones": "Available Zones"
+        "availableZones": "Available Zones",
+        "hour": "h",
+        "minutes": "m"
     },
     "myFacility": {
         "myFacilityList": "My Facility List",
