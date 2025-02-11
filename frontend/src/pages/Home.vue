@@ -1,7 +1,8 @@
 <template>
     <div class="container d-flex flex-column gap-4">
-        <div class="banner w-100 text-center text-white bg-primary">
-            배너입니다.
+        <div class="banner w-100">
+            <img :class="{ active: bannerStep === 0 }" class="banner-img" src="../resource/image/banner1.png" alt="banner1">
+            <img :class="{ active: bannerStep === 1 }" class="banner-img" src="../resource/image/banner2.png" alt="banner2">
         </div>
         <div class="d-flex flex-column gap-2">
             <h2 class="fw-bold">👍 {{ $t('main.best') }}</h2>
@@ -33,6 +34,7 @@ export default{
         return{
             fctDatas : [],
             topFct: [],
+            bannerStep: 0
         }
     },
     components: {
@@ -62,6 +64,12 @@ export default{
     mounted() {
         this.testDataInit();
         this.getTopFct();
+        setInterval(() => {
+            this.bannerStep++;
+            if(this.bannerStep === 2){
+                this.bannerStep = 0;
+            }
+        }, 5000)
     }
 }
 </script>
@@ -70,10 +78,23 @@ export default{
     overflow-y: auto;
 }
 .banner{
-    height: 150px;
+    position: relative;
+    height: 190px;
     line-height: 150px;
     font-size: 50px;
 }
+.banner img{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+.banner .active{
+    opacity: 1;
+}
+
 .card-list{
     overflow-x: auto;
     

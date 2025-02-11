@@ -1,7 +1,7 @@
 <template>
     <div class="searched-list">
         <div class="search-box ps-2 mb-2">
-            <SearchBox />
+            <SearchBox :keywordProp="keyword" />
         </div>
         <div class="searched-body">
             <div class="d-flex justify-content-between mt-2 mb-4 fs-5 text-muted w-100">
