@@ -2,8 +2,8 @@
     <div class="container w-100">
         <SearchBox />
         <div class="hot-keywords mt-5">
-            <h2 class="fw-bold">인기 검색어</h2>
-            <div class="mt-4 popular-searches">
+            <h1 class="fw-bold">{{ $t('search.hotKeywords') }}</h1>
+            <div class="mt-5 popular-searches">
                 <ul class="d-flex flex-column gap-4 fs-4">
                     <li v-for="(keyword, index) in popularKeywords" :key="index">
                         {{ index + 1 }}&nbsp;&nbsp;{{ keyword }}

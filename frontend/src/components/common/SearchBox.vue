@@ -1,7 +1,7 @@
 <template>
     <div class="search-box">
-        <input type="text" class="search-input text-center fs-3" v-model="keyword" placeholder="시설명을 입력하세요">
-        <button class="search-btn">🔍</button>
+        <input type="text" class="search-input text-center fs-4" v-model="keyword" :placeholder="$t('search.enterFct')">
+        <button class="search-btn" @click="search">🔍</button>
     </div>
 </template>
 <script>
@@ -10,6 +10,17 @@ export default{
     data(){
         return{
             keyword: ""
+        }
+    },
+    methods: {
+        search(){
+            if(this.keyword === ""){
+                alert(this.$t('search.enterFct'));
+                return;
+            }
+            // TODO: 검색어를 레디스에 저장
+
+            this.$router.push(`/search-fct-list/${this.keyword}`);
         }
     }
 }

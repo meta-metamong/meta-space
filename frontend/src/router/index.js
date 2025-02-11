@@ -21,10 +21,13 @@ import MyFacilityList from "../pages/facility/MyFacilityList.vue";
 import PaymentList from '../pages/payment/PaymentList.vue';
 import DetailPayment from '../pages/payment/DetailPayment.vue';
 import Search from '../pages/Search.vue';
+import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/search', component: Search },
+	{ path: '/search-fct-list/:keyword', component:SearchedFacilityList, props: true},
+
 	{ path: '/login', component: Login },
 	{ path: '/profile', component: Profile },
 	{ path: '/update', component: UpdateMember },

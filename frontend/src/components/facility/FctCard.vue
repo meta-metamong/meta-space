@@ -1,9 +1,10 @@
 <template>
-    <div class="card card-box mb-3">
+    <div class="card card-box mb-3 d-flex flex-column">
         <img :src="fctData.repImgUrl" class="card-thumbnail mx-auto" alt="대표 이미지" />
-        <div class="card-detail d-flex flex-column pt-2 ps-2">
-            <p class="card-category mb-1">{{ fctData.catName }}</p>
-            <h5 class="card-name fs-3">{{ fctData.fctName }}</h5>
+        <div class="card-detail d-flex flex-column p-2">
+            <p class="card-category">{{ fctData.catName }}</p>
+            <p class="card-address">{{ fctData.fctAddress }}</p>
+            <h5 class="card-name fs-3 fw-bold">{{ fctData.fctName }}</h5>
         </div>
     </div>
 </template>
@@ -24,16 +25,30 @@ export default{
 }
 </script>
 <style scoped>
-.card-thumbnail{
-    height: 60%;
+*{
+    margin: 0;
+    padding: 0;
 }
 .card-box{
     min-width: 200px;
     max-width: 200px;
-    max-height: 200px;
+    max-height: 250px;
+    height: 250px;
+}
+.card-thumbnail{
+    height: 60%;
+}
+.card-category{
+    color: #555;
+}
+.card-address{
+    margin-bottom: 5px;
+    color: #555;
+}
+.card-name{
+    color: #333;
 }
 .card-detail{
     border-top: 1px solid #ddd;
-    font-size: 15px;
 }
 </style>
