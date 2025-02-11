@@ -215,5 +215,8 @@
         "best": "Recommend",
         "hot": "Hot Place",
         "close": "Nearby"
+    },
+    "editFacility": {
+        "editComplete": "Edit"
     }
 }

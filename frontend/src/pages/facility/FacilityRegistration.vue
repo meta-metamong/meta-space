@@ -1,17 +1,20 @@
 <template>
-    <div class="container">
+    <div class=container>
         <facility-registration-input
             v-if="currentComponent === 'facilityRegistrationInput'"
             @component-change="changeComponent"
-            :facility-registration="inputs.facilityRegistration" />
+            :facility-registration="inputs.facilityRegistration"
+            is-edit="false" />
         <zone-registration-input
             v-if="currentComponent === 'zoneRegistrationInput'"
             @component-change="changeComponent"
-            :zone-registration="inputs.zoneRegistration" />
+            :zone-registration="inputs.zoneRegistration"
+            is-edit="false" />
         <additional-information
             v-if="currentComponent === 'addinfoRegistrationInput'"
             @component-change="changeComponent"
-            :addinfo-registration="inputs.addinfoRegistration" />
+            :addinfo-registration="inputs.addinfoRegistration"
+            is-edit="false" />
 
         <div style="display: flex; justify-content: center;">
             <button v-if="currentComponent === 'addinfoRegistrationInput'"
@@ -61,7 +64,8 @@ export default {
                     isOpenOnHolidays: true,
                     unitUsageTime: "",
                     images: [],
-                    guide: ""
+                    guide: "",
+                    selectedMinorCategories: []
                 },
                 "zoneRegistration": [
                     {

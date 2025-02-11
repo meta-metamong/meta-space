@@ -214,5 +214,8 @@
         "best": "추천",
         "hot": "핫 플레이스",
         "close": "내 주변 시설"
+    },
+    "editFacility": {
+        "editComplete": "수정 완료"
     }
 }
