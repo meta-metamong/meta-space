@@ -39,7 +39,8 @@
         "map": "Map",
         "home": "Home",
         "chat": "ChatAdmin",
-        "profile": "Profile"
+        "profile": "Profile",
+        "facility": "Facility"
     },
     "signup":{
         "signup": "Signup",

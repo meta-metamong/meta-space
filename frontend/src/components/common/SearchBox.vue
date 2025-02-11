@@ -7,10 +7,16 @@
 <script>
 import { post } from '../../apis/axios';
 export default{
+    props: {
+        searchKeyword: {
+            type: String,
+            required: false
+        }
+    },
     name: 'SearchBox',
     data(){
         return{
-            keyword: ""
+            keyword: this.searchKeyword || ""
         }
     },
     props: {
@@ -30,7 +36,7 @@ export default{
             }
             const response = await post("/search", requestDto);
             if(response.status === 200){
-                this.$router.push(`/search-fct-list/${this.keyword}`);
+                this.$emit("doSearch", this.keyword);
             }else{
                 alert("검색어 저장에 실패했습니다.");
                 return;

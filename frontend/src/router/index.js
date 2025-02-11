@@ -28,7 +28,6 @@ import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/search', component: Search },
-	{ path: '/search-fct-list/:keyword', component:SearchedFacilityList, props: true},
 
 	{ path: '/login', component: Login },
 	{ path: '/profile', component: Profile },
@@ -45,6 +44,7 @@ const routes = [
 	{ path: '/facilities/my-facility-list', component: MyFacilityList },
 	{ path: '/facilities/:fctId', component: FacilityDetail, props: true },
 	{ path: '/facilities/:fctId/edit', component: FacilityEdit, props: true },
+	{ path: '/facilities', component: SearchedFacilityList },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
