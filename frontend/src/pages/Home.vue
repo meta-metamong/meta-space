@@ -59,6 +59,7 @@ export default{
             const response = await get('/facilities/top');
             this.topFct = response.data.content;
             console.log(this.topFct)
+            console.log(response)
         }
     },
     mounted() {

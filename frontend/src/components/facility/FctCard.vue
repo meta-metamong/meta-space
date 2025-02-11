@@ -37,6 +37,8 @@ export default{
 }
 .card-thumbnail{
     height: 60%;
+    max-width: 200px;
+    object-fit: cover;
 }
 .card-category{
     color: #555;
