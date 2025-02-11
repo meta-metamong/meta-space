@@ -4,19 +4,19 @@
             배너입니다.
         </div>
         <div class="d-flex flex-column gap-2">
-            <h2 class="fw-bold">👍 베스트 시설</h2>
+            <h2 class="fw-bold">👍 {{ $t('main.best') }}</h2>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in fctDatas" :key="fctData.fctId" :fctData="fctData" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
-            <h2 class="fw-bold">🔥핫 플레이스</h2>
+            <h2 class="fw-bold">🔥{{ $t('main.hot') }}</h2>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in fctDatas" :key="fctData.fctId" :fctData="fctData" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
-            <h2 class="fw-bold">👟내 주변 시설</h2>
+            <h2 class="fw-bold">👟{{ $t('main.close') }}</h2>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in fctDatas" :key="fctData.fctId" :fctData="fctData" />
             </div>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import FctCard from '../components/common/FctCard.vue';
+import FctCard from '../components/facility/FctCard.vue';
 export default{
     name: "Home",
     data(){
@@ -43,6 +43,7 @@ export default{
                     fctId: i,
                     fctName: `시설 이름${i}`,
                     catName: `카테고리${i}`,
+                    fctAddress: '배고파시 밥먹자동',
                     repImgUrl: 'https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png'
                 })
                 if(i % 2 == 0){
