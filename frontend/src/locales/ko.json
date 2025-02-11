@@ -110,7 +110,8 @@
         "facilityApproval":"시설 승인",
         "memberBen":"회원 정지",
         "dashboard":"대시보드",
-        "salesExport":"매출조회"
+        "salesExport":"매출조회",
+        "memberManagement":"회원 관리"
     },
     "reservation": {
         "list": "예약 목록",
