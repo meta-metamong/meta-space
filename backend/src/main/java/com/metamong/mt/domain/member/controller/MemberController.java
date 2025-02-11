@@ -35,6 +35,7 @@ import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -76,15 +77,15 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        Long memId = this.memberService.login(loginRequest);
+        LoginResponseDto member = this.memberService.login(loginRequest);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(memId));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(member.getMemId()));
         // 액세스 토큰과 리프레시 토큰 생성
         String accessToken = this.jwtTokenProvider.generateAccessToken(userDetails);
         String refreshToken = this.jwtTokenProvider.generateRefreshToken(userDetails);
 
         // 리프레시 토큰을 DB에 저장
-        this.memberService.updateRefreshToken(memId, refreshToken);
+        this.memberService.updateRefreshToken(member.getMemId(), refreshToken);
 
         // 쿠키 생성
         ResponseCookie accessTokenResponseCookie = this.cookieGenerator.generateCookie("Ws-Access-Token", accessToken);
@@ -111,7 +112,7 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(BaseResponse.of(memId, HttpStatus.OK, "로그인 성공"));
+                .body(BaseResponse.of(member, HttpStatus.OK, "로그인 성공"));
     }
      
     /**
