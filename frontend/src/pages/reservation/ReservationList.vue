@@ -32,7 +32,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="d-flex justify-content-center">
+		<div class="d-flex justify-content-center" v-if="rvtInfo.length > 0">
 			<Pagination :current-page="currentPage"
 						:start-page-no="startPageNo"
 						:end-page-no="endPageNo"
