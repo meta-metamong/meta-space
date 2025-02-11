@@ -12,7 +12,7 @@
         <div class="d-flex flex-column gap-2">
             <h2 class="fw-bold">🔥{{ $t('main.hot') }}</h2>
             <div class="card-list d-flex gap-4">
-                <FctCard v-for="fctData in fctDatas" :key="fctData.fctId" :fctData="fctData" />
+                <FctCard v-for="fct in topFct" :key="fct.fctId" :fctData="fct" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
@@ -26,11 +26,13 @@
 
 <script>
 import FctCard from '../components/facility/FctCard.vue';
+import { get } from '../apis/axios'
 export default{
     name: "Home",
     data(){
         return{
-            fctDatas : []
+            fctDatas : [],
+            topFct: [],
         }
     },
     components: {
@@ -50,10 +52,16 @@ export default{
                     this.fctDatas[i].fctName += ' 크아아아아악'
                 }
             }
+        },
+        async getTopFct() {
+            const response = await get('/facilities/top');
+            this.topFct = response.data.content;
+            console.log(this.topFct)
         }
     },
     mounted() {
         this.testDataInit();
+        this.getTopFct();
     }
 }
 </script>

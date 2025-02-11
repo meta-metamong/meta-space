@@ -48,14 +48,25 @@
 
     <!-- 예약 내역 개수 조회 -->
     <select id="getTotalCount" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto">
-        <![CDATA[
             SELECT r.cons_id AS "consId", f.fct_id AS "fctId", count(*) AS "totalCount"
 			FROM reservation r
 			JOIN zone z ON r.zone_id = z.zone_id
 			JOIN facility f ON z.fct_id = f.fct_id
-			JOIN payment p ON p.rvt_id = r.rvt_id
-			WHERE p.pay_state = 'P' OR p.pay_state = 'Q'
+			<!-- JOIN payment p ON p.rvt_id = r.rvt_id
+            WHERE p.pay_state = 'P' OR p.pay_state = 'Q' -->
 			GROUP BY r.cons_id, f.fct_id
+    </select>
+    
+    <!-- 인기 순위 조회 -->
+    <select id="getTopFacilities" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto">
+        <![CDATA[
+            SELECT f.fct_id AS "fctId", count(*) AS "totalCount"
+			FROM reservation r
+			JOIN zone z ON r.zone_id = z.zone_id
+			JOIN facility f ON z.fct_id = f.fct_id
+			GROUP BY f.fct_id
+			ORDER BY count(*) DESC
+			FETCH FIRST 10 ROWS ONLY
         ]]>
     </select>
 
