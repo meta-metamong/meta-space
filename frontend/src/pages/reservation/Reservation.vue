@@ -2,13 +2,13 @@
     <div class="container w-100 mt-4">
         <h2 class="text-center mb-4" v-text="$t('reservation.reserve')"></h2>
         <div class="text-center mb-4">
-            <VDatePicker v-model="date" mode="date" />
+            <VDatePicker v-model="date" mode="date" :min-date="new Date()"/>
         </div>
         <div class="mb-5">
             <p class="ms-4 text-secondary">Zone</p>
             <p class="profile-content w-75 mx-auto px-3 fs-5">
                 <select class="form-select" v-model="selectedZoneId">
-                    <option value="" disabled>구역을 선택하세요</option>
+                    <option value="" selected disabled >Zone을 선택하세요</option>
                     <option v-for="zone in zoneInfo" :key="zone.zoneId" :value="zone.zoneId">{{ zone.zoneName }}</option>
                 </select>
             </p>
@@ -47,6 +47,7 @@
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('reservation.totalPrice') }}</p>
             <p class="profile-content w-75 mx-auto px-3 fs-5">{{ payPrice }}</p>
+            <p class="helper-text w-75 mx-auto px-3">{{ $t('reservation.priceDescription') }}</p>
         </div>
         <div class="w-100 text-center mb-2">
             <button class="rvt-btn w-75 mb-3 rounded-pill" @click="handleSubmit">{{ $t('reservation.reserve') }}</button>
@@ -58,21 +59,20 @@
 import { get, post } from "../../apis/axios";
 import { ref } from 'vue';
 
-// 시설, 회원 아이디, 단위 시간 수정 필요
+// 시설 아이디 수정 필요
 export default {
     data() {
         return {
-            unitTime: 30,
+            unitTime: 0,
             openTime: null,
             closeTime: null,
-            // unavailableTimes: "",
             timeInfo: [],
             selectedTimes: [],
             firstTime: null,
             secondTime: null,
             fctName: "",
             zoneInfo: [],
-            selectedZoneId: 0,
+            selectedZoneId: "",
             date: ref(new Date()),
             reservationTime: "",
             usageCount: 1,
@@ -108,12 +108,12 @@ export default {
     },
     watch: {
         selectedZoneId(newZoneId) {
+            this.resetSelection();
             const selectedZone = this.zoneInfo.find(zone => zone.zoneId == newZoneId);
             this.maxCount = selectedZone ? selectedZone.maxUserCount : 1;
             this.hourlyRate = selectedZone ? selectedZone.hourlyRate : 0;
             this.isSharedZone = selectedZone ? selectedZone.isSharedZone : "";
-            this.resetSelection();
-        }
+        },
     },
     methods: {
         async getFctInfo() {
@@ -123,6 +123,7 @@ export default {
             this.zoneInfo = fctInfo.zones;
             this.openTime = fctInfo.fctOpenTime;
             this.closeTime = fctInfo.fctClosetime;
+            this.unitTime = fctInfo.unitUsageTime;
         },
         async getTimeInfo() {
             const requestDto = {
@@ -144,10 +145,21 @@ export default {
             return `${startTime}~${endTime}`;
         },
         isUnavailable(time) {
-            if (this.selectedZoneId === 0) {
-                return this.timeSlots;
+            if (this.selectedZoneId === "") {
+                return true;
             }
-            return this.unavailableTimes.includes(time);
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 60);
+
+            const selectedDate = new Date(this.date);
+            const [hours, minutes] = time.split(":").map(Number);
+            const timeDate = new Date(selectedDate);
+            timeDate.setHours(hours, minutes, 0, 0);
+
+            // 오늘 날짜인 경우에만 현재 시간 + 1시간 이후의 시간 비활성화
+            const isPastTime = selectedDate.toDateString() === now.toDateString() && timeDate < now;
+
+            return this.unavailableTimes.includes(time) || isPastTime;
         },
         selectTime(time) {
             if (!this.firstTime) {
@@ -199,7 +211,7 @@ export default {
         async handleSubmit() {
             const requestDto = {
                 zoneId: this.selectedZoneId,
-                consId: 1,
+                consId: this.$store.state.userId,
                 rvtDate: this.date,
                 usageStartTime: this.firstTime,
                 usageEndTime: this.secondTime,
@@ -208,7 +220,7 @@ export default {
             }
 
             if (requestDto.usageEndTime === null) {
-                alert('종료 시간을 입력해주세요.');
+                alert('종료 시간을 선택해주세요.');
                 return;
             }
 
@@ -248,10 +260,10 @@ export default {
 .time-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 8px;
     justify-content: flex-start;
     max-width: 100%;
-    margin-left: 8px;
+    margin-left: 6px;
     box-sizing: border-box;
 }
 
@@ -293,4 +305,9 @@ select option {
     height: 45px;
 }
 
+.helper-text {
+  font-size: 0.9em;
+  color: #6c757d;
+  margin-top: 5px;
+}
 </style>
