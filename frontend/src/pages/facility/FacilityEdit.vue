@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { get } from "../../apis/axios";
+import { get, put } from "../../apis/axios";
 import AdditionalInformation from "../../components/facility/AdditionalInformation.vue";
 import FacilityRegistrationInput from "../../components/facility/FacilityRegistrationInput.vue";
 import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInput.vue";
@@ -88,9 +88,6 @@ export default {
 
             const fct = (await get(`/facilities/${this.fctId}`)).data.content;
 
-            console.log(categories);
-            console.log(fct);
-
             this.original = fct;
 
             let originalMajorCatId = "0";
@@ -107,8 +104,6 @@ export default {
                     }
                 }
             }
-
-            console.log("originalMajorCatId=" + originalMajorCatId);
 
             const tels = fct.fctTel.split("-");
 
@@ -162,19 +157,173 @@ export default {
                     desc: addinfo.addinfoDesc
                 });
             }
-
-            console.log(this.inputs);
         }
 
         getData();
     },
     methods: {
         changeComponent(componentName) {
-            console.log(componentName);
             this.currentComponent = componentName;
         },
         submitEdit() {
+            const orig = this.original;
+            const tarFct = this.inputs.facilityRegistration;
+            const tarZone = this.inputs.zoneRegistration;
+            const tarAddinfo = this.inputs.addinfoRegistration;
+
+            const editInfo = {}
+
+            if (orig.fctName !== tarFct.fctName) {
+                editInfo.fctName = tarFct.fctName;
+            }
+
+            if (orig.catId !== tarFct.minorCatId) {
+                editInfo.catId = tarFct.minorCatId;
+            }
+
+            if (orig.fctAddress !== tarFct.addr.address) {
+                editInfo.fctAddress = tarFct.addr.address;
+            }
+
+            if (orig.fctDetailAddress !== tarFct.addr.detailAddress) {
+                editInfo.fctDetailAddress = tarFct.addr.detailAddress;
+            }
+
+            if (orig.fctPostalCode !== tarFct.addr.postalCode) {
+                editInfo.fctPostalCode = tarFct.addr.postalCode;
+            }
+
+            const tels = orig.fctTel.split("-");
+            if (tels[0] !== tarFct.tel.first
+                || tels[1] !== tarFct.tel.second
+                || tels[2] !== tarFct.tel.third
+            ) {
+                editInfo.fctTel = `${tels[0]}-${tels[1]}-${tels[2]}`;
+            }
+
+            if (orig.fctGuide !== tarFct.guide) {
+                editInfo.fctGuide = tarFct.guide;
+            }
+
+            if ((orig.isOpenOnHolidays === "Y") !== tarFct.isOpenOnHolidays) {
+                editInfo.isOpenOnHolidays = tarFct.isOpenOnHolidays ? "Y" : "N";
+            }
+
+            if (orig.fctOpenTime.substring(0, orig.fctOpenTime.lastIndexOf(":")) !== tarFct.operationTime.openTime) {
+                editInfo.fctOpenTime = tarFct.operationTime.openTime;
+            }
+
+            if (orig.fctClosetime.substring(0, orig.fctClosetime.lastIndexOf(":")) !== tarFct.operationTime.closeTime) {
+                editInfo.fctCloseTime = tarFct.operationTime.closeTime;
+            }
+
+            if (orig.unitUsageTime !== tarFct.unitUsageTime) {
+                editInfo.unitUsageTime = tarFct.unitUsageTime;
+            }
+
+            // TODO: How about latitude and longitude?
+
+            editInfo.zones = {};
+
+            editInfo.zones.create = [];
+
+            tarZone.forEach((e) => {
+                if (!e.zoneId) {
+                    editInfo.zones.create.push({
+                        // TODO: images
+                        zoneName: e.zoneName,
+                        maxUserCount: e.maxUserCount,
+                        isSharedZone: e.isSharedZone ? "Y" : "N",
+                        hourlyRate: e.hourlyRate
+                    });
+                }
+            });
+
+            editInfo.zones.update = [];
+            const originalZones = {}
+            for (const zone of orig.zones) {
+                originalZones[zone.zoneId] = zone;
+            }
             
+            tarZone.forEach((e) => {
+                if (originalZones[e.zoneId]) {
+                    const originalZone = originalZones[e.zoneId];
+                    const obj = {
+                        id: e.zoneId,
+                        to: {}
+                    }
+
+                    if (e.isSharedZone !== (originalZone.isSharedZone === "Y")) {
+                        obj.to.isSharedZone = e.isSharedZone === "Y";
+                    }
+
+                    if (e.hourlyRate !== originalZone.hourlyRate) {
+                        obj.to.hourlyRate = e.hourlyRate;
+                    }
+
+                    if (e.maxUserCount !== originalZone.maxUserCount) {
+                        obj.to.maxUserCount = e.maxUserCount;
+                    }
+
+                    if (e.zoneName !== originalZone.zoneName) {
+                        obj.to.zoneName = e.zoneName;
+                    }
+
+                    if (Object.keys(obj.to).length > 0) {
+                        editInfo.zones.update.push(obj);
+                    }
+
+                    // TODO: images
+                }
+            });
+
+            const remainZoneIds = new Set();
+            tarZone.forEach((e) => e.zoneId && remainZoneIds.add(e.zoneId));
+
+            editInfo.zones.delete = orig.zones.filter((e) => !remainZoneIds.has(e.zoneId)).map((e) => e.zoneId);
+
+            editInfo.addinfos = {};
+
+            editInfo.addinfos.create = tarAddinfo.filter((e) => !e.addinfoId).map((e) => e.desc);
+
+            const originalAddinfos = {};
+            for (const origAddinfo of orig.additionalInfos) {
+                originalAddinfos[origAddinfo.addinfoId] = origAddinfo;
+            }
+
+            editInfo.addinfos.update = [];
+
+            for (const tarAddinfoItem of tarAddinfo) {
+                const obj = originalAddinfos[tarAddinfoItem.addinfoId];
+                if (obj && obj.addinfoDesc !== tarAddinfoItem.desc) {
+                    editInfo.addinfos.update.push({
+                        id: tarAddinfoItem.addinfoId, to: tarAddinfoItem.desc
+                    });
+                }
+            }
+
+            // editInfo.addinfos.update = tarAddinfo.filter((e) => originalAddinfos[e.addinfoId] && originalAddinfos[e.addinfoId] !== e.desc)
+            //         .map((e) => ({ id: e.addinfoId, to: e.desc }));
+
+            const tarAddInfoIds = new Set();
+            for (const tarAddinfoItem of tarAddinfo) {
+                if (tarAddinfoItem.addinfoId) {
+                    tarAddInfoIds.add(tarAddinfoItem.addinfoId);
+                }
+            }
+
+            console.log(originalAddinfos);
+            console.log(tarAddInfoIds);
+
+            console.log(Object.keys(originalAddinfos));
+
+            
+
+            editInfo.addinfos.delete = orig.additionalInfos.filter((e) => !tarAddInfoIds.has(e.addinfoId)).map((e) => e.addinfoId);
+
+            console.log(editInfo);
+
+            put(`/facilities/${orig.fctId}`, editInfo);
         }
     }
 }
@@ -196,13 +345,4 @@ export default {
     border-radius: 80px;
     font-size: 18px;
 }
-/* #submit-container {
-    margin-top: 50%;
-}
-
-#submit-button {
-    background-color: #4a66e6;
-    border-radius: 80px;
-    font-size: 18px;
-} */
 </style>
