@@ -37,12 +37,6 @@ export default{
             searchKeyword: searchKeywordParam || ""
         }
     },
-    props:{
-        keyword: {
-            type: String,
-            required: true
-        }
-    },
     computed: {
         ascOrDesc(){
             return this.isDistanceAsc ? '↑' : '↓';

@@ -10,16 +10,16 @@ import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.BankResponseDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
-import com.metamong.mt.domain.member.model.MemberImage;
 
 public interface MemberService {
 
 	// 로그인
-	Long login(LoginRequestDto dto);
+	LoginResponseDto login(LoginRequestDto dto);
 	
 	boolean isValidPassword(Long memId, String password);
 	

@@ -2,7 +2,6 @@ package com.metamong.mt.domain.member.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +17,7 @@ import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.BankResponseDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
 import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
 import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
@@ -39,7 +39,6 @@ import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.constant.BooleanAlt;
 import com.metamong.mt.global.file.FileUploader;
 import com.metamong.mt.global.file.FilenameResolver;
-import com.metamong.mt.global.image.repository.ImageRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -67,7 +66,7 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     @Transactional(readOnly = true)
-    public Long login(LoginRequestDto dto) {
+    public LoginResponseDto login(LoginRequestDto dto) {
         Member member = null; 
         try {
             member = memberRepository.findByEmail(dto.getEmail())
@@ -83,7 +82,11 @@ public class DefaultMemberService implements MemberService {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.PASSWORD_INCORRECT);
         }
         
-        return member.getMemId();
+        return LoginResponseDto.builder()
+                                   .memId(member.getMemId())
+                                   .name(member.getMemName())
+                                   .role(member.getRole())
+                                   .build();
     }
     
     @Override

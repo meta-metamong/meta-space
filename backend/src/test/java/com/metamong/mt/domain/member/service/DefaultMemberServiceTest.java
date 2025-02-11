@@ -26,7 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
 import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
