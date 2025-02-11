@@ -104,82 +104,39 @@ export default defineComponent({
       });
 
       // 시간대별 예약 현황 선 차트
-      // const hourlySeriesData = this.weekHourReservations.map((reservation) => ({
-      //   name: `시간대 ${reservation.rvtHour}시`,
-      //   type: 'line', // 선 차트
-      //   data: [reservation.rvtCount], // 시간대별 예약 건수
-      // }));
+      const hourlySeriesData = Array.from({ length: 24 }, (_, hour) => {
+        // 0시부터 24시까지 예약 데이터를 채웁니다.
+        const reservation = this.weekHourReservations.find(res => res.rvtHour === hour);
+        
+        return {
+          name: `${hour}시`,
+          type: 'line', // 선 차트
+          data: [reservation ? reservation.rvtCount : 0], // 예약 건수가 없으면 0
+        };
+      });
 
-      // 시간대별 예약 현황 선 차트
-// const hourlySeriesData = this.weekHourReservations.map((reservation) => {
-//   console.log("시간대별 예약 현황 데이터:", reservation); // reservation 객체 출력
-
-//   return {
-//     name: `시간대 ${reservation.rvtHour}시`,
-//     type: 'line', // 선 차트
-//     data: [reservation.rvtCount], // 시간대별 예약 건수
-//   };
-// });
-
-
-
-
-//       Highcharts.chart("hourly-reservation-chart", {
-//         title: {
-//           text: "시간대별 예약 현황"
-//         },
-//         xAxis: {
-//           categories: this.weekHourReservations.map(reservation => `${reservation.rvtHour}시`), // 시간대별 X축
-//           title: { text: "시간" }
-//         },
-//         yAxis: {
-//           title: {
-//             text: "예약 건수"
-//           }
-//         },
-//         series: hourlySeriesData, // 시간대별 예약 건수 데이터
-//         tooltip: {
-//           shared: true,
-//           valueSuffix: " 건"
-//         },
-//         credits: { enabled: false }, // 크레딧 비활성화
-//         exporting: { enabled: true } // 내보내기 활성화
-//       });
-// 시간대별 예약 현황 선 차트
-const hourlySeriesData = Array.from({ length: 24 }, (_, hour) => {
-  // 0시부터 24시까지 예약 데이터를 채웁니다.
-  const reservation = this.weekHourReservations.find(res => res.rvtHour === hour);
-  
-  return {
-    name: `${hour}시`,
-    type: 'line', // 선 차트
-    data: [reservation ? reservation.rvtCount : 0], // 예약 건수가 없으면 0
-  };
-});
-
-// 시간대별 예약 현황 차트 그리기
-Highcharts.chart("hourly-reservation-chart", {
-  title: {
-    text: "시간대별 예약 현황"
-  },
-  xAxis: {
-    categories: Array.from({ length: 24 }, (_, hour) => `${hour}시`), // 0시부터 24시까지 시간대별 X축
-    title: { text: "시간" }
-  },
-  yAxis: {
-    title: {
-      text: "예약 건수"
-    }
-  },
-  series: hourlySeriesData, // 시간대별 예약 건수 데이터
-  tooltip: {
-    shared: true,
-    valueSuffix: " 건"
-  },
-  credits: { enabled: false }, // 크레딧 비활성화
-  exporting: { enabled: true } // 내보내기 활성화
-});
-
+      // 시간대별 예약 현황 차트 그리기
+      Highcharts.chart("hourly-reservation-chart", {
+        title: {
+          text: "시간대별 예약 현황"
+        },
+        xAxis: {
+          categories: Array.from({ length: 24 }, (_, hour) => `${hour}시`), // 0시부터 24시까지 시간대별 X축
+          title: { text: "시간" }
+        },
+        yAxis: {
+          title: {
+            text: "예약 건수"
+          }
+        },
+        series: hourlySeriesData, // 시간대별 예약 건수 데이터
+        tooltip: {
+          shared: true,
+          valueSuffix: " 건"
+        },
+        credits: { enabled: false }, // 크레딧 비활성화
+        exporting: { enabled: true } // 내보내기 활성화
+      });
 
       // 시설별 예약/취소/매출 현황 복합 막대 그래프
       Highcharts.chart("facility-stats-chart", {
@@ -261,18 +218,38 @@ Highcharts.chart("hourly-reservation-chart", {
 <style scoped>
 .chart-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 50px;
   margin-bottom: 20px;
 }
 
 .chart-half {
-  width: 48%; /* 차트 너비를 절반으로 설정 */
-  height: 400px;
+  width: 550px; /* 차트 너비를 40%로 설정 */
+  height: 100%; /* 부모 요소의 높이를 따라가도록 설정 */
 }
 
-#facility-stats-chart, #ranking-chart {
+/* 시설별 예약/취소/매출 현황 차트 */
+#facility-stats-chart {
   width: 100%;
-  height: 400px;
-  margin: 20px auto;
+  height: 270px; /* 화면의 1/3 높이 */
+  margin: 0 auto;
+  overflow: hidden; /* 스크롤 방지 */
 }
+
+/* 예약 랭킹 차트 */
+#ranking-chart {
+  width: 100%;
+  height: 270px; /* 화면의 1/3 높이 */
+  margin: 0 auto;
+  overflow: hidden; /* 스크롤 방지 */
+}
+
+/* 다른 차트의 높이도 동일하게 설정 */
+#week-reservation-chart,
+#hourly-reservation-chart {
+  height: 270px; /* 화면의 1/3 높이 */
+  overflow: hidden; /* 스크롤 방지 */
+}
+
+
 </style>
