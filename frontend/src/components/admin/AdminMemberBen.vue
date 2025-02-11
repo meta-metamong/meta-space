@@ -67,6 +67,15 @@ export default {
         console.log('response', response);
         if (response && response.data) {
           this.reports = response.data.content;
+
+          if (this.reports.length > 0) {
+            const firstMemId = this.reports[0].memId;
+            this.fetchReportDetails(firstMemId);
+          }else {
+            console.log('개수 비어있음');
+            // 첫 번째 데이터가 없다면 빈 테이블 처리
+            this.selectedReportDetails = [];
+          }
         }
       } catch (error) {
         console.error('Error fetching reported users:', error);

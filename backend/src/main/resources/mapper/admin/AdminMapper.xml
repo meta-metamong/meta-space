@@ -36,6 +36,7 @@ ORDER BY m.created_at
 <select id="getReportedMembers" resultType="com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto">
         SELECT reported_id AS memId, email, COUNT(reported_id) AS reportedCnt
         FROM report r join member m on r.reported_id = m.mem_id
+        where mem_banned_until is null
         GROUP BY reported_id,email
     </select>
 
