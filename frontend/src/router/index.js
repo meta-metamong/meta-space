@@ -18,6 +18,7 @@ import FindPassword from '../pages/member/FindPassword.vue';
 import Map from '../pages/Map.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 import MyFacilityList from "../pages/facility/MyFacilityList.vue";
+import FacilityEdit from "../pages/facility/FacilityEdit.vue";
 import PaymentList from '../pages/payment/PaymentList.vue';
 import DetailPayment from '../pages/payment/DetailPayment.vue';
 import Search from '../pages/Search.vue';
@@ -38,6 +39,7 @@ const routes = [
 
 	{ path: '/facilities/register', component: FacilityRegistration },
 	{ path: '/facilities/my-facility-list', component: MyFacilityList },
+	{ path: '/facilities/:fctId/edit', component: FacilityEdit, props: true },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },

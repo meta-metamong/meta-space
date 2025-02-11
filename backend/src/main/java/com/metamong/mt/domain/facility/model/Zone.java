@@ -56,6 +56,10 @@ public class Zone {
     private LocalDateTime updatedAt = LocalDateTime.now();
     
     @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private BooleanAlt isDel = BooleanAlt.N;
+    
+    @Builder.Default
     @OneToMany(mappedBy = "zone", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ZoneImage> images = new ArrayList<>();
     

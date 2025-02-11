@@ -11,8 +11,9 @@
             <h2>{{ facility.fctName }}</h2>
             <p>{{ facility.address }}</p>
             <div class="list-item-button-container">
-                <button class="edit-button">{{ $t("myFacility.edit") }}</button> <!-- To edit -->
-                <button class="delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
+                <router-link class="button edit-button"
+                             :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link>
+                <button class="button delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
             </div>
         </div>
     </div>
@@ -87,7 +88,7 @@ export default {
     justify-content: space-evenly;
 }
 
-.list-item-button-container button {
+.list-item-button-container .button {
     font-size: 18px;
     padding: 6px 24px;
     border-radius: 100px;
@@ -95,6 +96,8 @@ export default {
 
 .edit-button {
     background-color: #4a66e6;
+    color: #fff;
+    text-decoration: none;
 }
 
 .delete-button {

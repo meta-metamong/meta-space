@@ -29,6 +29,7 @@ public class FacilityUpdateRequestDto {
     private FacilityState fctState;
     private Double fctLatitude;
     private Double fctLongitude;
+    // TODO: image
     private CommonListUpdateRequestDto<ZoneUpdateRequestDto, Long> zones;
     private CommonListUpdateRequestDto<String, Long> addinfos;
 }

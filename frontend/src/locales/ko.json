@@ -202,5 +202,8 @@
         "registerNewFaciltiy": "새로운 시설 등록",
         "edit": "수정하기",
         "delete": "삭제하기"
+    },
+    "editFacility": {
+        "editComplete": "수정 완료"
     }
 }
