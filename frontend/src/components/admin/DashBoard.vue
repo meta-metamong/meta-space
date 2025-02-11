@@ -60,18 +60,33 @@ export default defineComponent({
     },
 
     drawCharts() {
+  // weekReservations이 비어 있으면 기본 데이터를 설정
+  if (this.weekReservations.length === 0) {
+    // 기본 데이터 설정 (모든 요일에 대해 0 예약)
+    this.weekReservations = [{
+      fctId: "기본시설",
+      sun: 0,
+      mon: 0,
+      tues: 0,
+      wednes: 0,
+      thurs: 0,
+      fri: 0,
+      satur: 0
+    }];
+  }
+
   // 주간 예약 현황 선 차트 그리기
   const weekSeriesData = this.weekReservations.map((reservation) => ({
     name: `시설 ${reservation.fctId}`, // 시설명
     type: 'area', // 선채우기
     data: [
-      reservation.sun,    // 일요일
-      reservation.mon,    // 월요일
-      reservation.tues,   // 화요일
-      reservation.wednes, // 수요일
-      reservation.thurs,  // 목요일
-      reservation.fri,    // 금요일
-      reservation.satur,  // 토요일
+      reservation.sun || 0,    // 일요일, 데이터가 없으면 0
+      reservation.mon || 0,    // 월요일, 데이터가 없으면 0
+      reservation.tues || 0,   // 화요일, 데이터가 없으면 0
+      reservation.wednes || 0, // 수요일, 데이터가 없으면 0
+      reservation.thurs || 0,  // 목요일, 데이터가 없으면 0
+      reservation.fri || 0,    // 금요일, 데이터가 없으면 0
+      reservation.satur || 0,  // 토요일, 데이터가 없으면 0
     ],
     lineWidth: 2, // 선 두께
   }));
@@ -102,6 +117,10 @@ export default defineComponent({
     credits: { enabled: false }, // 크레딧 비활성화
     exporting: { enabled: true } // 내보내기 활성화
   });
+
+
+
+
 
   // 시간대별 예약 현황 선 차트 (8시부터 23시까지)
   const hourlySeriesData = Array.from({ length: 16 }, (_, hour) => {
