@@ -26,6 +26,7 @@ public class FacilityResponseDto {
     private String fctDetailAddress;
     private double fctLatitude;
     private double fctLongitude;
+    private int unitUsageTime;
     private String fctTel;
     private String catId;
     private String catName;
@@ -33,7 +34,7 @@ public class FacilityResponseDto {
     private BooleanAlt isOpenOnHolidays;
     private LocalTime fctOpenTime;
     private LocalTime fctClosetime;
-    private int unitUsageTime;
+    private LocalTime fctCloseTime;
     private FacilityState fctState;
     private List<FacilityImageResponseDto> fctImages;
     private List<ZoneResponseDto> zones;

@@ -117,7 +117,7 @@
         "fctName": "시설명",
         "address": "주소",
         "usageCount": "인원 수",
-        "additionalInfo": "추가 서비스",
+        "additionalInfo": "추가 정보/서비스",
         "totalPrice": "총 금액",
         "selectReason": "취소 사유를 선택해주세요",
         "priceDescription": "공유 Zone을 선택할 경우, 예약 시 인당 요금으로 계산됩니다.",
@@ -192,12 +192,31 @@
         "yes": "예",
         "no": "아뇨",
         "addZone": "Zone 추가",
-        "delete": "Delete"
+        "delete": "Delete",
+        "won": "원",
+        "availableZones": "이용 가능 Zone",
+        "hour": "시간",
+        "minutes": "분"
     },
     "myFacility": {
         "myFacilityList": "보유 시설 목록",
         "registerNewFaciltiy": "새로운 시설 등록",
         "edit": "수정하기",
         "delete": "삭제하기"
+    },
+    "search": {
+        "enterFct": "시설의 이름을 검색하세요!",
+        "hotKeywords": "인기 검색어",
+        "searchedCount": "검색 결과",
+        "distance": "거리",
+        "count": "개"
+    },
+    "main": {
+        "best": "추천",
+        "hot": "핫 플레이스",
+        "close": "내 주변 시설"
+    },
+    "editFacility": {
+        "editComplete": "수정 완료"
     }
 }

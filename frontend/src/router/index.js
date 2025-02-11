@@ -18,13 +18,18 @@ import FindPassword from '../pages/member/FindPassword.vue';
 import Map from '../pages/Map.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 import MyFacilityList from "../pages/facility/MyFacilityList.vue";
+import FacilityEdit from "../pages/facility/FacilityEdit.vue";
 import PaymentList from '../pages/payment/PaymentList.vue';
 import DetailPayment from '../pages/payment/DetailPayment.vue';
+import FacilityDetail from "../components/facility/FacilityDetail.vue";
 import Search from '../pages/Search.vue';
+import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/search', component: Search },
+	{ path: '/search-fct-list/:keyword', component:SearchedFacilityList, props: true},
+
 	{ path: '/login', component: Login },
 	{ path: '/profile', component: Profile },
 	{ path: '/update', component: UpdateMember },
@@ -38,6 +43,8 @@ const routes = [
 
 	{ path: '/facilities/register', component: FacilityRegistration },
 	{ path: '/facilities/my-facility-list', component: MyFacilityList },
+	{ path: '/facilities/:fctId', component: FacilityDetail, props: true },
+	{ path: '/facilities/:fctId/edit', component: FacilityEdit, props: true },
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
