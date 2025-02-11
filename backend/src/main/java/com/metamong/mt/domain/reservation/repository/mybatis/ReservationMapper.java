@@ -17,9 +17,7 @@ import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
 public interface ReservationMapper {
     int countReservations(Long consId);
     
-    List<ReservationResponseDto> findReservationByConsId(@Param("consId") Long consId,
-                                                        @Param("startRow") int startRow,
-                                                        @Param("endRow") int endRow);
+    List<ReservationResponseDto> findReservationByConsId(@Param("consId") Long consId, @Param("startRow") int startRow, @Param("endRow") int endRow);
 
     ReservationResponseDto findReservationByRvtId(Long rvtId);
 

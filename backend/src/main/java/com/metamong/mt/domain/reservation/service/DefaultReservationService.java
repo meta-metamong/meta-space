@@ -39,7 +39,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
     private final PaymentService paymentService;
-    private static final int PAGE_SIZE = 2;
+    private static final int PAGE_SIZE = 5;
     
     @Override
     public ReservationListRequestDto<ReservationResponseDto> findReservationByConsId(Long consId, int page) {
@@ -62,7 +62,6 @@ public class DefaultReservationService implements ReservationService {
     public List<ReservationInfoResponseDto> getTotalCount() {
         return this.reservationMapper.getTotalCount();
     }
-    
 
     @Override
     public List<RemainingCountResponseDto> getRemainingUsageCount(SelectedInfoRequestDto dto) {
