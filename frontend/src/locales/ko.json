@@ -117,7 +117,7 @@
         "fctName": "시설명",
         "address": "주소",
         "usageCount": "인원 수",
-        "additionalInfo": "추가 서비스",
+        "additionalInfo": "추가 정보/서비스",
         "totalPrice": "총 금액",
         "selectReason": "취소 사유를 선택해주세요",
         "paymentStatus": "결제 상태",
@@ -195,7 +195,11 @@
         "yes": "예",
         "no": "아뇨",
         "addZone": "Zone 추가",
-        "delete": "Delete"
+        "delete": "Delete",
+        "won": "원",
+        "availableZones": "이용 가능 Zone",
+        "hour": "시간",
+        "minutes": "분"
     },
     "myFacility": {
         "myFacilityList": "보유 시설 목록",

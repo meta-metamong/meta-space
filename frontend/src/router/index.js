@@ -21,6 +21,7 @@ import MyFacilityList from "../pages/facility/MyFacilityList.vue";
 import FacilityEdit from "../pages/facility/FacilityEdit.vue";
 import PaymentList from '../pages/payment/PaymentList.vue';
 import DetailPayment from '../pages/payment/DetailPayment.vue';
+import FacilityDetail from "../components/facility/FacilityDetail.vue";
 import Search from '../pages/Search.vue';
 import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 
@@ -42,6 +43,7 @@ const routes = [
 
 	{ path: '/facilities/register', component: FacilityRegistration },
 	{ path: '/facilities/my-facility-list', component: MyFacilityList },
+	{ path: '/facilities/:fctId', component: FacilityDetail, props: true },
 	{ path: '/facilities/:fctId/edit', component: FacilityEdit, props: true },
 
 	{ path: '/admin', component: Admin },

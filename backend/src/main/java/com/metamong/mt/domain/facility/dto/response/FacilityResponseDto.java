@@ -26,13 +26,14 @@ public class FacilityResponseDto {
     private String fctDetailAddress;
     private double fctLatitude;
     private double fctLongitude;
+    private int unitUsageTime;
     private String fctTel;
     private String catId;
     private String catName;
     private String fctGuide;
     private BooleanAlt isOpenOnHolidays;
     private LocalTime fctOpenTime;
-    private LocalTime fctClosetime;
+    private LocalTime fctCloseTime;
     private int unitUsageTime;
     private FacilityState fctState;
     private List<FacilityImageResponseDto> fctImages;
