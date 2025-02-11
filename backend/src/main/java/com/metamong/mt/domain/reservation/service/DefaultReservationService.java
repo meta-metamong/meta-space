@@ -54,7 +54,9 @@ public class DefaultReservationService implements ReservationService {
 
     @Override
     public ReservationResponseDto findReservationByRvtId(Long rvtId) {
-        this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
+        if (!this.reservationRepository.existsById(rvtId)) {
+            throw new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다.");
+        }
         return this.reservationMapper.findReservationByRvtId(rvtId);
     }
 
