@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -43,9 +44,9 @@ public class ReservationController {
     private final WebClient webClient;
 
     @GetMapping("/members/{memId}/reservations")
-    public ResponseEntity<?> findReservationByConsId(@PathVariable Long memId) {
+    public ResponseEntity<?> findReservationByConsId(@PathVariable Long memId, @RequestParam(defaultValue = "1") int page) {
         return ResponseEntity.ok(
-                BaseResponse.of(reservationService.findReservationByConsId(memId), HttpStatus.OK, "예약 목록 조회 성공"));
+                BaseResponse.of(reservationService.findReservationByConsId(memId, page), HttpStatus.OK, "예약 목록 조회 성공"));
     }
 
     @GetMapping("/reservations/{reservationId}")

@@ -1,148 +1,111 @@
 <template>
-    <div class="container header-container">
-        <div class="arrow-container">
-            <i class="bi bi-arrow-right" id="right-arrow"
-               @click="$emit('component-change', 'zoneRegistrationInput')"></i>
+    <div class="container">
+        <h2 class="text-center mb-4" v-text="$t('facility.facilityRegistration')"></h2>
+
+        <div class="mb-4">
+            <input class="signup-input w-100" type="text" :placeholder="$t('facility.facilityName')"
+                :value="data.fctName" @change="(e) => onValueChange(e.target.value, 'fctName')">
         </div>
-        <h1 class="header">{{ $t("facility.facilityRegistration") }}</h1>
-    </div>
-    <div class="container long-input">
-        <div class="input-box">
-            <input type="text"
-                   :placeholder="$t('facility.facilityName')"
-                   :value="data.fctName"
-                   @change="(e) => onValueChange(e.target.value, 'fctName')">
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.category') }}</p>
+            <select class="form-select mb-2" @change="onChangeMajorCategory">
+                <option>{{ $t("facility.majorCategory") }}</option>
+                <option :value="category.catId" v-for="category in categories"
+                    :selected="data.majorCatId === category.catId">
+                    {{ category.catName }}
+                </option>
+            </select>
+            <select class="form-select mb-4" @change="(e) => onValueChange(e.target.value, 'minorCatId')">
+                <option>{{ $t("facility.minorCategory") }}</option>
+                <option v-for="minorCategory in data.selectedMinorCategories" :value="minorCategory.catId"
+                    :selected="data.minorCatId === minorCategory.catId">
+                    {{ minorCategory.catName }}
+                </option>
+            </select>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.category") }}</h2>
-            <div class="category-select-box">
-                <select class="form-select" @change="onChangeMajorCategory">
-                    <option>{{ $t("facility.majorCategory") }}</option>
-                    <option :value="category.catId" v-for="category in categories"
-                            :selected="data.majorCatId === category.catId">
-                        {{ category.catName }}
-                    </option>
-                </select>
-                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'minorCatId')">
-                    <option>{{ $t("facility.minorCategory") }}</option>
-                    <option v-for="minorCategory in data.selectedMinorCategories"
-                            :value="minorCategory.catId"
-                            :selected="data.minorCatId === minorCategory.catId">
-                        {{ minorCategory.catName }}
-                    </option>
-                </select>
-            </div>
+        <div class="mb-3">
+            <p class="text-black">{{ $t('facility.facilityAddress') }}</p>
+            <input type="text" class="signup-input w-75" :placeholder="$t('facility.postalCode')"
+                :value="data.addr.postalCode" readonly>
+            <button type="button" class="w-25 h-50 custom-btn" @click="searchPostCode">{{ $t('button.search')
+                }}</button>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityAddress") }}</h2>
-            <div class="facility-address-container">
-                <div class="postal-code">
-                    <input type="text"
-                           :placeholder="$t('facility.postalCode')"
-                           :value="data.addr.postalCode"
-                           readonly>
-                    <button>{{ $t("facility.search") }}</button>
-                </div>
-                <input type="text"
-                       :placeholder="$t('facility.address')"
-                       :value="data.addr.address"
-                       readonly>
-                <input type="text"
-                       :placeholder="$t('facility.detailAddress')"
-                       :value="data.addr.detailAddress"
-                       @change="(e) => onValueChange(e.target.value, 'addr.detailAddress')">
-            </div>
+        <div class="mb-3">
+            <input type="text" class="signup-input w-100" :placeholder="$t('facility.address')"
+                :value="data.addr.address" readonly>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityTel") }}</h2>
+        <div class="mb-4">
+            <input type="text" class="signup-input w-100" :placeholder="$t('facility.detailAddress')"
+                :value="data.addr.detailAddress" @change="(e) => onValueChange(e.target.value, 'addr.detailAddress')">
+        </div>
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.facilityTel') }}</p>
             <div class="horizontal-input">
-                <select class="form-select"
-                        @change="(e) => onValueChange(e.target.value, 'tel.first')">
-                    <option value="02"
-                            :selected="data.tel.first === '02'">02</option>
-                    <option value="010"
-                            :selected="data.tel.first === '010'">010</option>
-                    <option value="011"
-                            :selected="data.tel.first === '011'">011</option>
-                    <option value="016"
-                            :selected="data.tel.first === '016'">016</option>
-                    <option value="017"
-                            :selected="data.tel.first === '017'">017</option>
+                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'tel.first')">
+                    <option value="02" :selected="data.tel.first === '02'">02</option>
+                    <option value="010" :selected="data.tel.first === '010'">010</option>
+                    <option value="011" :selected="data.tel.first === '011'">011</option>
+                    <option value="016" :selected="data.tel.first === '016'">016</option>
+                    <option value="017" :selected="data.tel.first === '017'">017</option>
                 </select>
                 <p>-</p>
-                <input class="form-control"
-                       type="number"
-                       :value="data.tel.second"
-                       @change="(e) => onValueChange(e.target.value, 'tel.second')">
+                <input class="form-control" type="number" :value="data.tel.second"
+                    @change="(e) => onValueChange(e.target.value, 'tel.second')">
                 <p>-</p>
-                <input class="form-control"
-                       type="number"
-                       :value="data.tel.third"
-                       @change="(e) => onValueChange(e.target.value, 'tel.third')">
+                <input class="form-control" type="number" :value="data.tel.third"
+                    @change="(e) => onValueChange(e.target.value, 'tel.third')">
             </div>
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityOperationTime") }}</h2>
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.facilityOperationTime') }}</p>
             <div class="horizontal-input">
-                <select class="form-select"
-                        @change="(e) => onValueChange(e.target.value, 'operationTime.openTime')">
-                    <option v-for="operationTimeSelection in operationTimeSelections"
-                            :value="operationTimeSelection"
-                            :selected="data.operationTime.openTime === operationTimeSelection">
+                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'operationTime.openTime')">
+                    <option v-for="operationTimeSelection in operationTimeSelections" :value="operationTimeSelection"
+                        :selected="data.operationTime.openTime === operationTimeSelection">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
                 <p>~</p>
-                <select class="form-select"
-                        @change="(e) => onValueChange(e.target.value, 'operationTime.closeTime')">
-                    <option v-for="operationTimeSelection in operationTimeSelections"
-                            :value="operationTimeSelection"
-                            :selected="data.operationTime.closeTime === operationTimeSelection">
+                <select class="form-select" @change="(e) => onValueChange(e.target.value, 'operationTime.closeTime')">
+                    <option v-for="operationTimeSelection in operationTimeSelections" :value="operationTimeSelection"
+                        :selected="data.operationTime.closeTime === operationTimeSelection">
                         {{ operationTimeSelection }}
                     </option>
                 </select>
             </div>
         </div>
-        <div class="input-box">
-            <div class="label-with-input">
-                <label for="is-open-on-holidays">{{ $t("facility.isOpenOnHolidays") }}</label>
-                <input id="is-open-on-holidays"
-                       class="form-check"
-                       type="checkbox"
-                       name="isOpenOnHolidays"
-                       :checked="data.isOpenOnHolidays"
-                       @change="(e) => onValueChange(e.target.checked, 'isOpenOnHolidays')">
-            </div>
+        <div class="mb-4">
+            <input class="signup-input w-100" type="number" :placeholder="$t('facility.unitUsageTime')"
+                @change="(e) => onValueChange(e.target.value, 'unitUsageTime')" :value="data.unitUsageTime">
         </div>
-        <div class="input-box">
-            <input type="number" :placeholder="$t('facility.unitUsageTime')"
-                   @change="(e) => onValueChange(e.target.value, 'unitUsageTime')"
-                   :value="data.unitUsageTime">
+        <div class="form-section mb-4">
+            <input id="is-open-on-holidays" type="checkbox" name="isOpenOnHolidays" :checked="data.isOpenOnHolidays"
+                @change="(e) => onValueChange(e.target.checked, 'isOpenOnHolidays')">
+            {{ $t("facility.isOpenOnHolidays") }}
         </div>
-        <div class="input-box">
-            <h2 class="box-title">{{ $t("facility.facilityImage") }}</h2>
-            <div>
-                <button class="image-add-button" @click="onAddImageBtnClick">{{ $t("facility.addImage") }}</button>
-                <p style="color: #999999;">{{ $t("facility.imageLimitDescription") }}</p>
+        <div class="mb-4">
+            <label>{{ $t('facility.facilityImage') }}</label>
+            <div class="image-upload-area" @click="onAddImageBtnClick">
+                <p class="mb-0 mt-2">{{ $t("facility.addImage") }}</p>
+                <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>
             </div>
-            <input v-for="(_, index) in fileInput"
-                       type="file"
-                       :ref="`file-${index}`"
-                       @change="(e) => onImageUpload(e, index)"
-                       hidden>
-            <div class="image-list">
-                <div class="image-box" v-for="image in data.images">
-                    <img :src="image.fileDataInBase64">
+            <div class="uploaded-images">
+                <input v-for="(_, index) in fileInput" type="file" :ref="`file-${index}`"
+                    @change="(e) => onImageUpload(e, index)" hidden>
+                <div class="image-list">
+                    <div class="image-box" v-for="image in data.images">
+                        <img :src="image.fileDataInBase64">
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="input-box form-floating">
-            <textarea class="form-control"
-                      id="guide-input"
-                      :value="data.guide"
-                      @change="(e) => onValueChange(e.target.value, 'guide')"></textarea>
-            <label for="guide-input">{{ $t("facility.facilityGuide") }}</label>
+        <div class="mb-4">
+            <p class="text-black">{{ $t('facility.facilityGuide') }}</p>
+            <textarea class="form-control" id="guide-input" :value="data.guide"
+                @change="(e) => onValueChange(e.target.value, 'guide')" placeholder="이용 수칙을 입력해주세요."></textarea>
         </div>
+        <button type="button" class="w-100 signup-btn rounded-pill mb-3"
+            @click="$emit('component-change', 'zoneRegistrationInput')">{{ $t('signup.next') }}</button>
     </div>
 </template>
 
@@ -232,6 +195,14 @@ export default {
                 obj = obj[ladder[i]];
             }
             obj[ladder[ladder.length - 1]] = val;
+        },
+        searchPostCode() {
+            new daum.Postcode({
+                oncomplete: (data) => {
+                    this.postalCode = data.zonecode;
+                    this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
+                }
+            }).open();
         }
     }
 };
@@ -252,7 +223,8 @@ export default {
     gap: 24px;
 }
 
-.input-box input[type="text"], .input-box input[type="number"] {
+.input-box input[type="text"],
+.input-box input[type="number"] {
     border: none;
     border-bottom: 1px solid #999999;
     font-size: 1rem;
@@ -349,23 +321,24 @@ export default {
     font-size: 18px;
 }
 
-.header-container {
-    position: relative;
-    margin-bottom: 18px;
-}
-
-.arrow-container {
-    position: absolute;
-    left: 5%;
-    display: flex;
-    gap: 8px;
-}
-
-.arrow-container i {
-    font-size: 24px;
-    background-color: #19319d;
-    color: #fff;
-    padding: 0px 6px;
+/* 이미지 업로드 영역 */
+.image-upload-area {
+    padding: 10px;
+    border: 2px dashed #ddd;
     border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.uploaded-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.helper-text {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: 5px;
 }
 </style>

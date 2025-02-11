@@ -1,28 +1,30 @@
 <template>
-    <facility-registration-input
-        v-if="currentComponent === 'facilityRegistrationInput'"
-        @component-change="changeComponent"
-        :facility-registration="inputs.facilityRegistration"
-        is-edit="false" />
-    <zone-registration-input
-        v-if="currentComponent === 'zoneRegistrationInput'"
-        @component-change="changeComponent"
-        :zone-registration="inputs.zoneRegistration"
-        is-edit="false" />
-    <additional-information
-        v-if="currentComponent === 'addinfoRegistrationInput'"
-        @component-change="changeComponent"
-        :addinfo-registration="inputs.addinfoRegistration"
-        is-edit="false" />
+    <div class=container>
+        <facility-registration-input
+            v-if="currentComponent === 'facilityRegistrationInput'"
+            @component-change="changeComponent"
+            :facility-registration="inputs.facilityRegistration"
+            is-edit="false" />
+        <zone-registration-input
+            v-if="currentComponent === 'zoneRegistrationInput'"
+            @component-change="changeComponent"
+            :zone-registration="inputs.zoneRegistration"
+            is-edit="false" />
+        <additional-information
+            v-if="currentComponent === 'addinfoRegistrationInput'"
+            @component-change="changeComponent"
+            :addinfo-registration="inputs.addinfoRegistration"
+            is-edit="false" />
 
-    <div style="display: flex; justify-content: center;">
-        <button v-if="currentComponent === 'addinfoRegistrationInput'"
-                class="btn btn-outline-success"
-                type="button"
-                id="register-button"
-                @click="registerFacility">
-            {{ $t("facility.register") }}
-        </button>
+        <div style="display: flex; justify-content: center;">
+            <button v-if="currentComponent === 'addinfoRegistrationInput'"
+                    class="w-100 signup-btn rounded-pill mb-3 me-2 ms-2"
+                    type="button"
+                    id="register-button"
+                    @click="registerFacility">
+                {{ $t("facility.register") }}
+            </button>
+        </div>
     </div>
 </template>
 
@@ -188,14 +190,5 @@ export default {
 .long-input {
     display: flex;
     flex-direction: column;
-}
-
-#register-button {
-    margin-top: 12px;
-    font-size: 24px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 8px 48px;
-    border-radius: 5px;
 }
 </style>

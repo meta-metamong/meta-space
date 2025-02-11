@@ -15,6 +15,7 @@ import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
+import Map from '../pages/Map.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 import MyFacilityList from "../pages/facility/MyFacilityList.vue";
 import FacilityEdit from "../pages/facility/FacilityEdit.vue";
@@ -44,6 +45,7 @@ const routes = [
 	{ path: '/reservation', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
+	{ path: '/map', component: Map },
 
 	{ path: '/payment/list', component: PaymentList },
 	{ path: '/payment/:rvtId', component: DetailPayment, props: true }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from '../store/index';
 
 // Axios 기본 설정
 const apiClient = axios.create({
@@ -21,7 +22,7 @@ apiClient.interceptors.request.use(
     (config) => {
         const accessToken = sessionStorage.getItem("accessToken");
 
-        if(accessToken){
+        if(accessToken && (store.state.userId !== null || store.state.userId !== undefined)){
             config.headers["Authorization"] = 'bearer ' + accessToken;
         }
 

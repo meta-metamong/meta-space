@@ -85,7 +85,7 @@ export default {
 			const now = new Date();
 			const cancelableUntilString = `${this.rvtInfo.rvtDate}T${this.rvtInfo.cancelableTime}`;
 			const cancelableUntil = new Date(cancelableUntilString);
-			return now < cancelableUntil;
+			return now < cancelableUntil && this.rvtInfo.rvtState != '예약 취소';
 		}
 	},
 	methods: {

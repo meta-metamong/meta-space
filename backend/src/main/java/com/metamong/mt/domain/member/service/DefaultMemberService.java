@@ -2,12 +2,15 @@ package com.metamong.mt.domain.member.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
+import com.metamong.mt.domain.facility.dto.response.ImageUploadUrlResponseDto;
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
@@ -26,6 +29,7 @@ import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.MemberImage;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.AccountRepository;
 import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
@@ -33,6 +37,9 @@ import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.BankMapper;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.constant.BooleanAlt;
+import com.metamong.mt.global.file.FileUploader;
+import com.metamong.mt.global.file.FilenameResolver;
+import com.metamong.mt.global.image.repository.ImageRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
@@ -52,6 +59,8 @@ public class DefaultMemberService implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MailAgent mailAgent;
     private final EmailValidationService emailValidationService;
+    private final FilenameResolver filenameResolver;
+    private final FileUploader fileUploader;
     //private final SimpMessagingTemplate messagingTemplate; 
     private Date lastExecutionTime;
     private int roleUserCount; 
@@ -153,8 +162,12 @@ public class DefaultMemberService implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public Member getMemberByRepository(Long memId) {
-        return memberRepository.findById(memId)
+        Member member = memberRepository.findById(memId)
                 .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+        if(member.getIsDel().equals(BooleanAlt.Y)) {
+            throw new MemberNotFoundException("탈퇴처리된 계정입니다.");
+        }
+        return member;
     }
     
     
@@ -175,7 +188,7 @@ public class DefaultMemberService implements MemberService {
 	@Override
 	@Transactional(readOnly = true)
 	public MemberResponseDto searchMember(Long memId) {
-	    Member member = getMemberByMapper(memId);
+	    Member member = getMemberByRepository(memId);
 	    FctProvider provider = null;
 	    Account account = null;
 	    BankResponseDto bank = null;
@@ -196,6 +209,7 @@ public class DefaultMemberService implements MemberService {
                                 .memDetailAddress(member.getMemDetailAddress())
                                 .memAddress(member.getMemAddress())
                                 .role(member.getRole())
+                                .imgPath(member.getMemImage() == null ? null : member.getMemImage().getImgPath())
                                 .bizName(provider == null ? null : provider.getBizName())
                                 .bizRegNum(provider == null ? null : provider.getBizRegNum())
                                 .bankCode(provider == null ? null : bank.getBankCode())
@@ -208,9 +222,11 @@ public class DefaultMemberService implements MemberService {
 	
 	@Override
 	@Transactional
-	public void updateMember(Long memId, UpdateRequestDto dto) {
-		Member member = getMemberByMapper(memId);
+	public ImageUploadUrlResponseDto updateMember(Long memId, UpdateRequestDto dto) {
+		Member member = getMemberByRepository(memId);
 	    member.updateInfo(dto.toMember());
+	    
+	    // 시설 제공자 정보 수정
 	    if(member.getRole().equals(Role.ROLE_PROV)) {
 	        FctProvider provider = this.getProvider(memId);
 	        provider.updateInfo(dto.toProvider());
@@ -220,7 +236,20 @@ public class DefaultMemberService implements MemberService {
 	            account.updateInfo(dto.toAccount());
 	        }
 	    }
-	    memberRepository.save(member);
+	    // 이미지 업로드
+	    ImageRequestDto memImage = dto.getMemImage();
+	    String uploadUrl = null;
+	    if(memImage != null) {
+	        // uuid.확장자
+	        String uuidFileName = this.filenameResolver.generateUuidFilename(memImage.getFileType());
+	        // http://localhost:8080/api/files/uuid.확장자
+	        uploadUrl = this.fileUploader.generateUploadUrl(uuidFileName);
+	        // http://localhost:8080/resources/files/uuid.확장자
+	        String filePath = this.filenameResolver.resolveFileUrl(uuidFileName);
+	        member.setMemImage(new MemberImage(filePath, 1, member));
+	    }
+	    
+        return new ImageUploadUrlResponseDto(memImage.getOrder(), uploadUrl.toString());
 	}
 	
 	@Override
@@ -271,5 +300,4 @@ public class DefaultMemberService implements MemberService {
     public List<BankResponseDto> getAllBanks() {
         return this.bankMapper.findAllBanks();
     }
-
 }

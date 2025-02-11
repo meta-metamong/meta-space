@@ -112,7 +112,6 @@ export default {
             this.maxCount = selectedZone ? selectedZone.maxUserCount : 1;
             this.hourlyRate = selectedZone ? selectedZone.hourlyRate : 0;
             this.isSharedZone = selectedZone ? selectedZone.isSharedZone : "";
-            this.getTimeInfo();
             this.resetSelection();
         }
     },
@@ -189,6 +188,7 @@ export default {
             this.firstTime = null;
             this.secondTime = null;
             this.reservationTime = "";
+            this.getTimeInfo();
         },
         increaseCount() {
             if (this.usageCount < this.maxCount) this.usageCount++;
@@ -217,7 +217,6 @@ export default {
                 alert('예약 성공')
             } else if (response.status === 409) {
                 alert('예약이 불가능한 시간입니다. 다른 시간을 선택해주세요.');
-                this.getTimeInfo();
                 this.resetSelection();
             }
         }
@@ -274,7 +273,6 @@ button:disabled {
     background: #ddd;
     cursor: not-allowed;
     color: #aaa;
-    /* Disabled button styling */
 }
 
 .profile-content {
