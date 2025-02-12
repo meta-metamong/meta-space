@@ -289,11 +289,11 @@ public class DefaultMemberService implements MemberService {
 	    this.mailAgent.send(MailType.PASSWORD_RESET_LINK, "패스워드 재설정 링크", email, "링크"); // TODO: 패스워드 재설정 보내줘야 함.
 	}
 
-	@Scheduled(cron = "0 0/5 * * * ?")
-    public void getRoleUserCount() {
-        roleUserCount = memberMapper.countRoleUserMembers();
-        lastExecutionTime = new Date(); 
-    }
+//	@Scheduled(cron = "0 0/5 * * * ?")
+//    public void getRoleUserCount() {
+//        roleUserCount = memberMapper.countRoleUserMembers();
+//        lastExecutionTime = new Date(); 
+//    }
 
     public String view() {
     	return "개수"+roleUserCount;

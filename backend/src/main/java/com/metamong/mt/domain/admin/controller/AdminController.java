@@ -15,16 +15,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.metamong.mt.domain.admin.dto.request.MemberSearchRequestDto;
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.service.AdminService;
+import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +39,8 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 	
 	private final AdminService adminService;
+	
+	private final PaymentService paymentService;
 
 //	private Set<WebSocketSession> sessions = new HashSet<>();
 //	
@@ -62,7 +68,6 @@ public class AdminController {
 	public ResponseEntity<BaseResponse<List<MemberSearchResponseDto>>> searchMembers() {
 	    return ResponseEntity.ok(BaseResponse.of(adminService.searchMembers(), HttpStatus.OK));
 	}
-
 
     @GetMapping("/reportedMembers")
     public ResponseEntity<BaseResponse<List<ReportedMemberResponseDto>>> getReportedMembers() {
@@ -97,7 +102,30 @@ public class AdminController {
         return ResponseEntity.ok("선택한 회원들이 정지되었습니다!");
     }
 
-
+    @GetMapping("/getRefundMembers")
+    public ResponseEntity<BaseResponse<List<RefundMemberResponseDto>>> getRefundMembers() {
+        return ResponseEntity.ok(BaseResponse.of(adminService.getRefundMembers(), HttpStatus.OK));
+    }
+    
+    @PostMapping("/refund/{refundId}/approval")
+    public ResponseEntity<String> approveRefundRequest(@PathVariable Long refundId) {
+        try {
+        	paymentService.refund(refundId);
+            return ResponseEntity.ok("환불 요청이 승인되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
+        }
+    }
+    
+    @PostMapping("/refund/{refundId}/rejection")
+    public ResponseEntity<String> rejectionRefundRequest(@PathVariable Long refundId) {
+        try {
+        	paymentService.noRefund(refundId);
+            return ResponseEntity.ok("환불 요청이 반려되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
+        }
+    }
 
 	@GetMapping("/getRequestFacilities")
 	public ResponseEntity<BaseResponse<List<ApprovalRequestDto>>> getRequestFacilities() {
@@ -195,6 +223,9 @@ public class AdminController {
         List<WeekReservationDto> weekHourReservations = adminService.getReservationsByHourThisWeek();
         stats.put("weekHourReservations", weekHourReservations);
 
+        List<RankPaymentDto> rankedPayment = adminService.getRankPayment();
+        stats.put("rankedPayment", rankedPayment);
+        
         return ResponseEntity.ok(stats);
     }
 

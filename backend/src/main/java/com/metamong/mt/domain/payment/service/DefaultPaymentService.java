@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.member.model.Account;
 import com.metamong.mt.domain.member.repository.jpa.AccountRepository;
+import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
+import com.metamong.mt.domain.notification.service.NotificationService;
 import com.metamong.mt.domain.payment.dto.response.PaymentResponseDto;
 import com.metamong.mt.domain.payment.exception.AccountNotFoundException;
 import com.metamong.mt.domain.payment.exception.NotEnoughMoneyException;
@@ -26,6 +29,8 @@ public class DefaultPaymentService implements PaymentService{
     private final PaymentMapper paymentMapper;
     private final PaymentRepository paymentRepository;
     private final AccountRepository accountRepository;
+    private final NotificationService notificationService;
+    private final MemberMapper memberMapper;
     
     @Override
     @Transactional
@@ -53,6 +58,8 @@ public class DefaultPaymentService implements PaymentService{
     @Override
     public void reservationCancelRequest(Long rvtId, CancelRequestDto dto) {
         this.getPaymentByRepository(rvtId).reservationCancelRequest(dto);
+        this.memberMapper.findAllAdminIds()
+                .forEach((adminId) -> this.notificationService.sendMessage(adminId, NotificationMessage.NEW_REFUND_REQUEST));
     }
 
     @Override
@@ -68,6 +75,13 @@ public class DefaultPaymentService implements PaymentService{
         account.updateBalance(payment.getPayPrice() * -1);
         accountRepository.save(account);
         return payment.getPayPrice();
+    }
+    
+    @Override
+    public void noRefund(Long rvtId) {
+    	Payment payment = this.getPaymentByRepository(rvtId);
+    	payment.setPayState(PaymentState.N);
+    	paymentRepository.save(payment);
     }
     
     @Transactional(readOnly=true)

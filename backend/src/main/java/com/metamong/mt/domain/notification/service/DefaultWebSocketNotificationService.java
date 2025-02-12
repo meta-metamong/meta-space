@@ -14,6 +14,7 @@ import com.metamong.mt.domain.notification.dto.response.NotificationResponseDto;
 import com.metamong.mt.domain.notification.dto.socket.TextMessageAndUnreadCountMessageDto;
 import com.metamong.mt.domain.notification.exception.FailedNotificationTransmissionException;
 import com.metamong.mt.domain.notification.model.Notification;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.repository.WebSocketSessionRepository;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.domain.notification.repository.mybatis.NotificationMapper;
@@ -31,14 +32,14 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     private final ObjectMapper objectMapper;
     
     @Override
-    public void sendMessage(Long receiverId, String message) {
-        saveNotification(receiverId, message);
+    public void sendMessage(Long receiverId, NotificationMessage notiMsg) {
+        saveNotification(receiverId, notiMsg);
         this.webSocketSessionRepository.findByMemId(receiverId)
                 .ifPresent((session) -> {
                     try {
                         int unreadCount = this.countUnreadNotificationsByReceiverId(receiverId);
                         String messageInJson =
-                                this.objectMapper.writeValueAsString(new TextMessageAndUnreadCountMessageDto(message, unreadCount));
+                                this.objectMapper.writeValueAsString(new TextMessageAndUnreadCountMessageDto(notiMsg.getMessage(), unreadCount));
                         session.sendMessage(new TextMessage(messageInJson));
                     } catch (IOException e) {
                         throw new FailedNotificationTransmissionException(e);
@@ -46,10 +47,10 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
                 });
     }
     
-    private Notification saveNotification(Long receiverId, String message) {
+    private Notification saveNotification(Long receiverId, NotificationMessage notiMsg) {
         Notification newNotification = new Notification(
                 receiverId,
-                message,
+                notiMsg,
                 LocalDateTime.now(),
                 'N'
         );
@@ -73,6 +74,7 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     
     @Override
     public List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead) {
+        this.notificationRepository.readAllNotificationsByReceiverId(receiverId);
         return this.notificationMapper.findNotificationsByReceiverId(new NotificationListMapperDto(receiverId, includeRead))
                 .stream()
                 .map(NotificationResponseDto::of)

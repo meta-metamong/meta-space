@@ -41,4 +41,6 @@ public interface PaymentService {
      * @return 환불된 금액
      */
     Long refund(Long rvtId);
+    
+    void noRefund(Long rvtId);
 }

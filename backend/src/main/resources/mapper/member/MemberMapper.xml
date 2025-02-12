@@ -13,12 +13,7 @@
     ]]>
     </select>
     
-    <!-- 시설 이용자 계정 수 조회 -->
-    <select id="countRoleUserMembers" resultType="int">
-    <![CDATA[
-        SELECT COUNT(*) FROM member WHERE role = 'ROLE_CONS'
-    ]]>
-    </select>
+
     
     <!-- 회원 resultMap -->
     <resultMap type="com.metamong.mt.domain.member.model.Member" id="memberMap">
@@ -53,5 +48,20 @@
         UPDATE member SET is_del='Y' WHERE mem_id=#{memId}
     ]]>
     </update>
+    
+    <select id="findMemIdByFctId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT
+            m.mem_id
+        FROM member m
+        INNER JOIN fct_provider fp ON fp.prov_id = m.mem_id
+        INNER JOIN facility f ON f.prov_id = fp.prov_id
+        WHERE f.fct_id = #{fctId}
+    </select>
 
+    <select id="findAllAdminIds" resultType="java.lang.Long">
+        SELECT
+            mem_id
+        FROM member
+        WHERE role = 'ROLE_ADMN'
+    </select>
 </mapper>
