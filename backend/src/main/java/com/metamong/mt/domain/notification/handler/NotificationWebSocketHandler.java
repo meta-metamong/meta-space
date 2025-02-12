@@ -1,16 +1,11 @@
 package com.metamong.mt.domain.notification.handler;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.metamong.mt.domain.notification.WebSocketNotificationService;
+import com.metamong.mt.domain.notification.service.WebSocketNotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

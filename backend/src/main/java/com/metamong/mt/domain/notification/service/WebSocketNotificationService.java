@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.notification;
+package com.metamong.mt.domain.notification.service;
 
 import org.springframework.web.socket.WebSocketSession;
 

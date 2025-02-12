@@ -3,6 +3,7 @@ package com.metamong.mt.domain.notification.repository;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.web.socket.WebSocketSession;
@@ -20,10 +21,19 @@ public class InMemoryWebSocketSessionRepository implements WebSocketSessionRepos
         SESSION_STORAGE_BY_MEM_ID.put(memId, session);
         MEM_ID_BY_SESSION_ID.put(session.getId(), memId);
     }
+    
     @Override
     public Optional<WebSocketSession> findByMemId(Long memId) {
         return Optional.ofNullable(SESSION_STORAGE_BY_MEM_ID.get(memId));
     }
+    
+    @Override
+    public Map<Long, WebSocketSession> findAll() {
+        return SESSION_STORAGE_BY_MEM_ID.keySet()
+                .stream()
+                .collect(Collectors.toMap((memId) -> memId, SESSION_STORAGE_BY_MEM_ID::get));
+    }
+
     @Override
     public void deleteBySessionId(String sessionId) {
         Long memId = MEM_ID_BY_SESSION_ID.get(sessionId);

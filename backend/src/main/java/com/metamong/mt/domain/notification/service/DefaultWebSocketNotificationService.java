@@ -1,4 +1,4 @@
-package com.metamong.mt.domain.notification;
+package com.metamong.mt.domain.notification.service;
 
 import java.io.IOException;
 
@@ -29,6 +29,18 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
         } catch (IOException e) {
             throw new FailedNotificationTransmissionException(e);
         }
+    }
+    
+    @Override
+    public void sendMessageToAll(String message) {
+        this.webSocketSessionRepository.findAll().values()
+                .forEach((session) -> {
+                    try {
+                        session.sendMessage(new TextMessage(message));
+                    } catch (IOException e) {
+                        throw new FailedNotificationTransmissionException(e);
+                    }
+                });
     }
 
     @Override

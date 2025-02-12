@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.notification.repository;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.web.socket.WebSocketSession;
@@ -24,6 +25,13 @@ public interface WebSocketSessionRepository {
      * @return memId와 바인딩된 웹 소켓 세션
      */
     Optional<WebSocketSession> findByMemId(Long memId);
+    
+    /**
+     * 모든 웹 소켓 세션을 가져온다.
+     * 
+     * @return key를 memId, value를 웹 소켓 세션으로 하는 Map 객체
+     */
+    Map<Long, WebSocketSession> findAll();
     
     /**
      * 웹 소켓 세션 ID로 세션 삭제. 회원 ID 정보도 삭제된다.

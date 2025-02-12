@@ -8,9 +8,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.metamong.mt.domain.notification.WebSocketNotificationService;
 import com.metamong.mt.domain.notification.handler.ClientResolverHandshakeInterceptor;
 import com.metamong.mt.domain.notification.handler.NotificationWebSocketHandler;
+import com.metamong.mt.domain.notification.service.WebSocketNotificationService;
 
 @Configuration
 @EnableWebSocket
