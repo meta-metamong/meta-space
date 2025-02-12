@@ -138,7 +138,7 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
  <!-- 등록 요청 승인 쿼리 -->
     <update id="updateFacilityStateRegApproved" parameterType="map">
         UPDATE facility
-        SET fct_state = 'REGISTERED'
+        SET fct_state = 'REG_APPROVED'
         WHERE fct_state = 'REG_REQUESTED'
         AND fct_id = #{fctId}
     </update>
@@ -146,7 +146,7 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
      <!-- 등록 요청 반려 쿼리 -->
     <update id="updateFacilityStateRegRejected" parameterType="map">
         UPDATE facility
-        SET fct_state = 'DELETED'
+        SET fct_state = 'REG_REJECTED'
         WHERE fct_state = 'REG_REQUESTED'
         AND fct_id = #{fctId}
     </update>

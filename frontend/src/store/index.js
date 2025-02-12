@@ -114,7 +114,7 @@ const store = createStore({
         width: '300px'
       });
 
-      if (state.userId === "admin") {
+      if (state.userRole === "ROLE_ADMN") {
         router.push("/admin");
       } else {
         router.push("/");
