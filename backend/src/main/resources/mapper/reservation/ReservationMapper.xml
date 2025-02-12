@@ -117,4 +117,12 @@
         ]]>
     </select>
 
+    <select id="findConsIdWithLeftReservationTime" parameterType="com.metamong.mt.domain.reservation.dto.mapper.FindConsIdWithReservationTimeMapperDto" resultType="java.lang.Long">
+        SELECT
+            cons_id
+        FROM reservation
+        <![CDATA[
+        WHERE TO_DATE(TO_CHAR(rvt_date, 'yyyy-MM-DD') || ' ' || TO_CHAR(usage_start_time, 'HH24:MI:SS'), 'yyyy-MM-dd HH24:MI:SS') <= #{criteriaTime} + INTERVAL '1' HOUR * #{leftReservationTimeInHour} 
+        ]]>
+    </select>
 </mapper>

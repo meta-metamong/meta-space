@@ -9,6 +9,7 @@ import lombok.Getter;
 public enum NotificationMessage {
     // Reservation
     RESERVATION_CHECK_ONE_HOUR_REMAIN("예약이 1시간 남았습니다"),
+    RESERVATION_CHECK_ONE_DAY_REMAIN("예약이 1일 남았습니다"),
     RESERVATION_CANCELATION("예약이 취소됐습니다"),
     NEW_RESERVATION("새로운 예약이 있습니다"),
     
