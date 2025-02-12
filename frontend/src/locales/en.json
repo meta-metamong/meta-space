@@ -219,7 +219,8 @@
         "won": "won",
         "availableZones": "Available Zones",
         "hour": "h",
-        "minutes": "m"
+        "minutes": "m",
+        "detail": "Facility Detail"
     },
     "myFacility": {
         "myFacilityList": "My Facility List",

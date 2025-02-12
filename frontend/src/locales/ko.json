@@ -216,7 +216,8 @@
         "won": "원",
         "availableZones": "이용 가능 Zone",
         "hour": "시간",
-        "minutes": "분"
+        "minutes": "분",
+        "detail": "시설 상세정보"
     },
     "myFacility": {
         "myFacilityList": "보유 시설 목록",
