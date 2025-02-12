@@ -10,15 +10,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.metamong.mt.global.auth.filter.NoAuthPrincipalFinderFilter;
 import com.metamong.mt.global.auth.jwt.JwtAuthenticationFilter;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
 import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
@@ -34,15 +37,21 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     
     private final AuthenticationManager jwtAuthenticationManager;
+    private final UserDetailsService userDetailsService;
+    
+    @Value("${client.origin}")
+    private String clientOrigin;
 	
 	@Bean
 	@Profile("no-auth & !prod")
 	SecurityFilterChain noAuthFilterChain(HttpSecurity http) throws Exception {
 	    http = commonConfiguration(http);
-	    http.cors((corsConfig) -> corsConfig.configurationSource(cors("http://localhost:3000")));
+	    http.cors((corsConfig) -> corsConfig.configurationSource(cors(this.clientOrigin)));
 	    http.authorizeHttpRequests((request) -> {
             request.requestMatchers("/api/**").permitAll();
+            request.requestMatchers("ws").permitAll();
         });
+	    http.addFilterBefore(new NoAuthPrincipalFinderFilter(this.userDetailsService, this.jwtTokenProvider), AuthorizationFilter.class);
 	    return http.build();
 	}
 	
@@ -59,7 +68,7 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class);
         
-        http.cors(corsConfig -> corsConfig.configurationSource(cors("http://localhost:3000")));
+        http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
 	    
 	    return http.build();
 	}
@@ -69,7 +78,7 @@ public class SecurityConfig {
 	SecurityFilterChain localDevSecurityFilterChain(HttpSecurity http) throws Exception {
 		http = commonConfiguration(http);
 		
-		http.cors(corsConfig -> corsConfig.configurationSource(cors("http://localhost:3000")));
+		http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
 		
 		// 토큰을 사용하는 경우 인가를 적용한 URI 설정
 
@@ -96,7 +105,7 @@ public class SecurityConfig {
         return http;
 	}
 	
-	private CorsConfigurationSource cors(@Value("${client.origin}") String clientOrigin) {
+	private CorsConfigurationSource cors(String clientOrigin) {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(clientOrigin));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));

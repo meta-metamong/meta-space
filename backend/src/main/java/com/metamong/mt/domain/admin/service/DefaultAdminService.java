@@ -53,6 +53,10 @@ public class DefaultAdminService implements AdminService{
     @Override
     @Transactional(readOnly = true)
     public List<MemberSearchResponseDto> searchMembers() {
+
+        // 추가적으로 웹소켓을 통한 알림 전달 구현 (필요시)
+        //notificationService.sendNotificationToWebSocket(receiverId, notificationMessage);
+
         return adminMapper.searchMembers();
     }
 

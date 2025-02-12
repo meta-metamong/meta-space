@@ -35,6 +35,7 @@ import FacilityRegistrationInput from "../../components/facility/FacilityRegistr
 import ZoneRegistrationInput from "../../components/facility/ZoneRegistrationInput.vue";
 import apiClient, { post } from "../../apis/axios";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
     data() {
@@ -172,6 +173,13 @@ export default {
                             }
                         )
                     }
+                }
+                if (response.status === 201) {
+                    Swal.fire({
+                        text: '시설 등록이 요청되었습니다.',
+                        width: '300px',
+                        icon: 'success'
+                    })
                 }
             });
         }
