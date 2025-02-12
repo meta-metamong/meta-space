@@ -125,4 +125,13 @@
         WHERE TO_DATE(TO_CHAR(rvt_date, 'yyyy-MM-DD') || ' ' || TO_CHAR(usage_start_time, 'HH24:MI:SS'), 'yyyy-MM-dd HH24:MI:SS') <= #{criteriaTime} + INTERVAL '1' HOUR * #{leftReservationTimeInHour} 
         ]]>
     </select>
+    
+    <select id="findProvIdByRvtId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT
+            f.prov_id
+        FROM reservation r
+        INNER JOIN zone z ON z.zone_id = r.zone_id
+        INNER JOIN facility f ON f.fct_id = z.fct_id
+        WHERE r.rvt_id = #{rvtId}
+    </select>
 </mapper>

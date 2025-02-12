@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,5 +162,102 @@ public class ReservationMapperTest {
         log.info("filteredReservations={}", Arrays.toString(filteredReservations));
         
         assertThat(result).containsExactly(filteredReservations);
+    }
+    
+    @Test
+    @DisplayName("예약 ID로 시설 제공자의 ID 가져오기 - success")
+    void fetchProvIdByRvtId_success() {
+        Member prov = Member.builder()
+                .email("prov@gmail.com")
+                .memName("prov")
+                .password("1q2w3e4r")
+                .memPhone("010-1234-1234")
+                .gender(Gender.M)
+                .birthDate(LocalDate.of(1997, 9, 16))
+                .memPostalCode("12345")
+                .memAddress("addr")
+                .memDetailAddress("daddr")
+                .role(Role.ROLE_PROV)
+                .build();
+        
+        this.entityManager.persist(prov);
+        
+        FctProvider fctProvider = FctProvider.builder()
+                .provId(prov.getMemId())
+                .bizName("BIZ")
+                .bizRegNum("1234-123456")
+                .build();
+        
+        this.entityManager.persist(fctProvider);
+        
+        Category cat = new Category("600", "CAT");
+        this.entityManager.persist(cat);
+        cat = this.entityManager.find(Category.class, cat.getCatId());
+        
+        Facility facility = Facility.builder()
+                .cat(cat)
+                .provId(prov.getMemId())
+                .fctName("FCT")
+                .fctPostalCode("12345")
+                .fctAddress("ADDR")
+                .fctDetailAddress("DADDR")
+                .fctTel("02-1234-1234")
+                .fctGuide("GUIDE")
+                .openOnHolidays(BooleanAlt.Y)
+                .fctOpenTime(LocalTime.of(12, 0))
+                .fctCloseTime(LocalTime.of(18, 0))
+                .unitUsageTime(60)
+                .fctLatitude(37.152441)
+                .fctLongitude(128.134135)
+                .build();
+        
+        this.entityManager.persist(facility);
+        
+        Zone zone = Zone.builder()
+                .fctId(facility.getFctId())
+                .zoneName("ZONE")
+                .maxUserCount(1000)
+                .isSharedZone(BooleanAlt.Y)
+                .hourlyRate(5000)
+                .build();
+        
+        this.entityManager.persist(zone);
+        
+        LocalDateTime criteria = LocalDateTime.now();
+        Member cons = Member.builder()
+                .email("cons@gmail.com")
+                .memName("cons")
+                .password("1q2w3e4r")
+                .memPhone("010-1234-1223")
+                .gender(Gender.M)
+                .birthDate(LocalDate.of(1997, 9, 16))
+                .memPostalCode("12345")
+                .memAddress("addr")
+                .memDetailAddress("daddr")
+                .role(Role.ROLE_CONS)
+                .build();
+        
+        this.entityManager.persist(cons);
+        
+        LocalDateTime time = criteria.plusHours(24);
+        Reservation reservation = Reservation.builder()
+                .consId(cons.getMemId())
+                .zoneId(zone.getZoneId())
+                .rvtDate(time.toLocalDate())
+                .usageStartTime(LocalTime.of(time.getHour(), time.getMinute()))
+                .usageEndTime(LocalTime.of(time.getHour(), time.getMinute()).plusHours(1))
+                .usageCount(50)
+                .build();
+        
+        this.entityManager.persist(reservation);
+        
+        this.entityManager.flush();
+        
+        // When
+        Long provId = this.reservationMapper.findProvIdByRvtId(reservation.getRvtId())
+                .orElseThrow(RuntimeException::new);
+        
+        // Then
+        assertThat(provId).isEqualTo(facility.getProvId());
     }
 }

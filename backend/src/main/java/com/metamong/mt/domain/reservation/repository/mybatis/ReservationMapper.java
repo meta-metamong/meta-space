@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.reservation.repository.mybatis;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
@@ -31,4 +32,6 @@ public interface ReservationMapper {
     List<HourlyUsageDto> getReservedTimes(SelectedInfoRequestDto dto);
     
     List<Long> findConsIdWithLeftReservationTime(@Param("dto") FindConsIdWithReservationTimeMapperDto dto);
+    
+    Optional<Long> findProvIdByRvtId(@Param("rvtId") Long rvtId);
 }
