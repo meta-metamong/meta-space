@@ -244,5 +244,11 @@
     },
     "editFacility": {
         "editComplete": "Edit"
+    },
+    "notification": {
+        "list": "Notifications",
+        "all": "all",
+        "read": "read",
+        "unread": "unread"
     }
 }

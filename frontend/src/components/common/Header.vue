@@ -9,8 +9,8 @@
 
             <!-- 우측 알림 아이콘 & 로그아웃 버튼 -->
             <div class="d-flex align-items-center" v-if="isLogin">
-                <button class="btn me-2">
-                    <i class="bi bi-bell"></i> <!-- 부트스트랩 아이콘 -->
+                <button @click="$router.push('/notification/list')" class="noti-btn me-2">
+                    <i class="bi bi-bell-fill text-primary"></i> <!-- 부트스트랩 아이콘 -->
                 </button>
                 <button class="btn" @click="logout" v-text="$t('member.logout')" />
             </div>
@@ -125,5 +125,12 @@ button {
     color: #19319D;
     cursor: pointer;
     outline: none;
+}
+
+.noti-btn{
+    border-radius: 30px;
+    border: none;
+    font-size: 25px;
+    background: none;
 }
 </style>
