@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
-import { login, logout, removeAccessToken } from "../apis/axios";
+import { login, logout } from "../apis/axios";
 import router from "../router/index";
+import Swal from "sweetalert2";
 
 const saveUserIdInLocal = function (userId) {
   sessionStorage.setItem("userId", userId);
@@ -29,6 +30,13 @@ const store = createStore({
       state.userRole = payload.role;
       state.userName = payload.name;
       saveUserIdInLocal(payload.memId);
+      
+      Swal.fire({
+        title: `환영합니다\n ${state.userName}님`,
+        icon: 'success',
+        width: '300px'
+      });
+
       if (state.userId === "admin") {
         router.push("/admin");
       } else {
@@ -60,6 +68,8 @@ const store = createStore({
     },
     addMessage(state, message) {
       state.messages.push(message); // 메시지 추가
+    },
+    deleteUser(state){
     }
   },
   actions: {
@@ -75,6 +85,11 @@ const store = createStore({
     async logoutRequest(context) {
       const response = await logout();
       if (response.status === 200) {
+        Swal.fire({
+          title: `로그아웃\n되었습니다.`,
+          icon: 'success',
+          width: '300px'
+        });
         context.commit("removeUserId");
         context.commit("closeOnlineSocket");
       }

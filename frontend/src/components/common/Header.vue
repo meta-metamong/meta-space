@@ -25,14 +25,28 @@
   </template>
 
 <script>
-
+import Swal from 'sweetalert2';
 import { getUserIdInLocal } from '../../store';
 
 export default{
     name: 'Header',
     methods: {
         logout(){
-            this.$store.dispatch('logoutRequest');
+            Swal.fire({
+              title: '로그아웃\n하시겠습니까?',
+              text: '작업 중인 내용을 잃을 수 있습니다.',
+              width: '300px',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "YES",
+              cancelButtonText: "NO"
+            }).then(result => {
+              if(result.isConfirmed){
+                this.$store.dispatch('logoutRequest');
+              }
+            })
         },
         handleLanguageChange(event){
           this.$i18n.locale = event.target.value;

@@ -16,6 +16,7 @@
 
 <script>
 import { post, del } from '../../apis/axios';
+import Swal from 'sweetalert2';
 export default {
 	name: 'ConfirmPassword',
 	data() {
@@ -31,23 +32,59 @@ export default {
 			}
 			const response = await post("/members/password", requestDto);
 			if(response.status === 200){
-				alert(response.data.message);
+				Swal.fire({
+					width: "300px",
+					title: "인증 성공",
+					text: "변경할 비밀번호를 입력해주세요!",
+					icon: "success"
+				});
 				if(this.type === 'exit'){
 					this.exitMember();
 				}else{
 					this.$router.push("/change-pw")
 				}
 			}else{
-				alert(response.response.data.message);
+				Swal.fire({
+					width: "300px",
+					title: "인증 실패",
+					text: "비밀번호를 확인해주세요!",
+					icon: "error"
+				});
 			}
 		},
 		async exitMember(){
-            if(confirm("MetaSpace를 정말 탈퇴하시겠습니까?")){
-                const response = await del('/members');
-                if(response.status === 200){
-                    this.$store.dispatch('logoutRequest');
-                }
-            }
+			Swal.fire({
+				title: '탈퇴 확인',
+				text: '정말 메타 스페이스를 탈퇴하시겠습니까?',
+				width: '300px',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "YES",
+				cancelButtonText: "NO"
+			}).then(async result => {
+				if(result.isConfirmed){
+					this.$store.dispatch('logoutRequest');
+					const response = await del('/members');
+					if(response.status === 200){
+						Swal.fire({
+							width: "300px",
+							title: "탈퇴 완료",
+							text: "이용해주셔서 감사했습니다!",
+							icon: "success"
+						})
+					}else{
+						Swal.fire({
+							width: "300px",
+							title: "탈퇴 실패",
+							text: "회원 탈퇴를 실패했습니다.",
+							icon: "error"
+						});
+					}
+				}
+				
+			});
         }
 	}
 };
