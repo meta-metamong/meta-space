@@ -1,19 +1,24 @@
 <template>
     <div class="container root-container">
-        <h1 class="header">{{ $t("myFacility.myFacilityList") }}</h1>
-        <div class="w-100" id="register-facility-button-container">
+        <h2 class="text-center mb-2" v-text="$t('myFacility.myFacilityList')"></h2>
+        <div class="w-100 mb-4" id="register-facility-button-container">
             <router-link
                 class="btn btn-outline-primary mx-auto"
                 to="/facilities/register"
             ><i class="bi bi-plus"></i> {{ $t("myFacility.registerNewFaciltiy") }}</router-link>
         </div>
         <div class="list-item" v-for="facility in facilities">
-            <h2>{{ facility.fctName }}</h2>
-            <p>{{ facility.address }}</p>
-            <div class="list-item-button-container">
-                <router-link class="button edit-button"
-                             :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link>
-                <button class="button delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
+            <div class="col-md-6 col-lg-4 mb-2">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h5 class="card-title">{{ facility.fctName }}</h5>
+                        <p class="card-text text-muted">{{ facility.address }}</p>
+                        <div class="d-flex justify-content-end gap-2">
+                            <router-link class="btn btn-sm edit-button" :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link>
+                            <button class="btn btn-sm delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -60,9 +65,7 @@ export default {
 }
 
 .list-item {
-    padding: 16px 20px;
-    border: 1px solid #999999;
-    border-radius: 16px;
+    width: 85%;
 }
 
 .list-item h2 {
@@ -102,5 +105,6 @@ export default {
 
 .delete-button {
     background-color: #ec7461;
+    color: #fff;
 }
 </style>

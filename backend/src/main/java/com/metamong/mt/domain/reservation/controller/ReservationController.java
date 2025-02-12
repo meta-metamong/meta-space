@@ -60,7 +60,7 @@ public class ReservationController {
     }
 
     @PutMapping("/reservations/{reservationId}")
-    public ResponseEntity<?> cancelReservation(@PathVariable Long reservationId, @RequestBody CancelRequestDto dto) {
+    public ResponseEntity<?> cancelReservation(@PathVariable Long reservationId, @Validated @RequestBody CancelRequestDto dto) {
         this.reservationService.cancelReservation(reservationId, dto);
         return ResponseEntity.ok(BaseResponse.of(dto, HttpStatus.OK, "예약 취소 성공"));
     }

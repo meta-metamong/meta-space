@@ -1,28 +1,29 @@
 <template>
-    <facility-registration-input
-        v-if="currentComponent === 'facilityRegistrationInput'"
-        @component-change="changeComponent"
-        :facility-registration="inputs.facilityRegistration"
-        is-edit="true" />
-    <zone-registration-input
-        v-if="currentComponent === 'zoneRegistrationInput'"
-        @component-change="changeComponent"
-        :zone-registration="inputs.zoneRegistration"
-        is-edit="true" />
-    <additional-information
-        v-if="currentComponent === 'addinfoRegistrationInput'"
-        @component-change="changeComponent"
-        :addinfo-registration="inputs.addinfoRegistration"
-        is-edit="true" />
+    <div class=container>
+        <facility-registration-input
+            v-if="currentComponent === 'facilityRegistrationInput'"
+            @component-change="changeComponent"
+            :facility-registration="inputs.facilityRegistration"
+            is-edit="true" />
+        <zone-registration-input
+            v-if="currentComponent === 'zoneRegistrationInput'"
+            @component-change="changeComponent"
+            :zone-registration="inputs.zoneRegistration"
+            is-edit="true" />
+        <additional-information
+            v-if="currentComponent === 'addinfoRegistrationInput'"
+            @component-change="changeComponent"
+            :addinfo-registration="inputs.addinfoRegistration"
+            is-edit="true" />
 
-    <div id="submit-container" style="display: flex; justify-content: center;">
-        <button v-if="currentComponent === 'addinfoRegistrationInput'"
-                class="btn btn-primary w-50"
-                type="button"
-                id="submit-button"
-                @click="submitEdit">
-            {{ $t("editFacility.editComplete") }}
-        </button>
+        <div style="display: flex; justify-content: center;">
+            <button v-if="currentComponent === 'addinfoRegistrationInput'"
+                    class="w-100 signup-btn rounded-pill mb-3 me-2 ms-2"
+                    type="button"
+                    @click="submitEdit">
+                {{ $t("editFacility.editComplete") }}
+            </button>
+        </div>
     </div>
 </template>
 

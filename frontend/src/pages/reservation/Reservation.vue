@@ -55,7 +55,7 @@
         <div class="w-75 mx-auto text-center" v-if="isPayOpen">
             <div class="w-100 text-start mb-1">{{ $t('payment.payMethod') }}</div>
             <select class="form-select pay-select w-100" v-model="payMethod">
-                <option value="" selected disabled >{{ $t("payment.selectPayMethod") }}</option>
+                <option value="" selected disabled >{{ $t('payment.selectPayMethod') }}</option>
                 <option value='카드'>{{ $t('payment.card') }}</option>
                 <option value='계좌이체'>{{ $t('payment.account_transfer') }}</option>
                 <option value='가상계좌'>{{ $t('payment.virtual_account') }}</option>
