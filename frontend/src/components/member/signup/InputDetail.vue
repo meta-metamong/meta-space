@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 export default{
     name: 'InputDetail',
     props: ['setUserInfo'],
@@ -62,7 +63,12 @@ export default{
     methods:{
 		nextStep(){
             if(this.isInputEmpty){
-                alert(this.$t('signupError.emptyInput'));
+                Swal.fire({
+                    title: '세부정보 입력 실패',
+                    width: '300px',
+                    text: this.$t('signupError.emptyInput'),
+                    icon: 'error'
+                });
                 return;
             }
             this.setUserInfo([{

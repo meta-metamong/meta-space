@@ -46,10 +46,6 @@ export default {
 
 			const message = await this.$store.dispatch("loginRequest", loginDto);
 			this.errorMessage = message;
-
-			if(this.$store.state.userId === 1) {
-				this.$router.push("/admin");
-			}
 		}
 	}
 };
