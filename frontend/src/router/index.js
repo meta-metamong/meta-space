@@ -29,8 +29,12 @@ import FacilityDetail from "../components/facility/FacilityDetail.vue";
 import Search from '../pages/Search.vue';
 import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 import PaymentResult from '../pages/payment/PaymentResult.vue';
+
+import AdminRefund from '../pages/admin/MemberRefund.vue';
+
 import FacilityReservationList from '../pages/facility/FacilityReservationList.vue';
 import NotificationList from '../pages/notification/NotificationList.vue';
+
 
 const routes = [
 	{ path: '/', component: Home },
@@ -60,7 +64,7 @@ const routes = [
 	{ path: '/admin/facilityApproval', component: FacilityApproval },
 	{ path: '/admin/memBen', component: AdminMemberBen },
 	{ path: '/admin/salesExport', component: AdminSalesExport },
-
+	{ path: '/admin/refund', component: AdminRefund },
 
 	{ path: '/reserve/:fctId', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },

@@ -13,12 +13,7 @@
     ]]>
     </select>
     
-    <!-- 시설 이용자 계정 수 조회 -->
-    <select id="countRoleUserMembers" resultType="int">
-    <![CDATA[
-        SELECT COUNT(*) FROM member WHERE role = 'ROLE_CONS'
-    ]]>
-    </select>
+
     
     <!-- 회원 resultMap -->
     <resultMap type="com.metamong.mt.domain.member.model.Member" id="memberMap">

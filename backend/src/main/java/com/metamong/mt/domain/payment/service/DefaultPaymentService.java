@@ -77,6 +77,13 @@ public class DefaultPaymentService implements PaymentService{
         return payment.getPayPrice();
     }
     
+    @Override
+    public void noRefund(Long rvtId) {
+    	Payment payment = this.getPaymentByRepository(rvtId);
+    	payment.setPayState(PaymentState.N);
+    	paymentRepository.save(payment);
+    }
+    
     @Transactional(readOnly=true)
     private Payment getPaymentByRepository(Long rvtId) {
         return this.paymentRepository.findById(rvtId).orElseThrow(() -> new PaymentNotFoundException());
