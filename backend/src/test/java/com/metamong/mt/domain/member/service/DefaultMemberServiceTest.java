@@ -1,19 +1,6 @@
 package com.metamong.mt.domain.member.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Constructor;
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,19 +8,10 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
-import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
-import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
-import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
-import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
-import com.metamong.mt.domain.member.exception.PasswordNotConfirmedException;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.mail.MailAgent;
-import com.metamong.mt.testutil.DummyEntityGenerator;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultMemberServiceTest {
