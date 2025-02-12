@@ -132,10 +132,7 @@
         "reservationDate": "예약 날짜",
         "reservationTime": "예약 시간",
         "state": "상태",
-        "pending": "대기 중",
-        "confirmed": "확인됨",
-        "cancelled": "취소됨",
-        "completed": "완료됨",
+        "reservationName": "예약자명",
         "noAvailability": "선택한 날짜/시간에 예약 가능한 자리가 없습니다.",
         "cancelReservation": "예약 취소",
         "cancelationReason": "취소 이유",
@@ -225,7 +222,8 @@
         "myFacilityList": "보유 시설 목록",
         "registerNewFaciltiy": "새로운 시설 등록",
         "edit": "수정하기",
-        "delete": "삭제하기"
+        "delete": "삭제하기",
+        "facilityReservationList": "시설 예약 목록"
     },
     "search": {
         "enterFct": "시설의 이름을 검색하세요!",

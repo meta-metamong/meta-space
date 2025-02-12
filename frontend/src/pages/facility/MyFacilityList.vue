@@ -11,7 +11,7 @@
             <div class="col-md-6 col-lg-4 mb-2">
                 <div class="card">
                     <div class="card-body p-4">
-                        <h5 class="card-title">{{ facility.fctName }}</h5>
+                        <h5 class="card-title" @click="$router.push(`/facilities/my-facility-list/${facility.fctId}`)">{{ facility.fctName }}</h5>
                         <p class="card-text text-muted">{{ facility.address }}</p>
                         <div class="d-flex justify-content-end gap-2">
                             <router-link class="btn btn-sm edit-button" :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link>
