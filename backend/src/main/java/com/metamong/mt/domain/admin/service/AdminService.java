@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.metamong.mt.domain.admin.dto.request.MemberSearchRequestDto;
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
@@ -41,4 +43,5 @@ public interface AdminService {
     void updateMemberBan(List<Map<String, Integer>> reportData);
     List<Long> getMembersToUnban();
     void unbanMembers(List<Long> memberIds);
+    List<RefundMemberResponseDto> getRefundMembers();
 }

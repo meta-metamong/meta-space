@@ -8,12 +8,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import com.metamong.mt.domain.admin.dto.request.MemberSearchRequestDto;
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
@@ -75,5 +77,9 @@ public interface AdminMapper {
 		List<Long> getMembersToUnban();
 		
 		void unbanMembers(List<Long> memberIds);
+		List<RefundMemberResponseDto> getRefundMembers();
 		
+//		void updateRefundStateRegApproved(Map<String, Object> params);
+//		void updateRefundStateRejected(Map<String, Object> params);
+
 }

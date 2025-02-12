@@ -12,18 +12,19 @@ import java.util.Set;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.springframework.boot.json.JsonWriter.Members;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.metamong.mt.domain.admin.dto.request.MemberSearchRequestDto;
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
+import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
@@ -52,11 +53,6 @@ public class DefaultAdminService implements AdminService{
     @Override
     @Transactional(readOnly = true)
     public List<MemberSearchResponseDto> searchMembers() {
-        // 알림 생성 서비스 호출
-        notificationService.createNotification(1L, "앙림");
-
-        // 추가적으로 웹소켓을 통한 알림 전달 구현 (필요시)
-        //notificationService.sendNotificationToWebSocket(receiverId, notificationMessage);
         return adminMapper.searchMembers();
     }
 
@@ -114,7 +110,10 @@ public class DefaultAdminService implements AdminService{
         }
     }
 
-
+    @Override
+    public List<RefundMemberResponseDto> getRefundMembers() {
+        return adminMapper.getRefundMembers();
+    }
 
 	@Override
 	@Transactional
@@ -274,7 +273,6 @@ public class DefaultAdminService implements AdminService{
 	public List<WeekReservationDto> getRedisReservationsThisWeek() {
 		return adminMapper.getRedisReservationsThisWeek();
 	}
-
 
 
 }
