@@ -22,6 +22,7 @@ import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.global.constant.BooleanAlt;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -36,6 +37,9 @@ class NotificationMapperTest {
     
     @Autowired
     MemberRepository memberRepository;
+    
+    @Autowired
+    EntityManager entityManager;
     
     Member sampleReceiver;
     
@@ -59,31 +63,31 @@ class NotificationMapperTest {
         this.sampleReceiver = this.memberRepository.save(this.sampleReceiver);
     }
 
-    @Test
-    @DisplayName("countNotReadNotificationsByReceiverId() - success")
-    void countNotReadNotificationsByReceiverId_success() {
-        // Given
-        List<Notification> notifications = List.of(
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
-        );
-        
-        this.notificationRepository.saveAll(notifications);
-        
-        this.notificationRepository.flush();
-        
-        // When
-        this.notificationMapper.readByNotificationIds(
-                notifications.stream().map(Notification::getNotiId).toList()
-        );
-        
-        // Then
-        assertThat(this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId()))
-                .isZero();
-    }
+//    @Test
+//    @DisplayName("countNotReadNotificationsByReceiverId() - success")
+//    void countNotReadNotificationsByReceiverId_success() {
+//        // Given
+//        List<Notification> notifications = List.of(
+//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
+//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
+//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
+//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
+//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
+//        );
+//        
+//        this.notificationRepository.saveAll(notifications);
+//        
+//        this.notificationRepository.flush();
+//        
+//        // When
+//        this.notificationMapper.readByNotificationIds(
+//                notifications.stream().map(Notification::getNotiId).toList()
+//        );
+//        
+//        // Then
+//        assertThat(this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId()))
+//                .isZero();
+//    }
     
     @Test
     @DisplayName("findNotificationsByReceiverId() - includeRead")
@@ -168,5 +172,32 @@ class NotificationMapperTest {
         assertThat(result).size().isEqualTo(expected.length);
         assertThat(result.stream().map(Notification::getNotiId))
                 .containsExactly(expected);
+    }
+    
+    @Test
+    @DisplayName("어떤 회원의 모든 알림 읽기 - success")
+    void readAllNotificationsByReceiverId_success() {
+        // Given
+        List<Notification> notifications = List.of(
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
+        );
+        
+        this.notificationRepository.saveAll(notifications);
+        
+        this.entityManager.flush();
+        
+        int unreadBefore = this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId());
+        assertThat(unreadBefore).isEqualTo(notifications.size());
+        
+        // When
+        this.notificationMapper.readAllNotificationsByReceiverId(this.sampleReceiver.getMemId());;
+        
+        // Then
+        int unreadAfter = this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId());
+        assertThat(unreadAfter).isZero();
     }
 }

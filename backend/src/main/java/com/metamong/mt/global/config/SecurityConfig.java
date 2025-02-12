@@ -49,7 +49,7 @@ public class SecurityConfig {
 	    http.cors((corsConfig) -> corsConfig.configurationSource(cors(this.clientOrigin)));
 	    http.authorizeHttpRequests((request) -> {
             request.requestMatchers("/api/**").permitAll();
-            request.requestMatchers("ws").permitAll();
+//            request.requestMatchers("/ws").permitAll();
         });
 	    http.addFilterBefore(new NoAuthPrincipalFinderFilter(this.userDetailsService, this.jwtTokenProvider), AuthorizationFilter.class);
 	    return http.build();
@@ -94,7 +94,8 @@ public class SecurityConfig {
 	}
 	
 	private HttpSecurity commonConfiguration(HttpSecurity http) throws Exception {
-	    http.securityMatcher("/api/**", "/ws/**");
+//	    http.securityMatcher("/api/**", "/ws/**");
+	    http.securityMatcher("/api/**");
 	    http.csrf(csrfConfig -> csrfConfig.disable());
 	    
 	    // Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 

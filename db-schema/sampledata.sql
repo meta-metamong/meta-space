@@ -161,3 +161,87 @@ INSERT INTO image (
     'F',
     1
 );
+
+INSERT INTO notification (
+    noti_id,
+    receiver_id,
+    noti_msg,
+    created_at,
+    is_read
+) VALUES (
+    1000,
+    21,
+    '새로운 예약이 있습니다',
+    TO_DATE('2017-08-24', 'yyyy-MM-dd'),
+    'Y'
+);
+
+INSERT INTO notification (
+    noti_id,
+    receiver_id,
+    noti_msg,
+    created_at,
+    is_read
+) VALUES (
+    1001,
+    21,
+    '시설 등록이 거절됐습니다',
+    TO_DATE('2017-08-28', 'yyyy-MM-dd'),
+    'N'
+);
+
+INSERT INTO notification (
+    noti_id,
+    receiver_id,
+    noti_msg,
+    created_at,
+    is_read
+) VALUES (
+    1002,
+    21,
+    '시설 삭제 요청이 반려되었습니다',
+    TO_DATE('2017-09-02', 'yyyy-MM-dd'),
+    'N'
+);
+
+INSERT INTO notification (
+    noti_id,
+    receiver_id,
+    noti_msg,
+    created_at,
+    is_read
+) VALUES (
+    1003,
+    21,
+    '새로운 예약이 있습니다',
+    TO_DATE('2017-09-24', 'yyyy-MM-dd'),
+    'N'
+);
+
+INSERT INTO notification (
+    noti_id,
+    receiver_id,
+    noti_msg,
+    created_at,
+    is_read
+) VALUES (
+    1004,
+    21,
+    '새로운 예약이 있습니다',
+    TO_DATE('2017-10-01', 'yyyy-MM-dd'),
+    'Y'
+);
+
+INSERT INTO notification (
+    noti_id,
+    receiver_id,
+    noti_msg,
+    created_at,
+    is_read
+) VALUES (
+    1005,
+    21,
+    '시설 삭제 요청이 승인되었습니다',
+    TO_DATE('2018-08-24', 'yyyy-MM-dd'),
+    'N'
+);

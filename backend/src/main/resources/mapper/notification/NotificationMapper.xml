@@ -4,13 +4,10 @@
 
 <mapper namespace="com.metamong.mt.domain.notification.repository.mybatis.NotificationMapper">
     
-    <update id="readByNotificationIds" parameterType="java.util.List">
+    <update id="readByNotificationId" parameterType="java.lang.Long">
         UPDATE notification
         SET is_read = 'Y'
-        WHERE noti_id IN
-            <foreach collection="readByNotificationIds" item="notiId" open="(" separator="," close=")">
-                #{notiId}
-            </foreach>
+        WHERE noti_id = #{notificationId}
     </update>
     
     <select id="findNotificationsByReceiverId"
@@ -29,5 +26,10 @@
             </if>
         ORDER BY created_at DESC
     </select>
-    
+
+    <update id="readAllNotificationsByReceiverId" parameterType="java.lang.Long">
+        UPDATE notification
+        SET is_read = 'Y'
+        WHERE receiver_id = #{receiverId}
+    </update>
 </mapper>
