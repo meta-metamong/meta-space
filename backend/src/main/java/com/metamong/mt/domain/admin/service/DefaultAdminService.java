@@ -53,7 +53,7 @@ public class DefaultAdminService implements AdminService{
     @Transactional(readOnly = true)
     public List<MemberSearchResponseDto> searchMembers() {
         // 알림 생성 서비스 호출
-        notificationService.createNotification(1L, "앙림");
+        notificationService.sendMessage(1L, "앙림");
 
         // 추가적으로 웹소켓을 통한 알림 전달 구현 (필요시)
         //notificationService.sendNotificationToWebSocket(receiverId, notificationMessage);
