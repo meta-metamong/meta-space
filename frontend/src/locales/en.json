@@ -104,7 +104,7 @@
         "changePw": "Change Password",
         "confirmPw": "Confirm Password",
         "memberSearch":"SearchMember",
-        "facilityApproval":"ApproveFacility"
+        "facilityApproval":"ApproveFacility",
         "balance": "Balance"
     },
     "admin" : {
