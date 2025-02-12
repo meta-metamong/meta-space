@@ -74,6 +74,7 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     
     @Override
     public List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead) {
+        this.notificationRepository.readAllNotificationsByReceiverId(receiverId);
         return this.notificationMapper.findNotificationsByReceiverId(new NotificationListMapperDto(receiverId, includeRead))
                 .stream()
                 .map(NotificationResponseDto::of)

@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.notification.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -15,4 +16,12 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
                 AND n.isRead = 'N'
             """)
     int countNotReadNotificationsByReceiverId(@Param("receiverId") Long receiverId);
+    
+    @Modifying
+    @Query(value = """
+            UPDATE notification
+            SET is_read = 'Y'
+            WHERE receiver_id = :receiverId
+            """, nativeQuery = true)
+    void readAllNotificationsByReceiverId(@Param("receiverId") Long receiverId);
 }
