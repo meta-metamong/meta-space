@@ -46,11 +46,9 @@
         },
         computed:{
             isLogin(){
-              console.log(this.$store.state);
               return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
             },
             userRole() {
-              console.log(this.$store.state);
               return this.$store.state.userRole;
             }
         },

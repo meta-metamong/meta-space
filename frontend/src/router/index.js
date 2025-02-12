@@ -15,6 +15,10 @@ import MemberChat from '../components/admin/ChattingMember.vue';
 import ConfirmPassword from '../pages/member/ConfirmPassword.vue';
 import ChangePassword from '../pages/member/ChangePassword.vue';
 import FindPassword from '../pages/member/FindPassword.vue';
+import AdminMemberSearch from '../pages/admin/MemberSearch.vue';
+import FacilityApproval from '../pages/admin/FacilityApproval.vue';
+import AdminMemberBen from '../components/admin/AdminMemberBen.vue';
+import AdminSalesExport from '../components/admin/AdminSalesExport.vue';
 import Map from '../pages/Map.vue';
 import FacilityRegistration from "../pages/facility/FacilityRegistration.vue";
 import MyFacilityList from "../pages/facility/MyFacilityList.vue";
@@ -49,6 +53,11 @@ const routes = [
 
 	{ path: '/admin', component: Admin },
 	{ path: '/admin/chatlist', component: ChatList },
+	{ path: '/admin/memSearch', component: AdminMemberSearch },
+	{ path: '/admin/facilityApproval', component: FacilityApproval },
+	{ path: '/admin/memBen', component: AdminMemberBen },
+	{ path: '/admin/salesExport', component: AdminSalesExport },
+
 
 	{ path: '/reserve/:fctId', component: Reservation },
 	{ path: '/reservation/list', component: ReservationList },
