@@ -3,16 +3,15 @@ package com.metamong.mt.domain.notification.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto;
 import com.metamong.mt.domain.notification.dto.response.NotificationResponseDto;
+import com.metamong.mt.domain.notification.dto.socket.TextMessageAndUnreadCountMessageDto;
 import com.metamong.mt.domain.notification.exception.FailedNotificationTransmissionException;
 import com.metamong.mt.domain.notification.model.Notification;
 import com.metamong.mt.domain.notification.repository.WebSocketSessionRepository;
@@ -32,50 +31,19 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     private final ObjectMapper objectMapper;
     
     @Override
-    public void sendMessage(Long memId, String message) {
-        WebSocketSession session = this.webSocketSessionRepository.findByMemId(memId)
-                .orElseThrow(() -> new FailedNotificationTransmissionException("회원 ID에 해당하는 웹 소켓 세션이 "
-                        + "없습니다. memId=" + memId));
-        
-        try {
-            session.sendMessage(new TextMessage(message));
-        } catch (IOException e) {
-            throw new FailedNotificationTransmissionException(e);
-        }
-    }
-    
-    @Override
-    public void sendMessage(Long memId, Object message) {
-        try {
-            sendMessage(memId, this.objectMapper.writeValueAsString(message));
-        } catch (JsonProcessingException e) {
-            throw new FailedNotificationTransmissionException(e);
-        }
-    }
-    
-    @Override
-    public void sendMessageToAll(String message) {
-        Map<Long, WebSocketSession> sessionsByMemId = this.webSocketSessionRepository.findAll();
-        if (log.isTraceEnabled()) {
-            log.trace("memIds={}", sessionsByMemId.keySet());
-        }
-        sessionsByMemId.values()
-                .forEach((session) -> {
+    public void sendMessage(Long receiverId, String message) {
+        saveNotification(receiverId, message);
+        this.webSocketSessionRepository.findByMemId(receiverId)
+                .ifPresent((session) -> {
                     try {
-                        session.sendMessage(new TextMessage(message));
+                        int unreadCount = this.countUnreadNotificationsByReceiverId(receiverId);
+                        String messageInJson =
+                                this.objectMapper.writeValueAsString(new TextMessageAndUnreadCountMessageDto(message, unreadCount));
+                        session.sendMessage(new TextMessage(messageInJson));
                     } catch (IOException e) {
                         throw new FailedNotificationTransmissionException(e);
                     }
                 });
-    }
-    
-    @Override
-    public void sendMessageToAll(Object message) {
-        try {
-            sendMessageToAll(this.objectMapper.writeValueAsString(message));
-        } catch (JsonProcessingException e) {
-            throw new FailedNotificationTransmissionException(e);
-        }
     }
     
     private Notification saveNotification(Long receiverId, String message) {
@@ -99,10 +67,20 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     }
     
     @Override
+    public int countUnreadNotificationsByReceiverId(Long receiverId) {
+        return this.notificationRepository.countNotReadNotificationsByReceiverId(receiverId);
+    }
+    
+    @Override
     public List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead) {
         return this.notificationMapper.findNotificationsByReceiverId(new NotificationListMapperDto(receiverId, includeRead))
                 .stream()
                 .map(NotificationResponseDto::of)
                 .toList();
+    }
+    
+    @Override
+    public void readNotifications(List<Long> notificationIds) {
+        this.notificationMapper.readByNotificationIds(notificationIds);
     }
 }
