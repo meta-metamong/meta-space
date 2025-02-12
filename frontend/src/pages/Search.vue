@@ -5,7 +5,7 @@
             <h4 class="fw-bold">{{ $t('search.hotKeywords') }}</h4>
             <div class="popular-searches">
                 <ul class="d-flex flex-column gap-4 fs-5">
-                    <li v-for="(keyword, index) in popularKeywords" :key="index">
+                    <li v-for="(keyword, index) in popularKeywords" :key="index" @click="search(keyword)">
                         <span class="rank">{{ index + 1 }}</span>&nbsp;&nbsp;{{ keyword }}
                     </li>
                 </ul>
@@ -17,6 +17,7 @@
 <script>
 import SearchBox from '../components/common/SearchBox.vue';
 import { get } from "../apis/axios";
+import Swal from 'sweetalert2';
 export default{
     name: 'Search',
     data(){
@@ -44,14 +45,18 @@ export default{
                 this.popularKeywords.push("필라테스");
             }
         }else{
-            alert("인기 검색어 조회가 실패됐습니다.");
+            Swal.fire({
+                text: "인기 검색어 조회가 실패됐습니다.",
+                width: "300px",
+                icon: "error"
+            });
             return;
         }
     },
     methods: {
         search(keyword) {
             this.$router.push({ path: "/facilities" , query: { "search-keyword": keyword} });
-        }
+        },
     }
 }
 </script>

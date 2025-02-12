@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 import { get, post } from "../../apis/axios";
 import { ref, toRaw } from 'vue';
 
@@ -262,7 +263,11 @@ export default {
         },
         toggleIsPayOpen(){
             if (this.secondTime === null) {
-                alert('종료 시간을 선택해주세요.');
+                Swal.fire({
+                    text: "종료 시간을 선택해주세요.",
+                    width: "300px",
+                    icon: "warning"
+                });
                 return;
             }
             this.isPayOpen = !this.isPayOpen;
