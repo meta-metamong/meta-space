@@ -30,7 +30,8 @@
             </table>
 
             <div class="w-100" id="reserve-button-container">
-                <button type="button"
+                <button v-if="userRole === 'ROLE_CONS'"
+                        type="button"
                         class="btn btn-primary"
                         @click="goToReservationPage()"
                         id="reserve-button">{{ $t("reservation.reserve") }}</button>
@@ -100,6 +101,11 @@ export default {
                 zones: []
             }
         };
+    },
+    computed: {
+        userRole() {
+            return this.$store.state.userRole;
+        }
     },
     async mounted() {
         const responseBody = (await get(`/facilities/${this.fctId}`)).data;
