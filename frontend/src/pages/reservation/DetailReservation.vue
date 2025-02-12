@@ -41,18 +41,18 @@
 		</div>
 		<div class="text-center mt-4 mb-3" v-if="isCancelable">
 			<button class="signup-btn cancel-btn w-75 mb-3 rounded-pill" @click="showCancelationReason = true">{{
-				$t('button.cancel') }}</button>
+				$t('reservation.cancelReservation') }}</button>
 		</div>
 		<div class="mb-3 m-4" v-if="showCancelationReason">
 			<label for="cancelationReason" class="form-label">{{ $t('reservation.selectReason') }}</label>
 			<select id="cancelReason" class="form-select" v-model="rvtCancelationReason">
-				<option disabled value="">취소 이유 선택</option>
-				<option value="CHANGE">단순 변심</option>
-				<option value="MISTAKE">잘못된 예약</option>
-				<option value="DOUBLE">중복 예약</option>
-				<option value="PAYMENT">결제 문제</option>
-				<option value="WEATHER">날씨 문제</option>
-				<option value="FACILITY">시설 이용 불가</option>
+				<option disabled value="">{{ $t('reservation.cancelationReason') }}</option>
+				<option value="CHANGE">{{ $t('reservation.changeOfMind') }}</option>
+				<option value="MISTAKE">{{ $t('reservation.incorrectReservation') }}</option>
+				<option value="DOUBLE">{{ $t('reservation.duplcateReservation') }}</option>
+				<option value="PAYMENT">{{ $t('reservation.paymentIssue') }}</option>
+				<option value="WEATHER">{{ $t('reservation.weatherIssue') }}</option>
+				<option value="FACILITY">{{ $t('reservation.facilityUnavailable') }}</option>
 			</select>
 			<div class="text-center mt-2 mb-3">
 				<button class="signup-btn w-75 mb-3 rounded-pill" @click="submitCancelation">{{ $t('button.check')

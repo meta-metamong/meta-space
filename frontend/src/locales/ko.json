@@ -130,7 +130,15 @@
         "confirmed": "확인됨",
         "cancelled": "취소됨",
         "completed": "완료됨",
-        "noAvailability": "선택한 날짜/시간에 예약 가능한 자리가 없습니다."
+        "noAvailability": "선택한 날짜/시간에 예약 가능한 자리가 없습니다.",
+        "cancelReservation": "예약 취소",
+        "cancelation Reason": "취소 이유",
+        "changeOfMind": "단순 변심",
+        "incorrectReservation": "잘못된 예약",
+        "duplcateReservation": "중복 예약",
+        "paymentIssue": "결제 문제",
+        "weatherIssue": "날씨 문제",
+        "facilityUnavailable": "시설 이용 불가"
     },
     "payment": {
         "list": "결제 목록",
