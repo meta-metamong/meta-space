@@ -59,6 +59,7 @@ public interface AdminMapper {
     List<RankPaymentDto> getRankPayment();
     
     List<WeekReservationDto> getReservationsByHourThisWeek();
+    List<WeekReservationDto> getRedisReservationsThisWeek();
     
     //void updateMemberBan(List<Long> reportIds, Map<Long, Integer> reportCounts);
 //    void updateMemberBan(@Param("reportIds") List<Long> reportIds, 
@@ -70,5 +71,9 @@ public interface AdminMapper {
 	void updateMemberBan(Map<String, Object> params);
 	// 시설 이용자 수를 조회하는 쿼리
 		int countRoleUserMembers();
+		
+		List<Long> getMembersToUnban();
+		
+		void unbanMembers(List<Long> memberIds);
 		
 }
