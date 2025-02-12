@@ -1,4 +1,4 @@
-package com.metamong.mt.global.auth.jwt;
+package com.metamong.mt.domain.notification.handler;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtHandshakeInterceptor implements HandshakeInterceptor {
+public class ClientResolverHandshakeInterceptor implements HandshakeInterceptor {
     
     @Override
     public boolean beforeHandshake(
