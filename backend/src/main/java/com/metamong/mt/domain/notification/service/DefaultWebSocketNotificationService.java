@@ -1,11 +1,14 @@
 package com.metamong.mt.domain.notification.service;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.notification.exception.FailedNotificationTransmissionException;
 import com.metamong.mt.domain.notification.repository.WebSocketSessionRepository;
 
@@ -17,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultWebSocketNotificationService implements WebSocketNotificationService {
     private final WebSocketSessionRepository webSocketSessionRepository;
+    private final ObjectMapper objectMapper;
     
     @Override
     public void sendMessage(Long memId, String message) {
@@ -32,8 +36,21 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     }
     
     @Override
+    public void sendMessage(Long memId, Object message) {
+        try {
+            sendMessage(memId, this.objectMapper.writeValueAsString(message));
+        } catch (JsonProcessingException e) {
+            throw new FailedNotificationTransmissionException(e);
+        }
+    }
+    
+    @Override
     public void sendMessageToAll(String message) {
-        this.webSocketSessionRepository.findAll().values()
+        Map<Long, WebSocketSession> sessionsByMemId = this.webSocketSessionRepository.findAll();
+        if (log.isTraceEnabled()) {
+            log.trace("memIds={}", sessionsByMemId.keySet());
+        }
+        sessionsByMemId.values()
                 .forEach((session) -> {
                     try {
                         session.sendMessage(new TextMessage(message));
@@ -41,6 +58,15 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
                         throw new FailedNotificationTransmissionException(e);
                     }
                 });
+    }
+    
+    @Override
+    public void sendMessageToAll(Object message) {
+        try {
+            sendMessageToAll(this.objectMapper.writeValueAsString(message));
+        } catch (JsonProcessingException e) {
+            throw new FailedNotificationTransmissionException(e);
+        }
     }
 
     @Override

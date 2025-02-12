@@ -3,6 +3,10 @@ package com.metamong.mt.domain.notification.service;
 public interface NotificationService {
 
     void sendMessage(Long memId, String message);
+
+    void sendMessage(Long memId, Object message);
     
     void sendMessageToAll(String message);
+    
+    void sendMessageToAll(Object message);
 }
