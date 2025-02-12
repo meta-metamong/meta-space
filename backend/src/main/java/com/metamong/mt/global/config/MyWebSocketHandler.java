@@ -1,21 +1,15 @@
 package com.metamong.mt.global.config;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.metamong.mt.domain.member.controller.MemberController;
-import com.metamong.mt.domain.member.dto.request.MessageRequestDto;
-import com.metamong.mt.domain.member.dto.response.MessageResponseDto;
 
 @Component
 public class MyWebSocketHandler extends TextWebSocketHandler {
@@ -109,4 +103,29 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         System.out.println("WebSocket 연결 종료: " + session.getId());
     }
     */
+	
+	private static final Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<>();
+	private final ObjectMapper objectMapper = new ObjectMapper();
+	
+    private Long getUserIdFromSession(WebSocketSession session) {
+        // 예제: 세션에서 userId를 가져오는 방식 (실제 구현은 필요에 따라 변경)
+        return (Long) session.getAttributes().get("username");
+    }
+    
+	@Override
+    public void afterConnectionEstablished(WebSocketSession session) {
+        Long userId = 1L;//getUserIdFromSession(session);
+        if (userId != null) {
+            userSessions.put(userId, session);
+        }
+    }
+	
+    public void sendNotification(Long userId, int count) throws IOException {
+        WebSocketSession session = userSessions.get(userId);
+        if (session != null && session.isOpen()) {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(count)));
+        }
+    }
+    
+    
 }

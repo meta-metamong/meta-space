@@ -1,13 +1,15 @@
 <template>
-    <div>관리자 화면입니다!</div>
+  <div>
+    <DashBoard /> <!-- 주간 예약 차트 추가 -->
+  </div>
 </template>
 
 <script>
-export default{
-    name: "Home"
-}
+import DashBoard from "../components/admin/DashBoard.vue";
+
+export default {
+  components: {
+    DashBoard
+  }
+};
 </script>
-
-<style scoped>
-
-</style>
