@@ -8,7 +8,7 @@
             <span class="sort-toggle" @click="toggleSort">{{ $t('search.distance') }} {{ ascOrDesc }}</span>
         </div>
         <div class="searched-body row row-cols-2" >
-            <div class="card card-box mb-3" v-for="fctData in fctContent.facilities" :key="fctData.fctId">
+            <div class="card card-box mb-3" v-for="fctData in fctContent.facilities" :key="fctData.fctId" @click="$router.push(`/facilities/${fctData.fctId}`)">
                 <img :src="fctData.repImgUrl" class="card-thumbnail mx-auto" alt="대표 이미지" />
                 <div class="card-detail d-flex flex-column p-2">
                     <h5 class="card-name fw-bold">{{ fctData.fctName }}</h5>
@@ -66,7 +66,7 @@ export default {
             }
             const responseBody = (await apiClient.get("/facilities", { params })).data;
             this.fctContent = responseBody.content;
-        }
+        },
     },
     async mounted() {
         const params = {};

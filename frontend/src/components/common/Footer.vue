@@ -80,7 +80,7 @@
   height: 130px;
   position: fixed;
   right: 0;
-  bottom: 80px;
+  bottom: 40px;
 }
 
 .list-group-item {

@@ -42,10 +42,9 @@ export default{
     flex-direction: column;
 }
 .card-thumbnail{
-    height: 60%;
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: cover;
+    object-fit: contain;
     border-top-left-radius: 0.375rem;
     border-top-right-radius: 0.375rem;
 }
