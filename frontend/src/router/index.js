@@ -24,6 +24,7 @@ import DetailPayment from '../pages/payment/DetailPayment.vue';
 import FacilityDetail from "../components/facility/FacilityDetail.vue";
 import Search from '../pages/Search.vue';
 import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
+import PaymentResult from '../pages/payment/PaymentResult.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -55,7 +56,8 @@ const routes = [
 	{ path: '/map', component: Map },
 
 	{ path: '/payment/list', component: PaymentList },
-	{ path: '/payment/:rvtId', component: DetailPayment, props: true }
+	{ path: '/payment/:rvtId', component: DetailPayment, props: true },
+	{ path: '/payment/result', component: PaymentResult }
 
 ];
 

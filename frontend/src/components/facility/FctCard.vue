@@ -1,5 +1,5 @@
 <template>
-    <div class="card card-box mb-3 d-flex flex-column">
+    <div @click="moveToDetail" class="card card-box mb-3 d-flex flex-column">
         <img :src="fctData.repImgUrl" class="card-thumbnail mx-auto" alt="대표 이미지" />
         <div class="card-detail d-flex flex-column p-2">
             <h5 class="card-name fw-bold mb-2">{{ fctData.fctName }}</h5>
@@ -15,6 +15,11 @@ export default{
         fctData: {
             type: Object,
             required: true
+        }
+    },
+    methods: {
+        moveToDetail(){
+            this.$router.push(`/facilities/${this.fctData.fctId}`);
         }
     },
     mounted(){

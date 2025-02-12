@@ -147,7 +147,15 @@
         "refundBankCode": "Bank for Refund",
         "refundAccount": "Account for Refund",
         "refundAccountOwner": "Account Owner for Refund",
-        "rvtCancelationReason": "Why Canceled"
+        "rvtCancelationReason": "Why Canceled",
+        "card": "Card",
+        "account_transfer": "Account",
+        "virtual_account": "Virtual Account",
+        "toss_money": "Toss Money",
+        "mobile_phone": "Moblie Phone",
+        "easy_pay": "Easy Pay",
+        "pay": "Pay",
+        "selectPayMethod": "Select Pay Method"
     },
     "calendar": {
         "selectDate": "Select Date",

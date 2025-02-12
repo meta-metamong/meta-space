@@ -78,7 +78,7 @@
         <div id="guide-container" class="mb-4">
             <h5>{{ $t("facility.facilityGuide") }}</h5>
             <div class="w-100 mt-3">
-                <textarea class="form-control" rows="10">{{ fct.fctGuide }}</textarea>
+                <textarea class="additional-info form-control" rows="10" disabled>{{ fct.fctGuide }}</textarea>
             </div>
         </div>
     </div>
@@ -112,11 +112,7 @@ export default {
     },
     async mounted() {
         const responseBody = (await get(`/facilities/${this.fctId}`)).data;
-        console.log(responseBody);
-
         const content = responseBody.content;
-
-        console.log(content);
 
         this.fct.catName = content.catName;
         this.fct.additionalInfos = content.additionalInfos;
@@ -149,8 +145,6 @@ export default {
                 zoneName: zone.zoneName
             });
         }
-
-        console.log(this.fct);
     },
     methods: {
         formatUnitUsageTime(uut, hUnit, mUnit) {
@@ -169,7 +163,6 @@ export default {
                 }
                 formatted = "," + numStr.substring(numStr.length - 3 - idx, numStr.length - idx) + formatted;
                 idx += 3;
-                console.log(idx);
             }
             return formatted;
         },
@@ -283,5 +276,8 @@ table td {
 .zone-name {
     font-size: 18px;
     color: #000;
+}
+.additional-info:disabled{
+    background: #fff;
 }
 </style>
