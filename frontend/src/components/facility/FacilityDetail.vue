@@ -49,7 +49,7 @@
                     <img :src="zone.imgUrl" class="rounded float-start">
                 </div>
                 <div class="zone-desc-container">
-                    <h3>{{ zone.zoneName }}</h3>
+                    <span class="zone-name">{{ zone.zoneName }}</span>
                     <ul class="zone-info-ul">
                         <li>{{ $t("facility.hourlyRate") }}</li>
                         <li>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</li>
@@ -215,9 +215,14 @@ export default {
     border-radius: 18px;
 }
 
+.zone-name {
+    padding: 0 12px;
+}
+
 .zone-info-ul {
     padding: 0 12px;
     margin: 0;
+    margin-top: 15px;
     display: flex;
     flex-direction: column;
     list-style: none;
