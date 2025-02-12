@@ -1,13 +1,14 @@
 package com.metamong.mt.domain.notification.repository.mybatis;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-import com.metamong.mt.domain.notification.model.Notification;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @Mapper
 public interface NotificationMapper {
-	//void insertNotification(Notification notification);
-
+	
+    void readByNotificationIds(@Param("readByNotificationIds") List<Long> notificationIds);
 }
