@@ -24,7 +24,7 @@ public class ReservationScheduler {
      * <p>예약이 1시간 남은 사람과
      * 예약이 1일 남은 사람에게 예약 알림을 전송
      */
-    @Scheduled(cron = "0 0 0/1 * * *")
+    @Scheduled(cron = "0 0/30 * * * *")
     public void sendReservationNotification() {
         LocalDateTime now = LocalDateTime.now();
         
