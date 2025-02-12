@@ -25,28 +25,28 @@
   </template>
 
 <script>
+import { getUserIdInLocal, getUsernameInLocal, getUserRoleInLocal } from '../../store';
 import Swal from 'sweetalert2';
-import { getUserIdInLocal } from '../../store';
 
 export default{
     name: 'Header',
     methods: {
-        logout(){
-            Swal.fire({
-              title: '로그아웃\n하시겠습니까?',
-              text: '작업 중인 내용을 잃을 수 있습니다.',
-              width: '300px',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "YES",
-              cancelButtonText: "NO"
-            }).then(result => {
-              if(result.isConfirmed){
-                this.$store.dispatch('logoutRequest');
-              }
-            })
+      logout(){
+          Swal.fire({
+            title: '로그아웃\n하시겠습니까?',
+            text: '작업 중인 내용을 잃을 수 있습니다.',
+            width: '300px',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "YES",
+            cancelButtonText: "NO"
+          }).then(result => {
+            if(result.isConfirmed){
+              this.$store.dispatch('logoutRequest');
+            }
+          })
         },
         handleLanguageChange(event){
           this.$i18n.locale = event.target.value;
@@ -55,6 +55,18 @@ export default{
           const userId = getUserIdInLocal();
           if(userId !== null && userId !== undefined){
             this.$store.commit('initUserId', userId);
+        }
+      },
+      initUserRole() {
+        const userRole = getUserRoleInLocal();
+        if (userRole) {
+          this.$store.commit("initUserRole", userRole);
+        }
+      },
+      initUserName() {
+        const userName = getUsernameInLocal();
+        if (userName) {
+          this.$store.commit("initUserName", userName);
         }
       }
     },
@@ -65,6 +77,8 @@ export default{
     },
     mounted(){
       this.initUserId();
+      this.initUserRole();
+      this.initUserName();
     }
 }
 </script>

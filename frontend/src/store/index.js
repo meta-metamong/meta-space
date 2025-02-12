@@ -11,6 +11,22 @@ export const getUserIdInLocal = function () {
   return sessionStorage.getItem("userId");
 };
 
+const saveUserRoleInLocal = function (userRole) {
+  sessionStorage.setItem("userRole", userRole);
+};
+
+export const getUserRoleInLocal = function () {
+  return sessionStorage.getItem("userRole");
+};
+
+const saveUsernameInLocal = function (username) {
+  sessionStorage.setItem("userName", username);
+};
+
+export const getUsernameInLocal = function () {
+  return sessionStorage.getItem("userName");
+};
+
 const removeUserIdInLocal = function () {
   sessionStorage.removeItem("userId");
 };
@@ -30,6 +46,8 @@ const store = createStore({
       state.userRole = payload.role;
       state.userName = payload.name;
       saveUserIdInLocal(payload.memId);
+      saveUserRoleInLocal(payload.role);
+      saveUsernameInLocal(payload.name);
       
       Swal.fire({
         title: `환영합니다\n ${state.userName}님`,
@@ -50,6 +68,12 @@ const store = createStore({
     },
     initUserId(state, payload) {
       state.userId = payload;
+    },
+    initUserRole(state, payload) {
+      state.userRole = payload;
+    },
+    initUsername(state, payload) {
+      state.userName = payload;
     },
     setOnlineSocket(state, socket) {
       state.onlineSocket = socket;
