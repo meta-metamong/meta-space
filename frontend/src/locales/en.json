@@ -187,7 +187,7 @@
         "facilityTel": "Tel",
         "facilityOperationTime": "Operation Time",
         "isOpenOnHolidays": "Is open on holidays?",
-        "unitUsageTime": "Unit Usage Time (Minutes)",
+        "unitUsageTime": "Unit Usage Time",
         "facilityImage": "Image",
         "addImage": "add image",
         "imageLimitDescription": "You can add images up to 5",

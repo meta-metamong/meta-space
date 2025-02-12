@@ -1,6 +1,6 @@
 <template>
-    <div class="search-box">
-        <input type="text" class="search-input text-center fs-4" v-model="keyword" :placeholder="$t('search.enterFct')">
+    <div class="search-box mt-2">
+        <input type="text" class="search-input text-center fs-5" v-model="keyword" :placeholder="$t('search.enterFct')" @keyup.enter="search">
         <button class="search-btn" @click="search">🔍</button>
     </div>
 </template>
@@ -71,8 +71,7 @@ export default{
 .search-btn{
     position: absolute;
     right: 0;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+    border: none;
     overflow: hidden;
     line-height: 45px;
     background: transparent;
