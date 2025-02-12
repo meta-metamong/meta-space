@@ -17,6 +17,7 @@ import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.notification.model.Notification;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.global.constant.BooleanAlt;
 
 @DataJpaTest
@@ -56,11 +57,11 @@ class NotificationRepositoryTest {
     void countNotReadNotificationsByReceiverId_success() {
         // Given
         List<Notification> notifications = List.of(
-                new Notification(this.sampleReceiver.getMemId(), "hi"),
-                new Notification(this.sampleReceiver.getMemId(), "hi1"),
-                new Notification(this.sampleReceiver.getMemId(), "hi2"),
-                new Notification(this.sampleReceiver.getMemId(), "hi3"),
-                new Notification(this.sampleReceiver.getMemId(), "hi4")
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
         );
         
         notifications.get(0).setIsRead('Y');

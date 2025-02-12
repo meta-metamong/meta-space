@@ -53,5 +53,14 @@
         UPDATE member SET is_del='Y' WHERE mem_id=#{memId}
     ]]>
     </update>
+    
+    <select id="findMemIdByFctId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT
+            m.mem_id
+        FROM member m
+        INNER JOIN fct_provider fp ON fp.prov_id = m.mem_id
+        INNER JOIN facility f ON f.prov_id = fp.prov_id
+        WHERE f.fct_id = #{fctId}
+    </select>
 
 </mapper>

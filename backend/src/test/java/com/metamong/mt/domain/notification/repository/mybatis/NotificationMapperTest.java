@@ -18,6 +18,7 @@ import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto;
 import com.metamong.mt.domain.notification.model.Notification;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.global.constant.BooleanAlt;
 
@@ -63,11 +64,11 @@ class NotificationMapperTest {
     void countNotReadNotificationsByReceiverId_success() {
         // Given
         List<Notification> notifications = List.of(
-                new Notification(this.sampleReceiver.getMemId(), "hi"),
-                new Notification(this.sampleReceiver.getMemId(), "hi1"),
-                new Notification(this.sampleReceiver.getMemId(), "hi2"),
-                new Notification(this.sampleReceiver.getMemId(), "hi3"),
-                new Notification(this.sampleReceiver.getMemId(), "hi4")
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
         );
         
         this.notificationRepository.saveAll(notifications);
@@ -90,11 +91,11 @@ class NotificationMapperTest {
         // Given
         LocalDateTime now = LocalDateTime.now();
         List<Notification> notifications = List.of(
-                new Notification(this.sampleReceiver.getMemId(), "hi", now.plusHours(2), 'Y'),
-                new Notification(this.sampleReceiver.getMemId(), "hi1", now.plusHours(3), 'N'),
-                new Notification(this.sampleReceiver.getMemId(), "hi2", now.plusHours(1), 'N'),
-                new Notification(this.sampleReceiver.getMemId(), "hi3", now.plusHours(4), 'Y'),
-                new Notification(this.sampleReceiver.getMemId(), "hi4", now, 'N')
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED, now.plusHours(2), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED, now.plusHours(3), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT,  now.plusHours(1), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION, now.plusHours(4), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED, now, 'N')
         );
         
         notifications.get(0).setIsRead('Y');
@@ -132,11 +133,11 @@ class NotificationMapperTest {
         // Given
         LocalDateTime now = LocalDateTime.now();
         List<Notification> notifications = List.of(
-                new Notification(this.sampleReceiver.getMemId(), "hi", now.plusHours(2), 'Y'),
-                new Notification(this.sampleReceiver.getMemId(), "hi1", now.plusHours(3), 'N'),
-                new Notification(this.sampleReceiver.getMemId(), "hi2", now.plusHours(1), 'N'),
-                new Notification(this.sampleReceiver.getMemId(), "hi3", now.plusHours(4), 'Y'),
-                new Notification(this.sampleReceiver.getMemId(), "hi4", now, 'N')
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED, now.plusHours(2), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED, now.plusHours(3), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT,  now.plusHours(1), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION, now.plusHours(4), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED, now, 'N')
         );
         
         notifications.get(0).setIsRead('Y');
