@@ -17,9 +17,11 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class FacilityRegistrationRequestDto {
     
     @NotNull
@@ -87,7 +89,6 @@ public class FacilityRegistrationRequestDto {
                 .fctOpenTime(this.getFctOpenTime())
                 .fctCloseTime(this.getFctCloseTime())
                 .unitUsageTime(this.getUnitUsageTime())
-                // TODO: fctLatitude, fctLongitude
                 .build();
     }
 }

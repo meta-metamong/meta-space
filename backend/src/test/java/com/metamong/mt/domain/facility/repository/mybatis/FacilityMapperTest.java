@@ -29,6 +29,7 @@ import com.metamong.mt.domain.facility.dto.constant.SearchCondition;
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.ZoneResponseDto;
 import com.metamong.mt.domain.facility.model.AdditionalInfo;
@@ -180,14 +181,8 @@ class FacilityMapperTest {
                     INSERT INTO fct_provider (
                         prov_id,
                         biz_name,
-                        biz_reg_num,
-                        bank_code,
-                        prov_account,
-                        prov_account_owner
+                        biz_reg_num
                     ) VALUES (
-                        ?,
-                        ?,
-                        ?,
                         ?,
                         ?,
                         ?
@@ -195,10 +190,7 @@ class FacilityMapperTest {
                     """);
             stmt.setLong(1, generatedProvId);
             stmt.setString(2, "sample biz name");
-            stmt.setString(3, "asdf");
-            stmt.setString(4, "014");
-            stmt.setString(5, "110-123-123456");
-            stmt.setString(6, "MyMy");
+            stmt.setString(3, "1201252-1324125");
             stmt.executeUpdate();
         } finally {
             stmt.close();
@@ -480,5 +472,57 @@ class FacilityMapperTest {
         
         // Then
         assertThat(result).isEqualTo(facilityCount / 2);
+    }
+    
+    @Test
+    @DisplayName("findFacilityOfMemberByMemId() - success")
+    void findFacilityOfMemberByMemId_success() {
+     // Given
+        Category category2 = new Category("101", "category2");
+        category2 = this.categoryRepository.save(category2);
+        
+        final int facilityCount = 50;
+        List<Facility> facilities = new ArrayList<>(facilityCount);
+        for (int i = 0; i < facilityCount; i++) {
+            int num = i + 1;
+            LocalDateTime now = LocalDateTime.now();
+            Facility facility = Facility.builder()
+                    .cat(num % 2 == 0 ? this.category : category2)
+                    .provId(this.generatedProvId)
+                    .fctName("FACILITY" + num)
+                    .fctPostalCode("0" + (1234 + num))
+                    .fctAddress("ADDR")
+                    .fctDetailAddress("DADDR")
+                    .fctTel("02-2671-1234")
+                    .fctGuide("My Guide")
+                    .openOnHolidays(BooleanAlt.Y)
+                    .fctOpenTime(LocalTime.of(12, 0))
+                    .fctCloseTime(LocalTime.of(18, 0))
+                    .unitUsageTime(30 + num)
+                    .fctLatitude(38.351542 + num / 10)
+                    .fctLongitude(128.555363 + num / 10)
+                    .createdAt(now.plusHours(num))
+                    .updatedAt(now.plusHours(num))
+                    .build();
+            facilities.add(facility);
+        }
+        
+        this.facilityRepository.saveAll(facilities);
+        
+        this.em.flush();
+        
+        // When
+        List<FacilityListOfMemberResponseDto> result =
+                this.facilityMapper.findFacilityOfMemberByMemId(this.generatedProvId);
+        
+        // Then
+        assertThat(result.stream().map(FacilityListOfMemberResponseDto::getFctId))
+                .containsExactlyInAnyOrder(facilities.stream().map(Facility::getFctId).toArray(Long[]::new));
+        
+        for (FacilityListOfMemberResponseDto item : result) {
+            assertThat(item.getFctName()).isNotNull();
+            assertThat(item.getAddress()).isNotNull();
+        }
+        
     }
 }

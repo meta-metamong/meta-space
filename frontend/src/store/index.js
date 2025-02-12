@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import { login, logout, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
+import Swal from "sweetalert2";
 
 const saveUserIdInLocal = function (userId) {
   sessionStorage.setItem("userId", userId);
@@ -10,34 +11,79 @@ export const getUserIdInLocal = function () {
   return sessionStorage.getItem("userId");
 };
 
+const saveUserRoleInLocal = function (userRole) {
+  sessionStorage.setItem("userRole", userRole);
+};
+
+export const getUserRoleInLocal = function () {
+  return sessionStorage.getItem("userRole");
+};
+
+const saveUsernameInLocal = function (username) {
+  sessionStorage.setItem("userName", username);
+};
+
+export const getUsernameInLocal = function () {
+  return sessionStorage.getItem("userName");
+};
+
 const removeUserIdInLocal = function () {
   sessionStorage.removeItem("userId");
 };
 
+const removeUserNameInLocal = function () {
+  sessionStorage.removeItem("userName");
+};
+
+const removeUserRoleInLocal = function () {
+  sessionStorage.removeItem("userRole");
+};
+
+const removeUser = function () {
+  removeUserIdInLocal();
+  removeUserNameInLocal();
+  removeUserRoleInLocal();
+  location.href = "/";
+}
+
 const store = createStore({
   state: {
     userId: null,
+    userRole: null,
+    userName: null,
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
     messages: []  // WebSocket으로 받은 메시지를 저장
   },
   mutations: {
     saveUserId(state, payload) {
-      state.userId = payload;
-      saveUserIdInLocal(payload);
+      state.userId = payload.memId;
+      state.userRole = payload.role;
+      state.userName = payload.name;
+      saveUserIdInLocal(payload.memId);
+      saveUserRoleInLocal(payload.role);
+      saveUsernameInLocal(payload.name);
+      
+      Swal.fire({
+        title: `환영합니다\n ${state.userName}님`,
+        icon: 'success',
+        width: '300px'
+      });
+
       if (state.userId === "admin") {
         router.push("/admin");
       } else {
         router.push("/");
       }
     },
-    removeUserId(state) {
-      state.userId = null;
-      removeUserIdInLocal();
-      location.href = "/";
-    },
     initUserId(state, payload) {
       state.userId = payload;
+    },
+    initUserRole(state, payload) {
+      state.userRole = payload;
+    },
+    initUsername(state, payload) {
+      state.userName = payload;
     },
     setOnlineSocket(state, socket) {
       state.onlineSocket = socket;
@@ -56,6 +102,11 @@ const store = createStore({
     },
     addMessage(state, message) {
       state.messages.push(message); // 메시지 추가
+    },
+    deleteUser(){
+      removeUser();
+      removeAccessToken();
+      location.href = "/";
     }
   },
   actions: {
@@ -71,7 +122,12 @@ const store = createStore({
     async logoutRequest(context) {
       const response = await logout();
       if (response.status === 200) {
-        context.commit("removeUserId");
+        Swal.fire({
+          title: `로그아웃\n되었습니다.`,
+          icon: 'success',
+          width: '300px'
+        });
+        removeUser();
         context.commit("closeOnlineSocket");
       }
     },

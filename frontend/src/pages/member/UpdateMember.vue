@@ -1,8 +1,9 @@
 <template>
 	<div class="container w-100 mt-4">
-		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
+		<h2 class="text-center mb-3" v-text="$t('member.update')"></h2>
 		<div class="text-center mb-3">
-            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" alt="Profile Image" class="profile-img">
+            <img :src="memImage.fileDataInBase64" @click="uploadImage" alt="Profile Image" class="profile-img">
+			<input type="file" :ref="'file-member-image'" @change="(e) => onImageUpload(e)" hidden/>
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.email') }}</p>
@@ -51,18 +52,20 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.bankCode" />
+				<select class="ms-5 w-75 form-select" v-model="memberInfo.bankCode">
+					<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
+				</select>
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.provAccount" />
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.accountNumber" />
             </div>
             <div class="mb-4">
-                <p class="ms-4 text-secondary">{{ $t('member.accountOwner') }}</p>
-                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.provAccountOwner" />
+                <p class="ms-4 text-secondary">{{ $t('member.balance') }}</p>
+                <input type="text" class="signup-input w-75 text-secondary ms-5 px-3 fs-5" v-model="memberInfo.balance" />
             </div>
         </div>
-        <div class="w-100 text-center mb-2">
+        <div class="w-100 text-center mb-2 pt-3">
             <button class="signup-btn w-75 mb-3 rounded-pill" :disabled="!isValidatedName || !isValidatedPhone || isInputEmpty" @click="handleSubmit">{{ $t('button.save') }}</button>
 			<button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/profile')">{{ $t('button.cancel') }}</button>
         </div>
@@ -70,12 +73,20 @@
 </template>
 <script>
 import { get, put } from "../../apis/axios";
+import axios from "axios";
+import Swal from "sweetalert2";
 export default {
 	name: 'UpdateMember',
 	data() {
 		return {
 			memberInfo: {},
-			errorMessage: ""
+			errorMessage: "",
+			memImage: {
+				fileExtension: "png",
+				fileDataInBase64: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png",
+				fileData: {}
+			},
+			bankList: []
 		}
 	},
 	methods: {
@@ -88,6 +99,7 @@ export default {
 				memPostalCode: this.memberInfo.memPostalCode,
 				memAddress: this.memberInfo.memAddress,
 				memDetailAddress: this.memberInfo.memDetailAddress,
+				memImage: this.memImage ? { fileType: this.memImage.fileExtension, order: 1 } : null
 			}
 
 			if(this.memberInfo.role === 'ROLE_PROV'){
@@ -96,24 +108,43 @@ export default {
 					bizName: this.memberInfo.bizName,
 					bizRegNum: this.memberInfo.bizRegNum,
 					bankCode: this.memberInfo.bankCode,
-					provAccount: this.memberInfo.provAccount,
-					provAccountOwner: this.memberInfo.provAccountOwner
+					accountNumber: this.memberInfo.accountNumber
 				}
 			}
-			
-			const response = await put(`/members`, updateDto);
-			if (response.status === 200) {
-				alert(response.data.message);
-				this.$router.push("/profile")
-			} else if (response.status === 400) {
-				alert("회원정보 수정 오류 " + response.response.data.message);
-			} else {
-				return;
-			}
-		},
+			await put(`/members`, updateDto)
+			.then(response => {
+				const uploadUrl = response.data.content.uploadUrl
+				axios.put(uploadUrl, this.memImage.fileData, {
+					headers: {
+						"Content-Type": `image/${this.memImage.fileExtension}`
+					}
+				}).then(response => {
+				if (response.status === 200) {
+					Swal.fire({
+						width: "300px",
+						title: "수정 성공",
+						text: "회원 정보가 수정되었습니다.",
+						icon: "success"
+					});
+					this.$router.push("/profile")
+				} else if (response.status === 400) {
+					Swal.fire({
+						width: "300px",
+						title: "수정 실패",
+						text: response.response.data.message,
+						icon: "error"
+					});;
+				} else {
+					return;
+				}
+			}).catch(error => {
+				console.error(error);
+			})
+		})},
 		async getMemberInfo() {
 			const response = await get(`/members/${this.$store.state.userId}`);
 			this.memberInfo = response.data.content;
+			if(this.memberInfo.imgPath !== null) this.memImage.fileDataInBase64 = this.memberInfo.imgPath
 		},
 		searchPostCode(){
 			new daum.Postcode({
@@ -123,6 +154,31 @@ export default {
 				}
 			}).open();
 		},
+		async getAllBanks(){
+			const response = await get('/banks');
+			this.bankList = response.data.content;
+		},
+		/*
+			<이미지 업로드 프로세스>
+			1. 프로필 이미지 클릭
+			2. 등록할 파일 입력
+			3. 파일의 확장자을 값으로 요청 후 파일 주소를 응답으로 받는다.
+		*/
+		uploadImage(){
+			this.$refs['file-member-image'].click();
+		},
+		onImageUpload(e){
+			const fileReader = new FileReader();
+			fileReader.onload = () => {
+				const filename = e.target.files[0].name;
+				this.memImage = {
+					fileExtension: filename.substring(filename.lastIndexOf(".") + 1),
+                    fileDataInBase64: fileReader.result,
+                    fileData: e.target.files[0]
+				}
+			};
+			fileReader.readAsDataURL(e.target.files[0]);
+		}
 	},
 	computed:{
 		isValidatedName(){
@@ -141,6 +197,7 @@ export default {
 	},
 	mounted() {
 		this.getMemberInfo();
+		this.getAllBanks();
 	}
 };
 </script>

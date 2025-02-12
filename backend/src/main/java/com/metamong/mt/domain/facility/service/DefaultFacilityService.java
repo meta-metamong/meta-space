@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
@@ -17,6 +16,7 @@ import com.metamong.mt.domain.facility.dto.request.ImageRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.ZoneUpdateRequestDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListItemResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
@@ -38,6 +38,7 @@ import com.metamong.mt.global.apispec.CommonListUpdateRequestDto;
 import com.metamong.mt.global.apispec.CommonUpdateListItemRequestDto;
 import com.metamong.mt.global.file.FileUploader;
 import com.metamong.mt.global.file.FilenameResolver;
+import com.metamong.mt.global.location.LocationProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,24 +55,27 @@ public class DefaultFacilityService implements FacilityService {
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
     private final MemberService memberService;
+    private final LocationProvider locationProvider;
     
     @Override
     public FacilityRegistrationResponseDto registerFacility(FacilityRegistrationRequestDto dto) {
-        Facility newFacility = dto.toEntity();
+        Facility facility = dto.toEntity();
+        
+        facility.updateLatLng(this.locationProvider.convertAddressToLatLng(dto.getFctAddress()));
         
         List<ImageUploadUrlResponseDto> fctImageUploadUrlResponseDtos = new ArrayList<>(dto.getImages().size());
         for (ImageRequestDto imageRequestDto : dto.getImages()) {
             String fctUuidFilename = this.filenameResolver.generateUuidFilename(imageRequestDto.getFileType());
             String fctUploadUrl = this.fileUploader.generateUploadUrl(fctUuidFilename);
             String fctFilePath = this.filenameResolver.resolveFileUrl(fctUuidFilename);
-            newFacility.addFctImage(new FacilityImage(fctFilePath, imageRequestDto.getOrder(), newFacility));
+            facility.addFctImage(new FacilityImage(fctFilePath, imageRequestDto.getOrder(), facility));
             fctImageUploadUrlResponseDtos.add(new ImageUploadUrlResponseDto(imageRequestDto.getOrder(), fctUploadUrl));
         }
-        this.facilityRepository.save(newFacility);
+        Facility newFacility = this.facilityRepository.save(facility);
         
         List<ZoneImageUploadUrlResponseDto> zoneImageUploadUrls = new ArrayList<>();
         for (ZoneRegistrationRequestDto zoneDto : dto.getZones()) {
-            Zone zone = zoneDto.toEntity();
+            Zone zone = zoneDto.toEntity(newFacility.getFctId());
             List<ImageUploadUrlResponseDto> uploadUrls = new ArrayList<>(zoneDto.getImages().size());
             for (ImageRequestDto zoneImage : zoneDto.getImages()) {
                 String zoneUuidFilename = this.filenameResolver.generateUuidFilename(zoneImage.getFileType());
@@ -84,6 +88,9 @@ public class DefaultFacilityService implements FacilityService {
             zoneImageUploadUrls.add(new ZoneImageUploadUrlResponseDto(zoneDto.getZoneNo(), uploadUrls));
         }
         
+        // TODO: don't flush here (Service should be pure)
+        this.facilityRepository.flush();
+        
         dto.getAddinfos().stream()
                 .map((desc) -> AdditionalInfo.builder()
                         .fctId(newFacility.getFctId())
@@ -93,9 +100,7 @@ public class DefaultFacilityService implements FacilityService {
         
         return new FacilityRegistrationResponseDto(
                 newFacility.getFctId(),
-                newFacility.getFctImages().stream()
-                        .map((image) -> new ImageUploadUrlResponseDto(image.getImgDisplayOrder(), image.getImgPath()))
-                        .toList(),
+                fctImageUploadUrlResponseDtos,
                 zoneImageUploadUrls
         );
     }
@@ -195,5 +200,15 @@ public class DefaultFacilityService implements FacilityService {
                 .isLast(page == totalPageCount)
                 .facilities(facilities)
                 .build();
+    }
+    
+    @Override
+    public List<FacilityListOfMemberResponseDto> getFacilityOfMember(Long memId) {
+        return this.facilityMapper.findFacilityOfMemberByMemId(memId);
+    }
+
+    @Override
+    public Long getMemberIdByZoneId(Long zoneId) {
+        return this.facilityMapper.findMemIdByZoneId(zoneId);
     }
 }

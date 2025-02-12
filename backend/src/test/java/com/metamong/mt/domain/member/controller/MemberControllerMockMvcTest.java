@@ -25,7 +25,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.metamong.mt.domain.member.dto.response.LoginInfoResponseDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;

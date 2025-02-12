@@ -25,11 +25,13 @@ public class MemberResponseDto {
 	private final String memPostalCode;
 	private final String memAddress;
 	private final String memDetailAddress;
+	private final String imgPath;
 	private final Role role;
 
 	private final String bizName;
     private final String bizRegNum;
     private final String bankCode;
+    private final String bankName;
     private final String accountNumber;
     private final Long balance;    
 }

@@ -9,8 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class LoginInfoResponseDto {
-    private final String userId;
+public class LoginResponseDto {
+    private final Long memId;
     private final String name;
     private final Role role;
 }

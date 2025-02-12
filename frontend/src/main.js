@@ -8,6 +8,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import router from './router'
 import i18n from './i18n';
 import store from './store';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
 
 console.warn = console.error = () => {};

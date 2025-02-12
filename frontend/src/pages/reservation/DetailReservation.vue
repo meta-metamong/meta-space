@@ -37,39 +37,60 @@
 		</div>
 		<div class="mb-4">
 			<p class="ms-4 text-secondary">{{ $t('reservation.cancelableDate') }}</p>
-			<p class="profile-content w-75 mx-auto px-3">{{ rvtInfo.rvtDate }} {{ rvtInfo.cancelableTime }}까지</p>
+			<p class="profile-content w-75 mx-auto px-3">~{{ rvtInfo.rvtDate }} {{ rvtInfo.cancelableTime }}</p>
 		</div>
-		<div class="text-center mt-4 mb-3" v-if="isCancelable">
-			<button class="signup-btn cancel-btn w-75 mb-3 rounded-pill" @click="showCancelationReason = true">{{
-				$t('button.cancel') }}</button>
+		<div class="text-center mt-4 mb-3" v-if="isCancelable && !showCancelationReason">
+			<button class="signup-btn w-75 mb-3 rounded-pill" @click="showCancelationReason = true">
+				{{$t('reservation.cancelReservation') }}	
+			</button>
 		</div>
-		<div class="mb-3 m-4" v-if="showCancelationReason">
-			<label for="cancelationReason" class="form-label">{{ $t('reservation.selectReason') }}</label>
-			<select id="cancelReason" class="form-select" v-model="rvtCancelationReason">
-				<option disabled value="">취소 이유 선택</option>
-				<option value="CHANGE">단순 변심</option>
-				<option value="MISTAKE">잘못된 예약</option>
-				<option value="DOUBLE">중복 예약</option>
-				<option value="PAYMENT">결제 문제</option>
-				<option value="WEATHER">날씨 문제</option>
-				<option value="FACILITY">시설 이용 불가</option>
-			</select>
-			<div class="text-center mt-2 mb-3">
-				<button class="signup-btn w-75 mb-3 rounded-pill" @click="submitCancelation">{{ $t('button.check')
-					}}</button>
+		<hr v-if="showCancelationReason" />
+		<div class="mb-4" v-if="showCancelationReason">
+			<div class="ms-3 me-3">
+				<label for="cancelationReason" class="form-label text-secondary">{{ $t('reservation.cancelationReason') }}</label>
+				<div class="mb-3 ms-3 px-3">
+					<select id="cancelReason" class="form-select w-100 mx-auto" v-model="rvtCancelationReason">
+						<option disabled selected value="">{{ $t('reservation.selectReason') }}</option>
+						<option value="CHANGE">{{ $t('reservation.changeOfMind') }}</option>
+						<option value="MISTAKE">{{ $t('reservation.incorrectReservation') }}</option>
+						<option value="DOUBLE">{{ $t('reservation.duplcateReservation') }}</option>
+						<option value="PAYMENT">{{ $t('reservation.paymentIssue') }}</option>
+						<option value="WEATHER">{{ $t('reservation.weatherIssue') }}</option>
+						<option value="FACILITY">{{ $t('reservation.facilityUnavailable') }}</option>
+					</select>
+				</div>
+				<p class="text-secondary">{{ $t('payment.refundBankCode') }}</p>
+				<div class="mb-3 ms-3 px-3">
+					<select class="form-select w-100 mx-auto" v-model="refundBankCode">
+						<option disabled selected value="">{{ $t('signup.selectBank') }}</option>
+						<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
+					</select>
+				</div>
+				<p class="text-secondary">{{ $t('payment.refundAccount') }}</p>
+				<div class="mb-3 ms-3 px-3">
+					<input type="text" class="signup-input w-100 mx-auto" v-model="refundAccount" />
+				</div>
+				<p class="text-secondary">{{ $t('payment.refundAccountOwner') }}</p>
+				<div class="mb-4 ms-3 px-3">
+					<input type="text" class="signup-input text-secondary w-100 fs-5 mx-auto" v-model="refundAccountOwner" />
+				</div>
+			</div>
+			<div class="text-center mx-auto mb-3">
+				<button class="signup-btn w-75 mb-3 rounded-pill" @click="submitCancelation">{{ $t('reservation.cancelReservation')}}</button>
 			</div>
 		</div>
 		<div class="text-center mt-5 mb-3" v-if="rvtInfo.rvtState == '이용 완료'">
 			<textarea class="form-control mb-3" placeholder="신고할 내용을 입력해주세요."></textarea>
-			<button class="signup-btn w-75 mb-3 rounded-pill" @click="">{{ $t('button.report')
-				}}</button>
+			<button class="signup-btn w-75 mb-3 rounded-pill" @click="">
+				{{ $t('button.report')}}
+			</button>
 		</div>
 	</div>
 </template>
 
 <script>
 import { get, put } from "../../apis/axios";
-import { toRaw } from 'vue';
+import Swal from 'sweetalert2'
 export default {
 	name: "DetailReservation",
 	props: ['id'],
@@ -78,6 +99,10 @@ export default {
 			rvtInfo: [],
 			showCancelationReason: false,
 			rvtCancelationReason: "",
+			bankList: [],
+			refundBankCode: "",			
+			refundAccount: "",
+			refundAccountOwner: ""
 		};
 	},
 	computed: {
@@ -85,7 +110,7 @@ export default {
 			const now = new Date();
 			const cancelableUntilString = `${this.rvtInfo.rvtDate}T${this.rvtInfo.cancelableTime}`;
 			const cancelableUntil = new Date(cancelableUntilString);
-			return now < cancelableUntil;
+			return now < cancelableUntil && this.rvtInfo.rvtState != '예약 취소';
 		}
 	},
 	methods: {
@@ -94,22 +119,41 @@ export default {
 			this.rvtInfo = response.data.content;
 		},
 		async submitCancelation() {
-			if (this.rvtCancelationReason) {
+			if (this.rvtCancelationReason && this.refundBankCode && this.refundAccount && this.refundAccountOwner) {
 				await put(`/reservations/${this.id}`, {
-					rvtCancelationReason: this.rvtCancelationReason
+					rvtCancelationReason: this.rvtCancelationReason,
+					refundBankCode: this.refundBankCode,
+					refundAccount: this.refundAccount,
+					refundAccountOwner: this.refundAccountOwner
 				}, {
 					headers: {
 						"Content-Type": "application/json"
 					}
 				});
-				window.location.reload();
+				Swal.fire({
+					text: '예약이 취소되었습니다.',
+					icon: "success",
+					width: '300px'
+				});
+				this.$router.push('/reservation/list');
 			} else {
-				alert(this.$t("reservation.selectReason"));
+				Swal.fire({
+					text: this.$t("signupError.emptyInput"),
+					icon: "warning",
+					width: '300px'
+				});
 			}
+		},
+		async getBankList(){
+			const response = await get('/banks');
+			this.bankList = response.data.content;
 		}
 	},
-	mounted() {
-		this.getRvtInfo();
+	async mounted() {
+		await this.getRvtInfo();
+		if(this.isCancelable){
+			this.getBankList();
+		}
 	},
 };
 </script>

@@ -2,7 +2,7 @@
 	<div class="container w-100 mt-4">
 		<h2 class="text-center mb-3" v-text="$t('member.profile')"></h2>
 		<div class="text-center mb-3">
-            <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" alt="Profile Image" class="profile-img">
+            <img :src="profileImage" alt="Profile Image" class="profile-img">
         </div>
         <div class="mb-4">
             <p class="ms-4 text-secondary">{{ $t('member.email') }}</p>
@@ -40,18 +40,18 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
-                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.bankCode }}</p>
+                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.bankName }}</p>
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.account') }}</p>
-                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.provAccount }}</p>
+                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.accountNumber }}</p>
             </div>
             <div class="mb-4">
-                <p class="ms-4 text-secondary">{{ $t('member.accountOwner') }}</p>
-                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.provAccountOwner }}</p>
+                <p class="ms-4 text-secondary">{{ $t('member.balance') }}</p>
+                <p class="profile-content w-75 mx-auto px-3 fs-5">{{ memberInfo.balance }}</p>
             </div>
         </div>
-        <div class="w-100 text-center mb-2">
+        <div class="w-100 text-center mt-2 mb-2 pt-3">
             <button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/update')">{{ $t('button.update') }}</button>
             <button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push('/confirm-pw/change')">{{ $t('member.changePw') }}</button>
             <button class="signup-btn exit-btn w-75 rounded-pill" @click="$router.push('/confirm-pw/exit')">{{ $t('member.exit') }}</button>
@@ -66,17 +66,19 @@ export default {
     data() {
         return {
             memberInfo: [],
+            profileImage: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png"
         };
     },
     computed: {
         gender(){
-            return this.memberInfo.gender === 'M' ? this.$t('male') : this.$t('member.female');
+            return this.memberInfo.gender === 'M' ? this.$t('member.male') : this.$t('member.female');
         }
     },
     methods: {
         async getMemberInfo() {
             const response = await get(`/members/${this.$store.state.userId}`);
             this.memberInfo = response.data.content;
+			if(response.data.content.imgPath !== null) this.profileImage = response.data.content.imgPath;
         }
     },
     mounted() {

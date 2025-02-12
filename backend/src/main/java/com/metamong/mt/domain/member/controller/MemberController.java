@@ -35,6 +35,7 @@ import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -76,15 +77,15 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        Long memId = this.memberService.login(loginRequest);
+        LoginResponseDto member = this.memberService.login(loginRequest);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(memId));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(member.getMemId()));
         // 액세스 토큰과 리프레시 토큰 생성
         String accessToken = this.jwtTokenProvider.generateAccessToken(userDetails);
         String refreshToken = this.jwtTokenProvider.generateRefreshToken(userDetails);
 
         // 리프레시 토큰을 DB에 저장
-        this.memberService.updateRefreshToken(memId, refreshToken);
+        this.memberService.updateRefreshToken(member.getMemId(), refreshToken);
 
         // 쿠키 생성
         ResponseCookie accessTokenResponseCookie = this.cookieGenerator.generateCookie("Ws-Access-Token", accessToken);
@@ -111,7 +112,7 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(BaseResponse.of(memId, HttpStatus.OK, "로그인 성공"));
+                .body(BaseResponse.of(member, HttpStatus.OK, "로그인 성공"));
     }
      
     /**
@@ -284,9 +285,9 @@ public class MemberController {
       * @return 회원 수정 성공 시, HTTP 상태 코드 200(OK)와 함께 성공 메시지를 담은 응답
       */
      @PutMapping("/members")
-     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {
-       this.memberService.updateMember(Long.parseLong(user.getUsername()), dto);
-       return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "회원 수정 성공"));
+     public ResponseEntity<?> updateMember(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateRequestDto dto) {       
+       return ResponseEntity.ok(BaseResponse.of(this.memberService.updateMember(Long.parseLong(user.getUsername()), dto), 
+                               HttpStatus.OK, "회원 수정 성공"));
      }
     
 
@@ -378,5 +379,14 @@ public class MemberController {
     public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
     }
-
+    
+    /**
+     * 회원가입, 회원 정보, 예약 취소 시 사용할 은행 정보 목록입니다.
+     * 
+     * @return List<BankResponseDto> 은행 목록
+     */
+    @GetMapping("/banks")
+    public ResponseEntity<?> getAllBanks(){
+        return ResponseEntity.ok(BaseResponse.of(this.memberService.getAllBanks(), HttpStatus.OK, "은행 목록이 조회되었습니다."));
+    }
 }

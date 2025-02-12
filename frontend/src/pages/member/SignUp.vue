@@ -38,6 +38,7 @@ import InputDetail from "../../components/member/signup/InputDetail.vue";
 import InputAdditional from "../../components/member/signup/InputAdditional.vue";
 
 import { post } from "../../apis/axios";
+import Swal from "sweetalert2";
 
 export default{
     name: "SignUp",
@@ -83,8 +84,8 @@ export default{
 					bizName: "",
 					bizRegNum: "",
 					bankCode: "",
-					provAccount: "",
-					provAccountOwner: ""
+					accountNumber: "",
+					isAgreedInfo: "Y"
 				}
 			}
 			return user;
@@ -103,15 +104,42 @@ export default{
 			});
 			try {
 				if (this.step === this.maxStep) {
-					const response = await post(`/members/${this.role}`, this.user);
-					if(response.status === 200) {
-						alert(response.data.message);
-						this.$router.push('/');			
-						return;
-					}else{
-						this.step--;
-						return;
-					}
+					Swal.fire({
+						title: '정보 제공 동의',
+						text: '제 3자 정보 제공에 동의하십니까?\n제공에 동의하지 않으면 회원가입이 불가능합니다.',
+						width: '300px',
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: "#3085d6",
+						cancelButtonColor: "#d33",
+						confirmButtonText: "YES",
+						cancelButtonText: "NO"
+						}).then(async result => {
+						if(result.isConfirmed){
+							const response = await post(`/members/${this.role}`, this.user);
+							if(response.status === 200) {
+								Swal.fire({
+									icon: "success",
+									width: '300px',
+									title: '회원가입 완료',
+									text: this.role === 'provider' ? '시설을 등록해보세요!' : '시설을 이용해보세요!'
+								});
+								this.$router.push('/');			
+								return;
+							}else{
+								this.step--;
+								return;
+							}
+						}else{
+							Swal.fire({
+								icon: "success",
+								width: '300px',
+								title: "회원가입 취소.",
+								text: "회원가입이 취소되었습니다."
+							});
+							this.$router.push('/');
+						}
+					})
 				}else{
 					this.step++;
 				}

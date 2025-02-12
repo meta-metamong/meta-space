@@ -34,10 +34,20 @@ export default {
           }
           const response = await put("/members/password", requestDto);
           if(response.status === 200){
-              alert(response.data.message);
-              this.$router.push('/profile')
+            Swal.fire({
+                width: "300px",
+                title: "변경 완료",
+                text: "비밀번호가 수정되었습니다.",
+                icon: "success"
+            })
+            this.$router.push('/profile')
           }else{
-              alert(response.response.data.message);
+            Swal.fire({
+                width: "300px",
+                title: "변경 실패",
+                text: "비밀번호 재설정이 실패했습니다.",
+                icon: "error"
+            });
           }
       }
     },

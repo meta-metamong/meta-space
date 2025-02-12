@@ -39,7 +39,8 @@
         "map": "Map",
         "home": "Home",
         "chat": "ChatAdmin",
-        "profile": "Profile"
+        "profile": "Profile",
+        "facility": "Facility"
     },
     "signup":{
         "signup": "Signup",
@@ -104,6 +105,7 @@
         "confirmPw": "Confirm Password",
         "memberSearch":"SearchMember",
         "facilityApproval":"ApproveFacility"
+        "balance": "Balance"
     },
     "admin" : {
         "socket":"socket",
@@ -128,10 +130,7 @@
         "additionalInfo": "Additional Information",
         "totalPrice": "Total Price",
         "selectReason": "Select cancel reason",
-        "paymentStatus": "Payment Status",
-        "paymentMethod": "Payment Method",
-        "paymentSuccess": "Payment Successful!",
-        "paymentFailed": "Payment Failed. Please try again.",
+        "priceDescription": "If you select Zone as shared zone, the cost is set per man.",
         "reservationDetails": "Reservation Details",
         "reservationDate": "Reservation Date",
         "reservationTime": "Reservation Time",
@@ -140,7 +139,39 @@
         "confirmed": "Confirmed",
         "cancelled": "Cancelled",
         "completed": "Completed",
-        "noAvailability": "No availability for the selected date/time."
+        "noAvailability": "No availability for the selected date/time.",
+        "cancelReservation": "Cancel Reservation",
+        "cancelationReason": "Cacncelation Reason",
+        "changeOfMind": "Change of Mind",
+        "incorrectReservation": "Incorrect Reservation",
+        "duplcateReservation": "Duplicate Reservation",
+        "paymentIssue": "Payment Issue",
+        "weatherIssue": "Weather Issud",
+        "facilityUnavailable": "Facility Unavailable"
+    },
+    "payment": {
+        "list": "Payment List",
+        "detail": "Payment Detail",
+        "P": "Reservation Completed",
+        "Q": "Cancel Requested",
+        "R": "Refund Comleted",
+        "payId": "Pay ID",
+        "payPrice": "Pay Price",
+        "payMethod": "Pay Method",
+        "payDate": "Pay Date",
+        "payState": "Pay State",
+        "refundBankCode": "Bank for Refund",
+        "refundAccount": "Account for Refund",
+        "refundAccountOwner": "Account Owner for Refund",
+        "rvtCancelationReason": "Why Canceled",
+        "card": "Card",
+        "account_transfer": "Account",
+        "virtual_account": "Virtual Account",
+        "toss_money": "Toss Money",
+        "mobile_phone": "Moblie Phone",
+        "easy_pay": "Easy Pay",
+        "pay": "Pay",
+        "selectPayMethod": "Select Pay Method"
     },
     "calendar": {
         "selectDate": "Select Date",
@@ -164,7 +195,7 @@
         "facilityTel": "Tel",
         "facilityOperationTime": "Operation Time",
         "isOpenOnHolidays": "Is open on holidays?",
-        "unitUsageTime": "Unit Usage Time (Minutes)",
+        "unitUsageTime": "Unit Usage Time",
         "facilityImage": "Image",
         "addImage": "add image",
         "imageLimitDescription": "You can add images up to 5",
@@ -186,6 +217,32 @@
         "register": "Register",
         "yes": "Yes",
         "no": "No",
-        "addZone": "Add Zone"
+        "addZone": "Add Zone",
+        "delete": "Delete",
+        "won": "won",
+        "availableZones": "Available Zones",
+        "hour": "h",
+        "minutes": "m"
+    },
+    "myFacility": {
+        "myFacilityList": "My Facility List",
+        "registerNewFaciltiy": "Register new facility",
+        "edit": "Edit",
+        "delete": "Delete"
+    },
+    "search": {
+        "enterFct": "Search for a facility!",
+        "hotKeywords": "Hot Keywords",
+        "searchedCount": "Searched",
+        "distance": "distance",
+        "count": ""
+    },
+    "main": {
+        "best": "Recommend",
+        "hot": "Hot Place",
+        "close": "Nearby"
+    },
+    "editFacility": {
+        "editComplete": "Edit"
     }
 }

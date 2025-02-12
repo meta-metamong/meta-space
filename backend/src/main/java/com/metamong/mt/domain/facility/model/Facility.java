@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.metamong.mt.global.constant.BooleanAlt;
+import com.metamong.mt.global.location.LatLng;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -88,5 +89,10 @@ public class Facility {
     
     public void requestDelete() {
         this.fctState = FacilityState.DEL_REQUESTED;
+    }
+    
+    public void updateLatLng(LatLng latLng) {
+        this.fctLatitude = latLng.getLatitude();
+        this.fctLongitude = latLng.getLongitude();
     }
 }

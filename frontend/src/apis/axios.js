@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from '../store/index';
 
 // Axios 기본 설정
 const apiClient = axios.create({
@@ -21,7 +22,7 @@ apiClient.interceptors.request.use(
     (config) => {
         const accessToken = sessionStorage.getItem("accessToken");
 
-        if(accessToken){
+        if(accessToken && (store.state.userId !== null || store.state.userId !== undefined)){
             config.headers["Authorization"] = 'bearer ' + accessToken;
         }
 
@@ -38,7 +39,7 @@ apiClient.interceptors.response.use(
     (response) => {
         return response;
     },
-    async (error) => {    
+    async (error) => {
         const {config, response} = error;
         const isReissuable = (error.status === 401 && (response.data?.message === "토큰 존재" || response.data?.message === "만료된 토큰"));
         if(!isReissuable) return error;
@@ -127,3 +128,5 @@ export const del = async function(endpoint){
         return error
     }
 }
+
+export default apiClient;
