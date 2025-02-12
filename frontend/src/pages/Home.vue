@@ -28,6 +28,7 @@
 <script>
 import FctCard from '../components/facility/FctCard.vue';
 import { get, post } from '../apis/axios'
+import repImgUrl from '../assets/fct_default.jpg';
 export default{
     name: "Home",
     data(){
@@ -49,7 +50,7 @@ export default{
                     fctName: `시설 이름${i}`,
                     catName: `카테고리${i}`,
                     fctAddress: '배고파시 밥먹자동',
-                    repImgUrl: 'https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png'
+                    repImgUrl: repImgUrl
                 })
                 if(i % 2 == 0){
                     this.fctDatas[i].fctName += ' 크아아아아악'

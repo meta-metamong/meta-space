@@ -45,32 +45,36 @@
 			</button>
 		</div>
 		<hr v-if="showCancelationReason" />
-		<div class="mb-4 ms-4 w-75" v-if="showCancelationReason">
-			<label for="cancelationReason" class="form-label text-secondary">{{ $t('reservation.cancelationReason') }}</label>
-			<select id="cancelReason" class="form-select mb-3 ms-3" v-model="rvtCancelationReason">
-				<option disabled selected value="">{{ $t('reservation.selectReason') }}</option>
-				<option value="CHANGE">{{ $t('reservation.changeOfMind') }}</option>
-				<option value="MISTAKE">{{ $t('reservation.incorrectReservation') }}</option>
-				<option value="DOUBLE">{{ $t('reservation.duplcateReservation') }}</option>
-				<option value="PAYMENT">{{ $t('reservation.paymentIssue') }}</option>
-				<option value="WEATHER">{{ $t('reservation.weatherIssue') }}</option>
-				<option value="FACILITY">{{ $t('reservation.facilityUnavailable') }}</option>
-			</select>
-			<div class="mb-3">
-                <p class="text-secondary">{{ $t('payment.refundBankCode') }}</p>
-				<select class="form-select ms-3" v-model="refundBankCode">
-					<option disabled selected value="">{{ $t('signup.selectBank') }}</option>
-					<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
-				</select>
-            </div>
-			<div class="mb-3">
-                <p class="text-secondary">{{ $t('payment.refundAccount') }}</p>
-                <input type="text" class="signup-input w-100 text-secondary fs-5 ms-3" v-model="refundAccount" />
-            </div>
-            <div class="mb-4">
-                <p class="text-secondary">{{ $t('payment.refundAccountOwner') }}</p>
-                <input type="text" class="signup-input w-100 text-secondary fs-5 ms-3" v-model="refundAccountOwner" />
-            </div>
+		<div class="mb-4" v-if="showCancelationReason">
+			<div class="ms-3 me-3">
+				<label for="cancelationReason" class="form-label text-secondary">{{ $t('reservation.cancelationReason') }}</label>
+				<div class="mb-3 ms-3 px-3">
+					<select id="cancelReason" class="form-select w-100 mx-auto" v-model="rvtCancelationReason">
+						<option disabled selected value="">{{ $t('reservation.selectReason') }}</option>
+						<option value="CHANGE">{{ $t('reservation.changeOfMind') }}</option>
+						<option value="MISTAKE">{{ $t('reservation.incorrectReservation') }}</option>
+						<option value="DOUBLE">{{ $t('reservation.duplcateReservation') }}</option>
+						<option value="PAYMENT">{{ $t('reservation.paymentIssue') }}</option>
+						<option value="WEATHER">{{ $t('reservation.weatherIssue') }}</option>
+						<option value="FACILITY">{{ $t('reservation.facilityUnavailable') }}</option>
+					</select>
+				</div>
+				<p class="text-secondary">{{ $t('payment.refundBankCode') }}</p>
+				<div class="mb-3 ms-3 px-3">
+					<select class="form-select w-100 mx-auto" v-model="refundBankCode">
+						<option disabled selected value="">{{ $t('signup.selectBank') }}</option>
+						<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
+					</select>
+				</div>
+				<p class="text-secondary">{{ $t('payment.refundAccount') }}</p>
+				<div class="mb-3 ms-3 px-3">
+					<input type="text" class="signup-input w-100 mx-auto" v-model="refundAccount" />
+				</div>
+				<p class="text-secondary">{{ $t('payment.refundAccountOwner') }}</p>
+				<div class="mb-4 ms-3 px-3">
+					<input type="text" class="signup-input text-secondary w-100 fs-5 mx-auto" v-model="refundAccountOwner" />
+				</div>
+			</div>
 			<div class="text-center mx-auto mb-3">
 				<button class="signup-btn w-75 mb-3 rounded-pill" @click="submitCancelation">{{ $t('reservation.cancelReservation')}}</button>
 			</div>
@@ -86,6 +90,7 @@
 
 <script>
 import { get, put } from "../../apis/axios";
+import Swal from 'sweetalert2'
 export default {
 	name: "DetailReservation",
 	props: ['id'],
@@ -125,9 +130,18 @@ export default {
 						"Content-Type": "application/json"
 					}
 				});
+				Swal.fire({
+					text: '예약이 취소되었습니다.',
+					icon: "success",
+					width: '300px'
+				});
 				this.$router.push('/reservation/list');
 			} else {
-				alert(this.$t("signupError.emptyInput"));
+				Swal.fire({
+					text: this.$t("signupError.emptyInput"),
+					icon: "warning",
+					width: '300px'
+				});
 			}
 		},
 		async getBankList(){

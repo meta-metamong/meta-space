@@ -33,9 +33,9 @@
                     </tr>
                 </tbody>
             </table>
-
             <div class="w-100 mb-4" id="reserve-button-container">
-                <button type="button"
+                <button v-if="userRole === 'ROLE_CONS'"
+                        type="button"
                         class="btn btn-primary"
                         @click="goToReservationPage()"
                         id="reserve-button">{{ $t("reservation.reserve") }}</button>
@@ -49,21 +49,12 @@
                     <img :src="zone.imgUrl" class="rounded float-start">
                 </div>
                 <div class="zone-desc-container">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td colspan="2"><span class="zone-name">{{ zone.zoneName }}</span></td>
-                            </tr>
-                            <tr>
-                                <td>{{ $t("facility.hourlyRate") }}</td>
-                                <td>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ $t("facility.maxUserCount") }}</td>
-                                <td>{{ formatNumber(zone.maxUserCount) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <ul class="zone-info-ul">
+                        <li>{{ $t("facility.hourlyRate") }}</li>
+                        <li>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</li>
+                        <li>{{ $t("facility.maxUserCount") }}</li>
+                        <li>{{ formatNumber(zone.maxUserCount) }}</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -109,6 +100,11 @@ export default {
                 zones: []
             }
         };
+    },
+    computed: {
+        userRole() {
+            return this.$store.state.userRole;
+        }
     },
     async mounted() {
         const responseBody = (await get(`/facilities/${this.fctId}`)).data;
@@ -218,19 +214,28 @@ export default {
     border-radius: 18px;
 }
 
+.zone-info-ul {
+    padding: 0 12px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+.zone-info-ul li:nth-child(odd) {
+    align-self: self-start;
+    font-size: 14px;
+    color: #999999;
+}
+
+.zone-info-ul li:nth-child(even) {
+    align-self: self-end;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
 .zone-item-container img, .zone-item-container div {
     flex: 1;
     padding: 3px;
-}
-
-.zone-desc-container td {
-    font-size: 16px;
-    padding: 4px;
-}
-
-.zone-desc-container td:nth-child(odd) {
-    font-size: 14px;
-    color: #999999;
 }
 
 #available-zones {
