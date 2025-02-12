@@ -6,8 +6,8 @@
         <tr>
           <th>No</th>
           <th>이메일</th>
-          <th>회원구분</th>
-          <th>계정상태</th>
+          <th>회원 구분</th>
+          <th>계정 상태</th>
           <th>예약 개수</th>
           <th>예약취소 개수</th>
           <th>신고당한 횟수</th>
@@ -22,7 +22,7 @@
           <td>{{ member.accountStatus }}</td>
           <td>{{ member.reservationCount }}</td>
           <td>{{ member.cancelledReservationCount }}</td> <!-- 예약 취소 개수 수정 -->
-          <td>{{ member.reportCount }}</td> <!-- 신고당한 횟수 수정 -->
+          <td>{{ member.reportedCount }}</td> <!-- 신고당한 횟수 수정 -->
           <td>{{ member.createdAt }}</td>
         </tr>
       </tbody>
@@ -65,7 +65,7 @@ table {
 }
 table th, table td {
   text-align: center; /* 모든 th와 td 가운데 정렬 */
-  padding: 15px; /* 셀 안쪽 여백을 12px로 설정하여 간격을 늘림 */
+  padding: 20px; /* 셀 안쪽 여백을 12px로 설정하여 간격을 늘림 */
 }
 
 table th {
