@@ -44,18 +44,12 @@
                 <img :src="zone.imgUrl">
                 <div class="zone-desc-container">
                     <h3>{{ zone.zoneName }}</h3>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>{{ $t("facility.hourlyRate") }}</td>
-                                <td>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</td>
-                            </tr>
-                            <tr>
-                                <td>{{ $t("facility.maxUserCount") }}</td>
-                                <td>{{ formatNumber(zone.maxUserCount) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <ul class="zone-info-ul">
+                        <li>{{ $t("facility.hourlyRate") }}</li>
+                        <li>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</li>
+                        <li>{{ $t("facility.maxUserCount") }}</li>
+                        <li>{{ formatNumber(zone.maxUserCount) }}</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -211,19 +205,29 @@ export default {
     border-radius: 18px;
 }
 
+.zone-info-ul {
+    padding: 0 12px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+
+.zone-info-ul li:nth-child(odd) {
+    align-self: self-start;
+    font-size: 14px;
+    color: #999999;
+}
+
+.zone-info-ul li:nth-child(even) {
+    align-self: self-end;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
 .zone-item-container img, .zone-item-container div {
     flex: 1;
     padding: 3px;
-}
-
-.zone-desc-container td {
-    font-size: 16px;
-    padding: 4px;
-}
-
-.zone-desc-container td:nth-child(odd) {
-    font-size: 14px;
-    color: #999999;
 }
 
 #available-zones {
