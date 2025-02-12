@@ -18,7 +18,9 @@
             <i class="fa-solid fa-person-running text-primary"></i><br>{{ $t('footer.facility') }}
           </a>
           <div class="profile-menu text-center" v-if="isProfileMenuVisible">
-            <ul class="list-group" @click="toggleIsProfileMenuVisible"> 
+            <ul class="list-group" @click="toggleIsProfileMenuVisible">
+              <li v-if="userRole && userRole === 'ROLE_PROV'" class="list-group-item"><router-link to="/facilities/register">{{ $t('facility.facilityRegistration') }}</router-link></li>
+              <li v-if="userRole && userRole === 'ROLE_PROV'" class="list-group-item"><router-link to="/facilities/my-facility-list">{{ $t('myFacility.myFacilityList') }}</router-link></li>
               <li class="list-group-item"><router-link to="/profile">{{ $t('member.profile') }}</router-link></li>
               <li class="list-group-item"><router-link to="/reservation/list">{{ $t('reservation.list') }}</router-link></li>
               <li class="list-group-item"><router-link to="/payment/list">{{ $t('payment.list') }}</router-link></li>
@@ -44,8 +46,13 @@
         },
         computed:{
             isLogin(){
+              console.log(this.$store.state);
               return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
-             }
+            },
+            userRole() {
+              console.log(this.$store.state);
+              return this.$store.state.userRole;
+            }
         },
         methods: {
           toggleIsProfileMenuVisible(){
@@ -75,7 +82,7 @@
   height: 130px;
   position: fixed;
   right: 0;
-  bottom: 40px;
+  bottom: 80px;
 }
 
 .list-group-item {

@@ -49,6 +49,7 @@
                     <img :src="zone.imgUrl" class="rounded float-start">
                 </div>
                 <div class="zone-desc-container">
+                    <h3>{{ zone.zoneName }}</h3>
                     <ul class="zone-info-ul">
                         <li>{{ $t("facility.hourlyRate") }}</li>
                         <li>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</li>
