@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 @Table(name = "notification")  // 테이블 이름 매핑
 @SequenceGenerator(
         name = "notification_seq",
-        sequenceName = "seq_notification",
+        sequenceName = "noti_pk_seq",
         initialValue = 1,
         allocationSize = 1
 )
@@ -47,6 +47,13 @@ public class Notification {
         this.notiMsg = notiMsg;
         this.createdAt = createdAt;
         this.isRead = isRead;
+    }
+    
+    public Notification(Long receiverId, String notiMsg) {
+        this.receiverId = receiverId;
+        this.notiMsg = notiMsg;
+        this.createdAt = LocalDateTime.now();
+        this.isRead = 'N';
     }
 
     // Getter & Setter
