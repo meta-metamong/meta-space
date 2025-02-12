@@ -13,4 +13,21 @@
             </foreach>
     </update>
     
+    <select id="findNotificationsByReceiverId"
+            parameterType="com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto"
+            resultType="com.metamong.mt.domain.notification.model.Notification">
+        SELECT
+            noti_id AS "notiId",
+            receiver_id AS "receiverId",
+            noti_msg AS "notiMsg",
+            created_at AS "createdAt",
+            is_read AS "isRead"
+        FROM notification
+        WHERE receiver_id = #{dto.receiverId}
+            <if test="!dto.includeRead">
+                AND is_read = 'N'
+            </if>
+        ORDER BY created_at DESC
+    </select>
+    
 </mapper>

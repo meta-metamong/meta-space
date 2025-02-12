@@ -16,6 +16,7 @@ import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
+import com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto;
 import com.metamong.mt.domain.notification.model.Notification;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.global.constant.BooleanAlt;
@@ -81,5 +82,90 @@ class NotificationMapperTest {
         // Then
         assertThat(this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId()))
                 .isZero();
+    }
+    
+    @Test
+    @DisplayName("findNotificationsByReceiverId() - includeRead")
+    void findNotificationsByReceiverId_includeRead() {
+        // Given
+        LocalDateTime now = LocalDateTime.now();
+        List<Notification> notifications = List.of(
+                new Notification(this.sampleReceiver.getMemId(), "hi", now.plusHours(2), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), "hi1", now.plusHours(3), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), "hi2", now.plusHours(1), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), "hi3", now.plusHours(4), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), "hi4", now, 'N')
+        );
+        
+        notifications.get(0).setIsRead('Y');
+        notifications.get(3).setIsRead('Y');
+        
+        this.notificationRepository.saveAll(notifications);
+        
+        this.notificationRepository.flush();
+        
+        // When
+        List<Notification> result = this.notificationMapper
+                .findNotificationsByReceiverId(new NotificationListMapperDto(this.sampleReceiver.getMemId(), true));
+        
+        // Then
+        Long[] expected = notifications.stream()
+                .sorted((n1, n2) -> {
+                    if (n1.getCreatedAt().isBefore(n2.getCreatedAt())) {
+                        return 1;
+                    } else if (n1.getCreatedAt().isAfter(n2.getCreatedAt())) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                })
+                .map(Notification::getNotiId)
+                .toArray(Long[]::new);
+        assertThat(result).size().isEqualTo(expected.length);
+        assertThat(result.stream().map(Notification::getNotiId))
+                .containsExactly(expected);
+    }
+    
+    @Test
+    @DisplayName("findNotificationsByReceiverId() - notIncludeRead")
+    void findNotificationsByReceiverId_notIncludeRead() {
+        // Given
+        LocalDateTime now = LocalDateTime.now();
+        List<Notification> notifications = List.of(
+                new Notification(this.sampleReceiver.getMemId(), "hi", now.plusHours(2), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), "hi1", now.plusHours(3), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), "hi2", now.plusHours(1), 'N'),
+                new Notification(this.sampleReceiver.getMemId(), "hi3", now.plusHours(4), 'Y'),
+                new Notification(this.sampleReceiver.getMemId(), "hi4", now, 'N')
+        );
+        
+        notifications.get(0).setIsRead('Y');
+        notifications.get(3).setIsRead('Y');
+        
+        this.notificationRepository.saveAll(notifications);
+        
+        this.notificationRepository.flush();
+        
+        // When
+        List<Notification> result = this.notificationMapper
+                .findNotificationsByReceiverId(new NotificationListMapperDto(this.sampleReceiver.getMemId(), false));
+        
+        // Then
+        Long[] expected = notifications.stream()
+                .filter((e) -> e.getIsRead().equals('N'))
+                .sorted((n1, n2) -> {
+                    if (n1.getCreatedAt().isBefore(n2.getCreatedAt())) {
+                        return 1;
+                    } else if (n1.getCreatedAt().isAfter(n2.getCreatedAt())) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                })
+                .map(Notification::getNotiId)
+                .toArray(Long[]::new);
+        assertThat(result).size().isEqualTo(expected.length);
+        assertThat(result.stream().map(Notification::getNotiId))
+                .containsExactly(expected);
     }
 }
