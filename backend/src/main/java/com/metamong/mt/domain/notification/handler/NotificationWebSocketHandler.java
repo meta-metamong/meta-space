@@ -1,18 +1,36 @@
-package com.metamong.mt.global.config;
+package com.metamong.mt.domain.notification.handler;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.metamong.mt.domain.notification.service.WebSocketNotificationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-@Component
-public class MyWebSocketHandler extends TextWebSocketHandler {
+@Slf4j
+@RequiredArgsConstructor
+public class NotificationWebSocketHandler extends TextWebSocketHandler {
+    private final WebSocketNotificationService webSocketNotificationService;
+    
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        Long memId = (Long) session.getAttributes().get("memId");
+        log.info("WebSocket connection established - memId: {}, session Id={}", memId, session.getId());
+        this.webSocketNotificationService.saveSession(memId, session);
+    }
+    
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        log.info("handleTextMessage - session={}", session.getId());
+        log.info("message={}", message);
+    }
+    
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        this.webSocketNotificationService.deleteBySessionId(session.getId());
+    }
 /*
     @Autowired
     private MemberController memberController;
@@ -103,29 +121,4 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         System.out.println("WebSocket 연결 종료: " + session.getId());
     }
     */
-	
-	private static final Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<>();
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	
-    private Long getUserIdFromSession(WebSocketSession session) {
-        // 예제: 세션에서 userId를 가져오는 방식 (실제 구현은 필요에 따라 변경)
-        return (Long) session.getAttributes().get("username");
-    }
-    
-	@Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        Long userId = 1L;//getUserIdFromSession(session);
-        if (userId != null) {
-            userSessions.put(userId, session);
-        }
-    }
-	
-    public void sendNotification(Long userId, int count) throws IOException {
-        WebSocketSession session = userSessions.get(userId);
-        if (session != null && session.isOpen()) {
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(count)));
-        }
-    }
-    
-    
 }

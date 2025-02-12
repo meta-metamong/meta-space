@@ -29,7 +29,8 @@ export default {
     name: 'SearchedFacilityList',
     data() {
         const searchKeywordParam = this.$route.query["search-keyword"];
-        this.$router.push({ path: "/facilities", query: {} });
+        console.log(searchKeywordParam);
+        // this.$router.push({ path: "/facilities", query: {} });
         return {
             fctContent: {
                 facilities: [],

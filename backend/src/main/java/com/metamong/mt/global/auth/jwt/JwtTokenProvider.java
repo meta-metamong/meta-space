@@ -152,8 +152,12 @@ public class JwtTokenProvider {
      * @return 토큰
      */
 	public String resolveToken(HttpServletRequest request) {
-	    String accessToken = request.getHeader("Authorization");
-		return accessToken == null ? null : accessToken.substring("Bearer ".length());
+	    String accessToken = request.getParameter("x-authorization");
+	    if (accessToken == null) {
+	        accessToken = request.getHeader("Authorization");
+	        return accessToken == null ? null : accessToken.substring("Bearer ".length());
+	    }
+		return accessToken;
 	}
     
    
