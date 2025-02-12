@@ -10,15 +10,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.metamong.mt.global.auth.filter.NoAuthPrincipalFinderFilter;
 import com.metamong.mt.global.auth.jwt.JwtAuthenticationFilter;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
 import com.metamong.mt.global.config.constant.HttpRequestAuthorizationDefinition;
@@ -34,6 +37,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     
     private final AuthenticationManager jwtAuthenticationManager;
+    private final UserDetailsService userDetailsService;
 	
 	@Bean
 	@Profile("no-auth & !prod")
@@ -42,7 +46,9 @@ public class SecurityConfig {
 	    http.cors((corsConfig) -> corsConfig.configurationSource(cors("http://localhost:3000")));
 	    http.authorizeHttpRequests((request) -> {
             request.requestMatchers("/api/**").permitAll();
+            request.requestMatchers("ws").permitAll();
         });
+	    http.addFilterBefore(new NoAuthPrincipalFinderFilter(this.userDetailsService, this.jwtTokenProvider), AuthorizationFilter.class);
 	    return http.build();
 	}
 	

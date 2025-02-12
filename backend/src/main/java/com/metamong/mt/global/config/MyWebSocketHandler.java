@@ -1,24 +1,49 @@
 package com.metamong.mt.global.config;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.metamong.mt.domain.member.controller.MemberController;
-import com.metamong.mt.domain.member.dto.request.MessageRequestDto;
-import com.metamong.mt.domain.member.dto.response.MessageResponseDto;
+import lombok.extern.slf4j.Slf4j;
 
-@Component
+@Slf4j
 public class MyWebSocketHandler extends TextWebSocketHandler {
+    private static final Map<Long, WebSocketSession> SESSION_STORAGE_BY_MEM_ID = new ConcurrentHashMap<>();
+    private static final Map<String, Long> MEM_ID_BY_SESSION_ID = new ConcurrentHashMap<>();
+    
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        Long memId = (Long) session.getAttributes().get("memId");
+        log.info("WebSocket connection established - memId: {}, session Id={}", memId, session.getId());
+        SESSION_STORAGE_BY_MEM_ID.put(memId, session);
+        MEM_ID_BY_SESSION_ID.put(session.getId(), memId);
+    }
+    
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        log.info("handleTextMessage - session={}", session.getId());
+        log.info("memId={}", MEM_ID_BY_SESSION_ID.get(session.getId()));
+        log.info("message={}", message);
+    }
+    
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        super.afterConnectionClosed(session, status);
+        String sessionId = session.getId();
+        Long memId = MEM_ID_BY_SESSION_ID.get(sessionId);
+        
+        log.info("WebSocket connection closed - memId: {}, session Id: {}", memId, session.getId());
+        log.info("status={}", status);
+        
+        SESSION_STORAGE_BY_MEM_ID.remove(memId);
+        MEM_ID_BY_SESSION_ID.remove(sessionId);
+    }
 /*
     @Autowired
     private MemberController memberController;

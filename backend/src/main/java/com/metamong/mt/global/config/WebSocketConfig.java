@@ -14,18 +14,14 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSocket
-@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
-
-    private final JwtTokenProvider jwtTokenProvider;
-    private final MyWebSocketHandler myWebSocketHandler;
     
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // "/ws" 엔드포인트로 WebSocket 핸들러를 등록
-        registry.addHandler(myWebSocketHandler, "/ws")
+        registry.addHandler(new MyWebSocketHandler(), "/ws")
                 .setAllowedOrigins("*")  // Cross-Origin 설정
-                .addInterceptors(new JwtHandshakeInterceptor(jwtTokenProvider));  // JWT 인증 인터셉터 추가
+                .addInterceptors(new JwtHandshakeInterceptor());  // JWT 인증 인터셉터 추가
     }
 
 
