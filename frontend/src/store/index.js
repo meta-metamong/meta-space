@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { login, logout, removeAccessToken } from "../apis/axios";
+import { login, logout, reissue, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
 
 const saveUserIdInLocal = function (userId) {
@@ -37,9 +37,53 @@ const store = createStore({
     userName: null,
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
-    messages: []  // WebSocket으로 받은 메시지를 저장
+    messages: [],  // WebSocket으로 받은 메시지를 저장
+    socketClient: null
   },
   mutations: {
+    openWebSocket(state, payload) {
+      console.log("openWebSocket");
+      if (!state.socket) {
+        let socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?x-authorization=${sessionStorage.getItem("accessToken")}`);
+        socket.onopen = (e) => {
+          console.log("WebSocket session opened!");
+        }
+
+        socket.onclose = (e) => {
+          console.log("WebSocket closed");
+          console.log(e);
+          reissue().then((response) =>{
+            console.log(response);
+            console.log("after reissue");
+            socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?x-authorization=${sessionStorage.getItem("accessToken")}`);
+
+            socket.onopen = (e) => {
+              console.log("WebSocket session opened!");
+            }
+
+            socket.onerror = (e) => {
+              console.error(e);
+            }
+    
+            socket.onmessage = (msg) => {
+              console.log(JSON.parse(msg.data));
+            }
+    
+            state.socketClient = socket;
+          })
+        }
+
+        socket.onerror = (e) => {
+          console.error(e);
+        }
+
+        socket.onmessage = (msg) => {
+          console.log(JSON.parse(msg));
+        }
+
+        state.socketClient = socket;
+      }
+    },
     saveUserId(state, payload) {
       state.userId = payload.memId;
       state.userRole = payload.role;
@@ -91,7 +135,8 @@ const store = createStore({
       const response = await login(payload);
       if (response.status === 200) {
         context.commit("saveUserId", response.data.content);
-        context.dispatch("connectOnlineStatus");
+        context.commit("openWebSocket");
+        // context.dispatch("connectOnlineStatus");
       }else{
         return response.response.data.message;
       }
@@ -106,13 +151,28 @@ const store = createStore({
     connectOnlineStatus(context) {
       if (!context.state.userId) return;  // userId가 없으면 리턴
 
-      const socket = new WebSocket("ws://localhost:8080/ws");
+      const accessToken = sessionStorage.getItem("accessToken");
+      
+      const socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?x-authorization=${accessToken}`);
 
       socket.onopen = () => {
         console.log("✅ 온라인 상태 웹소켓 연결됨");
-        socket.send(
-          JSON.stringify({ type: "login", userId: context.state.userId }) // userId로 수정
-        );
+        socket.onclose = (e) => {
+                console.log("WebSocket closed");
+                console.log(e);
+            }
+
+            socket.onerror = (e) => {
+                console.error(e);
+            }
+
+            socket.onmessage = (msg) => {
+                console.log(JSON.parse(msg));
+            }
+
+            this.socketClient = socket;
+
+            // socket.close();
       };
 
       socket.onmessage = (event) => {

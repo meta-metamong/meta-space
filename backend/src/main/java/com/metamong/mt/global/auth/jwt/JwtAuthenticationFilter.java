@@ -20,8 +20,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
 	@Autowired
@@ -38,6 +40,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		
 		// 헤더에서 JWT를 받아음.
 		String token = jwtTokenProvider.resolveToken(httpRequest);
+		if (log.isDebugEnabled()) {
+		    log.debug("token={}", token);
+		}
 		
 		// 유효한 토큰인지 확인.
 		if (token != null) {						

@@ -38,27 +38,25 @@
 
 <script>
     export default{
-        name: "Footer",
-        data(){
-          return{
-            isProfileMenuVisible: false
-          }
-        },
-        computed:{
-            isLogin(){
-              console.log(this.$store.state);
-              return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
-            },
-            userRole() {
-              console.log(this.$store.state);
-              return this.$store.state.userRole;
-            }
-        },
-        methods: {
-          toggleIsProfileMenuVisible(){
-            this.isProfileMenuVisible = !this.isProfileMenuVisible;
-          }
+      name: "Footer",
+      data(){
+        return{
+          isProfileMenuVisible: false
         }
+      },
+      computed:{
+          isLogin(){
+            return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
+          },
+          userRole() {
+            return this.$store.state.userRole;
+          }
+      },
+      methods: {
+        toggleIsProfileMenuVisible(){
+          this.isProfileMenuVisible = !this.isProfileMenuVisible;
+        }
+      }
     }
 </script>
 
