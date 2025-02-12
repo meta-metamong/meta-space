@@ -89,7 +89,6 @@ public class FacilityRegistrationRequestDto {
                 .fctOpenTime(this.getFctOpenTime())
                 .fctCloseTime(this.getFctCloseTime())
                 .unitUsageTime(this.getUnitUsageTime())
-                // TODO: fctLatitude, fctLongitude
                 .build();
     }
 }

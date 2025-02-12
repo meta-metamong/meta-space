@@ -48,8 +48,8 @@ export default {
                     addr: {
                         // postalCode: "",
                         // address: "",
-                        postalCode: "01234",
-                        address: "ADDR",
+                        postalCode: "",
+                        address: "",
                         detailAddress: ""
                     },
                     tel: {
@@ -87,8 +87,8 @@ export default {
     },
     computed: {
         userId() {
-            return this.$store.state.userId;
-            // return 21;
+            // return this.$store.state.userId;
+            return 21;
         }
     },
     methods: {
@@ -100,7 +100,7 @@ export default {
             const requestBody = {
                 fctName: this.inputs.facilityRegistration.fctName,
                 fctPostalCode: this.inputs.facilityRegistration.addr.postalCode,
-                fctAddress: this.inputs.facilityRegistration.addr.postalCode,
+                fctAddress: this.inputs.facilityRegistration.addr.address,
                 fctDetailAddress: this.inputs.facilityRegistration.addr.postalCode,
                 catId: this.inputs.facilityRegistration.minorCatId ? this.inputs.facilityRegistration.minorCatId : this.inputs.facilityRegistration.majorCatId,
                 provId: this.userId,
