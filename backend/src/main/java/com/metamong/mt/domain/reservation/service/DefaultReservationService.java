@@ -138,7 +138,7 @@ public class DefaultReservationService implements ReservationService {
             checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
         }
         Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
-//        this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
+        this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
     }
 
     @Override

@@ -72,8 +72,8 @@ public class HttpRequestAuthorizationDefinition {
                                    "/api/payments/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/reports", new Role[] { Role.ROLE_ADMN },
                                    "/api/reports/types", new Role[] { Role.ROLE_CONS, Role.ROLE_ADMN }),
-            HttpMethod.POST, Map.of("/api/reservations", new Role[] { Role.ROLE_CONS },
-                                    "/api/reports", new Role[] { Role.ROLE_CONS }),
+            HttpMethod.POST, Map.of("/api/reservations", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                    "/api/reports", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV }),
             HttpMethod.PUT, Map.of("/api/reservations/*", new Role[] { Role.ROLE_CONS },
                                    "/api/*/refund", new Role[] { Role.ROLE_ADMN },
                                    "/api/reports", new Role[] { Role.ROLE_ADMN })
