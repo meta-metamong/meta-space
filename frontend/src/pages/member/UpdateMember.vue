@@ -52,7 +52,7 @@
             </div>
             <div class="mb-4">
                 <p class="ms-4 text-secondary">{{ $t('member.bank') }}</p>
-				<select class="ms-5 w-75 form-select" @change="(e) => test(e)" v-model="memberInfo.bankCode">
+				<select class="ms-5 w-75 form-select" v-model="memberInfo.bankCode">
 					<option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
 				</select>
             </div>
@@ -167,9 +167,6 @@ export default {
 				}
 			};
 			fileReader.readAsDataURL(e.target.files[0]);
-		},
-		test(e){
-			console.log(e.target.value);
 		}
 	},
 	computed:{
