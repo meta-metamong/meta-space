@@ -79,6 +79,12 @@ public class ReservationController {
         return ResponseEntity.ok(BaseResponse.of(reservationService.getTopFacilities(), HttpStatus.OK, "인기 시설 불러오기"));
     }
     
+    @GetMapping("/reservations/facilities/{fctId}")
+    public ResponseEntity<?> findReservationByFctId(@PathVariable Long fctId) {
+        return ResponseEntity.ok(BaseResponse.of(reservationService.findReservationByFctId(fctId),
+                HttpStatus.OK, "시설 예약 정보 불러오기 성공"));
+    }
+    
     public Map<String, Object> findReservationInfo() throws JsonProcessingException {
         List<ReservationInfoResponseDto> rvtInfo = reservationService.getTotalCount();
 

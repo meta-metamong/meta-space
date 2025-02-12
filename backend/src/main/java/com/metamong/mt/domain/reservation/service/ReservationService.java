@@ -7,6 +7,7 @@ import com.metamong.mt.domain.reservation.dto.request.IsReportableRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
+import com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
@@ -30,4 +31,6 @@ public interface ReservationService {
     Reservation findReservationEntityByRvtId(Long rvtId);
     
     boolean isReportable(IsReportableRequestDto dto, Long reporterId);
+    
+    List<FctReservationResponseDto> findReservationByFctId(Long fctId);
 }

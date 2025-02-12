@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.facility.service.FacilityService;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
+import com.metamong.mt.domain.notification.service.NotificationService;
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
@@ -19,6 +22,7 @@ import com.metamong.mt.domain.reservation.dto.request.IsReportableRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
+import com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
@@ -42,6 +46,7 @@ public class DefaultReservationService implements ReservationService {
     private final FacilityRepository facilityRepository;
     private final FacilityService facilityService;
     private final PaymentService paymentService;
+    private final NotificationService notificationService;
     private static final int PAGE_SIZE = 5;
     
     @Override
@@ -142,6 +147,10 @@ public class DefaultReservationService implements ReservationService {
         }
         Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
         this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
+        
+        Long provIdOfFacility = this.reservationMapper.findProvIdByRvtId(savedReservation.getRvtId())
+                .orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(provIdOfFacility, NotificationMessage.NEW_RESERVATION);
     }
 
     @Override
@@ -157,11 +166,15 @@ public class DefaultReservationService implements ReservationService {
     public Reservation findReservationEntityByRvtId(Long rvtId) {
         return this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
     }
-    
+
     @Override
     @Transactional(readOnly=true)
     public boolean isReportable(IsReportableRequestDto dto, Long reporterId) {
         Long reportedId = this.facilityService.getMemberIdByZoneId(dto.getZoneId());
         return (this.reservationMapper.findReportByReporterIdAndReportedId(reporterId, reportedId) < 1);
+
+    @Override
+    public List<FctReservationResponseDto> findReservationByFctId(Long fctId) {
+        return this.reservationMapper.findReservationByFctId(fctId);
     }
 }

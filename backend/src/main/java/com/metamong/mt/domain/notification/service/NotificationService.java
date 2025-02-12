@@ -1,12 +1,19 @@
 package com.metamong.mt.domain.notification.service;
 
+import java.util.List;
+
+import com.metamong.mt.domain.notification.dto.response.NotificationResponseDto;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
+
 public interface NotificationService {
 
-    void sendMessage(Long memId, String message);
-
-    void sendMessage(Long memId, Object message);
+    void sendMessage(Long receiverId, NotificationMessage notificationType);
     
-    void sendMessageToAll(String message);
+    int countUnreadNotificationsByReceiverId(Long receiverId);
     
-    void sendMessageToAll(Object message);
+    List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead);
+    
+    void readNotifications(List<Long> notificationIds);
+    
+    void deleteById(Long notiId);
 }
