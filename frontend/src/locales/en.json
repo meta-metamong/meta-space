@@ -103,12 +103,20 @@
         "membershipDate": "Membership Date",
         "changePw": "Change Password",
         "confirmPw": "Confirm Password",
+        "memberSearch":"SearchMember",
+        "facilityApproval":"ApproveFacility"
         "balance": "Balance"
     },
     "admin" : {
         "socket":"socket",
         "salesList":"salesList",
-        "chatlist":"chatlist"
+        "chatlist":"chatlist",
+        "memberSearch":"memberSearch",
+        "facilityApproval":"facilityApproval",
+        "memberBen":"memberBen",
+        "dashboard":"dashboard",
+        "salesSearch":"salesSearch",
+        "salesExport":"salesExport"       
     },
     "reservation": {
         "list": "Reservation List",
