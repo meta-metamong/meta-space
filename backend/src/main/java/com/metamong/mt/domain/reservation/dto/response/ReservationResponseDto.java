@@ -25,6 +25,7 @@ public class ReservationResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime cancelableTime;
 
+    private Long zoneId;
     private String zoneName;
     private String fctAddress;
     private String fctDetailAddress;

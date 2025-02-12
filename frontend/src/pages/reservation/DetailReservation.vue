@@ -79,9 +79,8 @@
 				<button class="signup-btn w-75 mb-3 rounded-pill" @click="submitCancelation">{{ $t('reservation.cancelReservation')}}</button>
 			</div>
 		</div>
-		<div class="text-center mt-5 mb-3" v-if="rvtInfo.rvtState == '이용 완료'">
-			<textarea class="form-control mb-3" placeholder="신고할 내용을 입력해주세요."></textarea>
-			<button class="signup-btn w-75 mb-3 rounded-pill" @click="">
+		<div class="text-center mt-5 mb-3" v-if="rvtInfo.rvtState == '이용 완료' && isReportable">
+			<button class="signup-btn w-75 mb-3 rounded-pill" @click="$router.push(`/report/${rvtInfo.zoneId}`)">
 				{{ $t('button.report')}}
 			</button>
 		</div>
@@ -89,7 +88,7 @@
 </template>
 
 <script>
-import { get, put } from "../../apis/axios";
+import { get, post, put } from "../../apis/axios";
 import Swal from 'sweetalert2'
 export default {
 	name: "DetailReservation",
@@ -102,7 +101,8 @@ export default {
 			bankList: [],
 			refundBankCode: "",			
 			refundAccount: "",
-			refundAccountOwner: ""
+			refundAccountOwner: "",
+			isReportable: ""
 		};
 	},
 	computed: {
@@ -154,6 +154,10 @@ export default {
 		if(this.isCancelable){
 			this.getBankList();
 		}
+		
+		const requestDto = { zoneId: this.rvtInfo.zoneId };
+		const response = await post('/reservations/reportable', requestDto);
+		this.isReportable = response.data.content;
 	},
 };
 </script>

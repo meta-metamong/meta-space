@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.IsReportableRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
 import com.metamong.mt.domain.reservation.dto.response.RecommendationResponseDto;
@@ -97,5 +100,10 @@ public class ReservationController {
                 .bodyValue(rvtInfoList) // JSON 형태로 데이터 전송
                 .retrieve() // 요청을 실행하고 응답을 받음
                 .bodyToMono(RecommendationResponseDto.class); // 본문을 추천 응답으로 변환
+    }
+    
+    @PostMapping("/reservations/reportable")
+    public ResponseEntity<?> isReportable(@Validated @RequestBody IsReportableRequestDto dto, @AuthenticationPrincipal User user){
+        return ResponseEntity.ok(BaseResponse.of(this.reservationService.isReportable(dto, Long.valueOf(user.getUsername())), HttpStatus.OK, "신고 가능 여부가 조회되었습니다."));
     }
 }

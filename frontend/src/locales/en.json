@@ -250,5 +250,11 @@
         "all": "all",
         "read": "read",
         "unread": "unread"
+    },
+    "report": {
+        "report": "Report",
+        "reportType": "Report Type",
+        "reportMsg": "Report Content",
+        "selectReportType": "Select Report Type"
     }
 }

@@ -28,4 +28,6 @@ public interface ReservationMapper {
     List<HourlyUsageDto> getHourlyUsageCounts(ReservationRequestDto dto);
     
     List<HourlyUsageDto> getReservedTimes(SelectedInfoRequestDto dto);
+    
+    int findReportByReporterIdAndReportedId(Long reporterId, Long reportedId); 
 }

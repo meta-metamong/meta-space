@@ -1,9 +1,9 @@
 package com.metamong.mt.domain.reservation.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.IsReportableRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
@@ -28,4 +28,6 @@ public interface ReservationService {
     void cancelReservation(Long rvtId, CancelRequestDto dto);
     
     Reservation findReservationEntityByRvtId(Long rvtId);
+    
+    boolean isReportable(IsReportableRequestDto dto, Long reporterId);
 }

@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
+import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.IsReportableRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
@@ -38,6 +40,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
+    private final FacilityService facilityService;
     private final PaymentService paymentService;
     private static final int PAGE_SIZE = 5;
     
@@ -154,5 +157,11 @@ public class DefaultReservationService implements ReservationService {
     public Reservation findReservationEntityByRvtId(Long rvtId) {
         return this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
     }
-
+    
+    @Override
+    @Transactional(readOnly=true)
+    public boolean isReportable(IsReportableRequestDto dto, Long reporterId) {
+        Long reportedId = this.facilityService.getMemberIdByZoneId(dto.getZoneId());
+        return (this.reservationMapper.findReportByReporterIdAndReportedId(reporterId, reportedId) < 1);
+    }
 }

@@ -30,6 +30,7 @@ import Search from '../pages/Search.vue';
 import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 import PaymentResult from '../pages/payment/PaymentResult.vue';
 import NotificationList from '../pages/notification/NotificationList.vue';
+import Report from '../pages/report/Report.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -69,7 +70,8 @@ const routes = [
 	{ path: '/payment/:rvtId', component: DetailPayment, props: true },
 	{ path: '/payment/result', component: PaymentResult },
 
-	{ path: '/notification/list', component: NotificationList }
+	{ path: '/notification/list', component: NotificationList },
+	{ path: '/report/:zoneId', component: Report, props: true}
 ];
 
 const router = createRouter({
