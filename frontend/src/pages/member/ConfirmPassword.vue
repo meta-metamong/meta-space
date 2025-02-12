@@ -65,7 +65,6 @@ export default {
 				cancelButtonText: "NO"
 			}).then(async result => {
 				if(result.isConfirmed){
-					this.$store.dispatch('logoutRequest');
 					const response = await del('/members');
 					if(response.status === 200){
 						Swal.fire({
@@ -73,7 +72,8 @@ export default {
 							title: "탈퇴 완료",
 							text: "이용해주셔서 감사했습니다!",
 							icon: "success"
-						})
+						});
+						this.$store.commit('deleteUser');
 					}else{
 						Swal.fire({
 							width: "300px",

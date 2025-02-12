@@ -39,6 +39,13 @@ const removeUserRoleInLocal = function () {
   sessionStorage.removeItem("userRole");
 };
 
+const removeUser = function () {
+  removeUserIdInLocal();
+  removeUserNameInLocal();
+  removeUserRoleInLocal();
+  location.href = "/";
+}
+
 const store = createStore({
   state: {
     userId: null,
@@ -69,12 +76,6 @@ const store = createStore({
         router.push("/");
       }
     },
-    removeUser(state) {
-      removeUserIdInLocal();
-      removeUserNameInLocal();
-      removeUserRoleInLocal();
-      location.href = "/";
-    },
     initUserId(state, payload) {
       state.userId = payload;
     },
@@ -102,9 +103,10 @@ const store = createStore({
     addMessage(state, message) {
       state.messages.push(message); // 메시지 추가
     },
-    deleteUser(state){
-      this.removeUser();
+    deleteUser(){
+      removeUser();
       removeAccessToken();
+      location.href = "/";
     }
   },
   actions: {
@@ -125,7 +127,7 @@ const store = createStore({
           icon: 'success',
           width: '300px'
         });
-        context.commit("removeUser");
+        removeUser();
         context.commit("closeOnlineSocket");
       }
     },
