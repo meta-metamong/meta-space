@@ -6,27 +6,34 @@
 
     <select id="searchMembers" resultType="com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto">
     <![CDATA[
-        SELECT 
+       SELECT 
     m.email, 
-    case when m.role ='ROLE_PROV' then '시설제공자' 
-        when m.role ='ROLE_CONS' then '시설이용자'
-    end as role,
+    CASE 
+        WHEN m.role = 'ROLE_PROV' THEN '시설제공자' 
+        WHEN m.role = 'ROLE_CONS' THEN '시설이용자'
+    END AS role,
     CASE 
         WHEN m.mem_banned_until IS NULL THEN '정상' 
         ELSE '정지' 
     END AS accountStatus, 
-    COUNT(r.rvt_id) AS reservationCount, 
-    m.created_at as createdAt
+    COUNT(CASE WHEN r.rvt_cancelation_reason IS NOT NULL THEN 1 END) AS cancelledReservationCount, -- 취소된 예약 건수
+    COUNT(CASE WHEN r.rvt_cancelation_reason IS NULL THEN 1 END) AS reservationCount, -- 취소되지 않은 예약 건수
+    COUNT(rp.report_id) AS reportedCount, -- 신고된 횟수
+    m.created_at AS createdAt
 FROM 
     member m
 LEFT JOIN 
     reservation r ON m.mem_id = r.cons_id
+LEFT JOIN
+    report rp ON m.mem_id = rp.reported_id
+WHERE m.role != 'ROLE_ADMN'
 GROUP BY  
     m.email, 
     m.role, 
     m.mem_banned_until,  
     m.created_at
-ORDER BY m.created_at
+ORDER BY 
+    m.created_at
     ]]>
 	</select>
 
@@ -93,8 +100,8 @@ WHERE mem_id = #{data.reportedId}
 
 <select id="getRequestFacilities" resultType="com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto">
 select 
-fct_id,
-    fct_name, cat_name,
+f.fct_id,
+    fct_name, zone_name,cat_name,
     unit_usage_time,
     ('(' || fct_postal_code || ') ' || fct_address || ' ' || fct_detail_address) AS full_address,
     fct_tel, 
@@ -104,6 +111,7 @@ fct_id,
         WHEN fct_state = 'DEL_REQUESTED' THEN '삭제요청' 
     END AS fct_state 
 FROM facility f join category c on f.cat_id = c.cat_id
+join zone z on f.fct_id =z.fct_id
 WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
 
     </select>
