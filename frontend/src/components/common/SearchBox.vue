@@ -11,24 +11,18 @@ export default{
     props: {
         searchKeyword: {
             type: String,
-            required: false
+            required: true
         }
     },
     name: 'SearchBox',
     data(){
         return{
-            keyword: this.searchKeyword || ""
-        }
-    },
-    props: {
-        keywordProp: {
-            type: String,
-            required: false
+            keyword: ""
         }
     },
     methods: {
         async search(){
-            if(this.keyword === "" || this.keyword === undefined){
+            if(this.keyword){
                 Swal.fire({
                     text: this.$t('search.enterFct'),
                     width: '300px',
@@ -53,8 +47,8 @@ export default{
         }
     },
     mounted(){
-        if(this.keywordProp !== null || this.keywordProp !== undefined) {
-            this.keyword = this.keywordProp;
+        if(this.searchKeyword) {
+            this.keyword = this.searchKeyword;
         }
     }
 }

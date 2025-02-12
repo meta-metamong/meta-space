@@ -17,7 +17,7 @@
           <a href="/facilities" class="nav-link text-center">
             <i class="fa-solid fa-person-running text-primary"></i><br>{{ $t('footer.facility') }}
           </a>
-          <div class="profile-menu text-center" v-if="isProfileMenuVisible">
+          <div class="profile-menu text-center" :id="userRole === 'ROLE_CONS' ? 'cons-menu' : 'prov-menu'" v-if="isProfileMenuVisible">
             <ul class="list-group" @click="toggleIsProfileMenuVisible">
               <li v-if="userRole && userRole === 'ROLE_PROV'" class="list-group-item"><router-link to="/facilities/register">{{ $t('facility.facilityRegistration') }}</router-link></li>
               <li v-if="userRole && userRole === 'ROLE_PROV'" class="list-group-item"><router-link to="/facilities/my-facility-list">{{ $t('myFacility.myFacilityList') }}</router-link></li>
@@ -80,7 +80,15 @@
   height: 130px;
   position: fixed;
   right: 0;
-  bottom: 40px;
+  bottom: 109px;
+}
+
+#prov-menu{
+  bottom: 109px;
+}
+
+#cons-menu{
+  bottom: 39px;
 }
 
 .list-group-item {
