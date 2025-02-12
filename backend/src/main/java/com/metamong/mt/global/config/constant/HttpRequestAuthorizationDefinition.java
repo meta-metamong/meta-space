@@ -68,6 +68,7 @@ public class HttpRequestAuthorizationDefinition {
     private static final Map<HttpMethod, Map<String, Role[]>> AUTHORIZATION_LIST = Map.of(
             HttpMethod.GET, Map.of("/api/members/*/reservations", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/members/reservations/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                   "/api/reservations/facilities/*", new Role[] { Role.ROLE_PROV },
                                    "/api/payments", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/payments/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/reports", new Role[] { Role.ROLE_ADMN },

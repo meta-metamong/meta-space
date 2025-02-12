@@ -17,6 +17,7 @@ import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
+import com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
 import com.metamong.mt.domain.reservation.dto.response.RemainingCountResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
@@ -153,6 +154,11 @@ public class DefaultReservationService implements ReservationService {
     @Override
     public Reservation findReservationEntityByRvtId(Long rvtId) {
         return this.reservationRepository.findById(rvtId).orElseThrow(() -> new ReservationNotFoundException(rvtId, "예약을 찾을 수 없습니다."));
+    }
+
+    @Override
+    public List<FctReservationResponseDto> findReservationByFctId(Long fctId) {
+        return this.reservationMapper.findReservationByFctId(fctId);
     }
 
 }

@@ -135,10 +135,7 @@
         "reservationDate": "Reservation Date",
         "reservationTime": "Reservation Time",
         "state": "State",
-        "pending": "Pending",
-        "confirmed": "Confirmed",
-        "cancelled": "Cancelled",
-        "completed": "Completed",
+        "reservationName": "Reservation Name",
         "noAvailability": "No availability for the selected date/time.",
         "cancelReservation": "Cancel Reservation",
         "cancelationReason": "Cacncelation Reason",
@@ -222,13 +219,15 @@
         "won": "won",
         "availableZones": "Available Zones",
         "hour": "h",
-        "minutes": "m"
+        "minutes": "m",
+        "detail": "Facility Detail"
     },
     "myFacility": {
         "myFacilityList": "My Facility List",
         "registerNewFaciltiy": "Register new facility",
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "facilityReservationList": "Facility Reservation List"
     },
     "search": {
         "enterFct": "Search for a facility!",

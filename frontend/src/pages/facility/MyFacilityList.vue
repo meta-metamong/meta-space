@@ -11,13 +11,24 @@
             <div class="col-md-6 col-lg-4 mb-2">
                 <div class="card">
                     <div class="card-body p-4">
-                        <h5 class="card-title">{{ facility.fctName }}</h5>
-                        <p class="card-text text-muted">{{ facility.address }}</p>
-                        <div class="d-flex justify-content-end gap-2">
-                            <router-link class="btn btn-sm edit-button" :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link>
-                            <button class="btn btn-sm delete-button">{{ $t("myFacility.delete") }}</button> <!-- To delete -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-2">{{ facility.fctName }}</h5>
+                            <div class="btn-group dropstart mb-2">
+                                <button type="button" class="btn dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <!-- Dropdown menu links -->
+                                    <li><router-link class="dropdown-item" :to="`/facilities/${facility.fctId}`">{{ $t("facility.detail") }}</router-link></li>
+                                    <li><router-link class="dropdown-item" :to="`/facilities/my-facility-list/${facility.fctId}`">{{ $t("myFacility.facilityReservationList") }}</router-link></li>
+                                    <li><router-link class="dropdown-item" :to="`/facilities/${facility.fctId}/edit`">{{ $t("myFacility.edit") }}</router-link></li>
+                                    <li><span class="dropdown-item">{{ $t("myFacility.delete") }}</span></li> <!-- To delete -->
+                                </ul>
+                            </div>
                         </div>
+                        <p class="card-text text-muted">{{ facility.address }}</p>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -91,20 +102,11 @@ export default {
     justify-content: space-evenly;
 }
 
-.list-item-button-container .button {
-    font-size: 18px;
-    padding: 6px 24px;
-    border-radius: 100px;
+.dropdown-btn {
+    --bs-btn-padding-x: 0px !important;
 }
 
-.edit-button {
-    background-color: #4a66e6;
-    color: #fff;
-    text-decoration: none;
-}
-
-.delete-button {
-    background-color: #ec7461;
-    color: #fff;
+.btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+    border: none;
 }
 </style>

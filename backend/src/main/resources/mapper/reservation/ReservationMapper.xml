@@ -116,5 +116,19 @@
             GROUP BY r.usage_start_time, r.usage_end_time
         ]]>
     </select>
+    
+    <!-- 시설 제공자의 보유 시설 예약 내역 조회 -->
+    <select id="findReservationByFctId" parameterType="Long" resultType="com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto">
+        <![CDATA[
+            SELECT r.rvt_date AS "rvtDate", r.usage_count AS "usageCount", r.usage_end_time AS "usageEndTime", r.usage_start_time AS "usageStartTime", m.mem_name AS "memName", z.zone_name AS "zoneName", p.pay_price AS "payPrice", p.pay_state AS "payState"
+			FROM reservation r
+			JOIN zone z ON z.zone_id = r.zone_id
+			JOIN facility f ON f.fct_id = z.fct_id
+			JOIN payment p on p.rvt_id = r.rvt_id
+			JOIN member m on m.mem_id = r.cons_id
+			WHERE f.fct_id = #{fctId}
+			ORDER BY r.rvt_date DESC
+        ]]>
+    </select>
 
 </mapper>
