@@ -13,4 +13,6 @@ public interface NotificationService {
     List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead);
     
     void readNotifications(List<Long> notificationIds);
+    
+    void deleteById(Long notiId);
 }

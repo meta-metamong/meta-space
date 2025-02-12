@@ -83,4 +83,9 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     public void readNotifications(List<Long> notificationIds) {
         this.notificationMapper.readByNotificationIds(notificationIds);
     }
+    
+    @Override
+    public void deleteById(Long notiId) {
+        this.notificationRepository.deleteById(notiId);
+    }
 }

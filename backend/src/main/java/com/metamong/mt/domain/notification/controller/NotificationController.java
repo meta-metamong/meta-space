@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,15 @@ public class NotificationController {
     @PatchMapping("/notifications/read")
     public ResponseEntity<BaseResponse<Void>> readNotifications(@RequestBody List<Long> notificationIds) {
         this.notificationService.readNotifications(notificationIds);
+        return new ResponseEntity<>(
+                BaseResponse.of(HttpStatus.NO_CONTENT),
+                HttpStatus.NO_CONTENT
+        );
+    }
+    
+    @DeleteMapping("/notifications/{notiId}")
+    public ResponseEntity<BaseResponse<Void>> deleteNotification(@PathVariable("notiId") Long notiId) {
+        this.notificationService.deleteById(notiId);
         return new ResponseEntity<>(
                 BaseResponse.of(HttpStatus.NO_CONTENT),
                 HttpStatus.NO_CONTENT
