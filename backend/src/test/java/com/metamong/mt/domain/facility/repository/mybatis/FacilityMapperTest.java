@@ -88,7 +88,7 @@ class FacilityMapperTest {
     
     @BeforeEach
     void initData() throws Exception {
-     // Given
+        // Given
         Connection conn = null;
         PreparedStatement stmt = null;
         
