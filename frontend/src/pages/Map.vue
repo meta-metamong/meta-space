@@ -150,7 +150,8 @@ export default {
 
 <style>
 #map {
-    height: 600px;
+    /* height: 600px; */
+    height: 800px;
 }
 
 .wrap {

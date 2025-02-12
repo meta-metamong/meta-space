@@ -2,16 +2,21 @@
     <div class="container">
         <div>
             <!-- 대분류 넣기 -->
-            <div>{{ fct.catName }}</div>
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">대분류</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ fct.catName }}</li>
+                </ol>
+            </nav>
             <img class="w-100" id="fct-img" :src="fct.fctImage">
             <div id="title-container">
                 <h2 id="fct-title">{{ fct.fctName }}</h2>
                 <p id="addr">{{ fct.fctAddress }}</p>
             </div>
-            <table class="table">
+            <table class="table table-borderless">
                 <tbody>
                     <tr>
-                        <td>{{ $t("facility.facilityOperationTime") }}</td>
+                        <td style="width: 45%;">{{ $t("facility.facilityOperationTime") }}</td>
                         <td>{{ fct.fctOpenTime }} ~ {{ fct.fctCloseTime }}</td>
                     </tr>
                     <tr>
@@ -29,7 +34,7 @@
                 </tbody>
             </table>
 
-            <div class="w-100" id="reserve-button-container">
+            <div class="w-100 mb-4" id="reserve-button-container">
                 <button type="button"
                         class="btn btn-primary"
                         @click="goToReservationPage()"
@@ -37,14 +42,18 @@
             </div>
         </div>
         <hr>
-        <div id="available-zones">
-            <h1 class="mx-auto">{{ $t("facility.availableZones") }}</h1>
+        <div id="available-zones" class="mt-4 mb-4">
+            <h5>{{ $t("facility.availableZones") }}</h5>
             <div class="zone-item-container" v-for="zone in fct.zones"> <!-- TODO: API -->
-                <img :src="zone.imgUrl">
+                <div class="w-25">
+                    <img :src="zone.imgUrl" class="rounded float-start">
+                </div>
                 <div class="zone-desc-container">
-                    <h3>{{ zone.zoneName }}</h3>
                     <table>
                         <tbody>
+                            <tr>
+                                <td colspan="2"><span class="zone-name">{{ zone.zoneName }}</span></td>
+                            </tr>
                             <tr>
                                 <td>{{ $t("facility.hourlyRate") }}</td>
                                 <td>{{ formatNumber(zone.hourlyRate) }}{{ $t("facility.won") }}</td>
@@ -58,17 +67,17 @@
                 </div>
             </div>
         </div>
-        <div id="addinfo-container">
-            <h1>{{ $t("reservation.additionalInfo") }}</h1>
+        <div id="addinfo-container" class="mb-4">
+            <h5>{{ $t("reservation.additionalInfo") }}</h5>
             <ul>
                 <li v-for="addinfo in fct.additionalInfos">
                     {{ addinfo.addinfoDesc }}
                 </li>
             </ul>
         </div>
-        <div id="guide-container">
-            <h1>{{ $t("facility.facilityGuide") }}</h1>
-            <div class="w-75">
+        <div id="guide-container" class="mb-4">
+            <h5>{{ $t("facility.facilityGuide") }}</h5>
+            <div class="w-100 mt-3">
                 <textarea class="form-control" rows="10">{{ fct.fctGuide }}</textarea>
             </div>
         </div>
@@ -172,6 +181,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.container {
+    padding: 0 20px;
+}
+
 #fct-img {
     height: 200px;
     overflow: hidden;
@@ -238,10 +251,9 @@ export default {
     margin-top: 32px;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-h1 {
+h5 {
     font-weight: 600;
 }
 
@@ -262,6 +274,14 @@ h1 {
 #guide-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+}
+
+table td {
+    padding-left: 0px;
+}
+
+.zone-name {
+    font-size: 18px;
+    color: #000;
 }
 </style>

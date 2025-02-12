@@ -1,12 +1,12 @@
 <template>
-    <div class="container w-100">
+    <div class="container">
         <SearchBox @do-search="search" />
-        <div class="hot-keywords mt-5">
-            <h1 class="fw-bold">{{ $t('search.hotKeywords') }}</h1>
-            <div class="mt-5 popular-searches">
-                <ul class="d-flex flex-column gap-4 fs-4">
+        <div class="hot-keywords mt-5 me-3 ms-3">
+            <h4 class="fw-bold">{{ $t('search.hotKeywords') }}</h4>
+            <div class="popular-searches">
+                <ul class="d-flex flex-column gap-4 fs-5">
                     <li v-for="(keyword, index) in popularKeywords" :key="index">
-                        {{ index + 1 }}&nbsp;&nbsp;{{ keyword }}
+                        <span class="rank">{{ index + 1 }}</span>&nbsp;&nbsp;{{ keyword }}
                     </li>
                 </ul>
             </div>
@@ -65,10 +65,15 @@ export default{
 }
 .popular-searches{
     height: 90%;
+    margin-top: 30px;
 }
 ul, li{
     list-style: none;
     padding: 0;
     margin: 0;
+}
+.rank {
+    margin-right: 7px;
+    color: #19319D;
 }
 </style>

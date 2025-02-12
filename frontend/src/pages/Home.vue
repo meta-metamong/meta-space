@@ -5,19 +5,19 @@
             <img :class="{ active: bannerStep === 1 }" class="banner-img" src="../resource/image/banner2.png" alt="banner2">
         </div>
         <div class="d-flex flex-column gap-2" v-if="userId !== null">
-            <h2 class="fw-bold">👍 {{ $t('main.best') }}</h2>
+            <h4 class="fw-bold">👍 {{ $t('main.best') }}</h4>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in recommendFct" :key="fctData.fctId" :fctData="fctData" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
-            <h2 class="fw-bold">🔥{{ $t('main.hot') }}</h2>
+            <h4 class="fw-bold">🔥{{ $t('main.hot') }}</h4>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in topFct" :key="fctData.fctId" :fctData="fctData" />
             </div>
         </div>
         <div class="d-flex flex-column gap-2">
-            <h2 class="fw-bold">👟{{ $t('main.close') }}</h2>
+            <h4 class="fw-bold">👟{{ $t('main.close') }}</h4>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in fctDatas" :key="fctData.fctId" :fctData="fctData" />
             </div>
