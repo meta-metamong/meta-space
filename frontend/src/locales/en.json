@@ -131,7 +131,15 @@
         "confirmed": "Confirmed",
         "cancelled": "Cancelled",
         "completed": "Completed",
-        "noAvailability": "No availability for the selected date/time."
+        "noAvailability": "No availability for the selected date/time.",
+        "cancelReservation": "Cancel Reservation",
+        "cancelationReason": "Cacncelation Reason",
+        "changeOfMind": "Change of Mind",
+        "incorrectReservation": "Incorrect Reservation",
+        "duplcateReservation": "Duplicate Reservation",
+        "paymentIssue": "Payment Issue",
+        "weatherIssue": "Weather Issud",
+        "facilityUnavailable": "Facility Unavailable"
     },
     "payment": {
         "list": "Payment List",

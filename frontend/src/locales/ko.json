@@ -120,7 +120,7 @@
         "usageCount": "인원 수",
         "additionalInfo": "추가 정보/서비스",
         "totalPrice": "총 금액",
-        "selectReason": "취소 사유를 선택해주세요",
+        "selectReason": "취소 사유를 선택하세요",
         "priceDescription": "공유 Zone을 선택할 경우, 예약 시 인당 요금으로 계산됩니다.",
         "reservationDetails": "예약 상세 정보",
         "reservationDate": "예약 날짜",
@@ -130,7 +130,15 @@
         "confirmed": "확인됨",
         "cancelled": "취소됨",
         "completed": "완료됨",
-        "noAvailability": "선택한 날짜/시간에 예약 가능한 자리가 없습니다."
+        "noAvailability": "선택한 날짜/시간에 예약 가능한 자리가 없습니다.",
+        "cancelReservation": "예약 취소",
+        "cancelationReason": "취소 이유",
+        "changeOfMind": "단순 변심",
+        "incorrectReservation": "잘못된 예약",
+        "duplcateReservation": "중복 예약",
+        "paymentIssue": "결제 문제",
+        "weatherIssue": "날씨 문제",
+        "facilityUnavailable": "시설 이용 불가"
     },
     "payment": {
         "list": "결제 목록",
