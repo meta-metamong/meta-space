@@ -15,17 +15,17 @@
       </thead>
       <tbody>
         <tr v-for="payment in payments" :key="payment.fctId">
-          <td>{{ payment.fctName }}</td>
-          <td>{{ payment.zoneName }}</td>
-          <td>{{ formatDate(payment.payDate) }}</td>
-          <td>{{ formatPrice(payment.payPrice) }}</td>
-          <td>{{ payment.fctName }}</td>
-          <td>{{ payment.payMethod }}</td>
+          <td class="left-align">{{ payment.fctName }}</td> <!-- 문자열은 왼쪽 정렬 -->
+          <td class="left-align">{{ payment.zoneName }}</td> <!-- 문자열은 왼쪽 정렬 -->
+          <td class="left-align">{{ formatDate(payment.payDate) }}</td> <!-- 문자열은 왼쪽 정렬 -->
+          <td class="right-align">{{ formatPrice(payment.payPrice) }}</td> <!-- 숫자는 오른쪽 정렬 -->
+          <td class="left-align">{{ payment.fctName }}</td> <!-- 문자열은 왼쪽 정렬 -->
+          <td class="left-align">{{ payment.payMethod }}</td> <!-- 문자열은 왼쪽 정렬 -->
         </tr>
         <!-- 총 매출을 마지막에 추가 -->
         <tr>
           <td colspan="3" style="text-align: right; font-weight: bold;">총 매출:</td>
-          <td colspan="3">{{ formatPrice(totalRevenue) }}</td>
+          <td colspan="3" class="right-align">{{ formatPrice(totalRevenue) }}</td> <!-- 숫자는 오른쪽 정렬 -->
         </tr>
       </tbody>
     </table>
@@ -120,16 +120,20 @@ table {
 
 th, td {
   padding: 10px;
-  text-align: left;
   border: 1px solid #ddd;
 }
 
 th {
   background-color: #f4f4f4;
+  text-align: center; /* 열 이름을 가운데 정렬 */
 }
 
-td {
-  text-align: right;
+.left-align {
+  text-align: left; /* 문자열은 왼쪽 정렬 */
+}
+
+.right-align {
+  text-align: right; /* 숫자는 오른쪽 정렬 */
 }
 
 button {
