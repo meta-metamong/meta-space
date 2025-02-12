@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { login, logout } from "../apis/axios";
+import { login, logout, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
 import Swal from "sweetalert2";
 
@@ -29,6 +29,14 @@ export const getUsernameInLocal = function () {
 
 const removeUserIdInLocal = function () {
   sessionStorage.removeItem("userId");
+};
+
+const removeUserNameInLocal = function () {
+  sessionStorage.removeItem("userName");
+};
+
+const removeUserRoleInLocal = function () {
+  sessionStorage.removeItem("userRole");
 };
 
 const store = createStore({
@@ -61,9 +69,10 @@ const store = createStore({
         router.push("/");
       }
     },
-    removeUserId(state) {
-      state.userId = null;
+    removeUser(state) {
       removeUserIdInLocal();
+      removeUserNameInLocal();
+      removeUserRoleInLocal();
       location.href = "/";
     },
     initUserId(state, payload) {
@@ -94,6 +103,8 @@ const store = createStore({
       state.messages.push(message); // 메시지 추가
     },
     deleteUser(state){
+      this.removeUser();
+      removeAccessToken();
     }
   },
   actions: {
@@ -114,7 +125,7 @@ const store = createStore({
           icon: 'success',
           width: '300px'
         });
-        context.commit("removeUserId");
+        context.commit("removeUser");
         context.commit("closeOnlineSocket");
       }
     },
