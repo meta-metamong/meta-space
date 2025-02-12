@@ -134,6 +134,24 @@ li {
     align-items: center;
 }
 
+.btn-page {
+    padding: 5px;
+    min-width: 35px;
+    min-height: 35px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #000;
+}
+
+.btn-other-pageset {
+    padding: 5px;
+    min-width: 35px;
+    min-height: 35px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #000;
+}
+
 button:hover {
     border: 1px solid #19319D;
 }
@@ -141,9 +159,13 @@ button:hover {
 button:disabled {
     cursor: default;
     border: none;
+    color: #ddd;
 }
 
 .selected-page * {
     background-color: #19319D;
+    color: #fff;
+    border: 1px solid #19319D;
+    border-radius: 8px;
 }
 </style>

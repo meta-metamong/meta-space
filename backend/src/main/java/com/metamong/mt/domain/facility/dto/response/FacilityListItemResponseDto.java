@@ -18,4 +18,8 @@ public class FacilityListItemResponseDto {
     private Long catId;
     private String catName;
     private String repImgUrl;
+    private double fctLatitude;
+    private double fctLongitude;
+    private String fctAddress;
+    private String fctDetailAddress;
 }

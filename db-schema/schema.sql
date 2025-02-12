@@ -131,7 +131,7 @@ CREATE TABLE facility (
         REFERENCES category (cat_id),
     CONSTRAINT fk_facility_prov_id FOREIGN KEY (prov_id)
         REFERENCES fct_provider (prov_id),
-    CONSTRAINT chk_fct_state CHECK (fct_state IN ('REG_REQUESTED', 'REGISTERED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED')),
+    CONSTRAINT chk_fct_state CHECK (fct_state IN ('REG_REQUESTED', 'REG_APPROVED', 'REG_REJECTED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED')),
     CONSTRAINT fct_is_open_on_holidays_domain CHECK (is_open_on_holidays IN ('Y', 'N'))
 );
 
@@ -154,11 +154,13 @@ CREATE TABLE zone (
     hourly_rate        NUMBER(5, 0)  NOT NULL,
     created_at         DATE          DEFAULT SYSDATE,
     updated_at         DATE          DEFAULT SYSDATE,
+    is_del             CHAR(1)       DEFAULT 'N',
 
     CONSTRAINT pk_zone PRIMARY KEY (zone_id),
     CONSTRAINT fk_zone_fct_id FOREIGN KEY (fct_id)
         REFERENCES facility (fct_id),
-    CONSTRAINT zone_is_shared_zone_domain CHECK (is_shared_zone IN ('Y', 'N'))
+    CONSTRAINT zone_is_shared_zone_domain CHECK (is_shared_zone IN ('Y', 'N')),
+    CONSTRAINT zone_is_del_domain CHECK (is_del IN ('Y', 'N'))
 );
 
 CREATE TABLE image (

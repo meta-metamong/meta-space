@@ -25,6 +25,7 @@ import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.global.apispec.BaseResponse;
@@ -81,7 +82,7 @@ public class FacilityController {
     
     @GetMapping("/facilities")
     public ResponseEntity<BaseResponse<FacilityListResponseDto>> getFaciltiies(
-            @RequestParam(value = "order-by", defaultValue = "DISTANCE") OrderBy orderBy,
+            @RequestParam(value = "order-by", defaultValue = "CREATION_TIME") OrderBy orderBy,
             @RequestParam(value = "order", defaultValue = "ASC") Order order,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "page-size", defaultValue = "10") int pageSize,
@@ -93,7 +94,7 @@ public class FacilityController {
             @RequestParam(value = "upper-longitude", required = false) Double upperLongitude,
             @RequestParam(value = "lower-longitude", required = false) Double lowerLongitude,
             @RequestParam(value = "center-latitude", required = false) Double centerLatitude,
-            @RequestParam(value = "lowerLatitude", required = false) Double centerLongitude,
+            @RequestParam(value = "center-longitude", required = false) Double centerLongitude,
             @RequestParam(value = "cat-id", required = false) List<String> catIds
     ) {
         FacilityListRequestDto dto = FacilityListRequestDto.builder()
@@ -115,5 +116,10 @@ public class FacilityController {
         return ResponseEntity.ok(
                 BaseResponse.of(this.facilityService.getFacilities(dto), HttpStatus.OK)
         );
+    }
+    
+    @GetMapping("/members/{memId}/facilities")
+    public ResponseEntity<BaseResponse<List<FacilityListOfMemberResponseDto>>> getFacilityOfMember(@PathVariable("memId") Long memId) {
+        return ResponseEntity.ok(BaseResponse.of(this.facilityService.getFacilityOfMember(memId), HttpStatus.OK));
     }
 }

@@ -11,6 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ZoneImageResponseDto {
+    private Long imgId;
     private int zoneImgDisplayOrder;
     private String zoneImgUrl;
 }

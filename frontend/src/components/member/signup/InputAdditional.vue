@@ -10,26 +10,20 @@
         <div class="mb-4">
             <input class="signup-input w-100" type="text" v-model="businessNumber" :placeholder="$t('member.businessNumber')" required />
         </div>
-        <!-- 은행명 -->
+        <!-- 은행코드 -->
         <select v-model="bankCode" class="form-select mb-4">
             <option value="" selected disabled>{{ $t('signup.selectBank') }}</option>
-            <option v-for="bank in bankList" :key="bank" :value="bank">{{ bank }}</option>
+            <option v-for="bank in bankList" :key="bank.bankCode" :value="bank.bankCode">{{ bank.bankName }}</option>
         </select>
         <!-- 계좌 -->
         <div class="mb-4">
-            <input class="signup-input w-100" type="text" v-model="account" :placeholder="$t('member.account')" required />
+            <input class="signup-input w-100" type="text" v-model="accountNumber" :placeholder="$t('member.account')" required />
         </div>
-        <!-- 예금주 -->
-        <div class="mb-4">
-            <input class="signup-input w-100" type="text" v-model="accountOwner" :placeholder="$t('member.accountOwner')" required />
-            <h3 class="error-message mt-2" v-if="accountOwner !== '' && !isValidatedName" v-text="$t('signupError.notValidatedName')" />
-        </div>
-
         <button type="button" class="w-100 signup-btn rounded-pill" :disabled="isInputEmpty" @click="nextStep()">{{ $t('signup.next') }}</button>    </div>
 </template>
 
 <script>
-import { bankList } from '../../../assets/banks';
+import { get } from '../../../apis/axios';
 
 export default{
     name: 'InputAdditional',
@@ -39,9 +33,8 @@ export default{
             businessName: "",
             businessNumber:"",
             bankCode: "",
-            account: "",
-            accountOwner: "",
-            bankList: bankList
+            accountNumber: "",
+            bankList: []
         }
     },
     methods:{
@@ -56,21 +49,25 @@ export default{
                 key: 'bankCode',
                 value: this.bankCode
             },{
-                key: 'provAccount',
-                value: this.account
-            },{
-                key: 'provAccountOwner',
-                value: this.accountOwner
+                key: 'accountNumber',
+                value: this.accountNumber
             }]);
-		}
+		},
+        async getAllBanks(){
+            const response = await get('/banks');
+            this.bankList = response.data.content;
+        }
 	},
     computed:{
         isValidatedName(){
             return /^[a-zA-Z가-힣]+$/.test(this.accountOwner);
         },
         isInputEmpty(){
-            return this.businessName === "" || this.businessNumber === "" || this.bankCode === "" || this.account === "" || this.accountOwner === "";
+            return this.businessName === "" || this.businessNumber === "" || this.bankCode === "" || this.accountNumber === "";
         }
+    },
+    mounted() {
+        this.getAllBanks();
     }
 }
 </script>

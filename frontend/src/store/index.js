@@ -10,6 +10,22 @@ export const getUserIdInLocal = function () {
   return sessionStorage.getItem("userId");
 };
 
+const saveUserRoleInLocal = function (userRole) {
+  sessionStorage.setItem("userRole", userRole);
+};
+
+export const getUserRoleInLocal = function () {
+  return sessionStorage.getItem("userRole");
+};
+
+const saveUsernameInLocal = function (username) {
+  sessionStorage.setItem("userName", username);
+};
+
+export const getUsernameInLocal = function () {
+  return sessionStorage.getItem("userName");
+};
+
 const removeUserIdInLocal = function () {
   sessionStorage.removeItem("userId");
 };
@@ -17,14 +33,20 @@ const removeUserIdInLocal = function () {
 const store = createStore({
   state: {
     userId: null,
+    userRole: null,
+    userName: null,
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
     messages: []  // WebSocket으로 받은 메시지를 저장
   },
   mutations: {
     saveUserId(state, payload) {
-      state.userId = payload;
-      saveUserIdInLocal(payload);
+      state.userId = payload.memId;
+      state.userRole = payload.role;
+      state.userName = payload.name;
+      saveUserIdInLocal(payload.memId);
+      saveUserRoleInLocal(payload.role);
+      saveUsernameInLocal(payload.name);
       if (state.userId === "admin") {
         router.push("/admin");
       } else {
@@ -38,6 +60,12 @@ const store = createStore({
     },
     initUserId(state, payload) {
       state.userId = payload;
+    },
+    initUserRole(state, payload) {
+      state.userRole = payload;
+    },
+    initUsername(state, payload) {
+      state.userName = payload;
     },
     setOnlineSocket(state, socket) {
       state.onlineSocket = socket;

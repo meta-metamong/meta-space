@@ -24,7 +24,7 @@ public class HttpRequestAuthorizationDefinition {
             "/api/members/reissue",
             "/api/members/send-validation-emails",
             "/api/members/check-email-validation",
-            "/api/members/find-password"
+            "/api/members/find-password"            
 		);
 	
     private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
@@ -37,18 +37,23 @@ public class HttpRequestAuthorizationDefinition {
                     "/api/recommends/*",
                     "/api/members/send-validation-emails",
                     "/api/members/check-email-validation",
-                    "/api/members/find-password"
+                    "/api/members/find-password",
+                    "/api/search"
             },
             HttpMethod.GET, new String[] {
                     "/api/members/reissue",
                     "/api/members/*",
                     "/api/members/dup-id/*",
                     "/api/test",
-                    "/api/facilities/*"
+                    "/api/facilities/*",
+                    "/api/facilities",
+                    "/api/banks",
+                    "/api/search/popular"
             },
             HttpMethod.PUT, new String[] {
                     "/api/members",
                     "/api/members/password",
+                    "/api/files/*"
             }
     );
     
@@ -64,11 +69,14 @@ public class HttpRequestAuthorizationDefinition {
             HttpMethod.GET, Map.of("/api/members/*/reservations", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/members/reservations/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
                                    "/api/payments", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
-                                   "/api/payments/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV }),
-            HttpMethod.POST, Map.of("/api/reservations", new Role[] { Role.ROLE_CONS }),
+                                   "/api/payments/*", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                   "/api/reports", new Role[] { Role.ROLE_ADMN },
+                                   "/api/reports/types", new Role[] { Role.ROLE_CONS, Role.ROLE_ADMN }),
+            HttpMethod.POST, Map.of("/api/reservations", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV },
+                                    "/api/reports", new Role[] { Role.ROLE_CONS, Role.ROLE_PROV }),
             HttpMethod.PUT, Map.of("/api/reservations/*", new Role[] { Role.ROLE_CONS },
-                                   // 현재는 테스트를 위해 모든 역할에 열어놨지만, 관리자만 가능하게 해야 함.
-                                   "/api/*/refund", new Role[] { Role.ROLE_ADMN, Role.ROLE_CONS, Role.ROLE_PROV })
+                                   "/api/*/refund", new Role[] { Role.ROLE_ADMN },
+                                   "/api/reports", new Role[] { Role.ROLE_ADMN })
     );
     
     private static final Map<Role, String[]> AUTHORIZATION_LIST_FOR_ALL_METHOD = Map.of(

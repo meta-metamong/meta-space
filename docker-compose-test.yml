@@ -1,0 +1,97 @@
+services:
+  nginx-server:
+    image: nginx:1.27.4-alpine
+    container_name: nginx_proxy
+    ports:
+      - 81:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - metamong-net
+    depends_on:
+      was-container-blue:
+        condition: service_healthy
+    
+  was-container-blue:
+    profiles:
+      - blue
+    image: hansoo0614/metamong-backend:latest
+    container_name: backend-blue
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - CLIENT_DOMAIN=${CLIENT_DOMAIN}
+      - CLIENT_ORIGIN=${CLIENT_ORIGIN}
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_USERNAME=${JDBC_USERNAME}
+      - JDBC_URL=${JDBC_URL}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REDIS_HOST=${REDIS_HOST}
+    networks:
+      - metamong-net
+    healthcheck:
+      test: ["CMD", "curl", "-X", "HEAD", "-i", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  # was-container-green:
+  #   profiles:
+  #     - green
+  #   image: hansoo0614/metamong-backend:latest
+  #   container_name: backend-blue
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - CLIENT_DOMAIN=${CLIENT_DOMAIN}
+  #     - CLIENT_ORIGIN=${CLIENT_ORIGIN}
+  #     - JDBC_PASSWORD=${JDBC_PASSWORD}
+  #     - JDBC_USERNAME=${JDBC_USERNAME}
+  #     - MAIL_HOST=${MAIL_HOST}
+  #     - MAIL_PASSWORD=${MAIL_PASSWORD}
+  #     - MAIL_USERNAME=${MAIL_USERNAME}
+  #   networks:
+  #     - metamong-net
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-X", "HEAD", "-i", "http://localhost:8080/actuator/health"]
+  #     interval: 1m30s
+  #     timeout: 30s
+  #     retries: 5
+  #     start_period: 30s
+  
+  oracle-db:
+    profiles:
+      - test
+    image: rudeh1253/meta-metamong-oracle-db:latest-base-records
+    ports:
+      - 1521:1521
+    networks:
+      - metamong-net
+    healthcheck:
+      test: ["CMD", "tnsping", "localhost"]
+      interval: 10s
+      timeout: 60s
+      retries: 6
+      start_period: 60s
+  
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - metamong-net
+
+networks:
+  metamong-net:
+    driver: bridge

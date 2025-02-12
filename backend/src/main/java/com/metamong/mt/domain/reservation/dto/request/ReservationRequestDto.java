@@ -35,13 +35,18 @@ public class ReservationRequestDto {
     private int unitUsageTime;
 
     public Reservation toEntity() {
-        return Reservation.builder()
-                .consId(this.consId)
-                .zoneId(this.zoneId)
-                .rvtDate(this.rvtDate)
-                .usageStartTime(this.usageStartTime)
-                .usageEndTime(this.usageEndTime)
-                .usageCount(this.usageCount)
+        return Reservation.builder().consId(this.consId).zoneId(this.zoneId).rvtDate(this.rvtDate)
+                .usageStartTime(this.usageStartTime).usageEndTime(this.usageEndTime).usageCount(this.usageCount)
                 .build();
+    }
+
+    public ReservationRequestDto(Long zoneId, Long consId, LocalDate rvtDate, LocalTime usageStartTime, LocalTime usageEndTime,
+            int usageCount) {
+        this.zoneId = zoneId;
+        this.consId = consId;
+        this.rvtDate = rvtDate;
+        this.usageStartTime = usageStartTime;
+        this.usageEndTime = usageEndTime;
+        this.usageCount = usageCount;
     }
 }

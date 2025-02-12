@@ -45,6 +45,7 @@ public class DefaultReservaionServiceTest {
 		dto.setZoneName("Badminton Court");
 		dto.setFctName("Badminton Hall");
 		
+		when(reservationRepository.existsById(1L)).thenReturn(true);
 		when(reservationMapper.findReservationByRvtId(1L)).thenReturn(dto);
         
         // When

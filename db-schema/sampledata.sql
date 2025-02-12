@@ -11,7 +11,7 @@ INSERT INTO member (
     mem_detail_address,
     role
 ) VALUES (
-    mem_pk_seq.NEXTVAL,
+    21,
     'testprov@gmail.com',
     'testprov',
     '1q2w3e4r',
@@ -35,17 +35,11 @@ INSERT INTO bank (
 INSERT INTO fct_provider (
     prov_id,
     biz_name,
-    biz_reg_name,
-    bank_code,
-    prov_account,
-    prov_account_owner
+    biz_reg_num
 ) VALUES (
-    mem_pk_seq.CURRVAL,
-    'BIZ NAME',
-    'BIZ REG NAME',
-    '500',
-    '123-456-123456',
-    'BIZ NAME'
+    21,
+    '363857357-462624',
+    'BIZ REG NAME'
 );
 
 INSERT INTO category (
@@ -53,7 +47,17 @@ INSERT INTO category (
     cat_name
 ) VALUES (
     '300',
-    'Some category'
+    'What'
+);
+
+INSERT INTO category (
+    cat_id,
+    parent_cat_id,
+    cat_name
+) VALUES (
+    '301',
+    '300',
+    'Sub What'
 );
 
 INSERT INTO facility (
@@ -75,8 +79,8 @@ INSERT INTO facility (
     fct_longitude
 ) VALUES (
     fct_pk_seq.NEXTVAL,
-    '300',
-    mem_pk_seq.CURRVAL,
+    '301',
+    21,
     'FACILITY',
     '54321',
     'Somewhere',
@@ -87,7 +91,7 @@ INSERT INTO facility (
     TO_DATE('08:00:00', 'HH24:MI:SS'),
     TO_DATE('18:00:00', 'HH24:MI:SS'),
     30,
-    'REGISTERED',
+    'REG_APPROVED',
     37.513513,
     129.415341 
 );
@@ -153,7 +157,7 @@ INSERT INTO image (
 ) VALUES (
     img_pk_seq.NEXTVAL,
     fct_pk_seq.CURRVAL,
-    'http://localhost:8080/resources/images/zone-image1.jpg',
+    'http://localhost:8080/resources/files/zone-image1.jpg',
     'F',
     1
 );
