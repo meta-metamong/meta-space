@@ -49,16 +49,20 @@ ORDER BY
 
     <!-- 특정 신고 회원의 상세 정보를 가져오는 쿼리 -->
     <select id="selectReportDetails" resultType="com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto">
-        SELECT m.mem_id AS memId, m.email, r.report_type AS reportType, r.report_msg AS reportMsg
-        FROM member m
-        JOIN report r ON m.mem_id = r.reported_id
-        WHERE r.reported_id = #{memId}
-        GROUP BY m.mem_id, m.email, r.report_type, r.report_msg
+         SELECT m.mem_id AS memId, 
+           m.email, 
+           r.report_type AS reportType, 
+           r.report_msg AS reportMsg, 
+           r.report_date AS reportDate
+    FROM member m
+    JOIN report r ON m.mem_id = r.reported_id
+    WHERE r.reported_id = #{memId}
+    GROUP BY m.mem_id, m.email, r.report_type, r.report_msg, r.report_date
     </select>
     
 
 <update id="updateMemberBan" parameterType="java.util.Map">
-<foreach collection="reportData" item="data" separator=";">
+<foreach collection="reportData" item="data"> 
 <![CDATA[
 UPDATE member
 SET mem_banned_until = 
@@ -73,7 +77,22 @@ WHERE mem_id = #{data.reportedId}
      ]]>
 </foreach>
 </update>
+ 
+<select id="getMembersToUnban" resultType="long">
+    SELECT mem_id
+    FROM member
+    WHERE TRUNC(mem_banned_until) = TRUNC(SYSDATE)
+</select>
 
+
+<update id="unbanMembers" parameterType="list">
+    UPDATE members
+    SET mem_banned_until = null
+    WHERE mem_id IN
+    <foreach collection="list" item="memId" open="(" separator="," close=")">
+        #{memId}
+    </foreach>
+</update>
 
 
 <delete id="deleteReportedData" parameterType="list">
@@ -203,30 +222,47 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
         FROM 
             payment p
         JOIN 
-            reservation r ON p.rvt_id = r.cons_id
+            reservation r ON p.rvt_id = r.rvt_id
         JOIN 
             zone z ON z.zone_id = r.zone_id
     </select>
+    
+    
+    <select id="getRedisReservationsThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekReservationDto">
+<![CDATA[
+SELECT z.fct_id,
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 4 THEN 1 ELSE 0 END) AS "Wednes",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 5 THEN 1 ELSE 0 END) AS "Thurs",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 6 THEN 1 ELSE 0 END) AS "Fri",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
+FROM reservation r
+JOIN zone z ON r.zone_id = z.zone_id
+WHERE TRUNC(r.rvt_date) >= to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2), 'yyyy-mm-dd'), 'yyyy-mm-dd')  -- 월요일
+  AND TRUNC(r.rvt_date) < TRUNC(SYSDATE)  -- 오늘 전날까지
+GROUP BY z.fct_id;
+
+]]>
+</select>
 
 <select id="getReservationsThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekReservationDto">
 <![CDATA[
-        SELECT z.fct_id,
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 4 THEN 1 ELSE 0 END) AS "Wednes",
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 5 THEN 1 ELSE 0 END) AS "Thurs",
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 6 THEN 1 ELSE 0 END) AS "Fri",
-            SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
-        FROM
-            reservation r
-        JOIN
-            zone z ON r.zone_id = z.zone_id
-        WHERE
-            r.rvt_date >= TRUNC(SYSDATE, 'WW')
-            AND r.rvt_date < TRUNC(SYSDATE, 'WW') + 7
-        GROUP BY
-            z.fct_id
+SELECT z.fct_id,
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 4 THEN 1 ELSE 0 END) AS "Wednes",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 5 THEN 1 ELSE 0 END) AS "Thurs",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 6 THEN 1 ELSE 0 END) AS "Fri",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
+FROM reservation r
+JOIN zone z ON r.zone_id = z.zone_id
+WHERE TRUNC(r.rvt_date) >= to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2), 'yyyy-mm-dd'), 'yyyy-mm-dd')  -- 월요일
+  AND TRUNC(r.rvt_date) < to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2) + 6, 'yyyy-mm-dd'), 'yyyy-mm-dd') + 1  -- 일요일 자정까지
+GROUP BY z.fct_id
+
 ]]>
 </select>
 

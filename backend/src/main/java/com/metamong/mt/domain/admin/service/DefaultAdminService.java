@@ -2,6 +2,7 @@ package com.metamong.mt.domain.admin.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.Set;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.boot.json.JsonWriter.Members;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.WebSocketSession;
@@ -19,6 +22,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -42,6 +46,8 @@ public class DefaultAdminService implements AdminService{
     private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
     private final Set<WebSocketSession> sessions = new HashSet<>();
+    private int roleUserCount; 
+    private Date lastExecutionTime;
     
     @Override
     @Transactional(readOnly = true)
@@ -216,6 +222,10 @@ public class DefaultAdminService implements AdminService{
         return adminMapper.getRankReservation();
     }
     
+    public List<RankPaymentDto> getRankPayment() {
+        return adminMapper.getRankPayment();
+    }
+    
     public List<WeekReservationDto> getReservationsByHourThisWeek() {
         return adminMapper.getReservationsByHourThisWeek();
     }
@@ -227,6 +237,43 @@ public class DefaultAdminService implements AdminService{
         
         adminMapper.updateMemberBan(params);
     }
+    
+    public List<Long> getMembersToUnban() {
+    	 return adminMapper.getMembersToUnban();
+    }
+    public void unbanMembers(List<Long> memberIds) {
+    	 if (memberIds != null && !memberIds.isEmpty()) {
+             adminMapper.unbanMembers(memberIds); // MyBatis에서 처리할 쿼리 실행
+         }
+    }
+
+	@Scheduled(cron = "0 0/5 * * * ?")
+    public void getRoleUserCount() {
+        roleUserCount = adminMapper.countRoleUserMembers();
+        lastExecutionTime = new Date(); 
+    }
+
+    public String view() {
+    	return "개수"+roleUserCount;
+    }
+    
+	// 정지 해제할 회원들의 ID 목록을 가져오기
+    public void unbanMembers() {
+    List<Long> membersToUnban = adminMapper.getMembersToUnban();
+    
+    if (membersToUnban != null && !membersToUnban.isEmpty()) {
+    	adminMapper.unbanMembers(membersToUnban);
+        System.out.println("정지 해제된 회원들: " + membersToUnban);
+    } else {
+    	System.out.println("정지 해제 대상 회원이 없습니다.");
+    }
+    
+}
+
+	@Override
+	public List<WeekReservationDto> getRedisReservationsThisWeek() {
+		return adminMapper.getRedisReservationsThisWeek();
+	}
 
 
 

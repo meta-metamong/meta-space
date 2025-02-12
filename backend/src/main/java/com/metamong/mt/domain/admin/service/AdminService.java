@@ -8,6 +8,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto;
 import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
@@ -27,13 +28,17 @@ public interface AdminService {
     List<SalesExportDto> getPaymentDetails();
     BigDecimal getTotalRevenue();
     List<WeekReservationDto> getThisWeekReservations();
+    List<WeekReservationDto> getRedisReservationsThisWeek();
     List<FacilityReservationResponseDto> getTotalReservations();
     List<FacilityReservationResponseDto> getCancelledReservations();
     List<FacilityReservationResponseDto> getTotalByFacility();
     List<RankReservationDto> getRankReservation();
+    List<RankPaymentDto> getRankPayment();
     List<WeekReservationDto> getReservationsByHourThisWeek();
     void processReportBansBatch(List<Long> reportedIds);
     //void updateMemberBan(List<Long> reportedIds, Map<Long, Integer> reportCounts);
     List<ReportDetailResponseDto> getReportDetails(Long memId);
     void updateMemberBan(List<Map<String, Integer>> reportData);
+    List<Long> getMembersToUnban();
+    void unbanMembers(List<Long> memberIds);
 }
