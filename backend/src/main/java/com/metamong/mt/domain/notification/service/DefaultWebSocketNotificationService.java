@@ -1,6 +1,8 @@
 package com.metamong.mt.domain.notification.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -9,8 +11,13 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto;
+import com.metamong.mt.domain.notification.dto.response.NotificationResponseDto;
 import com.metamong.mt.domain.notification.exception.FailedNotificationTransmissionException;
+import com.metamong.mt.domain.notification.model.Notification;
 import com.metamong.mt.domain.notification.repository.WebSocketSessionRepository;
+import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
+import com.metamong.mt.domain.notification.repository.mybatis.NotificationMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultWebSocketNotificationService implements WebSocketNotificationService {
     private final WebSocketSessionRepository webSocketSessionRepository;
+    private final NotificationMapper notificationMapper;
+    private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
     
     @Override
@@ -68,6 +77,16 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
             throw new FailedNotificationTransmissionException(e);
         }
     }
+    
+    private Notification saveNotification(Long receiverId, String message) {
+        Notification newNotification = new Notification(
+                receiverId,
+                message,
+                LocalDateTime.now(),
+                'N'
+        );
+        return this.notificationRepository.save(newNotification);
+    }
 
     @Override
     public void saveSession(Long memId, WebSocketSession session) {
@@ -77,5 +96,13 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     @Override
     public void deleteBySessionId(String sessionId) {
         this.webSocketSessionRepository.deleteBySessionId(sessionId);
+    }
+    
+    @Override
+    public List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead) {
+        return this.notificationMapper.findNotificationsByReceiverId(new NotificationListMapperDto(receiverId, includeRead))
+                .stream()
+                .map(NotificationResponseDto::of)
+                .toList();
     }
 }
