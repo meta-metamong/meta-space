@@ -63,6 +63,9 @@ pipeline {
                 sh "docker stop test-db | true"
                 sh "docker pull rudeh1253/meta-metamong-oracle-db:latest-schema"
                 sh "docker run --name test-db -p 1521:1521 -dit --rm rudeh1253/meta-metamong-oracle-db:latest-schema"
+                sh "docker stop redis-container | true"
+                sh "docker pull redis:7.0.8-alpine"
+                sh "docker run --name redis-container -p 6379:6379 -dit --rm redis:7.0.8-alpine"
             }
         }
         
@@ -80,6 +83,10 @@ pipeline {
         stage('Build front-end') {
             steps {
                 dir('frontend') {
+                    withCredentials([file(credentialsId: 'front_env_local', variable: 'envLocal')]) {
+                        sh "cp ${envLocal} ${WORKSPACE}/frontend/.env.local"
+                    }
+                    sh "ls"
                     sh "mkdir build | true"
                     sh "chmod 755 build"
                     sh "docker build -t frontbuilder ."
@@ -125,11 +132,21 @@ pipeline {
                 withCredentials([string(credentialsId: 'worker_node_ip', variable: 'workerNodeIp'),
                         file(credentialsId: 'docker-compose-env-file', variable: 'envFile'),
                         string(credentialsId: 'docker_hub_access_token', variable: 'dockerHubAccesstoken')]) {
+                    sh "ssh ubuntu@${workerNodeIp} \"docker stop nginx-proxy\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker rm nginx-proxy\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker stop backend-blue\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker rm backend-blue\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker stop redis-container\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"docker rm redis-container\" | true"
                     sh "scp docker-compose.yml ubuntu@${workerNodeIp}:~"
+                    sh "scp ${WORKSPACE}/nginx/nginx.conf ubuntu@${workerNodeIp}:~"
+                    sh "ssh ubuntu@${workerNodeIp} \"mkdir nginx\" | true"
+                    sh "ssh ubuntu@${workerNodeIp} \"mv ~/nginx.conf nginx\""
+                    sh "ssh ubuntu@${workerNodeIp} \"chmod 755 ~/nginx/nginx.conf\""
                     sh "ssh ubuntu@${workerNodeIp} \"env\""
                     sh "ssh ubuntu@${workerNodeIp} \"echo ${dockerHubAccesstoken} | sudo docker login --username hansoo0614 --password-stdin\""
                     sh "ssh ubuntu@${workerNodeIp} \"sudo docker pull hansoo0614/metamong-backend:latest\""
-                    sh "ssh ubuntu@${workerNodeIp} \"sudo docker-compose --profile blue --env-file ~/envs up\""
+                    sh "ssh ubuntu@${workerNodeIp} \"sudo docker-compose --profile blue --env-file ~/envs up -d\""
                     // sh "docker-compose -H 'ssh://ubuntu@${workerNodeIp}' up"
                 }
                 withCredentials([]) {
@@ -153,7 +170,9 @@ pipeline {
 
         stage('Clear') {
             steps {
+                sh "docker container prune"
                 sh "docker image prune"
+                sh "docker volume prune"
             }
         }
     }
