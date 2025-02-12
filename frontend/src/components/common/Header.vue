@@ -26,21 +26,33 @@
 
 <script>
 
-import { getUserIdInLocal } from '../../store';
+import { getUserIdInLocal, getUsernameInLocal, getUserRoleInLocal } from '../../store';
 
 export default{
     name: 'Header',
     methods: {
-        logout(){
-            this.$store.dispatch('logoutRequest');
-        },
-        handleLanguageChange(event){
-          this.$i18n.locale = event.target.value;
-        },
-        initUserId(){
-          const userId = getUserIdInLocal();
-          if(userId !== null && userId !== undefined){
-            this.$store.commit('initUserId', userId);
+      logout(){
+          this.$store.dispatch('logoutRequest');
+      },
+      handleLanguageChange(event){
+        this.$i18n.locale = event.target.value;
+      },
+      initUserId(){
+        const userId = getUserIdInLocal();
+        if(userId !== null && userId !== undefined){
+          this.$store.commit('initUserId', userId);
+        }
+      },
+      initUserRole() {
+        const userRole = getUserRoleInLocal();
+        if (userRole) {
+          this.$store.commit("initUserRole", userRole);
+        }
+      },
+      initUserName() {
+        const userName = getUsernameInLocal();
+        if (userName) {
+          this.$store.commit("initUserName", userName);
         }
       }
     },
@@ -51,6 +63,8 @@ export default{
     },
     mounted(){
       this.initUserId();
+      this.initUserRole();
+      this.initUserName();
     }
 }
 </script>
