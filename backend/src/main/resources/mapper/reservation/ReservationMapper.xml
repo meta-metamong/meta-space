@@ -114,7 +114,7 @@
             JOIN payment p ON p.rvt_id = r.rvt_id
             WHERE r.rvt_date = #{rvtDate, jdbcType=DATE}
             AND r.zone_id = #{zoneId}
-            AND p.pay_state = 'P' OR p.pay_state = 'Q'
+            AND (p.pay_state = 'P' OR p.pay_state = 'Q')
             GROUP BY r.usage_start_time, r.usage_end_time
         ]]>
     </select>
