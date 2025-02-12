@@ -63,4 +63,10 @@
         WHERE f.fct_id = #{fctId}
     </select>
 
+    <select id="findAllAdminIds" resultType="java.lang.Long">
+        SELECT
+            mem_id
+        FROM member
+        WHERE role = 'ROLE_ADMN'
+    </select>
 </mapper>
