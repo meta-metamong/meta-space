@@ -29,6 +29,7 @@ import FacilityDetail from "../components/facility/FacilityDetail.vue";
 import Search from '../pages/Search.vue';
 import SearchedFacilityList from '../pages/facility/SearchedFacilityList.vue';
 import PaymentResult from '../pages/payment/PaymentResult.vue';
+import NotificationList from '../pages/notification/NotificationList.vue';
 
 const routes = [
 	{ path: '/', component: Home },
@@ -66,8 +67,9 @@ const routes = [
 
 	{ path: '/payment/list', component: PaymentList },
 	{ path: '/payment/:rvtId', component: DetailPayment, props: true },
-	{ path: '/payment/result', component: PaymentResult }
+	{ path: '/payment/result', component: PaymentResult },
 
+	{ path: '/notification/list', component: NotificationList }
 ];
 
 const router = createRouter({

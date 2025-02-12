@@ -241,5 +241,11 @@
     },
     "editFacility": {
         "editComplete": "수정 완료"
+    },
+    "notification": {
+        "list": "알림 목록",
+        "all": "전체",
+        "read": "읽음",
+        "unread": "안읽음"
     }
 }

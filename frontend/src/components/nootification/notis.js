@@ -1,62 +1,62 @@
 export const notis = [
     {
-        noti_id: 1,
-        time: "2025-02-12 07:00",
+        notiId: 1,
+        date: "2025-02-12 07:00",
         message: "첫 번째 알림입니다.",
         isRead: true
     },
     {
-        noti_id: 2,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 2,
+        date: "2025-02-12 08:00",
+        message: "두 번째 알림입니다.",
         isRead: true
     },
     {
-        noti_id: 3,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 3,
+        date: "2025-02-12 09:00",
+        message: "세 번째 알림입니다.",
         isRead: true
     },
     {
-        noti_id: 4,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 4,
+        date: "2025-02-12 10:00",
+        message: "네 번째 알림입니다.",
         isRead: true
     },
     {
-        noti_id: 5,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 5,
+        date: "2025-02-12 11:00",
+        message: "다섯 번째 알림입니다.",
         isRead: true
     },
     {
-        noti_id: 6,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 6,
+        date: "2025-02-12 12:00",
+        message: "여섯 번째 알림입니다.",
         isRead: false
     },
     {
-        noti_id: 7,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 7,
+        date: "2025-02-12 13:00",
+        message: "일곱 번째 알림입니다.",
         isRead: false
     },
     {
-        noti_id: 8,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 8,
+        date: "2025-02-12 14:00",
+        message: "여덟 번째 알림입니다.",
         isRead: false
     },
     {
-        noti_id: 9,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 9,
+        date: "2025-02-12 15:00",
+        message: "아홉 번째 알림입니다.",
         isRead: false
     },
     {
-        noti_id: 10,
-        time: "2025-02-12 07:00",
-        message: "첫 번째 알림입니다.",
+        notiId: 10,
+        date: "2025-02-12 16:00",
+        message: "열 번째 알림입니다.",
         isRead: false
     }
 ]
