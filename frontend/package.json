@@ -18,15 +18,18 @@
         "bootstrap-vue-3": "^0.5.1",
         "frontend": "file:",
         "highcharts": "^12.1.2",
+        "highcharts-vue": "^2.0.1",
         "jwt-decode": "^4.0.0",
         "socket.io-client": "^4.8.1",
         "sockjs-client": "^1.6.1",
         "stompjs": "^2.3.3",
+        "sweetalert2": "^11.16.0",
         "v-calendar": "^3.1.2",
         "vue": "^3.5.13",
         "vue-i18n": "^11.0.1",
         "vue-router": "^4.5.0",
-        "vuex": "^4.1.0"
+        "vuex": "^4.1.0",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^5.2.1",

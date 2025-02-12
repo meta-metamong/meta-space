@@ -5,6 +5,7 @@
     </div>
 </template>
 <script>
+import Swal from 'sweetalert2';
 import { post } from '../../apis/axios';
 export default{
     props: {
@@ -27,8 +28,12 @@ export default{
     },
     methods: {
         async search(){
-            if(this.keyword === ""){
-                alert(this.$t('search.enterFct'));
+            if(this.keyword === "" || this.keyword === undefined){
+                Swal.fire({
+                    text: this.$t('search.enterFct'),
+                    width: '300px',
+                    icon: 'warning'
+                })
                 return;
             }
             const requestDto = {
@@ -38,7 +43,11 @@ export default{
             if(response.status === 200){
                 this.$emit("doSearch", this.keyword);
             }else{
-                alert("검색어 저장에 실패했습니다.");
+                Swal.fire({
+                    text: "검색어 저장에 실패했습니다.",
+                    width: '300px',
+                    icon: 'error'
+                })
                 return;
             }
         }

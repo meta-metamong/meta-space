@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import { login, logout, reissue, removeAccessToken } from "../apis/axios";
 import router from "../router/index";
+import Swal from "sweetalert2";
 
 const saveUserIdInLocal = function (userId) {
   sessionStorage.setItem("userId", userId);
@@ -29,6 +30,21 @@ export const getUsernameInLocal = function () {
 const removeUserIdInLocal = function () {
   sessionStorage.removeItem("userId");
 };
+
+const removeUserNameInLocal = function () {
+  sessionStorage.removeItem("userName");
+};
+
+const removeUserRoleInLocal = function () {
+  sessionStorage.removeItem("userRole");
+};
+
+const removeUser = function () {
+  removeUserIdInLocal();
+  removeUserNameInLocal();
+  removeUserRoleInLocal();
+  location.href = "/";
+}
 
 const store = createStore({
   state: {
@@ -91,16 +107,18 @@ const store = createStore({
       saveUserIdInLocal(payload.memId);
       saveUserRoleInLocal(payload.role);
       saveUsernameInLocal(payload.name);
+      
+      Swal.fire({
+        title: `환영합니다\n ${state.userName}님`,
+        icon: 'success',
+        width: '300px'
+      });
+
       if (state.userId === "admin") {
         router.push("/admin");
       } else {
         router.push("/");
       }
-    },
-    removeUserId(state) {
-      state.userId = null;
-      removeUserIdInLocal();
-      location.href = "/";
     },
     initUserId(state, payload) {
       state.userId = payload;
@@ -128,6 +146,11 @@ const store = createStore({
     },
     addMessage(state, message) {
       state.messages.push(message); // 메시지 추가
+    },
+    deleteUser(){
+      removeUser();
+      removeAccessToken();
+      location.href = "/";
     }
   },
   actions: {
@@ -144,7 +167,12 @@ const store = createStore({
     async logoutRequest(context) {
       const response = await logout();
       if (response.status === 200) {
-        context.commit("removeUserId");
+        Swal.fire({
+          title: `로그아웃\n되었습니다.`,
+          icon: 'success',
+          width: '300px'
+        });
+        removeUser();
         context.commit("closeOnlineSocket");
       }
     },

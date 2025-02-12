@@ -74,6 +74,7 @@
 <script>
 import { get, put } from "../../apis/axios";
 import axios from "axios";
+import Swal from "sweetalert2";
 export default {
 	name: 'UpdateMember',
 	data() {
@@ -98,6 +99,7 @@ export default {
 				memPostalCode: this.memberInfo.memPostalCode,
 				memAddress: this.memberInfo.memAddress,
 				memDetailAddress: this.memberInfo.memDetailAddress,
+				memImage: this.memImage ? { fileType: this.memImage.fileExtension, order: 1 } : null
 			}
 
 			if(this.memberInfo.role === 'ROLE_PROV'){
@@ -106,8 +108,7 @@ export default {
 					bizName: this.memberInfo.bizName,
 					bizRegNum: this.memberInfo.bizRegNum,
 					bankCode: this.memberInfo.bankCode,
-					accountNumber: this.memberInfo.accountNumber,
-					memImage: (this.memImage.fileData === null || this.memImage.fileData === undefined) ? null : { fileType: this.memImage.fileExtension, order: 1 }
+					accountNumber: this.memberInfo.accountNumber
 				}
 			}
 			await put(`/members`, updateDto)
@@ -119,10 +120,20 @@ export default {
 					}
 				}).then(response => {
 				if (response.status === 200) {
-					alert("정보가 수정되었습니다.");
+					Swal.fire({
+						width: "300px",
+						title: "수정 성공",
+						text: "회원 정보가 수정되었습니다.",
+						icon: "success"
+					});
 					this.$router.push("/profile")
 				} else if (response.status === 400) {
-					alert("회원정보 수정 오류 " + response.response.data.message);
+					Swal.fire({
+						width: "300px",
+						title: "수정 실패",
+						text: response.response.data.message,
+						icon: "error"
+					});;
 				} else {
 					return;
 				}

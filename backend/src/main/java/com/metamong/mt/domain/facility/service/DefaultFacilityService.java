@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.metamong.mt.domain.facility.dto.mapper.FacilityUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.mapper.ZoneUpdateMapperDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
@@ -39,6 +38,7 @@ import com.metamong.mt.global.apispec.CommonListUpdateRequestDto;
 import com.metamong.mt.global.apispec.CommonUpdateListItemRequestDto;
 import com.metamong.mt.global.file.FileUploader;
 import com.metamong.mt.global.file.FilenameResolver;
+import com.metamong.mt.global.location.LocationProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,10 +55,13 @@ public class DefaultFacilityService implements FacilityService {
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
     private final MemberService memberService;
+    private final LocationProvider locationProvider;
     
     @Override
     public FacilityRegistrationResponseDto registerFacility(FacilityRegistrationRequestDto dto) {
         Facility facility = dto.toEntity();
+        
+        facility.updateLatLng(this.locationProvider.convertAddressToLatLng(dto.getFctAddress()));
         
         List<ImageUploadUrlResponseDto> fctImageUploadUrlResponseDtos = new ArrayList<>(dto.getImages().size());
         for (ImageRequestDto imageRequestDto : dto.getImages()) {

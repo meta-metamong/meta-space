@@ -26,11 +26,8 @@
     인증 코드 전송이 성공적으로 처리되면 인증 코드 입력 버튼이 활성화된다.
     인증 코드 검증 후 성공하면 다음 단계 진행 버튼이 활성화된다.
 */
-
 import { post } from '../../../apis/axios';
-
-// 이메일 인증 기능 구현 후 isAuthenticated 변수를 추가해야 한다.
-// isAuthenticated와 isValidated를 동시에 만족하는 경우 nextStep() 함수를 진행할 수 있게 해야 한다..
+import Swal from 'sweetalert2';
 
 export default{
     name: 'InputEmail',
@@ -53,19 +50,40 @@ export default{
             // 인증 번호 전송 코드 작성
             const response = await post("/members/send-validation-emails", requestDto);
             if(response.status === 200){
-                alert(response.data.message);
+                Swal.fire({
+                    icon: "success",
+                    width: '300px',
+                    title: "전송 완료",
+                    text: "인증코드를 입력해주세요!"
+                });
                 this.verificationCode = response.data.content;
                 this.isCodeSent = true;
             }else{
-                alert("인증 코드 전송이 실패했습니다.");
+                Swal.fire({
+                    icon: "error",
+                    width: '300px',
+                    title: "전송 실패",
+                    text: "올바른 이메일인가요?"
+                });
             }
         },
         codeValidation(){
             // 코드 검증 성공 여부에 따라 true로 설정할지 안할지 결정
             if(this.verificationCode === this.code){
+                Swal.fire({
+                    icon: "success",
+                    width: '300px',
+                    title: "인증 완료",
+                    
+                });
                 this.isCorrectCode = true;
             }else{
-                alert("전송된 인증코드와 다릅니다.");
+                Swal.fire({
+                    icon: "error",
+                    width: '300px',
+                    title: "코드 인증 실패",
+                    text: "전송된 인증코드와 다릅니다."
+                });
             }
         },
         nextStep(){

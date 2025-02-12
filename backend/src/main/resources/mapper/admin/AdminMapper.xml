@@ -6,52 +6,94 @@
 
     <select id="searchMembers" resultType="com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto">
     <![CDATA[
-        SELECT 
+       SELECT 
     m.email, 
-    case when m.role ='ROLE_PROV' then '시설제공자' 
-        when m.role ='ROLE_CONS' then '시설이용자'
-    end as role,
+    CASE 
+        WHEN m.role = 'ROLE_PROV' THEN '시설제공자' 
+        WHEN m.role = 'ROLE_CONS' THEN '시설이용자'
+    END AS role,
     CASE 
         WHEN m.mem_banned_until IS NULL THEN '정상' 
         ELSE '정지' 
     END AS accountStatus, 
-    COUNT(r.rvt_id) AS reservationCount, 
-    m.created_at as createdAt
+    COUNT(CASE WHEN r.rvt_cancelation_reason IS NOT NULL THEN 1 END) AS cancelledReservationCount, -- 취소된 예약 건수
+    COUNT(CASE WHEN r.rvt_cancelation_reason IS NULL THEN 1 END) AS reservationCount, -- 취소되지 않은 예약 건수
+    COUNT(rp.report_id) AS reportedCount, -- 신고된 횟수
+    m.created_at AS createdAt
 FROM 
     member m
-JOIN 
+LEFT JOIN 
     reservation r ON m.mem_id = r.cons_id
+LEFT JOIN
+    report rp ON m.mem_id = rp.reported_id
+WHERE m.role != 'ROLE_ADMN'
 GROUP BY  
     m.email, 
     m.role, 
     m.mem_banned_until,  
     m.created_at
+ORDER BY 
+    m.created_at
     ]]>
 	</select>
 
 
-    <!-- 신고된 회원 목록 조회 -->
-    <select id="getReportedMembers" resultType="com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto">
-        SELECT m.email, r.report_type, r.report_msg
-        FROM member m
-        JOIN report r ON m.mem_id = r.reported_id
+
+
+<select id="getReportedMembers" resultType="com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto">
+        SELECT reported_id AS memId, email, COUNT(reported_id) AS reportedCnt
+        FROM report r join member m on r.reported_id = m.mem_id
+        where mem_banned_until is null
+        GROUP BY reported_id,email
     </select>
 
-    <!-- 신고된 아이디 정지 기간 업데이트 (배치 처리) -->
-<update id="updateMemberBan" parameterType="list">
-    <![CDATA[
-    <foreach collection="list" item="reportData" separator=";">
-        UPDATE member
-        SET mem_banned_until = 
-            CASE 
-                WHEN #{reportData.reportCount} = 1 THEN SYSDATE + INTERVAL '7' DAY
-                WHEN #{reportData.reportCount} = 2 THEN SYSDATE + INTERVAL '14' DAY
-                WHEN #{reportData.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')
-            END
-        WHERE mem_id = #{reportData.reportedId}
-    </foreach>
-    ]]>
+    <!-- 특정 신고 회원의 상세 정보를 가져오는 쿼리 -->
+    <select id="selectReportDetails" resultType="com.metamong.mt.domain.admin.dto.response.ReportDetailResponseDto">
+         SELECT m.mem_id AS memId, 
+           m.email, 
+           r.report_type AS reportType, 
+           r.report_msg AS reportMsg, 
+           r.report_date AS reportDate
+    FROM member m
+    JOIN report r ON m.mem_id = r.reported_id
+    WHERE r.reported_id = #{memId}
+    GROUP BY m.mem_id, m.email, r.report_type, r.report_msg, r.report_date
+    </select>
+    
+
+<update id="updateMemberBan" parameterType="java.util.Map">
+<foreach collection="reportData" item="data"> 
+<![CDATA[
+UPDATE member
+SET mem_banned_until = 
+    CASE
+        WHEN #{data.reportCount} = 1 THEN TRUNC(SYSDATE) + INTERVAL '7' DAY  -- 7일 뒤 자정
+        WHEN #{data.reportCount} = 2 THEN TRUNC(SYSDATE) + INTERVAL '14' DAY  -- 14일 뒤 자정
+        WHEN #{data.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')  -- 2999년 12월 31일 자정
+        ELSE mem_banned_until
+    END
+WHERE mem_id = #{data.reportedId}
+
+     ]]>
+</foreach>
 </update>
+ 
+<select id="getMembersToUnban" resultType="long">
+    SELECT mem_id
+    FROM member
+    WHERE TRUNC(mem_banned_until) = TRUNC(SYSDATE)
+</select>
+
+
+<update id="unbanMembers" parameterType="list">
+    UPDATE members
+    SET mem_banned_until = null
+    WHERE mem_id IN
+    <foreach collection="list" item="memId" open="(" separator="," close=")">
+        #{memId}
+    </foreach>
+</update>
+
 
 <delete id="deleteReportedData" parameterType="list">
     <![CDATA[
@@ -74,6 +116,24 @@ GROUP BY
     FROM report
     GROUP BY reported_id
 </select>
+
+<select id="getRequestFacilities" resultType="com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto">
+select 
+f.fct_id,
+    fct_name, zone_name,cat_name,
+    unit_usage_time,
+    ('(' || fct_postal_code || ') ' || fct_address || ' ' || fct_detail_address) AS full_address,
+    fct_tel, 
+    is_open_on_holidays,
+    CASE 
+        WHEN fct_state = 'REG_REQUESTED' THEN '등록요청' 
+        WHEN fct_state = 'DEL_REQUESTED' THEN '삭제요청' 
+    END AS fct_state 
+FROM facility f join category c on f.cat_id = c.cat_id
+join zone z on f.fct_id =z.fct_id
+WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
+
+    </select>
 
  <!-- 등록 요청 승인 쿼리 -->
     <update id="updateFacilityStateRegApproved" parameterType="map">
@@ -108,13 +168,15 @@ GROUP BY
     </update>
 
     <!-- 알림 테이블에 데이터 추가 쿼리 -->
-    <insert id="insertNotification" parameterType="map">
-        INSERT INTO notification (noti_id, receiver_id, noti_msg, is_read)
-        VALUES (2,#{receiverId}, #{notiMsg}, 'N')
-    </insert>
+<insert id="insertNotification" parameterType="map">
+    INSERT INTO notification (receiver_id, noti_msg, is_read, created_at)
+    VALUES (#{receiverId}, #{notiMsg}, 'N', CURRENT_TIMESTAMP)
+</insert>
+
 
     <select id="searchFacilities" resultType="com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto">
      SELECT 
+     fct_id,
     fct_name, 
     zone_name,
     (select COUNT(rvt_id)from reservation where rvt_cancelation_reason IS NULL) as rvt_cnt,
@@ -124,6 +186,192 @@ GROUP BY
     reservation r join zone z on r.zone_id = z.zone_id
     join facility f on z.fct_id = f.fct_id
      group by fct_name, zone_name,cons_id
+    </select>
+    
+    <!-- 시설명, zone명, 결제일, 결제금액, 결제방법 -->
+    <select id="getPaymentDetails" resultType="com.metamong.mt.domain.admin.dto.response.SalesExportDto">
+                 SELECT 
+            z.fct_id, 
+            f.fct_name,
+            z.zone_id, 
+            z.zone_name,
+            m.mem_name,
+            p.pay_date, 
+            p.pay_price, 
+            p.pay_method 
+                 FROM facility f
+        JOIN zone z ON f.fct_id = z.fct_id
+        JOIN reservation r ON r.zone_id = z.zone_id
+        join payment p on r.rvt_id = p.rvt_id
+        join member m on f.prov_id = mem_id
+        WHERE r.rvt_cancelation_reason IS NULL
+        GROUP BY  z.fct_id, 
+          f.fct_name,
+            z.zone_id, 
+            p.pay_date, 
+            p.pay_price, 
+            p.pay_method ,
+              z.zone_name,
+              m.mem_name
+    </select>
+
+    <!-- 총금액 -->
+    <select id="getTotalRevenue" resultType="java.math.BigDecimal">
+        SELECT 
+            NVL(SUM(p.pay_price), 0) AS total_revenue
+        FROM 
+            payment p
+        JOIN 
+            reservation r ON p.rvt_id = r.rvt_id
+        JOIN 
+            zone z ON z.zone_id = r.zone_id
+    </select>
+    
+    
+    <select id="getRedisReservationsThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekReservationDto">
+<![CDATA[
+SELECT z.fct_id,
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 4 THEN 1 ELSE 0 END) AS "Wednes",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 5 THEN 1 ELSE 0 END) AS "Thurs",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 6 THEN 1 ELSE 0 END) AS "Fri",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
+FROM reservation r
+JOIN zone z ON r.zone_id = z.zone_id
+WHERE TRUNC(r.rvt_date) >= to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2), 'yyyy-mm-dd'), 'yyyy-mm-dd')  -- 월요일
+  AND TRUNC(r.rvt_date) < TRUNC(SYSDATE)  -- 오늘 전날까지
+GROUP BY z.fct_id;
+
+]]>
+</select>
+
+<select id="getReservationsThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekReservationDto">
+<![CDATA[
+SELECT z.fct_id,
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 4 THEN 1 ELSE 0 END) AS "Wednes",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 5 THEN 1 ELSE 0 END) AS "Thurs",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 6 THEN 1 ELSE 0 END) AS "Fri",
+       SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
+FROM reservation r
+JOIN zone z ON r.zone_id = z.zone_id
+WHERE TRUNC(r.rvt_date) >= to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2), 'yyyy-mm-dd'), 'yyyy-mm-dd')  -- 월요일
+  AND TRUNC(r.rvt_date) < to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2) + 6, 'yyyy-mm-dd'), 'yyyy-mm-dd') + 1  -- 일요일 자정까지
+GROUP BY z.fct_id
+
+]]>
+</select>
+
+<select id="getTotalReservations" resultType="com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto">
+        SELECT f.fct_name, COUNT(r.rvt_id) AS total_reservations, f.fct_id
+        FROM facility f
+        JOIN zone z ON f.fct_id = z.fct_id
+        JOIN reservation r ON r.zone_id = z.zone_id
+        WHERE r.rvt_cancelation_reason IS NULL
+        GROUP BY f.fct_name, f.fct_id
+    </select>
+
+    <!-- 취소된 예약 건수 -->
+    <select id="getCancelledReservations" resultType="com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto">
+        SELECT f.fct_name, COUNT(r.rvt_id) AS cancelled_reservations, f.fct_id
+        FROM facility f
+        JOIN zone z ON f.fct_id = z.fct_id
+        JOIN reservation r ON r.zone_id = z.zone_id
+        WHERE r.rvt_cancelation_reason IS NOT NULL
+        GROUP BY f.fct_name, f.fct_id
+    </select>
+
+    <!-- 매출 -->
+    <select id="getTotalByFacility" resultType="com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto">
+      SELECT f.fct_name, SUM(pay_price) AS total_revenue, f.fct_id
+        FROM facility f
+        JOIN zone z ON f.fct_id = z.fct_id
+        JOIN reservation r ON r.zone_id = z.zone_id
+        join payment p on r.rvt_id = p.rvt_id
+        WHERE r.rvt_cancelation_reason IS NULL
+        GROUP BY f.fct_name, f.fct_id
+    </select>
+    
+     <!-- 월별 예약 Top 5 시설 조회 -->
+    <select id="getRankReservation" resultType="com.metamong.mt.domain.admin.dto.response.RankReservationDto">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT
+            fct.fct_name,                       
+            COUNT(r.rvt_id) AS tot_rvt          
+        FROM
+            reservation r
+        JOIN
+            zone z ON r.zone_id = z.zone_id
+        JOIN
+            facility fct ON fct.fct_id = z.fct_id
+        WHERE
+            TO_CHAR(r.rvt_date, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')  
+        GROUP BY
+            fct.fct_id, fct.fct_name
+        ORDER BY
+            tot_rvt DESC
+    )
+    WHERE ROWNUM <= 5 
+    ]]>
+
+
+    </select>
+    
+     <select id="getRankPayment" resultType="com.metamong.mt.domain.admin.dto.response.RankPaymentDto">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT
+            f.fct_name,                       
+            sum(p.pay_price) AS tot_pay       
+        FROM
+            payment p
+        JOIN
+            reservation r ON p.rvt_id = r.rvt_id
+        JOIN
+            zone z ON z.zone_id = r.zone_id
+        JOIN facility f on z.fct_id = f.fct_id
+        WHERE
+            TO_CHAR(r.rvt_date, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')  
+        GROUP BY
+             f.fct_name
+        ORDER BY
+            tot_pay DESC
+    )
+    WHERE ROWNUM <= 5 
+
+    ]]>
+
+
+    </select>
+    
+      <select id="getReservationsByHourThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekHourReservationDto">
+       <![CDATA[
+        SELECT 
+            TO_CHAR(rvt_date, 'HH24') AS rvt_hour, 
+            COUNT(*) AS rvt_count                   
+        FROM 
+            reservation
+        WHERE 
+            rvt_date >= TRUNC(SYSDATE, 'IW') 
+            AND rvt_date < TRUNC(SYSDATE, 'IW') + 7 
+        GROUP BY 
+            TO_CHAR(rvt_date, 'HH24')               
+        ORDER BY 
+            rvt_hour                             
+   
+ ]]>
+ </select>
+ 
+     <!-- 시설 이용자 계정 수 조회 -->
+    <select id="countRoleUserMembers" resultType="int">
+    <![CDATA[
+        SELECT COUNT(*) FROM member WHERE role = 'ROLE_CONS'
+    ]]>
     </select>
 
 </mapper>

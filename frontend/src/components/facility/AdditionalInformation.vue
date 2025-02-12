@@ -14,15 +14,15 @@
         <div class="input-box" v-for="(item, idx) in data">
             <div class="text-input-set mb-3">
                 <input type="text"
-                       :value="isEdit ? item.desc : item"
-                       @change="(e) => isEdit ? data[idx].desc = e.target.value : data[idx] = e.target.value">
+                       :value="isEdit === 'true' ? item.desc : item"
+                       @change="(e) => isEdit === 'true' ? data[idx].desc = e.target.value : data[idx] = e.target.value">
                 <div class="btn-delete"
                         @click="() => data.splice(idx, 1)"><i class="bi bi-trash3-fill"></i></div>
             </div>
         </div>
         <div class="mt-4">
             <button id="addinfo-button" class="w-100 signup-btn rounded-pill mb-3"
-                    type="button" @click="() => isEdit ? data.push({ desc: '' }) : data.push('')">{{ $t("facility.add") }}</button>
+                    type="button" @click="insertAddinfo">{{ $t("facility.add") }}</button>
         </div>
     </div>
 </template>
@@ -42,6 +42,15 @@ export default {
     data() {
         return {
             data: this.addinfoRegistration
+        }
+    },
+    methods: {
+        insertAddinfo() {
+            if (this.isEdit === "true") {
+                this.data.push({ desc: "" });
+            } else {
+                this.data.push("");
+            }
         }
     }
 }

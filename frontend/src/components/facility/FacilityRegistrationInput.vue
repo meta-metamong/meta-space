@@ -199,8 +199,9 @@ export default {
         searchPostCode() {
             new daum.Postcode({
                 oncomplete: (data) => {
-                    this.postalCode = data.zonecode;
-                    this.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
+                    console.log(data);
+                    this.data.addr.postalCode = data.zonecode;
+                    this.data.addr.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
                 }
             }).open();
         }
