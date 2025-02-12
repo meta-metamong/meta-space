@@ -11,6 +11,8 @@ public class MemberSearchResponseDto {
     private String email;             
     private String role;              
     private String accountStatus;    
-    private int reservationCount;     
+    private int reservationCount;    
+    private int cancelledReservationCount;
+    private int reportedCount;
     private LocalDate createdAt;         
 }
