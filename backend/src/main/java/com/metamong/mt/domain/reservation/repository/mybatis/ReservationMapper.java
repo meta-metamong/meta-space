@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.metamong.mt.domain.reservation.dto.mapper.FindConsIdWithReservationTimeMapperDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
+import com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.HourlyUsageDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationInfoResponseDto;
 import com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto;
@@ -34,4 +35,6 @@ public interface ReservationMapper {
     List<Long> findConsIdWithLeftReservationTime(@Param("dto") FindConsIdWithReservationTimeMapperDto dto);
     
     Optional<Long> findProvIdByRvtId(@Param("rvtId") Long rvtId);
+
+    List<FctReservationResponseDto> findReservationByFctId(Long fctId);
 }
