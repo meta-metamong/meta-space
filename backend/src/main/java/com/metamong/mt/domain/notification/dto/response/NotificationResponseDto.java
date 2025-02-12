@@ -24,7 +24,7 @@ public class NotificationResponseDto {
         return NotificationResponseDto.builder()
                 .notiId(notification.getNotiId())
                 .receiverId(notification.getReceiverId())
-                .notiMsg(notification.getNotiMsg())
+                .notiMsg(notification.getNotiMsg().getMessage())
                 .createdAt(notification.getCreatedAt())
                 .read(notification.getIsRead() == 'Y')
                 .build();

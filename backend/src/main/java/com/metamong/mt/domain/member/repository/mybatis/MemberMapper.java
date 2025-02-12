@@ -1,6 +1,10 @@
 package com.metamong.mt.domain.member.repository.mybatis;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.metamong.mt.domain.member.model.Member;
@@ -20,4 +24,8 @@ public interface MemberMapper {
 	
 	// 회원 탈퇴
 	boolean deleteMember(Long memId);
+	
+	Optional<Long> findMemIdByFctId(@Param("fctId") Long fctId);
+	
+	List<Long> findAllAdminIds();
 }

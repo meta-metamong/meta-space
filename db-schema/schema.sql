@@ -215,7 +215,7 @@ CREATE TABLE payment (
     CONSTRAINT pk_payment PRIMARY KEY (rvt_id),
     CONSTRAINT fk_payment_rvt_id FOREIGN KEY (rvt_id)
         REFERENCES reservation (rvt_id),
-    CONSTRAINT payment_pay_state_domain CHECK (pay_state IN ('P', 'Q', 'R')),
+    CONSTRAINT payment_pay_state_domain CHECK (pay_state IN ('P', 'Q', 'R', 'N')),
     CONSTRAINT fk_payment_refund_bank_code FOREIGN KEY (refund_bank_code)
         REFERENCES bank (bank_code)
 );

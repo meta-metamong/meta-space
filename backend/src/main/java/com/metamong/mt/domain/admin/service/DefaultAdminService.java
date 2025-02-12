@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.ibatis.session.ExecutorType;
@@ -29,7 +30,9 @@ import com.metamong.mt.domain.admin.dto.response.ReportedMemberResponseDto;
 import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
+import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.domain.notification.model.Notification;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.domain.notification.service.NotificationService;
 
@@ -45,6 +48,7 @@ public class DefaultAdminService implements AdminService{
     private final SqlSessionFactory sqlSessionFactory;
     private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
+    private final MemberMapper memberMapper;
     private final Set<WebSocketSession> sessions = new HashSet<>();
     private int roleUserCount; 
     private Date lastExecutionTime;
@@ -53,7 +57,7 @@ public class DefaultAdminService implements AdminService{
     @Transactional(readOnly = true)
     public List<MemberSearchResponseDto> searchMembers() {
         // 알림 생성 서비스 호출
-        notificationService.sendMessage(1L, "앙림");
+//        notificationService.sendMessage(1L, "앙림");
 
         // 추가적으로 웹소켓을 통한 알림 전달 구현 (필요시)
         //notificationService.sendNotificationToWebSocket(receiverId, notificationMessage);
@@ -125,11 +129,8 @@ public class DefaultAdminService implements AdminService{
         adminMapper.updateFacilityStateRegApproved(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
-        Notification notification = new Notification();
-        notification.setReceiverId(fctId);
-        notification.setNotiMsg("등록 요청이 승인되었습니다.");
-        notification.setIsRead('N');  // 기본값 'N' 설정
-        notificationRepository.save(notification);
+        Long receiverId = this.memberMapper.findMemIdByFctId(fctId).orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(receiverId, NotificationMessage.FACILITY_REGISTRATION_ACCEPTED);
         // Notification 저장 (JPA 사용)
        
 	}
@@ -143,10 +144,9 @@ public class DefaultAdminService implements AdminService{
         adminMapper.updateFacilityStateRegRejected(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
-        Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", fctId);
-        notificationParams.put("notiMsg", "등록요청이 반려되었습니다");
-        adminMapper.insertNotification(notificationParams);
+        Long receiverId = this.memberMapper.findMemIdByFctId(fctId)
+                .orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(receiverId, NotificationMessage.FACILITY_REGISTRATION_REJECTED);
 	}
 
 	@Override
@@ -158,10 +158,9 @@ public class DefaultAdminService implements AdminService{
         adminMapper.updateFacilityStateDelApproved(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
-        Map<String, Object> notificationParams = new HashMap<>();
-        notificationParams.put("receiverId", fctId);
-        notificationParams.put("notiMsg", "삭제요청이 승인되었습니다");
-        adminMapper.insertNotification(notificationParams);
+        Long receiverId = this.memberMapper.findMemIdByFctId(fctId)
+                .orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(receiverId, NotificationMessage.FACILITY_DELETION_ACCEPTED);
 
 	}
 
@@ -174,11 +173,9 @@ public class DefaultAdminService implements AdminService{
         adminMapper.updateFacilityStateDelRejected(updateParams);
 
         // 2. 알림 테이블에 알림 삽입
-        Notification notification = new Notification();
-        notification.setReceiverId(fctId);
-        notification.setNotiMsg("삭제요청이 반려되었습니다");
-        notification.setIsRead('N');  // 기본적으로 'N' (읽지 않음)으로 설정
-        notificationRepository.save(notification);  // JPA를 통해 저장
+        Long receiverId = this.memberMapper.findMemIdByFctId(fctId)
+                .orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(receiverId, NotificationMessage.FACILITY_DELETION_REJECTED);
 	}
 
 	@Override

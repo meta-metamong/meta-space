@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
+import com.metamong.mt.domain.notification.model.NotificationMessage;
+import com.metamong.mt.domain.notification.service.NotificationService;
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
@@ -40,6 +43,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
     private final PaymentService paymentService;
+    private final NotificationService notificationService;
     private static final int PAGE_SIZE = 5;
     
     @Override
@@ -140,6 +144,10 @@ public class DefaultReservationService implements ReservationService {
         }
         Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
         this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
+        
+        Long provIdOfFacility = this.reservationMapper.findProvIdByRvtId(savedReservation.getRvtId())
+                .orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(provIdOfFacility, NotificationMessage.NEW_RESERVATION);
     }
 
     @Override

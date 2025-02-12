@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,7 +32,8 @@ public class Notification {
     private Long receiverId;    // 수신자 아이디
 
     @Column(name = "noti_msg", nullable = false)  // 'noti_msg' 컬럼에 매핑
-    private String notiMsg;     // 알림 메시지
+    @Enumerated(EnumType.STRING)
+    private NotificationMessage notiMsg;     // 알림 메시지
 
     @Column(name = "created_at", nullable = false)  // 'created_at' 컬럼에 매핑
     private LocalDateTime createdAt;  // 등록 시간
@@ -42,14 +45,14 @@ public class Notification {
     public Notification() {}
 
     // 생성자
-    public Notification(Long receiverId, String notiMsg, LocalDateTime createdAt, Character isRead) {
+    public Notification(Long receiverId, NotificationMessage notiMsg, LocalDateTime createdAt, Character isRead) {
         this.receiverId = receiverId;
         this.notiMsg = notiMsg;
         this.createdAt = createdAt;
         this.isRead = isRead;
     }
     
-    public Notification(Long receiverId, String notiMsg) {
+    public Notification(Long receiverId, NotificationMessage notiMsg) {
         this.receiverId = receiverId;
         this.notiMsg = notiMsg;
         this.createdAt = LocalDateTime.now();
@@ -73,11 +76,11 @@ public class Notification {
         this.receiverId = receiverId;
     }
 
-    public String getNotiMsg() {
+    public NotificationMessage getNotiMsg() {
         return notiMsg;
     }
 
-    public void setNotiMsg(String notiMsg) {
+    public void setNotiMsg(NotificationMessage notiMsg) {
         this.notiMsg = notiMsg;
     }
 
