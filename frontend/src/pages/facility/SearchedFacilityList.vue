@@ -55,6 +55,11 @@ export default {
     methods: {
         toggleSort() {
             this.isDistanceAsc = !this.isDistanceAsc;
+            if(isDistanceAsc){
+                this.facilities.sort((a, b) => a.distance - b.distance);
+            }else{
+                this.facilities.sort((a, b) => b.distance - a.distance);
+            }
         },
         async search(keyword) {
             this.searchKeyword = keyword;
