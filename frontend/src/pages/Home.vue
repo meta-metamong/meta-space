@@ -28,7 +28,7 @@
 <script>
 import FctCard from '../components/facility/FctCard.vue';
 import { get, post } from '../apis/axios'
-import { toRaw } from 'vue';
+
 export default{
     name: "Home",
     data(){
@@ -69,9 +69,22 @@ export default{
             this.closeFct = this.closeFct.map(fct => ({...fct, distance: this.getDistance(fct.fctLatitude, fct.fctLongitude)}));
             this.closeFct.sort((a, b) => a.distance - b.distance);
         },
+        
         getDistance(lat, lon){
-            return Math.sqrt(Math.pow(this.$store.state.loc.lat -lat, 2) + Math.pow(this.$store.state.loc.lon - lon, 2));
-        }
+            const R = 6371;
+            const dLat = this.toRad(this.$store.state.loc.lat -lat);
+            const dLon = this.toRad(this.$store.state.loc.lon - lon);
+
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(this.toRad(lat)) * Math.cos(this.toRad(this.$store.state.loc.lat)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return Math.ceil(R * c * 1000);
+        },
+        toRad(value) {
+            return value * Math.PI / 180;
+        },
     },
     computed: {
         userId() {

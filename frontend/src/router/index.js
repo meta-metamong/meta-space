@@ -35,6 +35,7 @@ import AdminRefund from '../pages/admin/MemberRefund.vue';
 import FacilityReservationList from '../pages/facility/FacilityReservationList.vue';
 import NotificationList from '../pages/notification/NotificationList.vue';
 import Report from '../pages/report/Report.vue';
+import Error from '../pages/Error.vue';
 
 
 const routes = [
@@ -71,13 +72,15 @@ const routes = [
 	{ path: '/reservation/list', component: ReservationList },
 	{ path: '/reservation/:id', component: DetailReservation, props: true },
 	{ path: '/map', component: Map },
-
+	
 	{ path: '/payment/list', component: PaymentList },
 	{ path: '/payment/:rvtId', component: DetailPayment, props: true },
 	{ path: '/payment/result', component: PaymentResult },
-
+	
 	{ path: '/notification/list', component: NotificationList },
-	{ path: '/report/:zoneId', component: Report, props: true}
+	{ path: '/report/:zoneId', component: Report, props: true},
+	
+	{ path: '/error', component: Error },
 ];
 
 const router = createRouter({
