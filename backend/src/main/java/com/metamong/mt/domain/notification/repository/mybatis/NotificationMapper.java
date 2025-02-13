@@ -13,7 +13,9 @@ import com.metamong.mt.domain.notification.model.Notification;
 @Mapper
 public interface NotificationMapper {
 	
-    void readByNotificationIds(@Param("readByNotificationIds") List<Long> notificationIds);
+    void readByNotificationId(@Param("notificationId") Long notificationId);
     
     List<Notification> findNotificationsByReceiverId(@Param("dto") NotificationListMapperDto dto);
+    
+    void readAllNotificationsByReceiverId(@Param("receiverId") Long receiverId);
 }

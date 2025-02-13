@@ -11,7 +11,7 @@
             <div class="d-flex align-items-center" v-if="isLogin">
                 <button @click="$router.push('/notification/list')" class="noti-btn me-2">
                     <i class="bi bi-bell-fill text-primary"></i> <!-- 부트스트랩 아이콘 -->
-                </button>
+                </button> <!-- TODO: 알림이 있으면 채워지고 없으면 안 채워지고 -->
                 <button class="btn" @click="logout" v-text="$t('member.logout')" />
             </div>
             <div>

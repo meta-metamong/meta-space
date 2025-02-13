@@ -4,10 +4,11 @@ import java.util.Map;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,11 +22,11 @@ public class ClientResolverHandshakeInterceptor implements HandshakeInterceptor 
             ServerHttpResponse response,
             WebSocketHandler wsHandler,
             Map<String, Object> attributes) throws Exception {
-        log.info("context={}", SecurityContextHolder.getContext());
+        HttpServletRequest httpRequest = ((ServletServerHttpRequest)request).getServletRequest();
         try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            log.info("memId={}", username);
-            attributes.put("memId", Long.valueOf(username));
+            Long memId = Long.valueOf(httpRequest.getParameter("mem-id"));
+            log.info("memId={}", memId);
+            attributes.put("memId", Long.valueOf(memId));
             return true;
         } catch (NullPointerException | NumberFormatException e) {
             log.warn("Can't establish WebSocket connection", e);

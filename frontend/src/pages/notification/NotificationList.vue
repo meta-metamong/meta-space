@@ -7,11 +7,11 @@
             <button type="button" class="btn btn-outline-secondary" :class="filterStatus === 'unread' ? 'active' : ''" @click="changeFilter('unread')">안읽음</button>
         </div>
         <ul class="noti-list w-100 mt-1 d-flex flex-column gap-2">
-            <li v-for="noti in filteredNotis" :key="noti.notiId" class="noti-item w-100 d-flex align-items-center">
-                <i :class="noti.isRead ? 'bi bi-bell me-2 text-primary' : 'bi bi-bell-fill me-2 text-warning'"></i>
+            <li v-for="(noti, idx) in filteredNotis" :key="noti.notiId" class="noti-item w-100 d-flex align-items-center">
+                <i :class="noti.read ? 'bi bi-bell me-2 text-primary' : 'bi bi-bell-fill me-2 text-warning'" @click="() => readMessage(noti.notiId, idx)"></i>
                 <div>
-                    <div>{{ noti.message }}</div>
-                    <small class="text-muted">{{ noti.date }}</small>
+                    <div>{{ noti.notiMsg }}</div>
+                    <small class="text-muted">{{ noti.createdAt }}</small>
                 </div>
             </li>
         </ul>
@@ -19,12 +19,14 @@
 </template>
 
 <script>
+import apiClient, { get } from "../../apis/axios";
 import { notis } from '../../components/nootification/notis';
+import { getUserIdInLocal } from "../../store";
 export default{
     name: 'NotificationList',
     data(){
         return{
-            notis: notis.sort((n1, n2) => new Date(n2.date) - new Date(n1.date)),
+            notis: [],
             filteredNotis: [],
             filterStatus: ''
         }
@@ -36,15 +38,42 @@ export default{
                 this.filteredNotis = this.notis;
             }else if(newStatus === 'read'){
                 this.filterStatus = 'read'
-                this.filteredNotis = this.notis.filter(n => n.isRead);
+                this.filteredNotis = this.notis.filter(n => n.read);
             }else if(newStatus === 'unread'){
                 this.filterStatus = 'unread'
-                this.filteredNotis = this.notis.filter(n => !n.isRead);
+                this.filteredNotis = this.notis.filter(n => !n.read);
+            }
+        },
+        readMessage(notiId, idx) {
+            if (!this.notis[idx].read) {
+                console.log("read noti, id=" + notiId);
+                apiClient.patch(`/notifications/${notiId}/read`);
+                this.notis[idx].read = true;
             }
         }
     },
     mounted(){
         this.changeFilter('all');
+        const memId = getUserIdInLocal();
+        get(`/members/${memId}/notifications`).then((response) => {
+            const responseBody = response.data;
+            const content = responseBody.content;
+            console.log(content);
+            for (const item of content) {
+                this.notis.push(item);
+            }
+        });
+
+        const socketClient = this.$store.state.socketClient;
+        socketClient.onmessage = (msg) => {
+            // console.log(JSON.parse(msg.data));
+            this.notis.unshift(JSON.parse(msg.data));
+        };
+    },
+    unmounted() {
+        const socketClient = this.$store.state.socketClient;
+
+        socketClient.onmessage = (msg) => {};
     }
 }
 </script>

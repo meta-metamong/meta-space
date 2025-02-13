@@ -82,31 +82,4 @@ class NotificationRepositoryTest {
         // Then
         assertThat(result).isEqualTo(3);
     }
-    
-    @Test
-    @DisplayName("어떤 회원의 모든 알림 읽기 - success")
-    void readAllNotificationsByReceiverId_success() {
-        // Given
-        List<Notification> notifications = List.of(
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
-                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
-        );
-        
-        this.notificationRepository.saveAll(notifications);
-        
-        this.entityManager.flush();
-        
-        int unreadBefore = this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId());
-        assertThat(unreadBefore).isEqualTo(notifications.size());
-        
-        // When
-        this.notificationRepository.readAllNotificationsByReceiverId(this.sampleReceiver.getMemId());;
-        
-        // Then
-        int unreadAfter = this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId());
-        assertThat(unreadAfter).isZero();
-    }
 }

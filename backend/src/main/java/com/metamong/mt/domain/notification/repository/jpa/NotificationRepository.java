@@ -16,12 +16,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
                 AND n.isRead = 'N'
             """)
     int countNotReadNotificationsByReceiverId(@Param("receiverId") Long receiverId);
-    
-    @Modifying
-    @Query(value = """
-            UPDATE notification
-            SET is_read = 'Y'
-            WHERE receiver_id = :receiverId
-            """, nativeQuery = true)
-    void readAllNotificationsByReceiverId(@Param("receiverId") Long receiverId);
 }
