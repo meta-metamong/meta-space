@@ -2,9 +2,10 @@
     <div @click="moveToDetail" class="card card-box mb-3 d-flex flex-column">
         <img :src="fctData.repImgUrl" class="card-thumbnail mx-auto" alt="대표 이미지" />
         <div class="card-detail d-flex flex-column p-2">
-            <h5 class="card-name fw-bold mb-2">{{ fctData.fctName }}</h5>
+            <p class="card-name fw-bold mb-2">{{ fctData.fctName }}</p>
             <p class="card-category">{{ fctData.catName }}</p>
             <p class="card-address mt-1"><i class="bi bi-geo-alt"></i> {{ fctData.fctAddress }}</p>
+            <p v-if="fctData.distance" class="card-address mt-1"><i class="bi bi-compass"></i> {{ convertDistance(fctData.distance) }}</p>
         </div>
     </div>
 </template>
@@ -20,11 +21,18 @@ export default{
     methods: {
         moveToDetail(){
             this.$router.push(`/facilities/${this.fctData.fctId}`);
+        },
+        convertDistance(dist){
+            if(dist > 1000) return Math.ceil((dist / 1000)) + 'km'
+            return dist + 'm';
         }
     },
     mounted(){
         if(this.fctData.fctName.length > 9){
             this.fctData.fctName = this.fctData.fctName.substring(0, 9) + '..';
+        }
+        if(this.fctData.fctAddress.length > 9){
+            this.fctData.fctAddress = this.fctData.fctAddress.substring(0, 9) + '..';
         }
     }
 }
@@ -57,6 +65,7 @@ export default{
 }
 .card-name{
     color: #333;
+    font-size: 17px;
 }
 .card-detail{
     flex-grow: 1;

@@ -11,9 +11,10 @@
             <div class="card card-box mb-3" v-for="fctData in fctContent.facilities" :key="fctData.fctId" @click="$router.push(`/facilities/${fctData.fctId}`)">
                 <img :src="fctData.repImgUrl" class="card-thumbnail mx-auto" alt="대표 이미지" />
                 <div class="card-detail d-flex flex-column p-2">
-                    <h5 class="card-name fw-bold">{{ fctData.fctName }}</h5>
+                    <p class="card-name fw-bold">{{ truncateText(fctData.fctName, 8) }}</p>
                     <p class="card-category">{{ fctData.catName }}</p>
-                    <p class="card-address mt-1"><i class="bi bi-geo-alt"></i> {{ fctData.fctAddress }}</p>
+                    <p class="card-address mt-1"><i class="bi bi-geo-alt"></i> {{ truncateText(fctData.fctAddress, 7) }}</p>
+                    <p class="card-address mt-1"><i class="bi bi-compass"></i> {{ convertDistance(fctData.distance) }}</p>
                 </div>
             </div>
         </div>
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+import { toRaw } from "vue";
 import apiClient from "../../apis/axios";
 import SearchBox from '../../components/common/SearchBox.vue';
 import FctCard from '../../components/facility/FctCard.vue';
@@ -50,12 +52,11 @@ export default {
     },
     components: {
         SearchBox,
-        FctCard
     },
     methods: {
         toggleSort() {
             this.isDistanceAsc = !this.isDistanceAsc;
-            if(isDistanceAsc){
+            if(this.isDistanceAsc){
                 this.fctContent.facilities.sort((a, b) => a.distance - b.distance);
             }else{
                 this.fctContent.facilities.sort((a, b) => b.distance - a.distance);
@@ -70,7 +71,34 @@ export default {
             }
             const responseBody = (await apiClient.get("/facilities", { params })).data;
             this.fctContent = responseBody.content;
+            this.insertDistance();
         },
+        getDistance(lat, lon){
+            const R = 6371;
+            const dLat = this.toRad(this.$store.state.loc.lat -lat);
+            const dLon = this.toRad(this.$store.state.loc.lon - lon);
+
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(this.toRad(lat)) * Math.cos(this.toRad(this.$store.state.loc.lat)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return Math.ceil(R * c * 1000);
+        },
+        convertDistance(dist){
+            if(dist > 1000) return Math.ceil((dist / 1000)) + 'km'
+            return dist + 'm';
+        },
+        toRad(value) {
+            return value * Math.PI / 180;
+        },
+        insertDistance(){
+            this.fctContent.facilities = this.fctContent.facilities.map(fct => ({...fct, distance: this.getDistance(fct.fctLatitude, fct.fctLongitude)}));
+            this.fctContent.facilities.sort((a, b) => a.distance - b.distance);
+        },
+        truncateText(text, length) {
+            return text.length > length ? text.substring(0, length) + '...' : text;
+        }
     },
     async mounted() {
         const params = {};
@@ -80,11 +108,7 @@ export default {
         }
         const responseBody = (await apiClient.get("/facilities", { params })).data;
         this.fctContent = responseBody.content;
-        this.fctContent.facilities.map(fct => ({...fct, distance: this.getDistance(fct.fctLatitude, fct.fctLongitude)}));
-        this.fctContent.facilities.sort((a, b) => a.distance - b.distance)
-    },
-    getDistance(lat, lon){
-        return Math.sqrt(Math.pow(this.$store.state.loc.lat -lat, 2) + Math.pow(this.$store.state.loc.lon - lon, 2));
+        this.insertDistance();
     }
 };
 </script>
