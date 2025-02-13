@@ -180,6 +180,7 @@ export default {
                         width: '300px',
                         icon: 'success'
                     })
+                    this.$router.push('/facilities/my-facility-list');
                 }
             });
         }
