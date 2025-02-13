@@ -43,42 +43,20 @@ public class SecurityConfig {
     private String clientOrigin;
 	
 	@Bean
-	@Profile("no-auth & !prod")
+	@Profile("no-auth")
 	SecurityFilterChain noAuthFilterChain(HttpSecurity http) throws Exception {
 	    http = commonConfiguration(http);
-	    http.cors((corsConfig) -> corsConfig.configurationSource(cors(this.clientOrigin)));
 	    http.authorizeHttpRequests((request) -> {
             request.requestMatchers("/api/**").permitAll();
-//            request.requestMatchers("/ws").permitAll();
         });
 	    http.addFilterBefore(new NoAuthPrincipalFinderFilter(this.userDetailsService, this.jwtTokenProvider), AuthorizationFilter.class);
 	    return http.build();
 	}
-	
-	@Bean
-	@Profile("prod")
-	SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
-	    http = commonConfiguration(http);
-	    
-	    http.authorizeHttpRequests((registry) -> {
-            HttpRequestAuthorizationDefinition.defineRequestMatcher(registry);
-        });
-
-        // Spring Security JWT 필터 로드
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class);
-        
-        http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
-	    
-	    return http.build();
-	}
 
 	@Bean
-	@Profile("!no-auth & !prod")
-	SecurityFilterChain localDevSecurityFilterChain(HttpSecurity http) throws Exception {
+	@Profile("!no-auth")
+	SecurityFilterChain mainFilterChain(HttpSecurity http) throws Exception {
 		http = commonConfiguration(http);
-		
-		http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
 		
 		// 토큰을 사용하는 경우 인가를 적용한 URI 설정
 
@@ -94,9 +72,10 @@ public class SecurityConfig {
 	}
 	
 	private HttpSecurity commonConfiguration(HttpSecurity http) throws Exception {
-//	    http.securityMatcher("/api/**", "/ws/**");
 	    http.securityMatcher("/api/**");
 	    http.csrf(csrfConfig -> csrfConfig.disable());
+	    
+	    http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
 	    
 	    // Session 기반의 인증을 사용하지 않고 JWT를 이용하여서 인증 
 
@@ -108,6 +87,7 @@ public class SecurityConfig {
 	
 	private CorsConfigurationSource cors(String clientOrigin) {
         CorsConfiguration configuration = new CorsConfiguration();
+        log.trace("allowedOrigin={}", clientOrigin);
         configuration.setAllowedOrigins(List.of(clientOrigin));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
