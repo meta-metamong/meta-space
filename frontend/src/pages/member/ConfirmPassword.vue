@@ -35,13 +35,15 @@ export default {
 				Swal.fire({
 					width: "300px",
 					title: "인증 성공",
-					text: "변경할 비밀번호를 입력해주세요!",
+					text: "본인 인증이 완료되었습니다!",
 					icon: "success"
 				});
 				if(this.type === 'exit'){
 					this.exitMember();
-				}else{
+				}else if(this.type === 'change'){
 					this.$router.push("/change-pw")
+				}else{
+					this.deleteFacility();
 				}
 			}else{
 				Swal.fire({
@@ -51,6 +53,41 @@ export default {
 					icon: "error"
 				});
 			}
+		},
+		async deleteFacility(){
+			Swal.fire({
+				title: '삭제 확인',
+				text: '정말 삭제하시겠습니까?',
+				width: '300px',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "YES",
+				cancelButtonText: "NO"
+			}).then(async result => {
+				if(result.isConfirmed){
+					const response = await del(`/facilities/${this.type.substring(this.type.lastIndexOf('_') + 1)}`);
+					if(response.status === 204){
+						Swal.fire({
+							width: "300px",
+							title: "삭제 완료",
+							text: "시설이 삭제되었슶니다.!",
+							icon: "success"
+						});
+						this.$router.push('/facilities/my-facility-list');
+					}else{
+						Swal.fire({
+							width: "300px",
+							title: "삭제 실패",
+							text: "시설 삭제를 실패했습니다.",
+							icon: "error"
+						});
+						return;
+					}
+				}
+				
+			});
 		},
 		async exitMember(){
 			Swal.fire({

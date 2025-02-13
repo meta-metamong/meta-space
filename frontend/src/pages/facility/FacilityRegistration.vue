@@ -44,8 +44,8 @@ export default {
             inputs: {
                 "facilityRegistration": {
                     fctName: "",
-                    majorCatId: "0",
-                    minorCatId: "0",
+                    majorCatId: "",
+                    minorCatId: "",
                     addr: {
                         // postalCode: "",
                         // address: "",
