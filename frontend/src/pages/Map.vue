@@ -17,6 +17,8 @@ export default {
             markers: [],
             clusterer: null,
             overlays: [],
+            lat: "",
+            lon: "",
         };
     },
     mounted() {
@@ -29,6 +31,7 @@ export default {
             document.head.appendChild(script);
         }
         this.getFctInfo();
+        this.saveLocation();
     },
     methods: {
         initMap() {
@@ -81,7 +84,8 @@ export default {
                             <div class="desc">
                                 <div class="jibun ellipsis">${fct.catName}</div>
                                 <div class="ellipsis">${fct.fctAddress} ${fct.fctDetailAddress}</div>
-                                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">바로가기</a></div>
+                                <div class="ellipsis">${fct.fctTel}</div>
+                                <div><a href="#" class="link" onclick="navigateToFacility(${fct.fctId})">바로가기</a></div>
                             </div>
                         </div>
                     </div>
@@ -115,30 +119,19 @@ export default {
                 toRaw(this.map).setLevel(level, { anchor: cluster.getCenter() });
             });
         },
+        saveLocation(){
+            this.lat = this.$store.state.loc.lat; // 위도
+            this.lon = this.$store.state.loc.lon; // 경도
+        },
         findLocation() {
-            // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
-            if (navigator.geolocation) {
-
-                // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-                navigator.geolocation.getCurrentPosition((position) => {
-
-                    var lat = position.coords.latitude, // 위도
-                        lon = position.coords.longitude; // 경도
-
-                    var locPosition = new kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-
-                    this.map.setCenter(locPosition);
-                });
-
-            } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-
-                var locPosition = new kakao.maps.LatLng(37.583842, 126.999969);
-
-                this.map.setCenter(locPosition);
-            }
+            var locPosition = new kakao.maps.LatLng(this.lat, this.lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+            this.map.setCenter(locPosition);
+        },
+        navigateToFacility(fctId) {
+            this.$router.push(`/facilities/${fctId}`)
         },
         async getFctInfo() {
-            const response = await get(`/facilities?center-latitude=37.583842&center-longitude=126.999969`);
+            const response = await get(`/facilities?center-latitude=${this.lat}&center-longitude=${this.lon}&page-size=100`);
             this.fctInfo = response.data.content.facilities;
             this.markerPositions = this.fctInfo.map(fct => [fct.fctLatitude, fct.fctLongitude]);
 
@@ -159,7 +152,7 @@ export default {
     left: 0;
     bottom: 40px;
     width: 288px;
-    height: 132px;
+    height: 147px;
     margin-left: -144px;
     text-align: left;
     overflow: hidden;
@@ -175,7 +168,7 @@ export default {
 
 .wrap .info {
     width: 286px;
-    height: 120px;
+    height: 135px;
     border-radius: 5px;
     border-bottom: 2px solid #ccc;
     border-right: 1px solid #ccc;
@@ -219,7 +212,7 @@ export default {
 .info .desc {
     position: relative;
     margin: 13px 0 0 90px;
-    height: 75px;
+    /* height: 75px; */
 }
 
 .desc .ellipsis {
