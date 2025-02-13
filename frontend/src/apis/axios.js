@@ -42,23 +42,10 @@ apiClient.interceptors.response.use(
     },
     async (error) => {
         const {config, response} = error;
-        console.log(error);
         const isReissuable = error.status === 401 && response.data?.message === "만료된 토큰";
-        if(!isReissuable) {
-            // error.status에 따라 어떤 에러 페이지로 보낼지 결정
-            if(error.status === 404){
-                sessionStorage.setItem('error', JSON.stringify(error.status));
-                router.push('/error');
-            }
-            return error;
-        }
+        if(!isReissuable) return error;
 
-        if(response.data.message === "토큰 존재"){
-            delete config.headers["Authorization"];
-            removeAccessToken();
-        }else{
-            await reissue();
-        }
+        await reissue();
         
         return apiClient(config);
     }
