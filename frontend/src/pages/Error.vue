@@ -1,25 +1,40 @@
 <template>
-    <!-- 404 Start -->
     <div class="container-fluid py-5">
         <div class="container py-5 text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <i class="bi bi-exclamation-triangle display-1 text-secondary"></i>
-                    <h1 class="display-1">404</h1>
-                    <h1 class="mb-4">Page Not Found</h1>
-                    <p class="mb-4">We’re sorry, the page you have looked for does not exist in our website! Maybe go to
-                        our home page or try to use a search?</p>
-                    <router-link to="/" class="btn border-secondary rounded-pill py-3 px-5">Go Back To Home</router-link>
+                    <!-- <h1 class="display-1">{{ error }}</h1> -->
+                    <h1 class="mb-4 mt-2">{{ errorTitle }}</h1>
+                    <p class="mb-4">{{ errorMessage }}</p>
+                    <router-link to="/" class="btn border-secondary rounded-pill py-3 px-5">{{ $t('error.home') }}</router-link>
                 </div>
             </div>
         </div>
     </div>
-    <!-- 404 End -->
 </template>
 
 <script>
 export default {
     name: "Error",
+    data() {
+        return {
+        }
+    },
+    computed: {
+        error() {
+            return sessionStorage.getItem('error');
+        },
+        errorTitle() {
+            return this.$t(`error.${this.error}.title`);
+        },
+        errorMessage() {
+            return this.$t(`error.${this.error}.message`);
+        },
+    },
+    mounted() {
+        sessionStorage.removeItem('error');
+    }
 }
 </script>
 

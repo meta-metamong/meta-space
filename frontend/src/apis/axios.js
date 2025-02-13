@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from '../store/index';
+import router from "../router";
 
 // Axios 기본 설정
 const apiClient = axios.create({
@@ -42,8 +43,10 @@ apiClient.interceptors.response.use(
     async (error) => {
         const {config, response} = error;
         console.log(error);
-        const isReissuable = (error.status === 401 && response.data?.message === "만료된 토큰");
+
+        const isReissuable = error.status === 401 && response.data?.message === "만료된 토큰";
         if(!isReissuable) return error;
+
 
         if(response.data.message === "토큰 존재"){
             delete config.headers["Authorization"];
