@@ -219,12 +219,6 @@ public class MemberController {
 	              BaseResponse.of(signUpValidationCode, HttpStatus.OK, "content에 signUpValidationCode가 있음")
 	      );
 	  }
-
-	  @GetMapping("/test")
-	  public ResponseEntity<?> testApi(HttpServletRequest request, @AuthenticationPrincipal User user){
-		  MemberUserDetails userDetails = (MemberUserDetails)userDetailsService.loadUserByUsername(user.getUsername());
-		  return ResponseEntity.ok(userDetails.getName());
-	  }
 	  
 	private void removeRefreshTokenFromCookie(HttpServletResponse response) {
 		  Cookie cookie = new Cookie("Refresh-Token", null);
