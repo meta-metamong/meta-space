@@ -55,9 +55,9 @@ public class BeanConfig {
 
     @Bean
     // @Profile("!prod")
-    LocalFileUploader localFileUploader(ServletContext servletContext) {
+    LocalFileUploader localFileUploader(ServletContext servletContext, @Value("${server-origin}") String serverOrigin) {
         String rootPath = servletContext.getRealPath("/").replaceAll("\\\\", "/");
         log.debug("local file upload root path = {}", rootPath);
-        return new LocalFileUploader(rootPath);
+        return new LocalFileUploader(rootPath, serverOrigin);
     }
 }
