@@ -172,7 +172,8 @@ public class DefaultReservationService implements ReservationService {
     public boolean isReportable(IsReportableRequestDto dto, Long reporterId) {
         Long reportedId = this.facilityService.getMemberIdByZoneId(dto.getZoneId());
         return (this.reservationMapper.findReportByReporterIdAndReportedId(reporterId, reportedId) < 1);
-
+    }    
+    
     @Override
     public List<FctReservationResponseDto> findReservationByFctId(Long fctId) {
         return this.reservationMapper.findReservationByFctId(fctId);
