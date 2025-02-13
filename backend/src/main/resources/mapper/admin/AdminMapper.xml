@@ -5,28 +5,35 @@
 <mapper namespace="com.metamong.mt.domain.admin.repository.mybatis.AdminMapper">
 
     <select id="searchMembers" resultType="com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto">
-    <![CDATA[
-<select id="searchMembers" resultType="com.example.demo.model.Member">
-    SELECT 
-      email, role, account_status AS accountStatus, 
-      reservation_count AS reservationCount, 
-      cancelled_reservation_count AS cancelledReservationCount, 
-      reported_count AS reportedCount, created_at AS createdAt
-    FROM member
-    WHERE 1=1
-    <if test="role != null and role != ''">
-      AND role = #{role}
-    </if>
-    <if test="accountStatus != null and accountStatus != ''">
-      AND account_status = #{accountStatus}
-    </if>
-    <if test="dateFrom != null">
-      AND created_at &gt;= #{dateFrom}
-    </if>
-    <if test="dateTo != null">
-      AND created_at &lt;= #{dateTo}
-    </if>
-  </select>
+       <![CDATA[
+       SELECT 
+    m.email, 
+    CASE 
+        WHEN m.role = 'ROLE_PROV' THEN '시설제공자' 
+        WHEN m.role = 'ROLE_CONS' THEN '시설이용자'
+    END AS role,
+    CASE 
+        WHEN m.mem_banned_until IS NULL THEN '정상' 
+        ELSE '정지' 
+    END AS accountStatus, 
+    COUNT(CASE WHEN r.rvt_cancelation_reason IS NOT NULL THEN 1 END) AS cancelledReservationCount, -- 취소된 예약 건수
+    COUNT(CASE WHEN r.rvt_cancelation_reason IS NULL THEN 1 END) AS reservationCount, -- 취소되지 않은 예약 건수
+    COUNT(rp.report_id) AS reportedCount, -- 신고된 횟수
+    m.created_at AS createdAt
+FROM 
+    member m
+LEFT JOIN 
+    reservation r ON m.mem_id = r.cons_id
+LEFT JOIN
+    report rp ON m.mem_id = rp.reported_id
+WHERE m.role != 'ROLE_ADMN'
+GROUP BY  
+    m.email, 
+    m.role, 
+    m.mem_banned_until,  
+    m.created_at
+ORDER BY 
+    m.created_at
     ]]>
 	</select>
 
@@ -131,7 +138,7 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
  <!-- 등록 요청 승인 쿼리 -->
     <update id="updateFacilityStateRegApproved" parameterType="map">
         UPDATE facility
-        SET fct_state = 'REGISTERED'
+        SET fct_state = 'REG_APPROVED'
         WHERE fct_state = 'REG_REQUESTED'
         AND fct_id = #{fctId}
     </update>
@@ -139,7 +146,7 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
      <!-- 등록 요청 반려 쿼리 -->
     <update id="updateFacilityStateRegRejected" parameterType="map">
         UPDATE facility
-        SET fct_state = 'DELETED'
+        SET fct_state = 'REG_REJECTED'
         WHERE fct_state = 'REG_REQUESTED'
         AND fct_id = #{fctId}
     </update>
