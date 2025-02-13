@@ -43,7 +43,7 @@ public class SecurityConfig {
     private String clientOrigin;
 	
 	@Bean
-	@Profile("no-auth & !prod")
+	@Profile("no-auth")
 	SecurityFilterChain noAuthFilterChain(HttpSecurity http) throws Exception {
 	    http = commonConfiguration(http);
 	    http.cors((corsConfig) -> corsConfig.configurationSource(cors(this.clientOrigin)));
@@ -55,26 +55,26 @@ public class SecurityConfig {
 	    return http.build();
 	}
 	
-	@Bean
-	@Profile("prod")
-	SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
-	    http = commonConfiguration(http);
-	    
-	    http.authorizeHttpRequests((registry) -> {
-            HttpRequestAuthorizationDefinition.defineRequestMatcher(registry);
-        });
+//	@Bean
+//	@Profile("prod")
+//	SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
+//	    http = commonConfiguration(http);
+//	    
+//	    http.authorizeHttpRequests((registry) -> {
+//            HttpRequestAuthorizationDefinition.defineRequestMatcher(registry);
+//        });
+//
+//        // Spring Security JWT 필터 로드
+//        http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
+//                UsernamePasswordAuthenticationFilter.class);
+//        
+//        http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
+//	    
+//	    return http.build();
+//	}
 
-        // Spring Security JWT 필터 로드
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager, jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter.class);
-        
-        http.cors(corsConfig -> corsConfig.configurationSource(cors(this.clientOrigin)));
-	    
-	    return http.build();
-	}
-
 	@Bean
-	@Profile("!no-auth & !prod")
+	@Profile("!no-auth")
 	SecurityFilterChain localDevSecurityFilterChain(HttpSecurity http) throws Exception {
 		http = commonConfiguration(http);
 		
