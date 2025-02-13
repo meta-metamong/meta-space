@@ -183,10 +183,12 @@ export default defineComponent({
       {
         name: "시설별 예약 건수",
         data: this.totalReservations.map(stat => stat.totalReservations), // 시설별 예약 건수
+        pointWidth: 30 
       },
       {
         name: "시설별 취소된 예약 건수",
         data: this.cancelledReservations.map(stat => stat.cancelledReservations), // 시설별 취소된 예약 건수
+        pointWidth: 30 
       },
       {
         name: "시설별 매출",
