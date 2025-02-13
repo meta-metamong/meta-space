@@ -14,6 +14,7 @@ pipeline {
         JDBC_PASSWORD=credentials('jdbc_password')
         CLIENT_DOMAIN=credentials('client_domain')
         CLIENT_ORIGIN=credentials('client_origin')
+        KAKAO_REST_API_KEY=credentials('kakao_rest_key')
     }
 
     stages {
@@ -31,22 +32,6 @@ pipeline {
                 script {
                     env.BACKEND_WORKDIR="${WORKSPACE}/backend"
                 }
-                // withCredentials([string(credentialsId: 'mail_username', variable: 'mailUsername'),
-                //         string(credentialsId: 'mail_password', variable: 'mailPassword'),
-                //         string(credentialsId: 'jdbc_url', variable: 'jdbcUrl'),
-                //         string(credentialsId: 'jdbc_username', variable: 'jdbcUsername'),
-                //         string(credentialsId: 'jdbc_password', variable: 'jdbcPassword'),
-                //         string(credentialsId: 'client_domain', variable: 'clientDomain'),
-                //         string(credentialsId: 'client_origin', variable: 'clientOrigin')]) {
-                //     sh "export MAIL_USERNAME=${mailUsername}"
-                //     sh "export MAIL_PASSWORD=${mailPassword}"
-                //     sh "export MAIL_HOST=smtp.gmail.com"
-                //     sh "export JDBC_URL=${jdbcUrl}"
-                //     sh "export JDBC_USERNAME=${jdbcUsername}"
-                //     sh "export JDBC_PASSWORD=${jdbcPassword}"
-                //     sh "export CLIENT_DOMAIN=${clientDomain}"
-                //     sh "export CLIENT_ORIGIN=${clientOrigin}"
-                // }
                 sh "env"
                 sh "echo work directory is ${env.BACKEND_WORKDIR}"
             }
