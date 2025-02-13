@@ -125,6 +125,7 @@
         WHERE reporter_id=#{reporterId} AND reported_id=#{reportedId}
         AND is_processed='N'
     ]]>
+    </select>
     
     <!-- 시설 제공자의 보유 시설 예약 내역 조회 -->
     <select id="findReservationByFctId" parameterType="Long" resultType="com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto">
