@@ -171,14 +171,12 @@ public class DefaultFacilityService implements FacilityService {
     }
     
     @Override
-    public void deleteFacility(Long fctId, String password) {
+    public void deleteFacility(Long fctId, Long memId) {
         Facility facility = this.facilityRepository.findById(fctId)
                 .orElseThrow(() -> new NoSuchElementException());
-        
-        if (!this.memberService.isValidPassword(facility.getProvId(), password)) {
-            throw new FacilityDeleteFailureException("패스워드가 맞지 않습니다.");
+        if(facility.getProvId() != memId) {
+            throw new FacilityDeleteFailureException("본인의 시설만 삭제요청할 수 있습니다.");
         }
-        
         facility.requestDelete();
     }
     

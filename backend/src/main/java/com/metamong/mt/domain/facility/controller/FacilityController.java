@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.metamong.mt.domain.facility.dto.constant.Order;
 import com.metamong.mt.domain.facility.dto.constant.OrderBy;
 import com.metamong.mt.domain.facility.dto.constant.SearchCondition;
-import com.metamong.mt.domain.facility.dto.request.FacilityDeleteRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityListRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityRegistrationRequestDto;
 import com.metamong.mt.domain.facility.dto.request.FacilityUpdateRequestDto;
+import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityListResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityRegistrationResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityResponseDto;
 import com.metamong.mt.domain.facility.dto.response.FacilityUpdateResponseDto;
-import com.metamong.mt.domain.facility.dto.response.FacilityListOfMemberResponseDto;
-import com.metamong.mt.domain.facility.model.Category;
 import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.global.apispec.BaseResponse;
 
@@ -75,8 +75,8 @@ public class FacilityController {
     
     @DeleteMapping("/facilities/{facilityId}")
     public ResponseEntity<BaseResponse<Void>> deleteFacility(@PathVariable("facilityId") Long facilityId,
-            @RequestBody FacilityDeleteRequestDto dto) {
-        this.facilityService.deleteFacility(facilityId, dto.getPassword());
+            @AuthenticationPrincipal User user) {
+        this.facilityService.deleteFacility(facilityId, Long.valueOf(user.getUsername()));
         return new ResponseEntity<>(BaseResponse.of(HttpStatus.NO_CONTENT), HttpStatus.NO_CONTENT);
     }
     

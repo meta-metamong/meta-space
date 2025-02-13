@@ -346,6 +346,7 @@
             fct_address AS "address"
         FROM facility
         WHERE prov_id = #{memId}
+        AND (fct_state='REG_APPROVED' OR fct_state='REG_REQUESTED')
     </select>
     
     <select id="findMemIdByZoneId" parameterType="long" resultType="long">

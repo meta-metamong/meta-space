@@ -19,7 +19,7 @@ public interface FacilityService {
     
     FacilityUpdateResponseDto updateFacility(Long fctId, FacilityUpdateRequestDto dto);
     
-    void deleteFacility(Long fctId, String password);
+    void deleteFacility(Long fctId, Long memId);
     
     FacilityListResponseDto getFacilities(FacilityListRequestDto dto);
     
