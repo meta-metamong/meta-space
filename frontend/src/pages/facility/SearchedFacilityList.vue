@@ -55,6 +55,11 @@ export default {
     methods: {
         toggleSort() {
             this.isDistanceAsc = !this.isDistanceAsc;
+            if(isDistanceAsc){
+                this.fctContent.facilities.sort((a, b) => a.distance - b.distance);
+            }else{
+                this.fctContent.facilities.sort((a, b) => b.distance - a.distance);
+            }
         },
         async search(keyword) {
             this.searchKeyword = keyword;
@@ -75,6 +80,11 @@ export default {
         }
         const responseBody = (await apiClient.get("/facilities", { params })).data;
         this.fctContent = responseBody.content;
+        this.fctContent.facilities.map(fct => ({...fct, distance: this.getDistance(fct.fctLatitude, fct.fctLongitude)}));
+        this.fctContent.facilities.sort((a, b) => a.distance - b.distance)
+    },
+    getDistance(lat, lon){
+        return Math.sqrt(Math.pow(this.$store.state.loc.lat -lat, 2) + Math.pow(this.$store.state.loc.lon - lon, 2));
     }
 };
 </script>
