@@ -46,15 +46,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		
 		// 유효한 토큰인지 확인.
 		if (token != null) {						
-			if(HttpRequestAuthorizationDefinition.NO_AUTH_REQUIRED_LIST.contains(httpRequest.getRequestURI())) {
-				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
-					this.responseForUnauthorizedToken(httpResponse, "토큰 존재");
-	                return;
-				}
-				
-				chain.doFilter(request, response);
-				return;
-			}
+//			if(HttpRequestAuthorizationDefinition.NO_AUTH_REQUIRED_LIST.contains(httpRequest.getRequestURI())) {
+//				if(!"/api/members/reissue".equals(httpRequest.getRequestURI())) {
+//					this.responseForUnauthorizedToken(httpResponse, "토큰 존재");
+//	                return;
+//				}
+//				
+//				chain.doFilter(request, response);
+//				return;
+//			}
 			
 			try {
 				if(jwtTokenProvider.validateToken(token)) {
