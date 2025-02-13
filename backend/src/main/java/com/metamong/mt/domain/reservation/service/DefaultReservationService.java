@@ -12,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.model.Facility;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
+import com.metamong.mt.domain.facility.service.FacilityService;
 import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.service.NotificationService;
 import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.CancelRequestDto;
+import com.metamong.mt.domain.reservation.dto.request.IsReportableRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationListRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.SelectedInfoRequestDto;
@@ -42,6 +44,7 @@ public class DefaultReservationService implements ReservationService {
     private final ReservationMapper reservationMapper;
     private final ReservationRepository reservationRepository;
     private final FacilityRepository facilityRepository;
+    private final FacilityService facilityService;
     private final PaymentService paymentService;
     private final NotificationService notificationService;
     private static final int PAGE_SIZE = 5;
@@ -165,8 +168,13 @@ public class DefaultReservationService implements ReservationService {
     }
 
     @Override
+    @Transactional(readOnly=true)
+    public boolean isReportable(IsReportableRequestDto dto, Long reporterId) {
+        Long reportedId = this.facilityService.getMemberIdByZoneId(dto.getZoneId());
+        return (this.reservationMapper.findReportByReporterIdAndReportedId(reporterId, reportedId) < 1);
+
+    @Override
     public List<FctReservationResponseDto> findReservationByFctId(Long fctId) {
         return this.reservationMapper.findReservationByFctId(fctId);
     }
-
 }

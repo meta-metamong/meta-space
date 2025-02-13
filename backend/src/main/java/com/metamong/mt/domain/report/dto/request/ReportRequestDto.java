@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.report.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ReportRequestDto {
-    @NotEmpty(message="존 아이디는 필수입니다.")
+    @NotNull(message="존 아이디는 필수입니다.")
     private Long zoneId;
     
     @NotEmpty(message="신고 메세지는 필수입니다")

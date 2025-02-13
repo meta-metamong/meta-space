@@ -246,5 +246,11 @@
         "all": "전체",
         "read": "읽음",
         "unread": "안읽음"
+    },
+    "report": {
+        "report": "신고하기",
+        "reportType": "신고 유형",
+        "reportMsg": "신고 내용",
+        "selectReportType": "신고 유형을 선택하세요"
     }
 }

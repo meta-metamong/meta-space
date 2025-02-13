@@ -11,6 +11,7 @@
                 SELECT f.fct_name AS "fctName",
                     r.rvt_id AS "rvtId",
                     r.rvt_date AS "rvtDate",
+                    z.zone_id AS "zoneId",
                     z.zone_name AS "zoneName",
                     r.usage_start_time AS "usageStartTime",
                     r.usage_end_time AS "usageEndTime",
@@ -35,7 +36,7 @@
     <!-- 시설 이용자의 예약 상세 조회 -->
     <select id="findReservationByRvtId" parameterType="Long" resultType="com.metamong.mt.domain.reservation.dto.response.ReservationResponseDto">
         <![CDATA[
-            SELECT f.fct_name AS "fctName", r.rvt_id AS "rvtId", r.rvt_date AS "rvtDate", z.zone_name AS "zoneName",
+            SELECT f.fct_name AS "fctName", r.rvt_id AS "rvtId", r.rvt_date AS "rvtDate", z.zone_id AS "zoneId", z.zone_name AS "zoneName",
             f.fct_address AS "fctAddress", f.fct_detail_address AS "fctDetailAddress", r.usage_count AS "usageCount",
             r.usage_start_time AS "usageStartTime", r.usage_end_time AS "usageEndTime", p.pay_state AS "payState"
             FROM reservation r
@@ -116,6 +117,14 @@
             GROUP BY r.usage_start_time, r.usage_end_time
         ]]>
     </select>
+    
+    <!-- 신고자와 피신고자 간 처리되지 않은 신고 내역이 있는지 조회 -->
+    <select id="findReportByReporterIdAndReportedId" parameterType="long" resultType="int">
+    <![CDATA[
+        SELECT COUNT(report_id) FROM report 
+        WHERE reporter_id=#{reporterId} AND reported_id=#{reportedId}
+        AND is_processed='N'
+    ]]>
     
     <!-- 시설 제공자의 보유 시설 예약 내역 조회 -->
     <select id="findReservationByFctId" parameterType="Long" resultType="com.metamong.mt.domain.reservation.dto.response.FctReservationResponseDto">
