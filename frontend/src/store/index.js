@@ -54,7 +54,11 @@ const store = createStore({
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
     messages: [],  // WebSocket으로 받은 메시지를 저장
-    socketClient: null
+    socketClient: null,
+    loc: {
+      lat: 37.5717571,
+      lon: 127.0009843
+    }
   },
   mutations: {
     openWebSocket(state, payload) {
@@ -133,6 +137,9 @@ const store = createStore({
       removeUser();
       removeAccessToken();
       location.href = "/";
+    },
+    saveLoc(state, payload) {
+      state.loc = payload;
     }
   },
   actions: {

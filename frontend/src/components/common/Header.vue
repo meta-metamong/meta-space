@@ -74,7 +74,22 @@ export default {
             if (userName) {
                 this.$store.commit("initUserName", userName);
             }
-        }
+        },
+        findLocation() {
+            // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
+            if (navigator.geolocation) {
+
+                // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+                navigator.geolocation.getCurrentPosition((position) => {
+
+                    this.$store.commit('saveLoc', {
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    });
+                });
+
+            }
+        },
     },
     computed: {
         isLogin() {
@@ -91,6 +106,7 @@ export default {
         } else {
             console.log("not logged in");
         }
+        this.findLocation();
     }
 }
 </script>

@@ -212,7 +212,8 @@
             s.fct_latitude AS "fctLatitude",
             s.fct_longitude AS "fctLongitude",
             s.fct_address AS "fctAddress",
-            s.fct_detail_address AS "fctDetailAddress"
+            s.fct_detail_address AS "fctDetailAddress",
+            s.fct_tel AS "fctTel"
         FROM (
             SELECT
                 ROWNUM AS rnum,
@@ -224,7 +225,8 @@
                 s.fct_latitude AS fct_latitude,
                 s.fct_longitude AS fct_longitude,
                 s.fct_address AS fct_address,
-                s.fct_detail_address AS fct_detail_address
+                s.fct_detail_address AS fct_detail_address,
+                s.fct_tel AS fct_tel
             FROM (
                 SELECT
                     fct.fct_id AS fct_id,
@@ -235,7 +237,8 @@
                     fct.fct_latitude AS fct_latitude,
                     fct.fct_longitude AS fct_longitude,
                     fct.fct_address AS fct_address,
-                    fct.fct_detail_address AS fct_detail_address
+                    fct.fct_detail_address AS fct_detail_address,
+                    fct.fct_tel AS fct_tel
                 FROM facility fct
                 INNER JOIN category cat ON cat.cat_id = fct.cat_id
                 LEFT JOIN image img ON img.fct_id = fct.fct_id

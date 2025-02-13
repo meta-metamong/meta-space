@@ -22,4 +22,5 @@ public class FacilityListItemResponseDto {
     private double fctLongitude;
     private String fctAddress;
     private String fctDetailAddress;
+    private String fctTel;
 }
