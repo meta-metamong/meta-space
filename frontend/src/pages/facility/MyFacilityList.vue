@@ -9,7 +9,7 @@
         </div>
         <div class="list-item" v-for="facility in facilities">
             <div class="col-md-6 col-lg-4 mb-2">
-                <div class="card" :class="setBorder(facility.fctState)">
+                <div class="card":class="setBorder(facility.fctState)">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-2">{{ facility.fctName }}</h5>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { toRaw } from "vue";
 import { get } from "../../apis/axios";
 
 export default {
@@ -51,6 +52,8 @@ export default {
                     return 'border border-warning';
                 case 'REG_APPROVED':
                     return 'border border-success';
+                default:
+                    return 'border border-danger';
             }
         }
     },

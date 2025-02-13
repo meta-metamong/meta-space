@@ -343,7 +343,8 @@
         SELECT
             fct_id AS "fctId",
             fct_name AS "fctName",
-            fct_address AS "address"
+            fct_address AS "address",
+            fct_state AS "fctState"
         FROM facility
         WHERE prov_id = #{memId}
         AND (fct_state='REG_APPROVED' OR fct_state='REG_REQUESTED')
