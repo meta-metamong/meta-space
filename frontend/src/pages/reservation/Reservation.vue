@@ -109,7 +109,7 @@ export default {
             return times;
         },
         formattedDate() {
-            return this.date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 변환
+            return this.date?.toISOString().split("T")[0]; // YYYY-MM-DD 형식 변환
         },
         payPrice() {
             if (this.isSharedZone === 'N') {
@@ -249,12 +249,12 @@ export default {
 
             sessionStorage.setItem('reservation', JSON.stringify(requestDto));
             sessionStorage.setItem('fctId', this.fctId);
-
+            console.log(this.zoneInfo.filter(info => info.zoneId = this.selectedZoneId)[0].zoneName)
             var tossPayments = TossPayments(import.meta.env.VITE_TOSS_CLIENT_KEY);
             const tossRequestObject = {
                 amount: this.payPrice,
                 orderId: 12345678,
-                orderName: this.zoneInfo[this.selectedZoneId].zoneName,
+                orderName: this.zoneInfo.filter(info => info.zoneId = this.selectedZoneId)[0].zoneName,
                 customerName: this.$store.state.userName,
                 successUrl: 'http://localhost:3000/payment/result',
                 failUrl: 'http://localhost:3000/payment/result'

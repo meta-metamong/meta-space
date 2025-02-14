@@ -85,7 +85,6 @@ export default {
 .routed {
 	flex: 1;
 	/* 나머지 공간을 차지 */
-	padding: 20px;
 	overflow-y: auto;
 	/* 컨텐츠가 넘치면 스크롤 가능 */
 	margin-top: 50px;

@@ -52,7 +52,7 @@ export default{
 .card-thumbnail{
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: contain;
+    object-fit: cover;
     border-top-left-radius: 0.375rem;
     border-top-right-radius: 0.375rem;
 }

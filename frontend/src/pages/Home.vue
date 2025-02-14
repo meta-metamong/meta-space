@@ -4,7 +4,7 @@
             <img :class="{ active: bannerStep === 0 }" class="banner-img" src="../resource/image/banner1.png" alt="banner1">
             <img :class="{ active: bannerStep === 1 }" class="banner-img" src="../resource/image/banner2.png" alt="banner2">
         </div>
-        <div class="d-flex flex-column gap-2" v-if="userId !== null">
+        <div class="d-flex flex-column gap-2" v-if="userId !== null && recommendFct.length != 0">
             <h4 class="fw-bold">👍 {{ $t('main.best') }}</h4>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in recommendFct" :key="fctData.fctId" :fctData="fctData" />
@@ -69,7 +69,7 @@ export default{
             this.closeFct = this.closeFct.map(fct => ({...fct, distance: this.getDistance(fct.fctLatitude, fct.fctLongitude)}));
             this.closeFct.sort((a, b) => a.distance - b.distance);
         },
-        
+
         getDistance(lat, lon){
             const R = 6371;
             const dLat = this.toRad(this.$store.state.loc.lat -lat);
