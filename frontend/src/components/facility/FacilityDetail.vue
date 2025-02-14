@@ -46,7 +46,7 @@
             <h5>{{ $t("facility.availableZones") }}</h5>
             <div class="zone-item-container" v-for="zone in fct.zones"> <!-- TODO: API -->
                 <div class="w-25">
-                    <img :src="zone.imgUrl" class="rounded float-start">
+                    <img :src="zone.zoneImg" class="rounded float-start w-100">
                 </div>
                 <div class="zone-desc-container">
                     <span class="zone-name">{{ zone.zoneName }}</span>

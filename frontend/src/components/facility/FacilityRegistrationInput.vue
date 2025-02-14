@@ -124,8 +124,6 @@ export default {
         }
     },
     data() {
-        console.log(this.facilityRegistration);
-
         const operationTimeSelections = [];
         let minutes = 0;
         const convertMinutesTo24HourTime = (minute) => {
@@ -157,13 +155,10 @@ export default {
     },
     methods: {
         onChangeMajorCategory(e) {
-            console.log(e.target.value);
             this.onValueChange(e.target.value, "majorCatId");
             for (const major of this.categories) {
-                console.log(major);
                 if (major.catId === e.target.value) {
                     this.data.selectedMinorCategories = major.children;
-                    console.log(this.data.selectedMinorCategories);
                     return;
                 }
             }
@@ -171,7 +166,6 @@ export default {
         },
         onAddImageBtnClick() {
             const indexToOpen = this.data.images.length;
-            console.log(this.$refs);
             this.$refs[`file-${indexToOpen}`][0].click();
         },
         onImageUpload(e, imageNo) {
@@ -184,7 +178,6 @@ export default {
                     fileData: e.target.files[0]
                 });
                 this.fileInput.push(0);
-                console.log(this.data.images);
             }
             fileReader.readAsDataURL(e.target.files[0]);
         },
@@ -199,7 +192,6 @@ export default {
         searchPostCode() {
             new daum.Postcode({
                 oncomplete: (data) => {
-                    console.log(data);
                     this.data.addr.postalCode = data.zonecode;
                     this.data.addr.address = data.userSelectedType === 'R' ? data.address : data.jibunAddress;
                 }
