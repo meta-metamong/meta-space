@@ -1,5 +1,5 @@
 <template>
-    <button class="location-btn" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
+    <button class="location-btn mt-3" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
     <div class="w-100">
         <div id="map"></div>
     </div>
