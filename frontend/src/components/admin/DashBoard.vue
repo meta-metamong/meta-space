@@ -13,7 +13,10 @@
     <div id="facility-stats-chart"></div>
 
     <!-- 이번 달 예약 랭킹 차트 (파이 차트) -->
-    <div id="ranking-chart"></div>
+    <div class="ranking-container">
+      <div id="ranking-chart" class="ranking-half"></div>
+      <div id="payment-ranking-chart" class="ranking-half"></div>
+    </div>
   </div>
 </template>
 
@@ -30,7 +33,8 @@ export default defineComponent({
       totalReservations: [], // 시설별 예약 건수
       cancelledReservations: [], // 시설별 취소된 예약 건수
       totalRevenue: [], // 시설별 매출
-      rankedReservation: [] // 예약 랭킹 데이터
+      rankedReservation: [], // 예약 랭킹 데이터
+      rankedPayment: [] 
     };
   },
   methods: {
@@ -48,6 +52,8 @@ export default defineComponent({
           this.cancelledReservations = response.data.cancelledReservations; // 시설별 취소된 예약 건수
           this.totalRevenue = response.data.totalRevenue; // 시설별 매출
           this.rankedReservation = response.data.rankedReservation; // 예약 랭킹 데이터
+          this.rankedPayment = response.data.rankedPayment;
+          
         } else {
           console.error("데이터가 없습니다.");
         }
@@ -216,34 +222,60 @@ export default defineComponent({
 
   // 예약 랭킹 차트 (파이 차트)
   const rankedData = this.rankedReservation.map((stat) => ({
-    name: stat.fctName,  // 시설 이름
-    y: stat.totRvt     // 예약 건수
-  }));
+        name: stat.fctName,  // 시설 이름
+        y: stat.totRvt     // 예약 건수
+      }));
 
-  Highcharts.chart("ranking-chart", {
-    chart: {
-      type: 'pie' // 파이 차트
-    },
-    title: {
-      text: "이번 달 예약 시설 랭킹 TOP 5"
-    },
-    series: [{
-      name: "예약 건수",
-      data: rankedData,
-      size: '80%',
-      innerSize: '60%',
-      dataLabels: {
-        formatter: function () {
-          return `${this.point.name}: ${this.point.y} 건`; // 데이터 라벨 표시
-        }
-      }
-    }],
-    credits: { enabled: false }, // 크레딧 비활성화
-    exporting: { enabled: true } // 내보내기 활성화
-  });
-}
+      Highcharts.chart("ranking-chart", {
+        chart: {
+          type: 'pie' // 파이 차트
+        },
+        title: {
+          text: "이번 달 시설 예약 랭킹 TOP 5"
+        },
+        series: [{
+          name: "예약 건수",
+          data: rankedData,
+          size: '80%',
+          innerSize: '60%',
+          dataLabels: {
+            formatter: function () {
+              return `${this.point.name}: ${this.point.y} 건`; // 데이터 라벨 표시
+            }
+          }
+        }],
+        credits: { enabled: false }, // 크레딧 비활성화
+        exporting: { enabled: true } // 내보내기 활성화
+      });
 
+      // 매출 랭킹 차트 (파이 차트)
+      const paymentRankedData = this.rankedPayment.map((stat) => ({
+        name: stat.fctName,  // 시설 이름
+        y: stat.totPay     // 매출 금액
+      }));
 
+      Highcharts.chart("payment-ranking-chart", {
+        chart: {
+          type: 'pie' // 파이 차트
+        },
+        title: {
+          text: "이번 달 시설 매출 랭킹 TOP 5"
+        },
+        series: [{
+          name: "매출 금액",
+          data: paymentRankedData,
+          size: '80%',
+          innerSize: '60%',
+          dataLabels: {
+            formatter: function () {
+              return `${this.point.name}: ${this.point.y} 원`; // 데이터 라벨 표시
+            }
+          }
+        }],
+        credits: { enabled: false }, // 크레딧 비활성화
+        exporting: { enabled: true } // 내보내기 활성화
+      });
+    }
   },
   mounted() {
     this.fetchWeekReservations(); // 컴포넌트가 마운트될 때 데이터 가져오기
@@ -272,12 +304,17 @@ export default defineComponent({
   overflow: hidden; /* 스크롤 방지 */
 }
 
-/* 예약 랭킹 차트 */
-#ranking-chart {
-  width: 100%;
+/* 예약 랭킹과 매출 랭킹 차트 */
+.ranking-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.ranking-half {
+  width: 550px; /* 차트 너비를 40%로 설정 */
   height: 270px; /* 화면의 1/3 높이 */
-  margin: 0 auto;
-  overflow: hidden; /* 스크롤 방지 */
 }
 
 /* 다른 차트의 높이도 동일하게 설정 */
@@ -287,6 +324,4 @@ export default defineComponent({
   height: 270px; /* 화면의 1/3 높이 */
   overflow: hidden; /* 스크롤 방지 */
 }
-
-
 </style>
