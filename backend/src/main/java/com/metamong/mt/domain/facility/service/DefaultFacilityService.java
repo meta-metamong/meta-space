@@ -33,9 +33,9 @@ import com.metamong.mt.domain.facility.repository.jpa.AdditionalInfoRepository;
 import com.metamong.mt.domain.facility.repository.jpa.FacilityRepository;
 import com.metamong.mt.domain.facility.repository.jpa.ZoneRepository;
 import com.metamong.mt.domain.facility.repository.mybatis.FacilityMapper;
-import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.CommonListUpdateRequestDto;
 import com.metamong.mt.global.apispec.CommonUpdateListItemRequestDto;
+import com.metamong.mt.global.concurrency.SynchronizedOperation;
 import com.metamong.mt.global.file.FileUploader;
 import com.metamong.mt.global.file.FilenameResolver;
 import com.metamong.mt.global.location.LocationProvider;
@@ -54,9 +54,9 @@ public class DefaultFacilityService implements FacilityService {
     private final FacilityMapper facilityMapper;
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
-    private final MemberService memberService;
     private final LocationProvider locationProvider;
     
+    @SynchronizedOperation
     @Override
     public FacilityRegistrationResponseDto registerFacility(FacilityRegistrationRequestDto dto) {
         Facility facility = dto.toEntity();
