@@ -86,6 +86,14 @@ services:
     networks:
       - metamong-net
 
+  python:
+    container_name: python-container
+    image: rudeh1253/metapy:latest
+    ports:
+      - 8000:8000
+    networks:
+      - metamong-net
+
 networks:
   metamong-net:
     driver: bridge

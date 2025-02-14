@@ -28,6 +28,7 @@
 <script>
 import FctCard from '../components/facility/FctCard.vue';
 import { get, post } from '../apis/axios'
+import { getUserIdInLocal } from "../store";
 
 export default{
     name: "Home",
@@ -44,7 +45,7 @@ export default{
     },
     methods: {
         async getTopFct() {
-            const response = await get('/facilities/top');
+            const response = await get('/top-facilities');
             this.topFct = response.data.content;
         },
         async getRecommendFct() {
@@ -94,7 +95,7 @@ export default{
     mounted() {
         this.getTopFct();
         this.getCloseFct();
-        if (this.userId !== null) {
+        if (getUserIdInLocal() !== null) {
             this.getRecommendFct();
         }
         setInterval(() => {

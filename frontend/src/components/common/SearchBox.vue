@@ -22,7 +22,7 @@ export default{
     },
     methods: {
         async search(){
-            if(this.keyword){
+            if(!this.keyword){
                 Swal.fire({
                     text: this.$t('search.enterFct'),
                     width: '300px',
