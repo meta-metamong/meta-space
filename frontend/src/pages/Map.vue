@@ -1,5 +1,5 @@
 <template>
-    <button class="location-btn" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
+    <button class="location-btn mt-3" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
     <div class="w-100">
         <div id="map"></div>
     </div>
@@ -85,7 +85,7 @@ export default {
                                 <div class="jibun ellipsis">${fct.catName}</div>
                                 <div class="ellipsis">${fct.fctAddress} ${fct.fctDetailAddress}</div>
                                 <div class="ellipsis">${fct.fctTel}</div>
-                                <div><a href="#" class="link" onclick="navigateToFacility(${fct.fctId})">바로가기</a></div>
+                                <div><a href="#" class="link">바로가기</a></div>
                             </div>
                         </div>
                     </div>
@@ -100,6 +100,10 @@ export default {
                 // 닫기 버튼 클릭 이벤트 추가
                 overlayContent.querySelector(".close").addEventListener("click", () => {
                     overlay.setMap(null);
+                });
+
+                overlayContent.querySelector(".link").addEventListener("click", () => {
+                    this.$router.push(`/facilities/${fct.fctId}`)
                 });
 
                 // 마커 클릭 시 해당 오버레이 표시, 기존 오버레이 닫기
@@ -126,9 +130,6 @@ export default {
         findLocation() {
             var locPosition = new kakao.maps.LatLng(this.lat, this.lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
             this.map.setCenter(locPosition);
-        },
-        navigateToFacility(fctId) {
-            this.$router.push(`/facilities/${fctId}`)
         },
         async getFctInfo() {
             const response = await get(`/facilities?center-latitude=${this.lat}&center-longitude=${this.lon}&page-size=100`);
