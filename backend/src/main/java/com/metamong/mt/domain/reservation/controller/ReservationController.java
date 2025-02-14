@@ -74,7 +74,7 @@ public class ReservationController {
         return ResponseEntity.ok(BaseResponse.of(availableTimes, HttpStatus.OK));
     }
     
-    @GetMapping("/facilities/top")
+    @GetMapping("/top-facilities")
     public ResponseEntity<?> getTopFacilities() {
         return ResponseEntity.ok(BaseResponse.of(reservationService.getTopFacilities(), HttpStatus.OK, "인기 시설 불러오기"));
     }
