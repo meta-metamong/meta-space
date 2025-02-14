@@ -11,7 +11,7 @@ CREATE SEQUENCE zone_pk_seq       START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE img_pk_seq        START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE member (
-    mem_id                       NUMBER(4, 0)   NOT NULL,
+    mem_id                       NUMBER(19, 0)   NOT NULL,
     email                        VARCHAR2(50)   NOT NULL UNIQUE,
     mem_name                     VARCHAR2(30)   NOT NULL,
     password                     VARCHAR2(80)   NOT NULL,
@@ -19,8 +19,8 @@ CREATE TABLE member (
     birth_date                   DATE           NOT NULL,
     gender                       CHAR(1)        NOT NULL,
     mem_postal_code              CHAR(5)        NOT NULL,
-    mem_address                  VARCHAR2(40)   NOT NULL,
-    mem_detail_address           VARCHAR2(30)   NOT NULL,
+    mem_address                  VARCHAR2(80)   NOT NULL,
+    mem_detail_address           VARCHAR2(60)   NOT NULL,
     role                         CHAR(9)        NOT NULL,
     refresh_token                VARCHAR2(1000),
     created_at                   DATE           DEFAULT SYSDATE,
@@ -35,8 +35,8 @@ CREATE TABLE member (
 );
 
 CREATE TABLE notification (
-    noti_id       NUMBER(4, 0),
-    receiver_id   NUMBER(4, 0)   NOT NULL,
+    noti_id       NUMBER(19, 0),
+    receiver_id   NUMBER(19, 0)   NOT NULL,
     noti_msg      VARCHAR2(150)  NOT NULL,
     created_at    DATE           DEFAULT SYSDATE,
     is_read       CHAR(1)        DEFAULT 'N',
@@ -55,7 +55,7 @@ CREATE TABLE bank (
 );
 
 CREATE TABLE fct_provider (
-    prov_id            NUMBER(4, 0),
+    prov_id            NUMBER(19, 0),
     biz_name           VARCHAR2(30) NOT NULL,
     biz_reg_num        VARCHAR2(30) NOT NULL,
 
@@ -65,7 +65,7 @@ CREATE TABLE fct_provider (
 );
 
 CREATE TABLE account (
-    prov_id            NUMBER(4, 0),
+    prov_id            NUMBER(19, 0),
     bank_code          CHAR(3)       NOT NULL,
     account_number     VARCHAR2(20)  NOT NULL,
     balance            NUMBER(10, 0) DEFAULT 0,
@@ -80,9 +80,9 @@ CREATE TABLE account (
 );
 
 CREATE TABLE report (
-    report_id      NUMBER(4, 0),
-    reporter_id    NUMBER(4, 0)     NOT NULL,
-    reported_id    NUMBER(4, 0)     NOT NULL,
+    report_id      NUMBER(19, 0),
+    reporter_id    NUMBER(19, 0)     NOT NULL,
+    reported_id    NUMBER(19, 0)     NOT NULL,
     report_msg     VARCHAR2(255)    NOT NULL,
     report_date    DATE             DEFAULT SYSDATE,
     report_type    VARCHAR2(50)     NOT NULL,
@@ -107,19 +107,19 @@ CREATE TABLE category (
 );
 
 CREATE TABLE facility (
-    fct_id                        NUMBER(4, 0),
+    fct_id                        NUMBER(19, 0),
     cat_id                        CHAR(3)        NOT NULL,
-    prov_id                       NUMBER(4, 0)   NOT NULL,
+    prov_id                       NUMBER(19, 0)   NOT NULL,
     fct_name                      VARCHAR2(50)   NOT NULL,
     fct_postal_code               CHAR(5)        NOT NULL,
-    fct_address                   VARCHAR2(40)   NOT NULL,
-    fct_detail_address            VARCHAR2(30)   NOT NULL,
+    fct_address                   VARCHAR2(80)   NOT NULL,
+    fct_detail_address            VARCHAR2(60)   NOT NULL,
     fct_tel                       VARCHAR2(15)   NOT NULL,
     fct_guide                     VARCHAR2(1000) NOT NULL,
     is_open_on_holidays           CHAR(1)        NOT NULL,
     fct_open_time                 DATE           NOT NULL,
     fct_close_time                DATE           NOT NULL,
-    unit_usage_time               NUMBER(4, 0)   NOT NULL,
+    unit_usage_time               NUMBER(19, 0)   NOT NULL,
     created_at                    DATE           DEFAULT SYSDATE,
     updated_at                    DATE           DEFAULT SYSDATE,
     fct_state                     VARCHAR2(15)   DEFAULT 'REG_REQUESTED', -- 'REG_REQUESTED', 'REGISTERED', 'DEL_REQUESTED', 'DEL_APPROVED', 'DEL_REJECTED'
@@ -136,8 +136,8 @@ CREATE TABLE facility (
 );
 
 CREATE TABLE additional_info (
-    addinfo_id      NUMBER(4, 0),
-    fct_id          NUMBER(4, 0) NOT NULL,
+    addinfo_id      NUMBER(19, 0),
+    fct_id          NUMBER(19, 0) NOT NULL,
     addinfo_desc    VARCHAR2(500) NOT NULL,
  
     CONSTRAINT pk_addinfo PRIMARY KEY (addinfo_id),
@@ -146,10 +146,10 @@ CREATE TABLE additional_info (
 );
 
 CREATE TABLE zone (
-    zone_id            NUMBER(4, 0),
-    fct_id             NUMBER(4, 0)  NOT NULL,
+    zone_id            NUMBER(19, 0),
+    fct_id             NUMBER(19, 0)  NOT NULL,
     zone_name          VARCHAR2(30)  NOT NULL,
-    max_user_count     NUMBER(4, 0)  NOT NULL,
+    max_user_count     NUMBER(8, 0)  NOT NULL,
     is_shared_zone     CHAR(1)       NOT NULL,
     hourly_rate        NUMBER(5, 0)  NOT NULL,
     created_at         DATE          DEFAULT SYSDATE,
@@ -164,10 +164,10 @@ CREATE TABLE zone (
 );
 
 CREATE TABLE image (
-    img_id              NUMBER(4, 0),
-    fct_id              NUMBER(4, 0),
-    zone_id             NUMBER(4, 0),
-    mem_id              NUMBER(4, 0),
+    img_id              NUMBER(19, 0),
+    fct_id              NUMBER(19, 0),
+    zone_id             NUMBER(19, 0),
+    mem_id              NUMBER(19, 0),
     img_path            VARCHAR2(255)  NOT NULL,
     img_attached_to     CHAR(1)        NOT NULL,
     img_display_order   NUMBER(4, 0)   NOT NULL,
@@ -184,9 +184,9 @@ CREATE TABLE image (
 );
 
 CREATE TABLE reservation (
-    rvt_id                 NUMBER(4, 0),
-    cons_id                NUMBER(4, 0)  NOT NULL,
-    zone_id                NUMBER(4, 0)  NOT NULL,
+    rvt_id                 NUMBER(19, 0),
+    cons_id                NUMBER(19, 0)  NOT NULL,
+    zone_id                NUMBER(19, 0)  NOT NULL,
     rvt_date               DATE          NOT NULL,
     usage_start_time       DATE          NOT NULL,
     usage_end_time         DATE          NOT NULL,
@@ -202,7 +202,7 @@ CREATE TABLE reservation (
 );
 
 CREATE TABLE payment (
-    rvt_id                NUMBER(4, 0),
+    rvt_id                NUMBER(19, 0),
     pay_price             NUMBER(6, 0)  NOT NULL,
     pay_state             CHAR(1)       DEFAULT 'P',
     pay_method            VARCHAR2(10)  NOT NULL,

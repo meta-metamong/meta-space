@@ -26,9 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 public class FileUploadController {
     private final FileUploader fileUploader;
     
-    @PutMapping("/{filePath:.+}")
+    @PutMapping("/{*filePath}")
     public ResponseEntity<BaseResponse<Void>> putFile(
-            @PathVariable String filePath,
+            @PathVariable("filePath") String filePath,
             InputStream is) throws IOException { // TODO: IOException을 어떻게 처리할 것인가
         
         System.out.println("\n\n\n\n\n들어오긴 하나?");

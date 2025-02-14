@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mt-4">
         <div>
             <!-- 대분류 넣기 -->
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">

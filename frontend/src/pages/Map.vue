@@ -1,5 +1,5 @@
 <template>
-    <button class="location-btn" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
+    <button class="location-btn mt-3" @click="findLocation"><i class="bi bi-crosshair"></i> 현재 위치로 이동</button>
     <div class="w-100">
         <div id="map"></div>
     </div>
@@ -102,6 +102,10 @@ export default {
                     overlay.setMap(null);
                 });
 
+                overlayContent.querySelector(".link").addEventListener("click", () => {
+                    this.$router.push(`/facilities/${fct.fctId}`)
+                });
+
                 // 마커 클릭 시 해당 오버레이 표시, 기존 오버레이 닫기
                 kakao.maps.event.addListener(marker, "click", () => {
                     this.overlays.forEach((o) => o.setMap(null));
@@ -126,9 +130,6 @@ export default {
         findLocation() {
             var locPosition = new kakao.maps.LatLng(this.lat, this.lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
             this.map.setCenter(locPosition);
-        },
-        navigateToFacility(fctId) {
-            this.$router.push(`/facilities/${fctId}`)
         },
         async getFctInfo() {
             const response = await get(`/facilities?center-latitude=${this.lat}&center-longitude=${this.lon}&page-size=100`);
