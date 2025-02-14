@@ -85,7 +85,7 @@ export default {
                                 <div class="jibun ellipsis">${fct.catName}</div>
                                 <div class="ellipsis">${fct.fctAddress} ${fct.fctDetailAddress}</div>
                                 <div class="ellipsis">${fct.fctTel}</div>
-                                <div><a href="#" class="link" onclick="navigateToFacility(${fct.fctId})">바로가기</a></div>
+                                <div><a href="#" class="link" onclick="location.href = '/facilities/${fct.fctId}'">바로가기</a></div>
                             </div>
                         </div>
                     </div>
