@@ -10,9 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
@@ -24,8 +23,8 @@ import com.metamong.mt.global.constant.BooleanAlt;
 
 import jakarta.persistence.EntityManager;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@SpringBootTest
+@Transactional
 class NotificationRepositoryTest {
 
     @Autowired
@@ -74,12 +73,64 @@ class NotificationRepositoryTest {
         notifications.get(0).setIsRead('Y');
         notifications.get(3).setIsRead('Y');
         
-        this.notificationRepository.saveAll(notifications);
+        notifications.forEach(this.notificationRepository::save);
+        
+        this.entityManager.flush();
+        
+        // When
+        int result1 = this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId());
+        
+        // Then
+        assertThat(result1).isEqualTo(3);
+    }
+    
+    @Test
+    @DisplayName("countNotReadNotificationsByReceiverId() - check caching")
+    void countNotReadNotificationsByReceiverId_caching() {
+        // Given
+        List<Notification> notifications = List.of(
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
+        );
+        
+        notifications.get(0).setIsRead('Y');
+        notifications.get(3).setIsRead('Y');
+        
+        notifications.forEach(this.notificationRepository::save);
+        
+        this.entityManager.flush();
+        
+        this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId()); // Redis에 데이터 생성
+        
+        List<Notification> newNotifications = List.of(
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
+                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
+        );
+        
+        newNotifications.get(2).setIsRead('Y');
+        
+        newNotifications.forEach(this.notificationRepository::save);
+        
+        this.entityManager.flush();
+        
+        this.notificationRepository.deleteById(newNotifications.get(0).getNotiId());
+        this.notificationRepository.deleteById(newNotifications.get(2).getNotiId());
+        
+        this.entityManager.flush();
+        
+        this.notificationRepository.readByNotificationId(notifications.get(1).getNotiId());
         
         // When
         int result = this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId());
+        System.out.println("result=" + result);
         
         // Then
-        assertThat(result).isEqualTo(3);
+        assertThat(result).isEqualTo(5);
     }
 }

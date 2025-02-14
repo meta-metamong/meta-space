@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -83,7 +82,7 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     
     @Override
     public void readNotification(Long notificationId) {
-        this.notificationMapper.readByNotificationId(notificationId);
+        this.notificationRepository.readByNotificationId(notificationId);
     }
     
     @Override

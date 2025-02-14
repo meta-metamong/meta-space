@@ -4,12 +4,6 @@
 
 <mapper namespace="com.metamong.mt.domain.notification.repository.mybatis.NotificationMapper">
     
-    <update id="readByNotificationId" parameterType="java.lang.Long">
-        UPDATE notification
-        SET is_read = 'Y'
-        WHERE noti_id = #{notificationId}
-    </update>
-    
     <select id="findNotificationsByReceiverId"
             parameterType="com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto"
             resultType="com.metamong.mt.domain.notification.model.Notification">
@@ -26,10 +20,4 @@
             </if>
         ORDER BY created_at DESC
     </select>
-
-    <update id="readAllNotificationsByReceiverId" parameterType="java.lang.Long">
-        UPDATE notification
-        SET is_read = 'Y'
-        WHERE receiver_id = #{receiverId}
-    </update>
 </mapper>
