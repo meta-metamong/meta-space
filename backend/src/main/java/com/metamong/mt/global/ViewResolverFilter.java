@@ -34,7 +34,8 @@ public class ViewResolverFilter extends GenericFilterBean {
                 || uri.startsWith("/v3")
                 || uri.startsWith("/actuator")
                 || uri.startsWith("/assets")
-                || uri.equals("/vite.svg")) {
+                || uri.equals("/vite.svg")
+                || uri.startsWith("/resources")) {
             chain.doFilter(httpRequest, response);
             return;
         }
