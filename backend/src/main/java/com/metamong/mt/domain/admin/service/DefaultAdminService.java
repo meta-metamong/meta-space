@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.metamong.mt.domain.admin.dto.request.MemberSearchRequestDto;
 import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.MonthlySalesGrowthDTO;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
@@ -32,7 +32,6 @@ import com.metamong.mt.domain.admin.dto.response.SalesExportDto;
 import com.metamong.mt.domain.admin.dto.response.WeekReservationDto;
 import com.metamong.mt.domain.admin.repository.mybatis.AdminMapper;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
-import com.metamong.mt.domain.notification.model.Notification;
 import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.domain.notification.service.NotificationService;
@@ -275,6 +274,10 @@ public class DefaultAdminService implements AdminService{
 	public List<WeekReservationDto> getRedisReservationsThisWeek() {
 		return adminMapper.getRedisReservationsThisWeek();
 	}
+	@Override
+    public MonthlySalesGrowthDTO getMonthlySalesGrowth() {
+        return adminMapper.getMonthlySalesGrowth();
+    }
 
 
 }

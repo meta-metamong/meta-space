@@ -129,7 +129,8 @@
         "memberBen":"memberBen",
         "dashboard":"dashboard",
         "salesSearch":"salesSearch",
-        "salesExport":"salesExport"       
+        "salesExport":"salesExport", 
+        "refund":"refund"
     },
     "reservation": {
         "list": "Reservation List",

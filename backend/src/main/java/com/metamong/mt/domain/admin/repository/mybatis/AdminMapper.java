@@ -13,6 +13,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.MonthlySalesGrowthDTO;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
@@ -81,5 +82,7 @@ public interface AdminMapper {
 		
 //		void updateRefundStateRegApproved(Map<String, Object> params);
 //		void updateRefundStateRejected(Map<String, Object> params);
+		
+		MonthlySalesGrowthDTO getMonthlySalesGrowth();
 
 }
