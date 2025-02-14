@@ -32,6 +32,8 @@ public interface ReservationMapper {
     
     List<HourlyUsageDto> getReservedTimes(SelectedInfoRequestDto dto);
     
+    int findReportByReporterIdAndReportedId(Long reporterId, Long reportedId); 
+
     List<Long> findConsIdWithLeftReservationTime(@Param("dto") FindConsIdWithReservationTimeMapperDto dto);
     
     Optional<Long> findProvIdByRvtId(@Param("rvtId") Long rvtId);

@@ -54,13 +54,18 @@ const store = createStore({
     onlineSocket: null,
     onlineUsers: [], // 온라인 사용자 목록
     messages: [],  // WebSocket으로 받은 메시지를 저장
-    socketClient: null
+    socketClient: null,
+    loc: {
+      lat: 37.5717571,
+      lon: 127.0009843
+    }
   },
   mutations: {
     openWebSocket(state, payload) {
       console.log("openWebSocket");
       if (!state.socket) {
-        let socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?x-authorization=${sessionStorage.getItem("accessToken")}`);
+        
+        let socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?mem-id=${getUserIdInLocal()}`);
         socket.onopen = (e) => {
           console.log("WebSocket session opened!");
         }
@@ -68,25 +73,6 @@ const store = createStore({
         socket.onclose = (e) => {
           console.log("WebSocket closed");
           console.log(e);
-          reissue().then((response) =>{
-            console.log(response);
-            console.log("after reissue");
-            socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?x-authorization=${sessionStorage.getItem("accessToken")}`);
-
-            socket.onopen = (e) => {
-              console.log("WebSocket session opened!");
-            }
-
-            socket.onerror = (e) => {
-              console.error(e);
-            }
-    
-            socket.onmessage = (msg) => {
-              console.log(JSON.parse(msg.data));
-            }
-    
-            state.socketClient = socket;
-          })
         }
 
         socket.onerror = (e) => {
@@ -151,6 +137,9 @@ const store = createStore({
       removeUser();
       removeAccessToken();
       location.href = "/";
+    },
+    saveLoc(state, payload) {
+      state.loc = payload;
     }
   },
   actions: {
@@ -159,7 +148,6 @@ const store = createStore({
       if (response.status === 200) {
         context.commit("saveUserId", response.data.content);
         context.commit("openWebSocket");
-        // context.dispatch("connectOnlineStatus");
       }else{
         return response.response.data.message;
       }
@@ -175,55 +163,6 @@ const store = createStore({
         removeUser();
         context.commit("closeOnlineSocket");
       }
-    },
-    connectOnlineStatus(context) {
-      if (!context.state.userId) return;  // userId가 없으면 리턴
-
-      const accessToken = sessionStorage.getItem("accessToken");
-      
-      const socket = new WebSocket(`${import.meta.env.VITE_WS_URL}?x-authorization=${accessToken}`);
-
-      socket.onopen = () => {
-        console.log("✅ 온라인 상태 웹소켓 연결됨");
-        socket.onclose = (e) => {
-                console.log("WebSocket closed");
-                console.log(e);
-            }
-
-            socket.onerror = (e) => {
-                console.error(e);
-            }
-
-            socket.onmessage = (msg) => {
-                console.log(JSON.parse(msg));
-            }
-
-            this.socketClient = socket;
-
-            // socket.close();
-      };
-
-      socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        console.log("서버로부터 받은 메시지:", message);
-
-        if (message.type === "updateOnlineUsers") {
-          context.commit("setOnlineUsers", message.users);
-        } else if (message.type === "chatMessage") {
-          // 서버에서 받은 채팅 메시지를 Vuex에 저장
-          context.commit("addMessage", message);
-        }
-      };
-
-      socket.onclose = () => {
-        console.log("❌ 온라인 상태 웹소켓 연결 해제됨");
-      };
-
-      socket.onerror = (error) => {
-        console.error("❌ 웹소켓 오류:", error);
-      };
-
-      context.commit("setOnlineSocket", socket);
     },
     sendMessage(context, message) {
       if (context.state.onlineSocket && context.state.onlineSocket.readyState === WebSocket.OPEN) {

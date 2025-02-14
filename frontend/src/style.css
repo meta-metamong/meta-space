@@ -32,9 +32,3 @@ button{
 	font-size: 14px;
 	color: #ff0101;
 }
-
-.routed{
-  margin-top: 50px;
-  max-height: 780px;
-  overflow: scroll;
-}

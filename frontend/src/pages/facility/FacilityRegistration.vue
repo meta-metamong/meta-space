@@ -44,8 +44,8 @@ export default {
             inputs: {
                 "facilityRegistration": {
                     fctName: "",
-                    majorCatId: "0",
-                    minorCatId: "0",
+                    majorCatId: "",
+                    minorCatId: "",
                     addr: {
                         // postalCode: "",
                         // address: "",
@@ -93,7 +93,6 @@ export default {
     },
     methods: {
         changeComponent(componentName) {
-            console.log(componentName);
             this.currentComponent = componentName;
         },
         registerFacility() {
@@ -134,17 +133,14 @@ export default {
                 addinfos: this.inputs.addinfoRegistration
             }
 
-            console.log(requestBody);
 
             post("/facilities", requestBody).then((response) => {
                 const responseBody = response.data;
-                console.log(responseBody);
                 const content = responseBody.content;
                 const fctImageUploadUrls = content.fctImageUploadUrls;
                 const zoneImageUploadUrls = content.zoneImageUploadUrls;
                 for (const fctImageUploadUrl of fctImageUploadUrls) {
                     const image = this.inputs.facilityRegistration.images[fctImageUploadUrl.order - 1];
-                    console.log("fctImage", image);
                     axios.put(
                         fctImageUploadUrl.uploadUrl,
                         image.fileData,
@@ -162,7 +158,6 @@ export default {
                     for (const uploadUrl of uploadUrls) {
                         const zoneImage = zoneImages[uploadUrl.order - 1];
                         const imageData = zoneImage.fileData;
-                        console.log("zoneImage", zoneImage);
                         axios.put(
                             uploadUrl.uploadUrl,
                             imageData,
@@ -180,6 +175,7 @@ export default {
                         width: '300px',
                         icon: 'success'
                     })
+                    this.$router.push('/facilities/my-facility-list');
                 }
             });
         }

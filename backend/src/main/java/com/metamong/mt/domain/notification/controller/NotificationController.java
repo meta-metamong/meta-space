@@ -42,9 +42,9 @@ public class NotificationController {
         );
     }
     
-    @PatchMapping("/notifications/read")
-    public ResponseEntity<BaseResponse<Void>> readNotifications(@RequestBody List<Long> notificationIds) {
-        this.notificationService.readNotifications(notificationIds);
+    @PatchMapping("/notifications/{notificationId}/read")
+    public ResponseEntity<BaseResponse<Void>> readNotifications(@PathVariable("notificationId") Long notificationId) {
+        this.notificationService.readNotification(notificationId);
         return new ResponseEntity<>(
                 BaseResponse.of(HttpStatus.NO_CONTENT),
                 HttpStatus.NO_CONTENT

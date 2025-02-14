@@ -22,7 +22,20 @@
         "url": "The {field} field is not a valid URL"
     },
     "error": {
-        "login": "Invalid id or password."
+        "login": "Invalid id or password.",
+        "404": {
+            "title": "Page Not Found",
+            "message": "The requested page does not exist. Please check the URL."
+        },
+        "500": {
+            "title": "Internal Server Error",
+            "message": "An error occurred on the server. Please try again later."
+        },
+        "403": {
+            "title": "Access Denied",
+            "message": "This page is forbidden. You do not have the required permissions to view it."
+        },
+        "home": "Go Back To Home"
     },
     "label": {
         "all": "all",
@@ -249,5 +262,11 @@
         "all": "all",
         "read": "read",
         "unread": "unread"
+    },
+    "report": {
+        "report": "Report",
+        "reportType": "Report Type",
+        "reportMsg": "Report Content",
+        "selectReportType": "Select Report Type"
     }
 }

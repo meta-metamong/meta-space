@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -11,7 +12,6 @@ import org.springframework.web.socket.WebSocketSession;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.notification.dto.mapper.NotificationListMapperDto;
 import com.metamong.mt.domain.notification.dto.response.NotificationResponseDto;
-import com.metamong.mt.domain.notification.dto.socket.TextMessageAndUnreadCountMessageDto;
 import com.metamong.mt.domain.notification.exception.FailedNotificationTransmissionException;
 import com.metamong.mt.domain.notification.model.Notification;
 import com.metamong.mt.domain.notification.model.NotificationMessage;
@@ -33,13 +33,13 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     
     @Override
     public void sendMessage(Long receiverId, NotificationMessage notiMsg) {
-        saveNotification(receiverId, notiMsg);
+        Notification notification = saveNotification(receiverId, notiMsg);
         this.webSocketSessionRepository.findByMemId(receiverId)
                 .ifPresent((session) -> {
                     try {
-                        int unreadCount = this.countUnreadNotificationsByReceiverId(receiverId);
+                        NotificationResponseDto dto = NotificationResponseDto.of(notification);
                         String messageInJson =
-                                this.objectMapper.writeValueAsString(new TextMessageAndUnreadCountMessageDto(notiMsg.getMessage(), unreadCount));
+                                this.objectMapper.writeValueAsString(dto);
                         session.sendMessage(new TextMessage(messageInJson));
                     } catch (IOException e) {
                         throw new FailedNotificationTransmissionException(e);
@@ -74,7 +74,7 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     
     @Override
     public List<NotificationResponseDto> findNotifications(Long receiverId, boolean includeRead) {
-        this.notificationRepository.readAllNotificationsByReceiverId(receiverId);
+//        this.notificationMapper.readAllNotificationsByReceiverId(receiverId);
         return this.notificationMapper.findNotificationsByReceiverId(new NotificationListMapperDto(receiverId, includeRead))
                 .stream()
                 .map(NotificationResponseDto::of)
@@ -82,8 +82,8 @@ public class DefaultWebSocketNotificationService implements WebSocketNotificatio
     }
     
     @Override
-    public void readNotifications(List<Long> notificationIds) {
-        this.notificationMapper.readByNotificationIds(notificationIds);
+    public void readNotification(Long notificationId) {
+        this.notificationMapper.readByNotificationId(notificationId);
     }
     
     @Override
