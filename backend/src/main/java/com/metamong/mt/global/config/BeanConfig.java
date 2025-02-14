@@ -1,5 +1,6 @@
 package com.metamong.mt.global.config;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -55,9 +56,19 @@ public class BeanConfig {
 
     @Bean
     // @Profile("!prod")
-    LocalFileUploader localFileUploader(ServletContext servletContext) {
-        String rootPath = servletContext.getRealPath("/").replaceAll("\\\\", "/");
+    LocalFileUploader localFileUploader(ServletContext servletContext, @Value("${server-origin}") String serverOrigin) {
+        String rootPath = servletContext.getRealPath("/");
+        if (rootPath == null) {
+            rootPath = getClass().getResource("/").toString();
+            if (rootPath.startsWith("file:/")) {
+                rootPath = rootPath.substring("file:/".length());
+            }
+        }
+        if (File.separator.equals("\\")) {
+            rootPath = rootPath.replaceAll("\\\\", "/");
+        }
         log.debug("local file upload root path = {}", rootPath);
-        return new LocalFileUploader(rootPath);
+        log.debug("serverOrigin={}", serverOrigin);
+        return new LocalFileUploader(rootPath, serverOrigin);
     }
 }

@@ -25,7 +25,17 @@ public class ViewResolverFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         log.trace("URI requested={}", uri);
-        if (uri.startsWith("/api") || uri.startsWith("/swagger-ui") || uri.startsWith("/ws") || uri.equals("/") || uri.equals("/index.html")) {
+        if (uri.startsWith("/api")
+                || uri.startsWith("/swagger-ui")
+                || uri.startsWith("/ws")
+                || uri.equals("/")
+                || uri.equals("/index.html")
+                || uri.equals("/error")
+                || uri.startsWith("/v3")
+                || uri.startsWith("/actuator")
+                || uri.startsWith("/assets")
+                || uri.equals("/vite.svg")
+                || uri.startsWith("/resources")) {
             chain.doFilter(httpRequest, response);
             return;
         }

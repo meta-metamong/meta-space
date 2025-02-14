@@ -31,7 +31,7 @@ class LocalFileUploaderTest {
         }
         log.info("filePath={}", fileSystemPath);
         this.fileSystemPath = fileSystemPath.startsWith("/") ? fileSystemPath : "/" + fileSystemPath;
-        this.localFileUploader = new LocalFileUploader(this.fileSystemPath);
+        this.localFileUploader = new LocalFileUploader(this.fileSystemPath, "http://localhost:8080");
         this.localFileUploader.init();
     }
     

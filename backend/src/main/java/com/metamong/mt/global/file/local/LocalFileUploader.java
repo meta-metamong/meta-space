@@ -26,9 +26,11 @@ public class LocalFileUploader implements FileUploader {
     private static final String PATH = "resources/files/";
     
     private final String fileSystemPath;
+    private final String fileUploadUrl;
     
-    public LocalFileUploader(String rootPath) {
+    public LocalFileUploader(String rootPath, String serverOrigin) {
         this.fileSystemPath = rootPath + PATH;
+        this.fileUploadUrl = serverOrigin + "/api/files/";
     }
     
     @PostConstruct
@@ -41,7 +43,7 @@ public class LocalFileUploader implements FileUploader {
 
     @Override
     public String generateUploadUrl(String filename) {
-        return "http://localhost:8080/api/files/" + filename;
+        return this.fileUploadUrl + filename;
     }
 
     @Override
