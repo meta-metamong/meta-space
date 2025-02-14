@@ -54,7 +54,6 @@ export default {
         get(`/reservations/facilities/${this.fctId}`).then((response) => {
             const responseBody = response.data;
             const content = responseBody.content;
-            console.log(content);
             this.reservations = content;
         });
     }
