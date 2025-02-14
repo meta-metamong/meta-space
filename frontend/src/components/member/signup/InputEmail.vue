@@ -4,7 +4,7 @@
         <h1 class="text-center mb-4">{{ $t('signup.signup') }} (1/3)</h1>
         <!-- 이메일 입력 -->
         <div class="mb-3">
-            <input type="email" class="w-100 mb-2 signup-input rounded-pill" v-model="email" :disabled="isCodeSent" :placeholder="$t('member.email')" />
+            <input type="email" class="w-100 mb-2 signup-input" v-model="email" :disabled="isCodeSent" :placeholder="$t('member.email')" />
             <h3 class="error-message mb-2" v-if="email !== '' && !isValidatedEmail" v-text="$t('signupError.notValidatedEmail')" />
             <button type="button" class="w-100 signup-btn rounded-pill" :disabled="isCodeSent || !isValidatedEmail" @click="sendCode" v-text="$t('signup.checkEmail')" />
         </div>
