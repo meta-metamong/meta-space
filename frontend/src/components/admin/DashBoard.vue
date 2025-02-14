@@ -78,7 +78,7 @@ export default defineComponent({
   // 주간 예약 현황 선 차트 그리기
   const weekSeriesData = this.weekReservations.map((reservation) => ({
     name: `시설 ${reservation.fctId}`, // 시설명
-    type: 'area', // 선채우기
+    //type: 'area', // 선채우기
     data: [
       reservation.sun || 0,    // 일요일, 데이터가 없으면 0
       reservation.mon || 0,    // 월요일, 데이터가 없으면 0
@@ -163,47 +163,56 @@ export default defineComponent({
 
   // 시설별 예약/취소/매출 현황 복합 막대 그래프
   Highcharts.chart("facility-stats-chart", {
-    chart: {
-      type: 'column' // 복합 막대 그래프
-    },
-    title: {
-      text: "시설별 예약/예약취소/매출 현황"
-    },
-    xAxis: {
-      categories: this.totalReservations.map(stat => stat.fctName), // 시설 이름
-      title: { text: "시설" }
-    },
-    yAxis: [{
-      title: { text: "예약 건수" },
-    }, {
-      title: { text: "매출 (원)" },
-      opposite: true // 매출은 오른쪽 세로축
-    }],
-    series: [
-      {
-        name: "시설별 예약 건수",
-        data: this.totalReservations.map(stat => stat.totalReservations), // 시설별 예약 건수
-        pointWidth: 30 
+  chart: {
+    type: 'column' // 복합 막대 그래프
+  },
+  title: {
+    text: "시설별 예약/예약취소/매출 현황"
+  },
+  xAxis: {
+    categories: this.totalReservations.map(stat => stat.fctName), // 시설 이름
+    title: { text: "시설" },
+    labels: {
+      style: {
+        width: '120px', // 레이블의 최대 너비 설정
+        whiteSpace: 'normal',  // 줄 바꿈 허용
+        textOverflow: 'ellipsis', // 텍스트가 넘칠 경우 생략 표시
       },
-      {
-        name: "시설별 취소된 예약 건수",
-        data: this.cancelledReservations.map(stat => stat.cancelledReservations), // 시설별 취소된 예약 건수
-        pointWidth: 30 
-      },
-      {
-        name: "시설별 매출",
-        data: this.totalRevenue.map(stat => stat.totalRevenue), // 시설별 매출
-        type: 'line', // 선 차트로 매출 표시
-        yAxis: 1 // 매출은 두 번째 축에 표시
-      }
-    ],
-    tooltip: {
-      shared: true,
-      valueSuffix: " 건"
+      rotation: -45 // 텍스트를 기울여서 표시 (선택 사항)
+    }
+  },
+  yAxis: [{
+    title: { text: "예약 건수" },
+  }, {
+    title: { text: "매출 (원)" },
+    opposite: true // 매출은 오른쪽 세로축
+  }],
+  series: [
+    {
+      name: "시설별 예약 건수",
+      data: this.totalReservations.map(stat => stat.totalReservations), // 시설별 예약 건수
+      pointWidth: 30 
     },
-    credits: { enabled: false }, // 크레딧 비활성화
-    exporting: { enabled: true } // 내보내기 활성화
-  });
+    {
+      name: "시설별 취소된 예약 건수",
+      data: this.cancelledReservations.map(stat => stat.cancelledReservations), // 시설별 취소된 예약 건수
+      pointWidth: 30 
+    },
+    {
+      name: "시설별 매출",
+      data: this.totalRevenue.map(stat => stat.totalRevenue), // 시설별 매출
+      type: 'line', // 선 차트로 매출 표시
+      yAxis: 1 // 매출은 두 번째 축에 표시
+    }
+  ],
+  tooltip: {
+    shared: true,
+    valueSuffix: " 건"
+  },
+  credits: { enabled: false }, // 크레딧 비활성화
+  exporting: { enabled: true } // 내보내기 활성화
+});
+
 
   // 예약 랭킹 차트 (파이 차트)
   const rankedData = this.rankedReservation.map((stat) => ({
@@ -216,7 +225,7 @@ export default defineComponent({
       type: 'pie' // 파이 차트
     },
     title: {
-      text: "이번 달 예약 랭킹 TOP 5"
+      text: "이번 달 예약 시설 랭킹 TOP 5"
     },
     series: [{
       name: "예약 건수",
