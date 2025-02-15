@@ -58,7 +58,8 @@ const store = createStore({
     loc: {
       lat: 37.5717571,
       lon: 127.0009843
-    }
+    },
+    unreadNotiCount: 0
   },
   mutations: {
     openWebSocket(state, payload) {
@@ -140,6 +141,15 @@ const store = createStore({
     },
     saveLoc(state, payload) {
       state.loc = payload;
+    },
+    setUnreadNotificationCount(state, payload) {
+      state.unreadNotiCount = payload;
+    },
+    incrementNotificationCount(state, payload) {
+      state.unreadNotiCount++;
+    },
+    decrementNotificationCount(state, payload) {
+      state.unreadNotiCount--;
     }
   },
   actions: {
