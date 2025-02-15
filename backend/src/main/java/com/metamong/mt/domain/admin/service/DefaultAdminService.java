@@ -235,13 +235,34 @@ public class DefaultAdminService implements AdminService{
     }
 
 
+//    public void updateMemberBan(List<Map<String, Integer>> reportData) {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("reportData", reportData);
+//        
+//        adminMapper.updateMemberBan(params);
+//    }
     public void updateMemberBan(List<Map<String, Integer>> reportData) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("reportData", reportData);
-        
-        adminMapper.updateMemberBan(params);
+        try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH, false)) {
+            AdminMapper mapper = session.getMapper(AdminMapper.class);
+
+            // 배치 처리 위해 여러 번 실행할 쿼리 추가
+            for (Map<String, Integer> data : reportData) {
+                Integer reportedId = data.get("reportedId");
+                Integer reportCount = data.get("reportCount");
+
+                // MyBatis 호출
+                mapper.updateMemberBan(Map.of("reportedId", reportedId, "reportCount", reportCount));
+            }
+
+            // 배치 실행
+            session.flushStatements();
+            session.commit();  // 커밋
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 예외 발생 시 롤백
+  
+        }
     }
-    
     public List<Long> getMembersToUnban() {
     	 return adminMapper.getMembersToUnban();
     }
