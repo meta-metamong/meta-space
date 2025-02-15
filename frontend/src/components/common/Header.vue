@@ -9,8 +9,11 @@
 
             <!-- 우측 알림 아이콘 & 로그아웃 버튼 -->
             <div class="d-flex align-items-center" v-if="isLogin">
-                <button @click="$router.push('/notification/list')" class="noti-btn me-2">
+                <button @click="$router.push('/notification/list')" class="noti-btn me-3">
                     <i class="bi bi-bell-fill text-primary"></i> <!-- 부트스트랩 아이콘 -->
+                    <div class="noti-count-box" v-if="unreadNotiCount > 0">
+                        <div class="noti-count">{{ unreadNotiCount < 10 ? unreadNotiCount : "9+" }}</div>
+                    </div>
                 </button> <!-- TODO: 알림이 있으면 채워지고 없으면 안 채워지고 -->
                 <button class="btn" @click="logout" v-text="$t('member.logout')" />
             </div>
@@ -25,6 +28,7 @@
 </template>
 
 <script>
+import { get } from "../../apis/axios";
 import { getUserIdInLocal, getUsernameInLocal, getUserRoleInLocal } from '../../store';
 import Swal from 'sweetalert2';
 
@@ -36,6 +40,7 @@ export default {
             message: ""
         }
     },
+
     methods: {
         logout() {
             Swal.fire({
@@ -62,6 +67,7 @@ export default {
             if (userId !== null && userId !== undefined) {
                 this.$store.commit('initUserId', userId);
             }
+            return userId;
         },
         initUserRole() {
             const userRole = getUserRoleInLocal();
@@ -90,19 +96,33 @@ export default {
 
             }
         },
+        fetchNotificationCount(memId) {
+            if (memId) {
+                get(`/members/${memId}/unread-notification-count`)
+                        .then((response) => {
+                            const unreadNotiCount = response.data.content;
+                            console.log("unreadNotificationCount=" + unreadNotiCount);
+                            this.$store.commit("setUnreadNotificationCount", unreadNotiCount);
+                        });
+            }
+        }
     },
     computed: {
         isLogin() {
             return this.$store.state.userId !== null && this.$store.state.userId !== undefined;
+        },
+        unreadNotiCount() {
+            return this.$store.state.unreadNotiCount;
         }
     },
     mounted() {
-        this.initUserId();
+        const userId = this.initUserId();
         this.initUserRole();
         this.initUserName();
         if (this.isLogin) {
             console.log("logged in");
             this.$store.commit("openWebSocket");
+            this.fetchNotificationCount(userId);
         } else {
             console.log("not logged in");
         }
@@ -148,5 +168,29 @@ button {
     border: none;
     font-size: 25px;
     background: none;
+    position: relative;
+}
+
+.noti-count-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 30px;
+    background-color: salmon;
+    position: absolute;
+    top: 0;
+    right: -3px;
+}
+
+.noti-count {
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    height: fit-content;
 }
 </style>

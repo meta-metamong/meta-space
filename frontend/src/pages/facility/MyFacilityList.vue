@@ -1,6 +1,6 @@
 <template>
     <div class="container root-container">
-        <h2 class="text-center mb-2" v-text="$t('myFacility.myFacilityList')"></h2>
+        <h2 class="text-center mb-2" style="margin-top: 15px" v-text="$t('myFacility.myFacilityList')"></h2>
         <div class="w-100 mb-4" id="register-facility-button-container">
             <router-link
                 class="btn btn-outline-primary mx-auto"

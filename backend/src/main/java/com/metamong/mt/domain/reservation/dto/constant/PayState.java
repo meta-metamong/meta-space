@@ -5,7 +5,8 @@ import java.time.LocalDate;
 public enum PayState {
     PAID("P", "결제됨"),
     REFUND_REQUESTED("Q", "환불 요청"),
-    REFUNDED("R", "환불됨");
+    REFUNDED("R", "환불됨"),
+    REFUND_REJECTED("N", "환불 반려");
 
     private final String code;
     private final String description;

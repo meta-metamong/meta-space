@@ -125,6 +125,7 @@ methods: {
 </script>
 
 
+
 <style scoped>
 /* 스타일 추가 */
 .container {
@@ -179,3 +180,4 @@ button.reject-button:hover {
 background-color: #e53935;
 }
 </style>
+

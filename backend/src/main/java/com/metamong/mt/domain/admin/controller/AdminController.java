@@ -108,25 +108,25 @@ public class AdminController {
         return ResponseEntity.ok(BaseResponse.of(adminService.getRefundMembers(), HttpStatus.OK));
     }
     
-//    @PostMapping("/refund/{refundId}/approval")
-//    public ResponseEntity<String> approveRefundRequest(@PathVariable Long refundId) {
-//        try {
-//        	paymentService.refund(refundId);
-//            return ResponseEntity.ok("환불 요청이 승인되었습니다.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
-//        }
-//    }
-//    
-//    @PostMapping("/refund/{refundId}/rejection")
-//    public ResponseEntity<String> rejectionRefundRequest(@PathVariable Long refundId) {
-//        try {
-//        	paymentService.noRefund(refundId);
-//            return ResponseEntity.ok("환불 요청이 반려되었습니다.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
-//        }
-//    }
+    @PostMapping("/refund/{refundId}/approval")
+    public ResponseEntity<String> approveRefundRequest(@PathVariable Long refundId) {
+        try {
+        	paymentService.refund(refundId);
+            return ResponseEntity.ok("환불 요청이 승인되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
+        }
+    }
+    
+    @PostMapping("/refund/{refundId}/rejection")
+    public ResponseEntity<String> rejectionRefundRequest(@PathVariable Long refundId) {
+        try {
+        	paymentService.noRefund(refundId);
+            return ResponseEntity.ok("환불 요청이 반려되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
+        }
+    }
 
 	@GetMapping("/getRequestFacilities")
 	public ResponseEntity<BaseResponse<List<ApprovalRequestDto>>> getRequestFacilities() {

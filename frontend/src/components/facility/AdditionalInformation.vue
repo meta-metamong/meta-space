@@ -4,7 +4,7 @@
             <i class="bi bi-arrow-left disabled-arrow" id="left-arrow"
                @click="$emit('component-change', 'zoneRegistrationInput')"></i>
         </div>
-        <h2 class="text-center mb-4" v-text="$t('facility.addinfoRegistration')"></h2>
+        <h2 class="text-center mb-4" style="margin-top: 15px" v-text="$isEdit === 'true' ? $t('facility.additionalInfoEdit') : $t('facility.addinfoRegistration')"></h2>
         <p class="helper-text">
             {{ $t("facility.addinfoDesc1") }}<br>
             {{ $t("facility.addinfoDesc2") }}<br>
