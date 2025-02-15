@@ -37,6 +37,13 @@ def recommend(id: int, data: ReservationInfoList):
     
     # 추천 로직
     def get_recommendations(id):
+        # 인기 시설 데이터 가져오기 (전체 데이터에서 예약 많은 순)
+        top_facilities = df.groupby('fct_id')['total_count'].sum().sort_values(ascending=False).index.tolist()
+
+        if id not in pivot.index:
+            # ID가 없으면 가장 인기 있는 시설 추천
+            return top_facilities[:10]
+
         # 현재 고객과 유사한 고객 리스트
         similar_consumers = similarity_df[id].sort_values(ascending=False).index[1:]
 
@@ -45,8 +52,13 @@ def recommend(id: int, data: ReservationInfoList):
         similar_facilities = df[df['cons_id'].isin(similar_consumers)]['fct_id']
         recommendations = list(OrderedDict.fromkeys([f for f in similar_facilities if f not in consumer_facilities]))
 
+        while len(recommendations) < 10 and top_facilities:
+            facility = top_facilities.pop(0)
+            if facility not in recommendations:
+                recommendations.append(facility)
+
         # 추천 상품 상위 10개
-        return pd.Series(recommendations).value_counts().head(10).index.tolist()
+        return recommendations[:10]
 
     # 고객 ID가 유효한지 확인하고 추천 결과 생성
     try:

@@ -4,7 +4,7 @@
             <img :class="{ active: bannerStep === 0 }" class="banner-img" src="../resource/image/banner1.png" alt="banner1">
             <img :class="{ active: bannerStep === 1 }" class="banner-img" src="../resource/image/banner2.png" alt="banner2">
         </div>
-        <div class="d-flex flex-column gap-2" v-if="userId !== null && recommendFct.length != 0">
+        <div class="d-flex flex-column gap-2" v-if="userId !== null">
             <h4 class="fw-bold">👍 {{ $t('main.best') }}</h4>
             <div class="card-list d-flex gap-4">
                 <FctCard v-for="fctData in recommendFct" :key="fctData.fctId" :fctData="fctData" />
@@ -59,7 +59,17 @@ export default{
                 // 모든 요청이 끝날 때까지 기다림
                 const facilityResponses = await Promise.all(facilityRequests);
 
-                this.recommendFct = facilityResponses.map(res => res.data.content);
+                // fctImages에서 fctImgDisplayOrder가 1인 이미지를 fctImage로 저장
+                this.recommendFct = facilityResponses.map(res => {
+                    const facility = res.data.content;
+
+                    return {
+                        ...facility,
+                        repImgUrl: facility.fctImages?.find(img => img.fctImgDisplayOrder === 1)?.fctImgUrl || null
+                    };
+                });
+
+                console.log(this.recommendFct);
             } catch (error) {
                 console.error("추천 시설 정보를 가져오는 중 오류 발생:", error);
             }
