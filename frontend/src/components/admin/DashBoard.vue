@@ -1,30 +1,41 @@
 <template>
   <div>
+    <!-- 주간 예약 현황 차트 & 이번 달 총 매출 -->
     <div class="chart-container">
-      <div id="week-reservation-chart" class="chart-large"></div>
-      <div id="growth-rate-card" class="chart-small">
-        <div class="growth-rate-title">이번달 총 매출</div>
-        <div class="growth-rate-content">
-          <div class="growth-rate-main">
-            <span class="growth-rate-value">{{ totalSales }}원</span>
-            <div class="growth-rate-details">
-              <span class="growth-rate-label">전월 대비</span>
-              <div class="growth-rate-numbers">
-                <span class="growth-rate-percentage">{{ growthRate }}%</span>
-                <span :style="{ color: arrowColor }" class="growth-rate-arrow">{{ arrow }}</span>
+      <div class="chart-flex">
+        <div id="week-reservation-chart" class="chart-large"></div>
+        <div id="growth-rate-card" class="chart-small">
+          <div class="growth-rate-title">이번달 총 매출</div>
+          <div class="growth-rate-content">
+            <div class="growth-rate-main">
+              <span class="growth-rate-value">{{ totalSales }}원</span>
+              <div class="growth-rate-details">
+                <span class="growth-rate-label">전월 대비</span>
+                <div class="growth-rate-numbers">
+                  <span class="growth-rate-percentage">{{ growthRate }}%</span>
+                  <span :style="{ color: arrowColor }" class="growth-rate-arrow">{{ arrow }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div id="facility-stats-chart"></div>
+
+    <!-- 시설별 예약/예약취소/매출 현황 차트 -->
+    <div class="chart-container">
+      <div id="facility-stats-chart" class="chart-large"></div>
+    </div>
+
+    <!-- 이번 달 시설 예약 랭킹 TOP 5 와 매출 랭킹 차트 -->
     <div class="ranking-container">
       <div id="ranking-chart" class="ranking-smaller"></div>
       <div id="payment-ranking-chart" class="ranking-smaller"></div>
     </div>
   </div>
 </template>
+
+
 <script>
 import { defineComponent } from "vue";
 import { get } from "../../apis/axios"; // 공통 API 호출 함수 import
@@ -39,19 +50,20 @@ export default defineComponent({
       totalRevenue: [], // 시설별 매출
       rankedReservation: [], // 예약 랭킹 데이터
       rankedPayment: [], // 매출 랭킹 데이터
-      monthlySalesGrowth: {}, // 매출 증감율 데이터
-
-      // 매출 증감율 카드 관련 변수
-      arrow: "", // 화살표 (↑, ↓, →)
+      monthlySalesGrowth: {
+        growthRate: 0, // 매출 증감율 (기본값)
+        totalSales: 0 // 이번 달 총 매출 (기본값)
+      },
+      rrow: "", // 화살표 (↑, ↓, →)
       arrowColor: "", // 화살표 색상 (green, red, gray)
       growthRate: 0, // 매출 증감율
       totalSales: 0 // 이번 달 총 매출
     };
   },
   methods: {
-    async fetchWeekReservations() {
+    async fetchData() {
       try {
-        // 주간 예약 현황 및 시설별 통계 데이터를 한번에 가져옴
+        // 주간 예약 현황, 시설별 통계 및 예약/매출 랭킹 데이터를 한번에 가져옴
         const response = await get("/admin/dashboard");
         console.log("주간 예약 및 시설별 통계 데이터:", response.data);
 
@@ -62,7 +74,7 @@ export default defineComponent({
           this.totalRevenue = response.data.totalRevenue; // 시설별 매출
           this.rankedReservation = response.data.rankedReservation; // 예약 랭킹 데이터
           this.rankedPayment = response.data.rankedPayment; // 매출 랭킹 데이터
-          this.monthlySalesGrowth = response.data.monthlySalesGrowth; // 매출 증감율 데이터
+          this.monthlySalesGrowth = response.data.monthlySalesGrowth;
         } else {
           console.error("데이터가 없습니다.");
         }
@@ -75,7 +87,7 @@ export default defineComponent({
     },
 
     drawCharts() {
-      // 주간 예약 현황
+      // 주간 예약 현황 선 차트
       const weekSeriesData = this.weekReservations.map((reservation) => ({
         name: `시설 ${reservation.fctId}`, // 시설명
         data: [
@@ -90,7 +102,6 @@ export default defineComponent({
         lineWidth: 2, // 선 두께
       }));
 
-      // 매출 증감율 계산
       const growthRate = this.monthlySalesGrowth.growthRate; // 매출 증감율
       const totalSales = this.monthlySalesGrowth.totalSales; // 이번 달 총 매출
 
@@ -112,7 +123,7 @@ export default defineComponent({
       this.growthRate = growthRate; // 매출 증감율
       this.totalSales = totalSales; // 이번 달 총 매출
 
-      // 주간 예약 현황 선 차트
+
       Highcharts.chart("week-reservation-chart", {
         title: {
           text: "주간 요일별 예약 현황"
@@ -244,7 +255,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.fetchWeekReservations(); // 컴포넌트가 마운트될 때 데이터 가져오기
+    this.fetchData(); // 컴포넌트가 마운트될 때 데이터 가져오기
   }
 });
 </script>
@@ -253,83 +264,86 @@ export default defineComponent({
 .chart-container {
   display: flex;
   justify-content: center;
-  gap: 20px;
   margin-bottom: 20px;
-  align-items: center;
+}
+
+.chart-flex {
+  display: flex;
+  align-items: center; /* 세로 정렬 */
+  gap: 20px; /* 간격 */
 }
 
 .chart-large {
-  width: 700px; /* growth-rate-card의 두 배 */
+  width: 700px;
   height: 300px;
 }
 
 .chart-small {
-  width: 350px;
+  width: 300px;
   height: 150px;
   padding: 20px;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 8px;
-  margin-top: -50px;
 }
 
-.growth-rate-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.growth-rate-content {
-  font-size: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.growth-rate-main {
-  display: flex;
-  align-items: center;
-}
-
-.growth-rate-value {
-  font-size: 36px;
-  font-weight: bold;
-  margin-right: 15px;
-}
-
-.growth-rate-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.growth-rate-label {
-  font-size: 14px;
-  color: gray;
-  margin-bottom: 2px;
-}
-
-.growth-rate-numbers {
-  display: flex;
-  align-items: center;
-}
-
-.growth-rate-percentage {
-  font-size: 24px;
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.growth-rate-arrow {
-  font-size: 24px;
-  font-weight: bold;
-  margin-left: 5px;
-}
-
+  .growth-rate-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .growth-rate-content {
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .growth-rate-main {
+    display: flex;
+    align-items: center;
+  }
+  
+  .growth-rate-value {
+    font-size: 36px;
+    font-weight: bold;
+    margin-right: 15px;
+  }
+  
+  .growth-rate-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .growth-rate-label {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 2px;
+  }
+  
+  .growth-rate-numbers {
+    display: flex;
+    align-items: center;
+  }
+  
+  .growth-rate-percentage {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 5px;
+  }
+  
+  .growth-rate-arrow {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  
 .ranking-container {
   display: flex;
   justify-content: center;
   gap: 20px;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .ranking-smaller {
