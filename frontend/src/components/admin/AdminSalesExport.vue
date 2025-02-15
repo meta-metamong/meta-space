@@ -19,7 +19,7 @@
           <td class="left-align">{{ payment.zoneName }}</td> <!-- 문자열은 왼쪽 정렬 -->
           <td class="left-align">{{ formatDate(payment.payDate) }}</td> <!-- 문자열은 왼쪽 정렬 -->
           <td class="right-align">{{ formatPrice(payment.payPrice) }}</td> <!-- 숫자는 오른쪽 정렬 -->
-          <td class="left-align">{{ payment.fctName }}</td> <!-- 문자열은 왼쪽 정렬 -->
+          <td class="left-align">{{ payment.memName }}</td> <!-- 문자열은 왼쪽 정렬 -->
           <td class="left-align">{{ payment.payMethod }}</td> <!-- 문자열은 왼쪽 정렬 -->
         </tr>
         <!-- 총 매출을 마지막에 추가 -->
