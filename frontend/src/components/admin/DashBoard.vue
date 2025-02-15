@@ -3,12 +3,12 @@
     <!-- 주간 예약 현황 차트 & 이번 달 총 매출 -->
     <div class="chart-container">
       <div class="chart-flex">
-        <div id="week-reservation-chart" class="chart-large"></div>
+        <div id="week-reservation-chart" class="week-chart-large"></div>
         <div id="growth-rate-card" class="chart-small">
           <div class="growth-rate-title">이번달 총 매출</div>
           <div class="growth-rate-content">
             <div class="growth-rate-main">
-              <span class="growth-rate-value">{{ totalSales }}원</span>
+              <span class="growth-rate-value">{{ totalSales.toLocaleString() }}원</span>
               <div class="growth-rate-details">
                 <span class="growth-rate-label">전월 대비</span>
                 <div class="growth-rate-numbers">
@@ -274,25 +274,27 @@ export default defineComponent({
 }
 
 .chart-large {
-  width: 700px;
+  width: 1500px;
   height: 300px;
 }
 
 .chart-small {
   width: 300px;
   height: 150px;
-  padding: 20px;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 8px;
+  margin-top: -50px;
 }
 
   .growth-rate-title {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
+    margin-top: 20px;
+    margin-left:8px;
   }
-  
+
   .growth-rate-content {
     font-size: 20px;
     display: flex;
@@ -307,13 +309,15 @@ export default defineComponent({
   .growth-rate-value {
     font-size: 36px;
     font-weight: bold;
-    margin-right: 15px;
+    margin-right: 5px;
+    margin-left: 5px;
   }
   
   .growth-rate-details {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-left: 5px;
   }
   
   .growth-rate-label {
@@ -336,7 +340,6 @@ export default defineComponent({
   .growth-rate-arrow {
     font-size: 24px;
     font-weight: bold;
-    margin-left: 5px;
   }
   
 .ranking-container {
@@ -350,5 +353,10 @@ export default defineComponent({
   width: 35%;
   min-width: 300px;
   height: 240px;
+}
+
+.week-chart-large {
+  width: 1000px;  /* 기존 너비 유지 */
+  height: 300px;
 }
 </style>
