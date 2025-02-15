@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h2 class="text-center mb-4" v-text="$t('facility.facilityRegistration')"></h2>
+        <h2 class="text-center mb-4" style="margin-top: 15px" v-text="isEdit === 'true' ? $t('facility.facilityEdit') : $t('facility.facilityRegistration')"></h2>
 
         <div class="mb-4">
             <input class="signup-input w-100" type="text" :placeholder="$t('facility.facilityName')"
