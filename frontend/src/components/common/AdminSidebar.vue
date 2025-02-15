@@ -2,14 +2,11 @@
 <template>
     <div class="admin-sidebar">
       <div class="navbar-nav flex-column">
-        <router-link to="/admin/chat" class="nav-link text-center" :class="{ 'disabled-link': !isLogin }">
-          <i class="bi bi-chat text-primary"></i><br>{{ $t('footer.chat') }}
+        <router-link to="/admin" class="nav-link text-center" v-if="isLogin">
+          <i class="bi bi-house text-primary"></i><br>{{ $t('admin.dashboard') }}
         </router-link>
         <router-link to="/admin/memSearch" class="nav-link text-center" v-if="isLogin">
           <i class="bi bi-person text-primary"></i><br>{{ $t('admin.memberSearch') }}
-        </router-link>
-        <router-link to="/admin" class="nav-link text-center" v-if="isLogin">
-          <i class="bi bi-house text-primary"></i><br>{{ $t('admin.dashboard') }}
         </router-link>
         <router-link to="/admin/facilityApproval" class="nav-link text-center" v-if="isLogin">
           <i class="bi bi-bookmark-check text-primary"></i><br>{{ $t('admin.facilityApproval') }}
@@ -19,6 +16,9 @@
         </router-link>
         <router-link to="/admin/salesExport" class="nav-link text-center" v-if="isLogin">
           <i class="bi bi-coin text-primary"></i><br>{{ $t('admin.salesExport') }}
+        </router-link>
+        <router-link to="/admin/refund" class="nav-link text-center" v-if="isLogin">
+          <i class="bi bi-card-checklist text-primary"></i><br>{{ $t('admin.refund') }}
         </router-link>
       </div>
     </div>
@@ -46,7 +46,7 @@
     border-right: 1px solid #ddd;
     padding-top: 20px;
     display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
+    justify-content: center; 
     align-items: center; /* 수직 중앙 정렬 */
   }
   
