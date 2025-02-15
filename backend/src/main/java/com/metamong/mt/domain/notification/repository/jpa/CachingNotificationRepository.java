@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.notification.repository.jpa;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -37,7 +38,7 @@ public class CachingNotificationRepository implements NotificationRepository {
         Integer count = this.redisTemplate.opsForValue().get(PREFIX + receiverId);
         if (count == null) {
             Integer countResult = this.jpaNotificationRepository.countNotReadNotificationsByReceiverId(receiverId);
-            this.redisTemplate.opsForValue().set(PREFIX + receiverId, countResult);
+            this.redisTemplate.opsForValue().set(PREFIX + receiverId, countResult, Duration.ofMinutes(5));
             count = countResult;
         }
         return count;
