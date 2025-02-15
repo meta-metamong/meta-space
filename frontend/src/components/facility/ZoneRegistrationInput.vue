@@ -4,7 +4,7 @@
             <i class="bi bi-arrow-left disabled-arrow" id="left-arrow"
             @click="$emit('component-change', 'facilityRegistrationInput')"></i>
         </div>
-        <h2 class="text-center mb-4" v-text="$t('facility.zoneRegistration')"></h2>
+        <h2 class="text-center mb-4" style="margin-top: 15px" v-text="$isEdit === 'true' ? $t('facility.zoneEdit') : $t('facility.zoneRegistration')"></h2>
         
         <div class="zone-wrapper long-input mb-4" v-for="(zone, zoneIdx) in data">
             <div class="input-box mt-2">
@@ -36,7 +36,7 @@
                 </p>
             </div>
             <div class="form-section">
-                <label>{{ $t('facility.facilityImage') }}</label>
+                <label>{{ $t('facility.zoneImage') }}</label>
                 <div class="image-upload-area" @click="() => onAddImageBtnClick(zoneIdx)">
                     <p class="mb-0 mt-2">{{ $t("facility.addImage") }}</p>
                     <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>

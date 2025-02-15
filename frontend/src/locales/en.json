@@ -235,7 +235,11 @@
         "availableZones": "Available Zones",
         "hour": "h",
         "minutes": "m",
-        "detail": "Facility Detail"
+        "detail": "Facility Detail",
+        "zoneImage": "Zone Image",
+        "facilityEdit": "Edit Facility",
+        "zoneEdit": "Edit Zone",
+        "additionalInfoEdit": "Edit Additional Info"
     },
     "myFacility": {
         "myFacilityList": "My Facility List",

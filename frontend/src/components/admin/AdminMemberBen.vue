@@ -30,7 +30,7 @@
       <table v-if="selectedReportDetails.length > 0">
         <thead>
           <tr>
-            <th>아이디</th>
+            <!-- <th>아이디</th> -->
             <th>신고유형</th>
             <th>신고내용</th>
             <th>신고날짜</th>
@@ -38,7 +38,7 @@
         </thead>
         <tbody>
           <tr v-for="detail in selectedReportDetails" :key="detail.memId">
-            <td>{{ detail.email }}</td>
+            <!-- <td>{{ detail.email }}</td> -->
             <td>{{ detail.reportType }}</td>
             <td>{{ detail.reportMsg }}</td>
             <td>{{ detail.reportDate }}</td>
@@ -196,7 +196,13 @@ table {
 th, td {
   padding: 10px;
   text-align: center;
-  border: 1px solid #97bfff;
+  /* border: 1px solid #97bfff; */
+  border: 1px solid #ddd;
+}
+
+
+th {
+  background-color: #f4f4f4;
 }
 
 /* 테이블이 포함될 네모 박스 스타일 */
@@ -230,12 +236,6 @@ input[type="checkbox"] {
 
 /* 선택된 행 배경색 */
 .selected-row {
-  background-color: #f1f1f1;
-}
-
-h2 {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
+  background-color: #dfebfd;
 }
 </style>

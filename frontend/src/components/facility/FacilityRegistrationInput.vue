@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h2 class="text-center mb-4" v-text="$t('facility.facilityRegistration')"></h2>
+        <h2 class="text-center mb-4" style="margin-top: 15px" v-text="isEdit === 'true' ? $t('facility.facilityEdit') : $t('facility.facilityRegistration')"></h2>
 
         <div class="mb-4">
             <input class="signup-input w-100" type="text" :placeholder="$t('facility.facilityName')"
@@ -93,8 +93,11 @@
                 <input v-for="(_, index) in fileInput" type="file" :ref="`file-${index}`"
                     @change="(e) => onImageUpload(e, index)" hidden>
                 <div class="image-list">
-                    <div class="image-box" v-for="image in data.images">
+                    <div class="image-box" v-for="(image, idx) in data.images">
                         <img :src="image.fileDataInBase64">
+                        <i class="bi bi-x-circle-fill del-button"
+                           style="color: red;"
+                           @click="() => data.images.splice(idx, 1)"></i>
                     </div>
                 </div>
             </div>
@@ -333,5 +336,17 @@ export default {
     font-size: 0.9em;
     color: #6c757d;
     margin-top: 5px;
+}
+
+.image-box {
+    position: relative;
+}
+
+.image-box .del-button {
+    position: absolute;
+    left: 3px;
+    font-size: 25px;
+    padding: 0px;
+    margin: 0px;
 }
 </style>

@@ -71,8 +71,8 @@ export default {
 					if(response.status === 204){
 						Swal.fire({
 							width: "300px",
-							title: "삭제 완료",
-							text: "시설이 삭제되었슶니다.!",
+							title: "삭제 요청 완료",
+							text: "시설 삭제 요청이 완료되었습니다!",
 							icon: "success"
 						});
 						this.$router.push('/facilities/my-facility-list');

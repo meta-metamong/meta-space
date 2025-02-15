@@ -68,8 +68,6 @@ export default{
                         repImgUrl: facility.fctImages?.find(img => img.fctImgDisplayOrder === 1)?.fctImgUrl || null
                     };
                 });
-
-                console.log(this.recommendFct);
             } catch (error) {
                 console.error("추천 시설 정보를 가져오는 중 오류 발생:", error);
             }
