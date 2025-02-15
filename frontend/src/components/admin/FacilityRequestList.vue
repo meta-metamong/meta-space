@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>시설 요청 승인</h2>
+    <h2 class="text-center">시설 요청 승인</h2>
     <table>
       <thead>
         <tr>

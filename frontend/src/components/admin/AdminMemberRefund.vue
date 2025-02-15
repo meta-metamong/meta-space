@@ -148,6 +148,10 @@ export default {
     border: 1px solid #ddd;
     min-width: 120px; /* 최소 너비 설정 */
   }
+
+  thead {
+    background: #f4f4f4;
+  }
   
   button.approve-button {
     background-color: #4CAF50;

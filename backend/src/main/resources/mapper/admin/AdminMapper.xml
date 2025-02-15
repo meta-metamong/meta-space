@@ -33,7 +33,8 @@ GROUP BY
     m.mem_banned_until,  
     m.created_at
 ORDER BY 
-    m.created_at
+    m.email, m.created_at
+    OFFSET 0 ROWS FETCH FIRST 10 ROWS ONLY
     ]]>
 	</select>
 
@@ -132,7 +133,7 @@ f.fct_id,
 FROM facility f join category c on f.cat_id = c.cat_id
 join zone z on f.fct_id =z.fct_id
 WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
-
+OFFSET 0 ROWS FETCH FIRST 5 ROWS ONLY
     </select>
 
  <!-- 등록 요청 승인 쿼리 -->
@@ -186,6 +187,8 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
     reservation r join zone z on r.zone_id = z.zone_id
     join facility f on z.fct_id = f.fct_id
      group by fct_name, zone_name,cons_id
+     order by fct_id
+     
     </select>
     
     <!-- 시설명, zone명, 결제일, 결제금액, 결제방법 -->
