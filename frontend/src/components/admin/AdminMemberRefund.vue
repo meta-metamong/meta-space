@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="refund in refunds" :key="refund.rvtId">
           <td>{{ refund.memName }}</td>
-          <td>{{ refund.payPrice }}</td>
+          <td>{{ refund.payPrice.toLocaleString() }}</td>
           <td>{{ refund.rvtCancelationReason }}</td>
           <td>{{ refund.refundInfo }}</td>
           <td>
@@ -161,6 +161,7 @@ padding: 8px 16px;
 border: none;
 cursor: pointer;
 border-radius: 4px;
+margin-right: 4px; 
 }
 button.approve-button:hover {
 background-color: #45a049;
