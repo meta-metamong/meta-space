@@ -21,7 +21,7 @@
 							</tr>
 							<tr>
 								<td class="fw-bold">{{ $t('reservation.cancelableDate') }}</td>
-								<td>{{ rvt.rvtDate }} {{ rvt.usageStartTime }}까지</td>
+								<td>~{{ rvt.rvtDate }} {{ rvt.cancelableTime }}</td>
 							</tr>
 							<tr>
 								<td class="fw-bold">{{ $t('reservation.state') }}</td>
