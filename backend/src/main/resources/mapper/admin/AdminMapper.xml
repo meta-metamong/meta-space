@@ -115,7 +115,7 @@ ORDER BY
 <select id="getRequestFacilities" resultType="com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto">
 select 
 f.fct_id,
-    fct_name, zone_name,cat_name,
+    fct_name, cat_name,
     unit_usage_time,
     ('(' || fct_postal_code || ') ' || fct_address || ' ' || fct_detail_address) AS full_address,
     fct_tel, 
@@ -212,7 +212,7 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
 
     <!-- 총금액 -->
     <select id="getTotalRevenue" resultType="java.math.BigDecimal">
-        SELECT 
+		SELECT 
             NVL(SUM(p.pay_price), 0) AS total_revenue
         FROM 
             payment p
@@ -220,6 +220,8 @@ WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
             reservation r ON p.rvt_id = r.rvt_id
         JOIN 
             zone z ON z.zone_id = r.zone_id
+        where rvt_cancelation_reason is null	
+        
     </select>
     
     
