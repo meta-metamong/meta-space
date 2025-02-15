@@ -11,7 +11,7 @@
 		</div>
   
 		<!-- Main content area (router-view) -->
-		<div class="routed" :class="{ 'full-width': !isAdmin }">
+		<div class="routed" :class="{ 'full-width scroll': !isAdmin }">
 		  <router-view />
 		</div>
 	  </div>
@@ -98,7 +98,7 @@
   }
   
   footer {
-	margin-top: auto;
+	/* margin-top: fixed; */
 	/* footer는 맨 아래로 고정 */
 	width: 100%;
 	/* footer를 화면 전체 너비로 설정 */

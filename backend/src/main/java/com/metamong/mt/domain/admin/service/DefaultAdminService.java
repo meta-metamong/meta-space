@@ -35,6 +35,7 @@ import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.domain.notification.model.NotificationMessage;
 import com.metamong.mt.domain.notification.repository.jpa.NotificationRepository;
 import com.metamong.mt.domain.notification.service.NotificationService;
+import com.metamong.mt.domain.reservation.dto.constant.CancelationReason;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -120,7 +121,10 @@ public class DefaultAdminService implements AdminService{
 
     @Override
     public List<RefundMemberResponseDto> getRefundMembers() {
-        return adminMapper.getRefundMembers();
+        
+        List<RefundMemberResponseDto> responseDto = adminMapper.getRefundMembers();
+        responseDto.stream().forEach(dto -> dto.setRvtCancelationReason(CancelationReason.valueOf(dto.getRvtCancelationReason()).getDescription()));
+        return responseDto;
     }
 
 	@Override

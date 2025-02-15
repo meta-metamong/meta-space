@@ -166,6 +166,7 @@
         "P": "Reservation Completed",
         "Q": "Cancel Requested",
         "R": "Refund Comleted",
+        "N": "Refund Rejected",
         "payId": "Pay ID",
         "payPrice": "Pay Price",
         "payMethod": "Pay Method",
