@@ -246,7 +246,7 @@ GROUP BY z.fct_id;
 
 <select id="getReservationsThisWeek" resultType="com.metamong.mt.domain.admin.dto.response.WeekReservationDto">
 <![CDATA[
-SELECT z.fct_id,
+SELECT z.fct_id,fct_name,
        SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 1 THEN 1 ELSE 0 END) AS "Sun",
        SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 2 THEN 1 ELSE 0 END) AS "Mon",
        SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 3 THEN 1 ELSE 0 END) AS "Tues",
@@ -256,9 +256,10 @@ SELECT z.fct_id,
        SUM(CASE WHEN TO_CHAR(r.rvt_date, 'D') = 7 THEN 1 ELSE 0 END) AS "Satur"
 FROM reservation r
 JOIN zone z ON r.zone_id = z.zone_id
+join facility f on z.fct_id=f.fct_id
 WHERE TRUNC(r.rvt_date) >= to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2), 'yyyy-mm-dd'), 'yyyy-mm-dd')  -- 월요일
   AND TRUNC(r.rvt_date) < to_date(to_char(sysdate - (to_char(sysdate, 'D') - 2) + 6, 'yyyy-mm-dd'), 'yyyy-mm-dd') + 1  -- 일요일 자정까지
-GROUP BY z.fct_id
+GROUP BY z.fct_id,fct_name
 
 ]]>
 </select>
