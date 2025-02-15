@@ -61,23 +61,18 @@ ORDER BY
     </select>
     
 
-<update id="updateMemberBan" parameterType="java.util.Map">
-<foreach collection="reportData" item="data" open="" separator=" " close=""> 
-<![CDATA[
-UPDATE member
-SET mem_banned_until = 
-    CASE
-        WHEN #{data.reportCount} = 1 THEN TRUNC(SYSDATE) + INTERVAL '7' DAY  -- 7일 뒤 자정
-        WHEN #{data.reportCount} = 2 THEN TRUNC(SYSDATE) + INTERVAL '14' DAY  -- 14일 뒤 자정
-        WHEN #{data.reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')  -- 2999년 12월 31일 자정
-        ELSE mem_banned_until
-    END
-WHERE mem_id = #{data.reportedId}
-
-     ]]>
-</foreach>
-</update>
- 
+  <update id="updateMemberBan">
+        UPDATE member
+        SET mem_banned_until = 
+            CASE
+                WHEN #{reportCount} = 1 THEN TRUNC(SYSDATE) + INTERVAL '7' DAY
+                WHEN #{reportCount} = 2 THEN TRUNC(SYSDATE) + INTERVAL '14' DAY
+                WHEN #{reportCount} >= 3 THEN TO_DATE('2999-12-31', 'YYYY-MM-DD')
+                ELSE mem_banned_until
+            END
+        WHERE mem_id = #{reportedId}
+    </update>
+    
 <select id="getMembersToUnban" resultType="long">
     SELECT mem_id
     FROM member
