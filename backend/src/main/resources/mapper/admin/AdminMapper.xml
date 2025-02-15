@@ -365,12 +365,12 @@ GROUP BY z.fct_id
  ]]>
  </select>
  
-     <!-- 시설 이용자 계정 수 조회 -->
+<!--      시설 이용자 계정 수 조회
     <select id="countRoleUserMembers" resultType="com.metamong.mt.domain.admin.dto.response.WeekHourReservationDto">
     <![CDATA[
         SELECT COUNT(*) FROM member WHERE role = 'ROLE_CONS'
     ]]>
-    </select>
+    </select> -->
     
     <select id="getRefundMembers" resultType="com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto">
     <![CDATA[

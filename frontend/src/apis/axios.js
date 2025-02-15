@@ -1,6 +1,5 @@
 import axios from "axios";
 import store from '../store/index';
-import router from "../router";
 
 // Axios 기본 설정
 const apiClient = axios.create({

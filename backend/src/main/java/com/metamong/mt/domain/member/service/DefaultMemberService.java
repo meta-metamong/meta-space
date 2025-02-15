@@ -60,8 +60,6 @@ public class DefaultMemberService implements MemberService {
     private final EmailValidationService emailValidationService;
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
-    //private final SimpMessagingTemplate messagingTemplate; 
-    private Date lastExecutionTime;
     private int roleUserCount; 
     
     @Override
@@ -91,7 +89,6 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     public boolean isValidPassword(Long memId, String password) {
-        // TODO: 다 가져오지 말고 패스워드만 체크해야 함
         Member member = this.memberRepository.findById(memId)
                 .orElseThrow(() -> new MemberNotFoundException(String.valueOf(memId)));
         return passwordEncoder.matches(password, member.getPassword());
