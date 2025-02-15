@@ -62,7 +62,7 @@ ORDER BY
     
 
 <update id="updateMemberBan" parameterType="java.util.Map">
-<foreach collection="reportData" item="data"> 
+<foreach collection="reportData" item="data" open="" separator=" " close=""> 
 <![CDATA[
 UPDATE member
 SET mem_banned_until = 
@@ -267,7 +267,7 @@ GROUP BY z.fct_id
 </select>
 
 <select id="getTotalReservations" resultType="com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto">
-        SELECT f.fct_name, COUNT(r.rvt_id) AS total_reservations, f.fct_id
+        SELECT f.fct_name, COUNT(r.rvt_id) AS total_reservations, f.fct_id as fctId
         FROM facility f
         JOIN zone z ON f.fct_id = z.fct_id
         JOIN reservation r ON r.zone_id = z.zone_id
@@ -277,7 +277,7 @@ GROUP BY z.fct_id
 
     <!-- 취소된 예약 건수 -->
     <select id="getCancelledReservations" resultType="com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto">
-        SELECT f.fct_name, COUNT(r.rvt_id) AS cancelled_reservations, f.fct_id
+        SELECT f.fct_name, COUNT(r.rvt_id) AS cancelled_reservations, f.fct_id as fctId
         FROM facility f
         JOIN zone z ON f.fct_id = z.fct_id
         JOIN reservation r ON r.zone_id = z.zone_id
@@ -287,7 +287,7 @@ GROUP BY z.fct_id
 
     <!-- 매출 -->
     <select id="getTotalByFacility" resultType="com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto">
-      SELECT f.fct_name, SUM(pay_price) AS total_revenue, f.fct_id
+      SELECT f.fct_name, SUM(pay_price) AS total_revenue, f.fct_id as fctId
         FROM facility f
         JOIN zone z ON f.fct_id = z.fct_id
         JOIN reservation r ON r.zone_id = z.zone_id
@@ -396,5 +396,48 @@ where pay_state='Q'
         WHERE pay_state = 'Q'
         AND rvt_id = #{refundId}
     </update>
+    
+    
+        <select id="getMonthlySalesGrowth" resultType="com.metamong.mt.domain.admin.dto.response.MonthlySalesGrowthDTO">
+    <![CDATA[
+        WITH sales_data AS (
+    SELECT 
+        r.rvt_date, 
+        p.pay_price
+    FROM 
+        payment p
+    JOIN 
+        reservation r ON p.rvt_id = r.rvt_id
+    WHERE 
+        r.rvt_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+)
+
+SELECT 
+    sales_month,
+    total_sales,
+    prev_total_sales,
+    growth_rate
+FROM (
+    SELECT 
+        sales_month,
+        total_sales,
+        LAG(total_sales) OVER (ORDER BY sales_month) AS prev_total_sales,
+        ROUND(
+            (total_sales - LAG(total_sales) OVER (ORDER BY sales_month)) / 
+            LAG(total_sales) OVER (ORDER BY sales_month) * 100, 
+            2
+        ) AS growth_rate,
+        ROW_NUMBER() OVER (ORDER BY sales_month) AS row_num  
+    FROM (
+        SELECT 
+            TO_CHAR(rvt_date, 'YYYY-MM') AS sales_month,  
+            SUM(pay_price) AS total_sales  
+        FROM sales_data
+        GROUP BY TO_CHAR(rvt_date, 'YYYY-MM')
+    )
+)
+WHERE row_num = 2
+    ]]>
+    </select>
 
 </mapper>

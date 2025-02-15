@@ -20,6 +20,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.MonthlySalesGrowthDTO;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
@@ -107,25 +108,25 @@ public class AdminController {
         return ResponseEntity.ok(BaseResponse.of(adminService.getRefundMembers(), HttpStatus.OK));
     }
     
-    @PostMapping("/refund/{refundId}/approval")
-    public ResponseEntity<String> approveRefundRequest(@PathVariable Long refundId) {
-        try {
-        	paymentService.refund(refundId);
-            return ResponseEntity.ok("환불 요청이 승인되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
-        }
-    }
-    
-    @PostMapping("/refund/{refundId}/rejection")
-    public ResponseEntity<String> rejectionRefundRequest(@PathVariable Long refundId) {
-        try {
-        	paymentService.noRefund(refundId);
-            return ResponseEntity.ok("환불 요청이 반려되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
-        }
-    }
+//    @PostMapping("/refund/{refundId}/approval")
+//    public ResponseEntity<String> approveRefundRequest(@PathVariable Long refundId) {
+//        try {
+//        	paymentService.refund(refundId);
+//            return ResponseEntity.ok("환불 요청이 승인되었습니다.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body("승인처리가 실패되었습니다.");
+//        }
+//    }
+//    
+//    @PostMapping("/refund/{refundId}/rejection")
+//    public ResponseEntity<String> rejectionRefundRequest(@PathVariable Long refundId) {
+//        try {
+//        	paymentService.noRefund(refundId);
+//            return ResponseEntity.ok("환불 요청이 반려되었습니다.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body("반려처리가 실패되었습니다.");
+//        }
+//    }
 
 	@GetMapping("/getRequestFacilities")
 	public ResponseEntity<BaseResponse<List<ApprovalRequestDto>>> getRequestFacilities() {
@@ -205,7 +206,7 @@ public class AdminController {
 
         // 주간 예약 데이터 가져오기
         List<WeekReservationDto> weekReservations = adminService.getThisWeekReservations();
-        stats.put("weekReservations", weekReservations);
+         stats.put("weekReservations", weekReservations);
 
         // 시설별 예약 통계 가져오기
         List<FacilityReservationResponseDto> totalReservations = adminService.getTotalReservations();
@@ -225,6 +226,9 @@ public class AdminController {
 
         List<RankPaymentDto> rankedPayment = adminService.getRankPayment();
         stats.put("rankedPayment", rankedPayment);
+        
+        MonthlySalesGrowthDTO monthlySalesGrowth = adminService.getMonthlySalesGrowth();
+        stats.put("monthlySalesGrowth", monthlySalesGrowth);
         
         return ResponseEntity.ok(stats);
     }

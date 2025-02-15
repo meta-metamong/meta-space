@@ -126,7 +126,8 @@
         "memberBen":"회원 정지",
         "dashboard":"대시보드",
         "salesExport":"매출조회",
-        "memberManagement":"회원 관리"
+        "memberManagement":"회원 관리",
+        "refund":"환불 승인"
     },
     "reservation": {
         "list": "예약 목록",

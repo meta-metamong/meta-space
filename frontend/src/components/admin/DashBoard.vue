@@ -1,22 +1,30 @@
 <template>
   <div>
-    <!-- 주간 예약 현황과 시간대별 예약 현황을 나란히 배치 -->
     <div class="chart-container">
-      <!-- 주간 예약 현황 차트 -->
-      <div id="week-reservation-chart" class="chart-half"></div>
-
-      <!-- 시간대별 예약 현황 차트 -->
-      <div id="hourly-reservation-chart" class="chart-half"></div>
+      <div id="week-reservation-chart" class="chart-large"></div>
+      <div id="growth-rate-card" class="chart-small">
+        <div class="growth-rate-title">이번달 총 매출</div>
+        <div class="growth-rate-content">
+          <div class="growth-rate-main">
+            <span class="growth-rate-value">{{ totalSales }}원</span>
+            <div class="growth-rate-details">
+              <span class="growth-rate-label">전월 대비</span>
+              <div class="growth-rate-numbers">
+                <span class="growth-rate-percentage">{{ growthRate }}%</span>
+                <span :style="{ color: arrowColor }" class="growth-rate-arrow">{{ arrow }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- 시설별 예약/취소/매출 현황 차트 -->
     <div id="facility-stats-chart"></div>
-
-    <!-- 이번 달 예약 랭킹 차트 (파이 차트) -->
-    <div id="ranking-chart"></div>
+    <div class="ranking-container">
+      <div id="ranking-chart" class="ranking-smaller"></div>
+      <div id="payment-ranking-chart" class="ranking-smaller"></div>
+    </div>
   </div>
 </template>
-
 <script>
 import { defineComponent } from "vue";
 import { get } from "../../apis/axios"; // 공통 API 호출 함수 import
@@ -26,11 +34,18 @@ export default defineComponent({
   data() {
     return {
       weekReservations: [], // 주간 예약 데이터를 담을 변수
-      weekHourReservations: [], // 시간대별 예약 현황
       totalReservations: [], // 시설별 예약 건수
       cancelledReservations: [], // 시설별 취소된 예약 건수
       totalRevenue: [], // 시설별 매출
-      rankedReservation: [] // 예약 랭킹 데이터
+      rankedReservation: [], // 예약 랭킹 데이터
+      rankedPayment: [], // 매출 랭킹 데이터
+      monthlySalesGrowth: {}, // 매출 증감율 데이터
+
+      // 매출 증감율 카드 관련 변수
+      arrow: "", // 화살표 (↑, ↓, →)
+      arrowColor: "", // 화살표 색상 (green, red, gray)
+      growthRate: 0, // 매출 증감율
+      totalSales: 0 // 이번 달 총 매출
     };
   },
   methods: {
@@ -42,12 +57,12 @@ export default defineComponent({
 
         if (response.data) {
           this.weekReservations = response.data.weekReservations; // 주간 예약 현황
-          this.weekHourReservations = response.data.weekHourReservations; // 시간대별 예약 현황
-          console.log("시간대별 예약 현황:", this.weekHourReservations); 
           this.totalReservations = response.data.totalReservations; // 시설별 예약 건수
           this.cancelledReservations = response.data.cancelledReservations; // 시설별 취소된 예약 건수
           this.totalRevenue = response.data.totalRevenue; // 시설별 매출
           this.rankedReservation = response.data.rankedReservation; // 예약 랭킹 데이터
+          this.rankedPayment = response.data.rankedPayment; // 매출 랭킹 데이터
+          this.monthlySalesGrowth = response.data.monthlySalesGrowth; // 매출 증감율 데이터
         } else {
           console.error("데이터가 없습니다.");
         }
@@ -60,180 +75,174 @@ export default defineComponent({
     },
 
     drawCharts() {
-  // weekReservations이 비어 있으면 기본 데이터를 설정
-  if (this.weekReservations.length === 0) {
-    // 기본 데이터 설정 (모든 요일에 대해 0 예약)
-    this.weekReservations = [{
-      fctId: "기본시설",
-      sun: 0,
-      mon: 0,
-      tues: 0,
-      wednes: 0,
-      thurs: 0,
-      fri: 0,
-      satur: 0
-    }];
-  }
+      // 주간 예약 현황
+      const weekSeriesData = this.weekReservations.map((reservation) => ({
+        name: `시설 ${reservation.fctId}`, // 시설명
+        data: [
+          reservation.sun || 0,
+          reservation.mon || 0,
+          reservation.tues || 0,
+          reservation.wednes || 0,
+          reservation.thurs || 0,
+          reservation.fri || 0,
+          reservation.satur || 0
+        ],
+        lineWidth: 2, // 선 두께
+      }));
 
-  // 주간 예약 현황 선 차트 그리기
-  const weekSeriesData = this.weekReservations.map((reservation) => ({
-    name: `시설 ${reservation.fctId}`, // 시설명
-    type: 'area', // 선채우기
-    data: [
-      reservation.sun || 0,    // 일요일, 데이터가 없으면 0
-      reservation.mon || 0,    // 월요일, 데이터가 없으면 0
-      reservation.tues || 0,   // 화요일, 데이터가 없으면 0
-      reservation.wednes || 0, // 수요일, 데이터가 없으면 0
-      reservation.thurs || 0,  // 목요일, 데이터가 없으면 0
-      reservation.fri || 0,    // 금요일, 데이터가 없으면 0
-      reservation.satur || 0,  // 토요일, 데이터가 없으면 0
-    ],
-    lineWidth: 2, // 선 두께
-  }));
+      // 매출 증감율 계산
+      const growthRate = this.monthlySalesGrowth.growthRate; // 매출 증감율
+      const totalSales = this.monthlySalesGrowth.totalSales; // 이번 달 총 매출
 
-  // 주간 예약 현황 선 차트
-  Highcharts.chart("week-reservation-chart", {
-    title: {
-      text: "주간 요일별 예약 현황"
-    },
-    xAxis: {
-      categories: ["일", "월", "화", "수", "목", "금", "토"], // 요일 설정
-      title: { text: "요일" }
-    },
-    yAxis: {
-      title: {
-        align: 'high',
-        offset: 0,
-        rotation: 0,
-        y: -10,
-        text: "예약 건수"
+      let arrow = "";
+      let arrowColor = "";
+      if (growthRate > 0) {
+        arrow = "↑"; // 위 화살표
+        arrowColor = "green"; // 초록색
+      } else if (growthRate < 0) {
+        arrow = "↓"; // 아래 화살표
+        arrowColor = "red"; // 빨간색
+      } else {
+        arrow = "→"; // 변화 없음
+        arrowColor = "gray"; // 회색
       }
-    },
-    series: weekSeriesData, // 시설별 예약 건수 데이터
-    tooltip: {
-      shared: true,
-      valueSuffix: " 건"
-    },
-    credits: { enabled: false }, // 크레딧 비활성화
-    exporting: { enabled: true } // 내보내기 활성화
-  });
 
+      this.arrow = arrow; // 화살표
+      this.arrowColor = arrowColor; // 화살표 색상
+      this.growthRate = growthRate; // 매출 증감율
+      this.totalSales = totalSales; // 이번 달 총 매출
 
+      // 주간 예약 현황 선 차트
+      Highcharts.chart("week-reservation-chart", {
+        title: {
+          text: "주간 요일별 예약 현황"
+        },
+        xAxis: {
+          categories: ["일", "월", "화", "수", "목", "금", "토"], // 요일 설정
+          title: { text: "요일" }
+        },
+        yAxis: {
+          title: {
+            text: "예약 건수"
+          }
+        },
+        series: weekSeriesData,
+        tooltip: {
+          shared: true,
+          valueSuffix: " 건"
+        },
+        credits: { enabled: false },
+        exporting: { enabled: true }
+      });
 
+      // 시설별 예약/취소/매출 현황 복합 막대 그래프
+      Highcharts.chart("facility-stats-chart", {
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: "시설별 예약/예약취소/매출 현황"
+        },
+        xAxis: {
+          categories: this.totalReservations.map(stat => stat.fctName),
+          title: { text: "시설" },
+          labels: {
+            style: {
+              width: '120px',
+              whiteSpace: 'normal',
+              textOverflow: 'ellipsis',
+            },
+            rotation: -45
+          }
+        },
+        yAxis: [
+          { title: { text: "예약 건수" } },
+          { title: { text: "매출 (원)" }, opposite: true }
+        ],
+        series: [
+          {
+            name: "시설별 예약 건수",
+            data: this.totalReservations.map(stat => stat.totalReservations),
+            pointWidth: 30
+          },
+          {
+            name: "시설별 취소된 예약 건수",
+            data: this.cancelledReservations.map(stat => stat.cancelledReservations),
+            pointWidth: 30
+          },
+          {
+            name: "시설별 매출",
+            data: this.totalRevenue.map(stat => stat.totalRevenue),
+            type: 'line',
+            yAxis: 1
+          }
+        ],
+        tooltip: {
+          shared: true,
+          valueSuffix: " 건"
+        },
+        credits: { enabled: false },
+        exporting: { enabled: true }
+      });
 
+      // 예약 랭킹 차트
+      const rankedData = this.rankedReservation.map((stat) => ({
+        name: stat.fctName,
+        y: stat.totRvt
+      }));
 
-  // 시간대별 예약 현황 선 차트 (8시부터 23시까지)
-  const hourlySeriesData = Array.from({ length: 16 }, (_, hour) => {
-    // 8시부터 23시까지 예약 데이터를 채웁니다.
-    const realHour = hour + 8; // 8시부터 시작
-    const reservation = this.weekHourReservations.find(res => res.rvtHour === realHour);
-    
-    return {
-      name: `${realHour}시`,
-      type: 'line', // 선 차트
-      data: [reservation ? reservation.rvtCount : 0], // 예약 건수가 없으면 0
-    };
-  });
+      Highcharts.chart("ranking-chart", {
+        chart: {
+          type: 'pie'
+        },
+        title: {
+          text: "이번 달 시설 예약 랭킹 TOP 5"
+        },
+        series: [{
+          name: "예약 건수",
+          data: rankedData,
+          size: '80%',
+          innerSize: '60%',
+          dataLabels: {
+            formatter: function () {
+              return `${this.point.name}: ${this.point.y} 건`;
+            }
+          }
+        }],
+        credits: { enabled: false },
+        exporting: { enabled: true }
+      });
 
-  // 시간대별 예약 현황 차트 그리기
-  Highcharts.chart("hourly-reservation-chart", {
-    title: {
-      text: "주간 시간대별 예약 현황"
-    },
-    xAxis: {
-      categories: Array.from({ length: 16 }, (_, hour) => `${hour + 8}시`), // 8시부터 23시까지 시간대별 X축
-      title: { text: "시간" }
-    },
-    yAxis: {
-      title: {
-        text: "예약 건수"
-      }
-    },
-    series: [{
-      name: '예약 건수',
-      data: hourlySeriesData.map(item => item.data[0]), // 시간대별 예약 건수 데이터
-    }],
-    tooltip: {
-      shared: true,
-      valueSuffix: " 건"
-    },
-    credits: { enabled: false }, // 크레딧 비활성화
-    exporting: { enabled: true } // 내보내기 활성화
-  });
+      // 매출 랭킹 차트
+      const paymentRankedData = this.rankedPayment.map((stat) => ({
+        name: stat.fctName,
+        y: stat.totPay
+      }));
 
-  // 시설별 예약/취소/매출 현황 복합 막대 그래프
-  Highcharts.chart("facility-stats-chart", {
-    chart: {
-      type: 'column' // 복합 막대 그래프
-    },
-    title: {
-      text: "시설별 예약/예약취소/매출 현황"
-    },
-    xAxis: {
-      categories: this.totalReservations.map(stat => stat.fctName), // 시설 이름
-      title: { text: "시설" }
-    },
-    yAxis: [{
-      title: { text: "예약 건수" },
-    }, {
-      title: { text: "매출 (원)" },
-      opposite: true // 매출은 오른쪽 세로축
-    }],
-    series: [
-      {
-        name: "시설별 예약 건수",
-        data: this.totalReservations.map(stat => stat.totalReservations), // 시설별 예약 건수
-      },
-      {
-        name: "시설별 취소된 예약 건수",
-        data: this.cancelledReservations.map(stat => stat.cancelledReservations), // 시설별 취소된 예약 건수
-      },
-      {
-        name: "시설별 매출",
-        data: this.totalRevenue.map(stat => stat.totalRevenue), // 시설별 매출
-        type: 'line', // 선 차트로 매출 표시
-        yAxis: 1 // 매출은 두 번째 축에 표시
-      }
-    ],
-    tooltip: {
-      shared: true,
-      valueSuffix: " 건"
-    },
-    credits: { enabled: false }, // 크레딧 비활성화
-    exporting: { enabled: true } // 내보내기 활성화
-  });
-
-  // 예약 랭킹 차트 (파이 차트)
-  const rankedData = this.rankedReservation.map((stat) => ({
-    name: stat.fctName,  // 시설 이름
-    y: stat.totRvt     // 예약 건수
-  }));
-
-  Highcharts.chart("ranking-chart", {
-    chart: {
-      type: 'pie' // 파이 차트
-    },
-    title: {
-      text: "이번 달 예약 랭킹 TOP 5"
-    },
-    series: [{
-      name: "예약 건수",
-      data: rankedData,
-      size: '80%',
-      innerSize: '60%',
-      dataLabels: {
-        formatter: function () {
-          return `${this.point.name}: ${this.point.y} 건`; // 데이터 라벨 표시
-        }
-      }
-    }],
-    credits: { enabled: false }, // 크레딧 비활성화
-    exporting: { enabled: true } // 내보내기 활성화
-  });
-}
-
-
+      Highcharts.chart("payment-ranking-chart", {
+        chart: {
+          type: 'pie'
+        },
+        title: {
+          text: "이번 달 시설 매출 랭킹 TOP 5"
+        },
+        series: [{
+          name: "매출 금액",
+          data: paymentRankedData,
+          size: '80%',
+          innerSize: '60%',
+          dataLabels: {
+            formatter: function () {
+              return `${this.point.name}: ${this.point.y} 원`;
+            }
+          }
+        }],
+        credits: { enabled: false },
+        exporting: { enabled: true }
+      });
+    }
   },
+
   mounted() {
     this.fetchWeekReservations(); // 컴포넌트가 마운트될 때 데이터 가져오기
   }
@@ -246,36 +255,86 @@ export default defineComponent({
   justify-content: center;
   gap: 20px;
   margin-bottom: 20px;
+  align-items: center;
 }
 
-.chart-half {
-  width: 550px; /* 차트 너비를 40%로 설정 */
-  height: 100%; /* 부모 요소의 높이를 따라가도록 설정 */
+.chart-large {
+  width: 700px; /* growth-rate-card의 두 배 */
+  height: 300px;
 }
 
-/* 시설별 예약/취소/매출 현황 차트 */
-#facility-stats-chart {
-  width: 85%;
-  height: 270px; /* 화면의 1/3 높이 */
-  margin: 0 auto;
-  overflow: hidden; /* 스크롤 방지 */
+.chart-small {
+  width: 350px;
+  height: 150px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: -50px;
 }
 
-/* 예약 랭킹 차트 */
-#ranking-chart {
-  width: 100%;
-  height: 270px; /* 화면의 1/3 높이 */
-  margin: 0 auto;
-  overflow: hidden; /* 스크롤 방지 */
+.growth-rate-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-/* 다른 차트의 높이도 동일하게 설정 */
-#week-reservation-chart,
-#hourly-reservation-chart {
-  width: 80%;
-  height: 270px; /* 화면의 1/3 높이 */
-  overflow: hidden; /* 스크롤 방지 */
+.growth-rate-content {
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
+.growth-rate-main {
+  display: flex;
+  align-items: center;
+}
 
+.growth-rate-value {
+  font-size: 36px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.growth-rate-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.growth-rate-label {
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 2px;
+}
+
+.growth-rate-numbers {
+  display: flex;
+  align-items: center;
+}
+
+.growth-rate-percentage {
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.growth-rate-arrow {
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.ranking-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.ranking-smaller {
+  width: 35%;
+  min-width: 300px;
+  height: 240px;
+}
 </style>

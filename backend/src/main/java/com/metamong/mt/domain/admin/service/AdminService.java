@@ -9,6 +9,7 @@ import com.metamong.mt.domain.admin.dto.response.ApprovalRequestDto;
 import com.metamong.mt.domain.admin.dto.response.FacilityReservationResponseDto;
 import com.metamong.mt.domain.admin.dto.response.FacilitySearchResponseDto;
 import com.metamong.mt.domain.admin.dto.response.MemberSearchResponseDto;
+import com.metamong.mt.domain.admin.dto.response.MonthlySalesGrowthDTO;
 import com.metamong.mt.domain.admin.dto.response.RankPaymentDto;
 import com.metamong.mt.domain.admin.dto.response.RankReservationDto;
 import com.metamong.mt.domain.admin.dto.response.RefundMemberResponseDto;
@@ -44,4 +45,6 @@ public interface AdminService {
     List<Long> getMembersToUnban();
     void unbanMembers(List<Long> memberIds);
     List<RefundMemberResponseDto> getRefundMembers();
+    MonthlySalesGrowthDTO getMonthlySalesGrowth();
+    
 }
