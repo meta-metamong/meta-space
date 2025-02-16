@@ -58,6 +58,8 @@ export default {
                     return "bg-primary";
                 case "Q":
                     return "bg-warning";
+				case "N":
+					return "bg-danger";
                 default:
                     return "bg-success";
             }

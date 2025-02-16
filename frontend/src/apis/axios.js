@@ -44,7 +44,13 @@ apiClient.interceptors.response.use(
         const {config, response} = error;
         const isReissuable = error.status === 401 && response.data?.message === "만료된 토큰";
         // TODO : 404 CONNECT
-        if(!isReissuable) return error;
+        if(!isReissuable) {
+            if (error.status === 403) {
+                sessionStorage.setItem('error', JSON.stringify(error.status));
+                router.push('/error')
+            }
+            return error;
+        }
 
         await reissue();
         

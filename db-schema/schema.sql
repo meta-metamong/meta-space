@@ -203,14 +203,14 @@ CREATE TABLE reservation (
 
 CREATE TABLE payment (
     rvt_id                NUMBER(19, 0),
-    pay_price             NUMBER(6, 0)  NOT NULL,
+    pay_price             NUMBER(19, 0)  NOT NULL,
     pay_state             CHAR(1)       DEFAULT 'P',
-    pay_method            VARCHAR2(10)  NOT NULL,
+    pay_method            VARCHAR2(100)  NOT NULL,
     pay_date              DATE          DEFAULT SYSDATE,
     cancel_date           DATE,
-    refund_account        VARCHAR2(20),
+    refund_account        VARCHAR2(50),
     refund_bank_code      CHAR(3),
-    refund_account_owner  VARCHAR2(30),
+    refund_account_owner  VARCHAR2(50),
 
     CONSTRAINT pk_payment PRIMARY KEY (rvt_id),
     CONSTRAINT fk_payment_rvt_id FOREIGN KEY (rvt_id)

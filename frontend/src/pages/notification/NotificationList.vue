@@ -20,7 +20,6 @@
 
 <script>
 import apiClient, { get } from "../../apis/axios";
-import { notis } from '../../components/nootification/notis';
 import { getUserIdInLocal } from "../../store";
 export default{
     name: 'NotificationList',
@@ -49,6 +48,7 @@ export default{
                 console.log("read noti, id=" + notiId);
                 apiClient.patch(`/notifications/${notiId}/read`);
                 this.notis[idx].read = true;
+                this.$store.commit("decrementNotificationCount");
             }
         }
     },
@@ -68,6 +68,7 @@ export default{
         socketClient.onmessage = (msg) => {
             // console.log(JSON.parse(msg.data));
             this.notis.unshift(JSON.parse(msg.data));
+            this.$store.commit("incrementNotificationCount");
         };
     },
     unmounted() {

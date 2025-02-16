@@ -16,13 +16,12 @@
                     r.usage_start_time AS "usageStartTime",
                     r.usage_end_time AS "usageEndTime",
                     p.pay_state AS "payState",
-                    ROWNUM AS rnum
+                    ROW_NUMBER() OVER (ORDER BY r.rvt_id DESC) AS rnum
                 FROM reservation r
                 JOIN zone z ON r.zone_id = z.zone_id
                 JOIN facility f ON f.fct_id = z.fct_id
                 JOIN payment p ON p.rvt_id = r.rvt_id
                 WHERE r.cons_id = #{consId}
-                ORDER BY r.rvt_id desc
             )
             WHERE rnum BETWEEN #{startRow} AND #{endRow}
         ]]>
