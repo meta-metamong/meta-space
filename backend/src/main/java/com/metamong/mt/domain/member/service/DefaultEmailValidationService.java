@@ -5,7 +5,6 @@ import java.util.Random;
 import org.springframework.stereotype.Service;
 
 import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
-import com.metamong.mt.domain.member.repository.redis.MemberEmailCodeRepository;
 import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
