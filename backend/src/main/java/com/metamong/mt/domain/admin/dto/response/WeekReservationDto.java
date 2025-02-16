@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class WeekReservationDto {
 	private String fctId;
+	private String fctName;
     private int sun;
     private int mon;
     private int tues;

@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FacilityReservationResponseDto {
-    private String facilityName;
-    private Long facilityId;
+    private String fctName;
+    private Long fctId;
     private Long totalReservations;
     private Long cancelledReservations;
     private Long totalRevenue;

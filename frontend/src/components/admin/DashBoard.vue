@@ -35,7 +35,6 @@
   </div>
 </template>
 
-
 <script>
 import { defineComponent } from "vue";
 import { get } from "../../apis/axios"; // 공통 API 호출 함수 import
@@ -44,22 +43,20 @@ import Highcharts from "highcharts";
 export default defineComponent({
   data() {
     return {
-      weekReservations: [], // 주간 예약 데이터를 담을 변수
-      totalReservations: [], // 시설별 예약 건수
-      cancelledReservations: [], // 시설별 취소된 예약 건수
-      totalRevenue: [], // 시설별 매출
+      facilitiesData: [], // 각 시설의 예약, 취소, 매출을 합친 데이터
       rankedReservation: [], // 예약 랭킹 데이터
       rankedPayment: [], // 매출 랭킹 데이터
       monthlySalesGrowth: {
         growthRate: 0, // 매출 증감율 (기본값)
         totalSales: 0 // 이번 달 총 매출 (기본값)
       },
-      rrow: "", // 화살표 (↑, ↓, →)
+      arrow: "", // 화살표 (↑, ↓, →)
       arrowColor: "", // 화살표 색상 (green, red, gray)
       growthRate: 0, // 매출 증감율
       totalSales: 0 // 이번 달 총 매출
     };
   },
+
   methods: {
     async fetchData() {
       try {
@@ -75,6 +72,24 @@ export default defineComponent({
           this.rankedReservation = response.data.rankedReservation; // 예약 랭킹 데이터
           this.rankedPayment = response.data.rankedPayment; // 매출 랭킹 데이터
           this.monthlySalesGrowth = response.data.monthlySalesGrowth;
+
+          // totalReservations와 cancelledReservations 데이터를 합침
+          this.facilitiesData = this.totalReservations.map((totalStat) => {
+            const cancelledStat = this.cancelledReservations.find(
+              (cancelStat) => cancelStat.fctName === totalStat.fctName
+            ) || { cancelledReservations: 0 };
+
+            const revenueStat = this.totalRevenue.find(
+              (revStat) => revStat.fctName === totalStat.fctName
+            ) || { totalRevenue: 0 };
+
+            return {
+              fctName: totalStat.fctName,
+              totalReservations: totalStat.totalReservations,
+              cancelledReservations: cancelledStat.cancelledReservations,
+              totalRevenue: revenueStat.totalRevenue
+            };
+          });
         } else {
           console.error("데이터가 없습니다.");
         }
@@ -89,7 +104,7 @@ export default defineComponent({
     drawCharts() {
       // 주간 예약 현황 선 차트
       const weekSeriesData = this.weekReservations.map((reservation) => ({
-        name: `시설 ${reservation.fctId}`, // 시설명
+        name: `시설 ${reservation.fctName}`, // 시설명
         data: [
           reservation.sun || 0,
           reservation.mon || 0,
@@ -102,8 +117,8 @@ export default defineComponent({
         lineWidth: 2, // 선 두께
       }));
 
-      const growthRate = this.monthlySalesGrowth.growthRate; // 매출 증감율
-      const totalSales = this.monthlySalesGrowth.totalSales; // 이번 달 총 매출
+      const growthRate = this.monthlySalesGrowth?.growthRate ?? 0; 
+      const totalSales = this.monthlySalesGrowth?.totalSales ?? 0;
 
       let arrow = "";
       let arrowColor = "";
@@ -123,44 +138,32 @@ export default defineComponent({
       this.growthRate = growthRate; // 매출 증감율
       this.totalSales = totalSales; // 이번 달 총 매출
 
-
+      // 주간 예약 차트
       Highcharts.chart("week-reservation-chart", {
-        title: {
-          text: "주간 요일별 예약 현황"
-        },
+        title: { text: "주간 요일별 예약 현황" },
         xAxis: {
           categories: ["일", "월", "화", "수", "목", "금", "토"], // 요일 설정
           title: { text: "요일" }
         },
-        yAxis: {
-          title: {
-            text: "예약 건수"
-          }
-        },
+        yAxis: { title: { text: "예약 건수" } },
         series: weekSeriesData,
-        tooltip: {
-          shared: true,
-          valueSuffix: " 건"
-        },
+        tooltip: { shared: true, valueSuffix: " 건" },
         credits: { enabled: false },
         exporting: { enabled: true }
       });
 
       // 시설별 예약/취소/매출 현황 복합 막대 그래프
       Highcharts.chart("facility-stats-chart", {
-        chart: {
-          type: 'column'
-        },
-        title: {
-          text: "시설별 예약/예약취소/매출 현황"
-        },
+        chart: { type: 'column' },
+        title: { text: "시설별 예약/예약취소/매출 현황" },
         xAxis: {
-          categories: this.totalReservations.map(stat => stat.fctName),
+          categories: this.facilitiesData.map(stat => stat.fctName),
           title: { text: "시설" },
           labels: {
             style: {
               width: '120px',
               whiteSpace: 'normal',
+              wordWrap: 'break-word',
               textOverflow: 'ellipsis',
             },
             rotation: -45
@@ -173,25 +176,22 @@ export default defineComponent({
         series: [
           {
             name: "시설별 예약 건수",
-            data: this.totalReservations.map(stat => stat.totalReservations),
+            data: this.facilitiesData.map(stat => stat.totalReservations),
             pointWidth: 30
           },
           {
             name: "시설별 취소된 예약 건수",
-            data: this.cancelledReservations.map(stat => stat.cancelledReservations),
+            data: this.facilitiesData.map(stat => stat.cancelledReservations),
             pointWidth: 30
           },
           {
             name: "시설별 매출",
-            data: this.totalRevenue.map(stat => stat.totalRevenue),
+            data: this.facilitiesData.map(stat => stat.totalRevenue),
             type: 'line',
             yAxis: 1
           }
         ],
-        tooltip: {
-          shared: true,
-          valueSuffix: " 건"
-        },
+        tooltip: { shared: true, valueSuffix: " 건" },
         credits: { enabled: false },
         exporting: { enabled: true }
       });
@@ -203,12 +203,8 @@ export default defineComponent({
       }));
 
       Highcharts.chart("ranking-chart", {
-        chart: {
-          type: 'pie'
-        },
-        title: {
-          text: "이번 달 시설 예약 랭킹 TOP 5"
-        },
+        chart: { type: 'pie' },
+        title: { text: "이번 달 시설 예약 랭킹 TOP 5" },
         series: [{
           name: "예약 건수",
           data: rankedData,
@@ -231,12 +227,8 @@ export default defineComponent({
       }));
 
       Highcharts.chart("payment-ranking-chart", {
-        chart: {
-          type: 'pie'
-        },
-        title: {
-          text: "이번 달 시설 매출 랭킹 TOP 5"
-        },
+        chart: { type: 'pie' },
+        title: { text: "이번 달 시설 매출 랭킹 TOP 5" },
         series: [{
           name: "매출 금액",
           data: paymentRankedData,
@@ -259,6 +251,7 @@ export default defineComponent({
   }
 });
 </script>
+
 
 <style scoped>
 .chart-container {
