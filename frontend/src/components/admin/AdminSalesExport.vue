@@ -17,7 +17,7 @@
         <tr v-for="payment in payments" :key="payment.fctId">
           <td class="left-align">{{ payment.fctName }}</td> <!-- 문자열은 왼쪽 정렬 -->
           <td class="left-align">{{ payment.zoneName }}</td> <!-- 문자열은 왼쪽 정렬 -->
-          <td class="left-align">{{ formatDate(payment.payDate) }}</td> <!-- 문자열은 왼쪽 정렬 -->
+          <td class="middle-align">{{ formatDate(payment.payDate) }}</td> <!-- 문자열은 왼쪽 정렬 -->
           <td class="right-align">{{ formatPrice(payment.payPrice) }}</td> <!-- 숫자는 오른쪽 정렬 -->
           <td class="left-align">{{ payment.memName }}</td> <!-- 문자열은 왼쪽 정렬 -->
           <td class="left-align">{{ payment.payMethod }}</td> <!-- 문자열은 왼쪽 정렬 -->
@@ -30,13 +30,12 @@
       </tbody>
     </table>
 
-    <!-- 엑셀 다운로드 버튼 추가 -->
     <button @click="downloadExcel">엑셀 다운로드</button>
   </div>
 </template>
 
 <script>
-import { get } from '../../apis/axios'; // axios 경로를 수정하세요.
+import { get } from '../../apis/axios'; 
 import * as XLSX from 'xlsx'; // xlsx 라이브러리 import
 
 export default {
