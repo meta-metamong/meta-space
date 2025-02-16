@@ -120,7 +120,6 @@ export default defineComponent({
       const growthRate = this.monthlySalesGrowth?.growthRate ?? 0; 
       const totalSales = this.monthlySalesGrowth?.totalSales ?? 0;
 
-
       let arrow = "";
       let arrowColor = "";
       if (growthRate > 0) {

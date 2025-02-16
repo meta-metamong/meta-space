@@ -30,13 +30,12 @@
       </tbody>
     </table>
 
-    <!-- 엑셀 다운로드 버튼 추가 -->
     <button @click="downloadExcel">엑셀 다운로드</button>
   </div>
 </template>
 
 <script>
-import { get } from '../../apis/axios'; // axios 경로를 수정하세요.
+import { get } from '../../apis/axios'; 
 import * as XLSX from 'xlsx'; // xlsx 라이브러리 import
 
 export default {
