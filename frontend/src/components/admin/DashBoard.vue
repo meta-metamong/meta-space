@@ -117,8 +117,9 @@ export default defineComponent({
         lineWidth: 2, // 선 두께
       }));
 
-      const growthRate = this.monthlySalesGrowth.growthRate; // 매출 증감율
-      const totalSales = this.monthlySalesGrowth.totalSales; // 이번 달 총 매출
+      const growthRate = this.monthlySalesGrowth?.growthRate ?? 0; 
+      const totalSales = this.monthlySalesGrowth?.totalSales ?? 0;
+
 
       let arrow = "";
       let arrowColor = "";
