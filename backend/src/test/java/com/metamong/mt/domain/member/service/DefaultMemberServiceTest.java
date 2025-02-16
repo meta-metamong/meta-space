@@ -1,25 +1,45 @@
 package com.metamong.mt.domain.member.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
+import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
+import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
+import com.metamong.mt.domain.member.exception.EmailAlreadyExistException;
+import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
+import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
+import com.metamong.mt.domain.member.exception.MemberNotFoundException;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.model.constant.Gender;
+import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
-import com.metamong.mt.global.mail.MailAgent;
+import com.metamong.mt.global.constant.BooleanAlt;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultMemberServiceTest {
-    static final PasswordEncoder pe = NoOpPasswordEncoder.getInstance();
-    static final String EXISTS_MEMBER_USER_ID = "exists";
-    static final String EXISTS_MEMBER_EMAIL = "exists@gmail.com";
-    static final String EXISTS_MEMBER_PASSWORD = pe.encode("1q2w3e4r");
-
     @InjectMocks
     DefaultMemberService memberService;
     
@@ -30,212 +50,178 @@ class DefaultMemberServiceTest {
     MemberRepository memberRepository;
     
     @Mock
-    MailAgent mailAgent;
+    PasswordEncoder passwordEncoder;
     
-    @Spy
-    PasswordEncoder passwordEncoder = pe;
+    @Mock
+    EmailValidationService emailValidationService;
+    
+    static Member testMember;
     
     @BeforeEach
-    void initPerTest() {
-        
-        
-//        doAnswer(new Answer<>() {
-//            
-//            @Override
-//            public Boolean answer(InvocationOnMock invocation) throws Throwable {
-//                String userId = invocation.getArgument(0, String.class);
-//                String email = invocation.getArgument(1, String.class);
-//                
-//                return EXISTS_MEMBER_USER_ID.equals(userId) && EXISTS_MEMBER_EMAIL.equals(email);
-//            }
-//        }).when(this.memberRepository).existsByUserIdAndEmail(anyString(), anyString());
-//        
-//        doAnswer(new Answer<>() {
-//            
-//            @Override
-//            public Boolean answer(InvocationOnMock invocation) throws Throwable {
-//                String userId = invocation.getArgument(0, String.class);
-//                String email = invocation.getArgument(1, String.class);
-//                
-//                return EXISTS_MEMBER_USER_ID.equals(userId) || EXISTS_MEMBER_EMAIL.equals(email);
-//            }
-//        }).when(this.memberRepository).existsByUserIdOrEmail(anyString(), anyString());
-//        
-//        doAnswer(new Answer<>() {
-//            
-//            @Override
-//            public Optional<Member> answer(InvocationOnMock invocation) throws Throwable {
-//                String userId = invocation.getArgument(0, String.class);
-//                
-//                if (EXISTS_MEMBER_USER_ID.equals(userId)) {
-//                    return Optional.of(
-//                            Member.builder()
-//                                    .userId(userId)
-//                                    .name("name")
-//                                    .password(EXISTS_MEMBER_PASSWORD)
-//                                    .phone("010-1111-1111")
-//                                    .email(EXISTS_MEMBER_EMAIL)
-//                                    .birth(LocalDate.of(1997, 9, 16))
-//                                    .postalCode("02222")
-//                                    .detailAddress("detailAddress")
-//                                    .address("address")
-//                                    .role(Role.ROLE_USER)
-//                                    .refreshToken("refreshToken")
-//                                    .businessName("businessName")
-//                                    .businessRegistrationNumber("businessRegistrationNumber")
-//                                    .build()
-//                    );
-//                }
-//                return Optional.empty();
-//            }
-//        }).when(this.memberRepository).findById(anyString());
-//        
-//        doAnswer(new Answer<>() {
-//            
-//            @Override
-//            public Optional<Member> answer(InvocationOnMock invocation) throws Throwable {
-//                String email = invocation.getArgument(0, String.class);
-//                
-//                if (EXISTS_MEMBER_EMAIL.equals(email)) {
-//                    return Optional.of(
-//                            Member.builder()
-//                                    .userId(EXISTS_MEMBER_USER_ID)
-//                                    .name("name")
-//                                    .password(EXISTS_MEMBER_PASSWORD)
-//                                    .phone("010-1111-1111")
-//                                    .email(email)
-//                                    .birth(LocalDate.of(1997, 9, 16))
-//                                    .postalCode("02222")
-//                                    .detailAddress("detailAddress")
-//                                    .address("address")
-//                                    .role(Role.ROLE_USER)
-//                                    .refreshToken("refreshToken")
-//                                    .businessName("businessName")
-//                                    .businessRegistrationNumber("businessRegistrationNumber")
-//                                    .build()
-//                    );
-//                }
-//                return Optional.empty();
-//            }
-//        }).when(this.memberRepository).findByEmail(anyString());
+    void setupTestMember() {
+        testMember = Member.builder()
+                .memId((long)1)
+                .email("testkhs@naver.com")
+                .memName("김한수")
+                .password("1234")
+                .memPhone("010-4118-0614")
+                .gender(Gender.M)
+                .birthDate(LocalDate.of(1999, 6, 14))
+                .memPostalCode("24209")
+                .memDetailAddress("강원도 춘천시 소양강로 104")
+                .memAddress("101-702")
+                .isDel(BooleanAlt.N)
+                .role(Role.ROLE_CONS)
+                .build();
     }
-//    
-//    @Test
-//    @DisplayName("findLoginInfo() - find success")
-//    void findLoginInfo_findSuccess() throws Exception {
-//        // Given
-//        when(this.memberRepository.findById(EXISTS_MEMBER_USER_ID))
-//                .thenReturn(Optional.of(
-//                        DummyEntityGenerator.generateMember(EXISTS_MEMBER_USER_ID)
-//                ));
-//        
-//        Constructor<LoginRequestDto> con = LoginRequestDto.class.getDeclaredConstructor();
-//        con.setAccessible(true);
-//        LoginRequestDto requestDto = con.newInstance();
-//        con.setAccessible(false);
-//        ReflectionTestUtils.setField(requestDto, "userId", EXISTS_MEMBER_USER_ID);
-//        ReflectionTestUtils.setField(requestDto, "password", EXISTS_MEMBER_PASSWORD);
-//        
-//        // When
-//        LoginInfoResponseDto result = this.memberService.findLoginInfo(requestDto);
-//        
-//        // Then
-//        assertThat(result).isNotNull();
-//        assertThat(result.getUserId()).isEqualTo(EXISTS_MEMBER_USER_ID);
-//    }
-//    
-//    @Test
-//    @DisplayName("findLoginInfo() - member not exists")
-//    void findLoginInfo_memberNotExists() throws Exception {
-//        when(this.memberRepository.findById(anyString()))
-//                .thenReturn(Optional.empty());
-//        
-//        Constructor<LoginRequestDto> con = LoginRequestDto.class.getDeclaredConstructor();
-//        con.setAccessible(true);
-//        LoginRequestDto requestDto = con.newInstance();
-//        con.setAccessible(false);
-//        ReflectionTestUtils.setField(requestDto, "userId", EXISTS_MEMBER_USER_ID + "no");
-//        ReflectionTestUtils.setField(requestDto, "password", EXISTS_MEMBER_PASSWORD);
-//        
-//        // Then
-//        assertThatExceptionOfType(InvalidLoginRequestException.class).isThrownBy(() -> this.memberService.findLoginInfo(requestDto));
-//        InvalidLoginRequestException invalidLoginRequestException = catchThrowableOfType(InvalidLoginRequestException.class, () -> this.memberService.findLoginInfo(requestDto));
-//        
-//        InvalidLoginRequestType invalidLoginRequestType = invalidLoginRequestException.getInvalidLoginRequestType();
-//        assertThat(invalidLoginRequestType).isEqualTo(InvalidLoginRequestType.MEMBER_NOT_EXISTS);
-//    }
-//    
-//    @Test
-//    @DisplayName("findLoginInfo() - incorrect password")
-//    void findLoginInfo_incorrectPassword() throws Exception {
-//        when(this.memberRepository.findById(EXISTS_MEMBER_USER_ID))
-//                .thenReturn(Optional.of(
-//                        DummyEntityGenerator.generateMember(EXISTS_MEMBER_USER_ID)
-//                ));
-//        
-//        Constructor<LoginRequestDto> con = LoginRequestDto.class.getDeclaredConstructor();
-//        con.setAccessible(true);
-//        LoginRequestDto requestDto = con.newInstance();
-//        con.setAccessible(false);
-//        ReflectionTestUtils.setField(requestDto, "userId", EXISTS_MEMBER_USER_ID);
-//        ReflectionTestUtils.setField(requestDto, "password", EXISTS_MEMBER_PASSWORD + "no");
-//        
-//        // Then
-//        assertThatExceptionOfType(InvalidLoginRequestException.class).isThrownBy(() -> this.memberService.findLoginInfo(requestDto));
-//        InvalidLoginRequestException invalidLoginRequestException = catchThrowableOfType(InvalidLoginRequestException.class, () -> this.memberService.findLoginInfo(requestDto));
-//        
-//        InvalidLoginRequestType invalidLoginRequestType = invalidLoginRequestException.getInvalidLoginRequestType();
-//        assertThat(invalidLoginRequestType).isEqualTo(InvalidLoginRequestType.PASSWORD_INCORRECT);
-//    }
-//    
-//    @Test
-//    @DisplayName("saveUser() - success to save user")
-//    void saveUser_successToSaveUser() throws Exception {
-//        // Given
-//        when(this.memberRepository.existsByUserIdOrEmail(anyString(), anyString()))
-//                .thenReturn(false);
-//        ConsumerSignUpRequestDto arg = new ConsumerSignUpRequestDto();
-//        ReflectionTestUtils.setField(arg, "userId", "user");
-//        ReflectionTestUtils.setField(arg, "name", "name");
-//        ReflectionTestUtils.setField(arg, "password", "1q2w3e4r");
-//        ReflectionTestUtils.setField(arg, "confirmPassword", "1q2w3e4r");
-//        ReflectionTestUtils.setField(arg, "email", "user@gmail.com");
-//        
-//        // Then
-//        assertThatNoException()
-//                .isThrownBy(() -> this.memberService.saveUser(arg));
-//    }
-//    
-//    @Test
-//    @DisplayName("saveUser() - passwor not confirmed")
-//    void saveUser_passwordNotConfirmed() {
-//        // Given
-//        ConsumerSignUpRequestDto arg = new ConsumerSignUpRequestDto();
-//        ReflectionTestUtils.setField(arg, "userId", "user");
-//        ReflectionTestUtils.setField(arg, "name", "name");
-//        ReflectionTestUtils.setField(arg, "password", "1q2w3e4r");
-//        ReflectionTestUtils.setField(arg, "confirmPassword", "anotherpassword");
-//        
-//        // Then
-//        assertThatExceptionOfType(PasswordNotConfirmedException.class)
-//                .isThrownBy(() -> this.memberService.saveUser(arg));
-//    }
-//    
-//    @Test
-//    @DisplayName("saveOwner() - success to save")
-//    void saveOwner_successToSave() {
-//        // Given
-//        when(this.memberRepository.existsByUserIdOrEmail(anyString(), anyString()))
-//                .thenReturn(false);
-//        ProviderSignUpRequestDto arg = new ProviderSignUpRequestDto();
-//        ReflectionTestUtils.setField(arg, "userId", "user");
-//        ReflectionTestUtils.setField(arg, "name", "name");
-//        ReflectionTestUtils.setField(arg, "password", "1q2w3e4r");
-//        ReflectionTestUtils.setField(arg, "confirmPassword", "1q2w3e4r");
-//        ReflectionTestUtils.setField(arg, "email", "user@gmail.com");
-//        
-//        // Then
-//        assertThatNoException()
-//                .isThrownBy(() -> this.memberService.saveOwner(arg));
-//    }
+    
+    @Test
+    @DisplayName("로그인 실패 - 이메일 틀림")
+    void notValidEmailLoginTest() {
+        // Given
+        LoginRequestDto notFoundDto1 = new LoginRequestDto("imnotfound@naver.com", "1234");
+        
+        // When
+        when(this.memberRepository.findByEmail(notFoundDto1.getEmail())).thenThrow(MemberNotFoundException.class);
+        
+        // Then
+        assertThrows(InvalidLoginRequestException.class, () -> {
+            this.memberService.login(notFoundDto1);
+        });
+    }
+    
+    @Test
+    @DisplayName("로그인 실패 - 탈퇴한 회원")
+    void deletedMemberLoginTest() {
+        // Given
+        testMember.setIsDel(BooleanAlt.Y);
+        
+        // When
+        when(this.memberRepository.findByEmail(testMember.getEmail())).thenReturn(Optional.of(testMember));
+
+        // Then
+        assertThrows(InvalidLoginRequestException.class, () -> {
+            this.memberService.login(new LoginRequestDto(testMember.getEmail(), "1234"));
+        });
+    }
+    
+    @Test
+    @DisplayName("로그인 실패 - 정지된 회원")
+    void bannedMemberLoginTest() {
+        // Given
+        testMember.setMemBannedUntil(LocalDateTime.now().plusDays(10));
+        
+        // When
+        when(this.memberRepository.findByEmail(testMember.getEmail())).thenReturn(Optional.of(testMember));
+        
+        //Then
+        Exception exception = assertThrows(InvalidLoginRequestException.class, () -> {
+            this.memberService.login(new LoginRequestDto(testMember.getEmail(), "1234"));
+        });
+        
+        System.out.println(exception.getMessage());
+    }
+    
+    @Test
+    @DisplayName("로그인 실패 - 비밀번호 틀림")
+    void invalidPasswordMemberLoginTest() {
+        // Given
+        LoginRequestDto dto = new LoginRequestDto("testkhs@naver.com", "4321");
+        
+        // When
+        when(this.memberRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(testMember));
+        when(this.passwordEncoder.matches(dto.getPassword(), testMember.getPassword())).thenReturn(false);
+
+        // Then
+        assertThrows(InvalidLoginRequestException.class, () -> {
+            this.memberService.login(dto);
+        });
+    }
+    
+    @Test
+    @DisplayName("로그인 성공")
+    void loginTest() {
+        // Given
+        LoginRequestDto dto = new LoginRequestDto("testkhs@naver.com", "1234");
+        
+        // When
+        when(this.memberRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(testMember));
+        when(this.passwordEncoder.matches(dto.getPassword(), testMember.getPassword())).thenReturn(true);
+        
+        // Then
+        LoginResponseDto response = this.memberService.login(dto);
+        assertThat(response != null);
+    }
+    
+    @Test
+    @DisplayName("회원가입 실패 - 이메일 중복")
+    void duplicatedEmailTest() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        // Given
+        Constructor<ConsumerSignUpRequestDto> constructor = ConsumerSignUpRequestDto.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        ConsumerSignUpRequestDto dto = constructor.newInstance();
+        constructor.setAccessible(false);
+        
+        ReflectionTestUtils.setField(dto, "email", testMember.getEmail());
+        
+        // When
+        when(this.memberRepository.existsByEmail(dto.getEmail())).thenReturn(true);
+        
+        // Then
+        assertThrows(EmailAlreadyExistException.class, () -> {
+            this.memberService.saveConsumer(dto);
+        });
+    }
+    
+    @Test
+    @DisplayName("회원가입 실패 - 올바르지 않은 인증코드")
+    void notValidatedEmailAuthCodeTest() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        // Given
+        Constructor<ConsumerSignUpRequestDto> constructor = ConsumerSignUpRequestDto.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        ConsumerSignUpRequestDto dto = constructor.newInstance();
+        constructor.setAccessible(false);
+        
+        ReflectionTestUtils.setField(dto, "email", testMember.getEmail());
+        ReflectionTestUtils.setField(dto, "signUpValidationCode", "1234");
+
+        // When
+        when(this.memberRepository.existsByEmail(dto.getEmail())).thenReturn(false);
+        when(this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())).thenReturn(false);
+        
+        // Then
+        assertThrows(IllegalSignUpRequestException.class, () -> {
+            this.memberService.saveConsumer(dto);
+        });
+    }
+    
+    @Test
+    @DisplayName("회원가입 성공")
+    void signupTest() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
+        // Given
+        Constructor<ConsumerSignUpRequestDto> constructor = ConsumerSignUpRequestDto.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        ConsumerSignUpRequestDto dto = constructor.newInstance();
+        constructor.setAccessible(false);
+        
+        ReflectionTestUtils.setField(dto, "email", testMember.getEmail());
+        ReflectionTestUtils.setField(dto, "memName", testMember.getMemName());
+        ReflectionTestUtils.setField(dto, "password", testMember.getPassword());
+        ReflectionTestUtils.setField(dto, "memPhone", testMember.getMemPhone());
+        ReflectionTestUtils.setField(dto, "gender", testMember.getGender().toString());
+        ReflectionTestUtils.setField(dto, "birthDate", testMember.getBirthDate());
+        ReflectionTestUtils.setField(dto, "memPostalCode", testMember.getMemPostalCode());
+        ReflectionTestUtils.setField(dto, "memAddress", testMember.getMemAddress());
+        ReflectionTestUtils.setField(dto, "memDetailAddress", testMember.getMemDetailAddress());
+        ReflectionTestUtils.setField(dto, "signUpValidationCode", "1234");
+
+        // When
+        when(this.memberRepository.existsByEmail(dto.getEmail())).thenReturn(false);
+        when(this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())).thenReturn(true);
+        when(this.passwordEncoder.encode(dto.getPassword())).thenReturn("1234");
+        
+        // Then
+        this.memberService.saveConsumer(dto);
+        verify(this.memberRepository, times(1)).save(any(Member.class)); 
+    }
 }

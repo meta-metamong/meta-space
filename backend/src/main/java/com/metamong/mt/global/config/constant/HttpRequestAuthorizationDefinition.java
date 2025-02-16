@@ -18,10 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Builder(access = AccessLevel.PRIVATE)
 public class HttpRequestAuthorizationDefinition {
     
-    // TODO: 역할 별 메소드와 endpoint 설정 중인데, endpoint 별로 역할과 메소드를 지정하게 바꿔야 함.
-    // WHY: a 엔드포인트에 GET 방식, 시설 이용자로 설정하고, 밑에서 같은 a 엔드포인트에 GET 방식, 시설 제공자로 설정하면
-    //      위에서 a 엔드포인트에 GET 방식, 시설 이용자로 설정한 내용이 사라짐.
-    //      밑에서 해당 엔드포인트에 대한 설정을 GET 방식, 시설 제공자로 바꿨기 때문임.
     private static final Map<HttpMethod, String[]> WHITE_LIST = Map.of(
             HttpMethod.POST, new String[] {
                     "/api/members/password",
