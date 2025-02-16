@@ -34,7 +34,6 @@ GROUP BY
     m.created_at
 ORDER BY 
     m.email, m.created_at
-    OFFSET 0 ROWS FETCH FIRST 10 ROWS ONLY
     ]]>
 	</select>
 
@@ -128,7 +127,9 @@ f.fct_id,
 FROM facility f join category c on f.cat_id = c.cat_id
 join zone z on f.fct_id =z.fct_id
 WHERE fct_state IN ('REG_REQUESTED', 'DEL_REQUESTED')
-OFFSET 0 ROWS FETCH FIRST 5 ROWS ONLY
+GROUP BY f.fct_id, fct_name, cat_name,
+    unit_usage_time, ('(' || fct_postal_code || ') ' || fct_address || ' ' || fct_detail_address), fct_tel, is_open_on_holidays, fct_state
+order by f.fct_id
     </select>
 
  <!-- 등록 요청 승인 쿼리 -->
