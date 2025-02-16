@@ -1,5 +1,7 @@
 package com.metamong.mt.domain.facility.dto.response;
 
+import com.metamong.mt.domain.facility.model.FacilityState;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

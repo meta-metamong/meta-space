@@ -244,9 +244,6 @@
                 LEFT JOIN image img ON img.fct_id = fct.fct_id
                 <where>
                     (img.img_id IS NULL OR img.img_display_order = 1)
-                    <if test="dto.providerId != null">
-                        AND fct.prov_id = #{dto.providerId}
-                    </if>
                     <if test="dto.searchKeyword != null">
                         <if test="dto.searchCondition.name() == 'FACILITY_NAME'">
                             AND fct.fct_name LIKE '%' || #{dto.searchKeyword} || '%'
@@ -261,7 +258,7 @@
                         ]]>
                     </if>
                     <if test="dto.catIds != null and dto.catIds.size > 0">
-                        fct.cat_id IN
+                        AND fct.cat_id IN
                         <foreach collection="dto.catIds"
                                  open="("
                                  close=")"
@@ -269,6 +266,9 @@
                                  item="catId">
                             #{catId}
                         </foreach>
+                    </if>
+                    <if test="dto.onlyRegistered">
+                        AND fct.fct_state = 'REG_APPROVED'
                     </if>
                 </where>
                 ORDER BY
@@ -308,9 +308,6 @@
         LEFT JOIN image img ON img.fct_id = fct.fct_id
         <where>
             (img.img_id IS NULL OR img.img_display_order = 1)
-            <if test="dto.providerId != null">
-                fct.prov_id = #{dto.providerId}
-            </if>
             <if test="dto.searchKeyword != null">
                 <if test="dto.searchCondition.name() == 'FACILITY_NAME'">
                     AND fct.fct_name LIKE '%' || #{dto.searchKeyword} || '%'
@@ -333,6 +330,9 @@
                          item="catId">
                     #{catId}
                 </foreach>
+            </if>
+            <if test="dto.onlyRegistered">
+                AND fct.fct_state = 'REG_APPROVED'
             </if>
         </where>
     </select>

@@ -69,6 +69,8 @@ export default {
                 params["search-keyword"] = this.searchKeyword;
                 params["search-condition"] = "FACILITY_NAME";
             }
+            params["is-only-registered"] = true;
+            console.log(params);
             const responseBody = (await apiClient.get("/facilities", { params })).data;
             this.fctContent = responseBody.content;
             this.insertDistance();
@@ -106,6 +108,7 @@ export default {
             params["search-keyword"] = this.searchKeyword;
             params["search-condition"] = "FACILITY_NAME";
         }
+        params["is-only-registered"] = true;
         const responseBody = (await apiClient.get("/facilities", { params })).data;
         this.fctContent = responseBody.content;
         this.insertDistance();
