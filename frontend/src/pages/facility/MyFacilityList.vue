@@ -13,7 +13,7 @@
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-2">{{ facility.fctName }}</h5>
-                            <div class="btn-group dropstart mb-2">
+                            <div class="btn-group dropstart mb-2" v-if="facility.fctState === 'REG_APPROVED'">
                                 <button type="button" class="btn dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
