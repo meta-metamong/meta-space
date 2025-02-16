@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
+import com.metamong.mt.domain.member.exception.EmailAlreadyExistException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidPasswordResetRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
@@ -43,8 +43,8 @@ public class MemberControllerAdvice {
         return new ResponseEntity<>(ErrorResponse.of(MemberErrorCode.INVALID_PASSWORD_RESET_REQUEST), HttpStatus.BAD_REQUEST);
     }
     
-    @ExceptionHandler(EmailAleadyExistException.class)
-    public ResponseEntity<ErrorResponse> idEmailAleadyExistException(EmailAleadyExistException e) {
+    @ExceptionHandler(EmailAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> idEmailAleadyExistException(EmailAlreadyExistException e) {
     	return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                 .body(ErrorResponse.of(MemberErrorCode.EMAIL_ALEADY_EXIST));
     }

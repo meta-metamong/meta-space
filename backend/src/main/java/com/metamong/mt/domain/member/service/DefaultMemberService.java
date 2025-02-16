@@ -1,9 +1,9 @@
 package com.metamong.mt.domain.member.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.BankResponseDto;
 import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
-import com.metamong.mt.domain.member.exception.EmailAleadyExistException;
+import com.metamong.mt.domain.member.exception.EmailAlreadyExistException;
 import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestType;
@@ -60,8 +60,6 @@ public class DefaultMemberService implements MemberService {
     private final EmailValidationService emailValidationService;
     private final FilenameResolver filenameResolver;
     private final FileUploader fileUploader;
-    //private final SimpMessagingTemplate messagingTemplate; 
-    private Date lastExecutionTime;
     private int roleUserCount; 
     
     @Override
@@ -73,6 +71,13 @@ public class DefaultMemberService implements MemberService {
             		.orElseThrow(() -> new MemberNotFoundException(dto.getEmail(), "회원을 찾을 수 없습니다."));
             if(member.getIsDel().equals(BooleanAlt.Y)) {
                 throw new MemberNotFoundException(dto.getEmail(), "메타 스페이스를 떠난 회원입니다.");
+            }else if(member.getMemBannedUntil() != null) {
+                if(member.getMemBannedUntil().isBefore(LocalDateTime.now())) {
+                    member.setMemBannedUntil(null);
+                }else {
+                    throw new MemberNotFoundException(dto.getEmail(), 
+                            member.getMemBannedUntil().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시까지 정지된 회원입니다.")));
+                }                
             }
         } catch (MemberNotFoundException e) {
             throw new InvalidLoginRequestException(InvalidLoginRequestType.MEMBER_NOT_EXISTS, e);
@@ -91,7 +96,6 @@ public class DefaultMemberService implements MemberService {
     
     @Override
     public boolean isValidPassword(Long memId, String password) {
-        // TODO: 다 가져오지 말고 패스워드만 체크해야 함
         Member member = this.memberRepository.findById(memId)
                 .orElseThrow(() -> new MemberNotFoundException(String.valueOf(memId)));
         return passwordEncoder.matches(password, member.getPassword());
@@ -100,7 +104,7 @@ public class DefaultMemberService implements MemberService {
     @Override
     public void saveConsumer(ConsumerSignUpRequestDto dto) {
         if(memberRepository.existsByEmail(dto.getEmail())) {
-        	throw new EmailAleadyExistException();
+        	throw new EmailAlreadyExistException();
         }
                
         if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {
@@ -116,7 +120,7 @@ public class DefaultMemberService implements MemberService {
     @Transactional
     public void saveProvider(ProviderSignUpRequestDto dto) {
         if(memberRepository.existsByEmail(dto.getEmail())) {
-        	throw new EmailAleadyExistException();
+        	throw new EmailAlreadyExistException();
         }
         
         if (!this.emailValidationService.isValidSignUpValidationCode(dto.getEmail(), dto.getSignUpValidationCode())) {

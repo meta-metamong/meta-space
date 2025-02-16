@@ -397,7 +397,6 @@ class FacilityMapperTest {
                 .orderBy(OrderBy.CREATION_TIME)
                 .page(1)
                 .pageSize(10)
-                .providerId(null)
                 .searchKeyword("ILITY")
                 .searchCondition(SearchCondition.FACILITY_NAME)
                 .build();
@@ -463,7 +462,6 @@ class FacilityMapperTest {
                 .orderBy(OrderBy.CREATION_TIME)
                 .page(1)
                 .pageSize(10)
-                .providerId(null)
                 .searchKeyword("ILITY")
                 .searchCondition(SearchCondition.FACILITY_NAME)
                 .catIds(List.of(category2.getCatId()))
