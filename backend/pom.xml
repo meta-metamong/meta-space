@@ -172,6 +172,15 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
+                <configuration>
+                	<excludes>
+                		<exclude>**/global/config/*</exclude>
+                		<exclude>**/global/apispec/*</exclude>
+                		<exclude>**/constant/*</exclude>
+                		<exclude>**/global/error/*</exclude>
+                		<exclude>**/global/scheduler/*</exclude>
+                	</excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

@@ -1,9 +1,6 @@
 package com.metamong.mt.domain.member.controller;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -24,8 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.WebSocketSession;
-
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeTransmissionRequestDto;
@@ -41,7 +36,6 @@ import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
-import com.metamong.mt.global.auth.userdetails.MemberUserDetails;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -63,7 +57,6 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
     private final CookieGenerator cookieGenerator;
-    private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
     private final EmailValidationService emailValidationService;
     
     /**
