@@ -86,7 +86,6 @@ public class FacilityController {
             @RequestParam(value = "order", defaultValue = "ASC") Order order,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "page-size", defaultValue = "10") int pageSize,
-            @RequestParam(value = "provider-id", required = false) Long providerId,
             @RequestParam(value = "search-keyword", required = false) String searchKeyword,
             @RequestParam(value = "search-condition", required = false) SearchCondition searchCondition,
             @RequestParam(value = "upper-latitude", required = false) Double upperLatitude,
@@ -95,14 +94,14 @@ public class FacilityController {
             @RequestParam(value = "lower-longitude", required = false) Double lowerLongitude,
             @RequestParam(value = "center-latitude", required = false) Double centerLatitude,
             @RequestParam(value = "center-longitude", required = false) Double centerLongitude,
-            @RequestParam(value = "cat-id", required = false) List<String> catIds
+            @RequestParam(value = "cat-id", required = false) List<String> catIds,
+            @RequestParam(value = "is-only-registered", defaultValue = "false")  boolean isOnlyRegistered
     ) {
         FacilityListRequestDto dto = FacilityListRequestDto.builder()
                 .orderBy(orderBy)
                 .order(order)
                 .page(page)
                 .pageSize(pageSize)
-                .providerId(providerId)
                 .searchKeyword(searchKeyword)
                 .searchCondition(searchCondition)
                 .upperLatitude(upperLatitude)
@@ -112,6 +111,7 @@ public class FacilityController {
                 .centerLatitude(centerLatitude)
                 .centerLongitude(centerLongitude)
                 .catIds(catIds)
+                .onlyRegistered(isOnlyRegistered)
                 .build();
         return ResponseEntity.ok(
                 BaseResponse.of(this.facilityService.getFacilities(dto), HttpStatus.OK)

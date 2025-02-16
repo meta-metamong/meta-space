@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @SequenceGenerator(
         name = "fct_pk_generator",
         sequenceName = "fct_pk_seq",
-        initialValue = 31,
+        initialValue = 1,
         allocationSize = 1
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

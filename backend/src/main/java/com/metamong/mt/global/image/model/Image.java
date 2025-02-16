@@ -21,7 +21,7 @@ import lombok.ToString;
 @SequenceGenerator(
         name = "img_pk_generator",
         sequenceName = "img_pk_seq",
-        initialValue = 121,
+        initialValue = 1,
         allocationSize = 1
 )
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

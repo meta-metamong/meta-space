@@ -117,8 +117,8 @@ export default defineComponent({
         lineWidth: 2, // 선 두께
       }));
 
-      const growthRate = this.monthlySalesGrowth?.growthRate ?? 0; 
-      const totalSales = this.monthlySalesGrowth?.totalSales ?? 0;
+      const growthRate = this.monthlySalesGrowth?.growthRate ?? 0;
+      const totalSales = this.monthlySalesGrowth?.totalSales ?? 0; 
 
       let arrow = "";
       let arrowColor = "";

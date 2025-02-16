@@ -33,7 +33,7 @@ import lombok.ToString;
 @SequenceGenerator(
         name = "mem_pk_generator",
         sequenceName = "mem_pk_seq",
-        initialValue = 31,
+        initialValue = 1,
         allocationSize = 1
 )
 @Getter

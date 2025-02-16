@@ -20,7 +20,6 @@ public class FacilityListRequestDto {
     private final OrderBy orderBy;
     private final int page;
     private final int pageSize;
-    private final Long providerId;
     private final String searchKeyword;
     private final SearchCondition searchCondition;
     private final List<String> catIds;
@@ -30,4 +29,5 @@ public class FacilityListRequestDto {
     private final Double lowerLongitude;
     private final Double centerLatitude;
     private final Double centerLongitude;
+    private final boolean onlyRegistered;
 }
