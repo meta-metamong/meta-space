@@ -10,13 +10,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +36,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
+import com.metamong.mt.domain.member.dto.response.MemberResponseDto;
+import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
@@ -205,5 +211,106 @@ class MemberControllerMockMvcTest {
                 .cookie(new Cookie("Refresh-Token", refreshToken)))
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("Refresh-Token"));
+    }
+    
+    @Test
+    @DisplayName("POST /members/send-validation-emails")
+    void sendValidationEmail() throws JsonProcessingException, Exception {
+        when(this.emailValidationService.sendEmailValidationCode(anyString()))
+                .thenReturn("asdfwaefqefqe");
+        
+        this.mockMvc.perform((post("/api/members/send-validation-emails")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(this.om.writeValueAsBytes(Map.of("email", "example@gmail.com")))))
+        .andExpect(status().isOk());
+    }
+    
+    @Test
+    @DisplayName("POST /members/check-email-validation")
+    void checkEmailValidation_success() throws Exception {
+        final String validationCode = "feqhfoqehf3rhd80asv";
+        when(this.emailValidationService.validateCode(anyString(), anyString()))
+                .thenReturn(validationCode);
+        
+        this.mockMvc.perform(post("/api/members/check-email-validation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "email": "example@gmail.com",
+                                    "emailValidationCode": "er13qe"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(content().json(String.format("""
+                        {
+                            "statusCode": 200,
+                            "content": "%s"
+                        }
+                        """, validationCode)));
+    }
+    
+    @Test
+    @DisplayName("POST /members/logout - success")
+    void logout_success() throws Exception {
+        when(this.jwtTokenProvider.resolveRefreshTokenFromCookie(any()))
+                .thenReturn("asdfheofqifqd");
+        when(this.jwtTokenProvider.getMemberId(anyString())).thenReturn("300");
+        doNothing().when(this.memberService).deleteRefreshToken(anyLong());
+        
+        
+        this.mockMvc.perform(post("/api/members/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("Refresh-Token", "asdfheofqifqd"))
+                        .content("{}"))
+                .andExpect(status().isOk())
+                .andExpect(cookie().maxAge("Refresh-Token", 0))
+                .andExpect(content().json("""
+                        {
+                            "statusCode": 200
+                        }
+                        """));
+    }
+    
+    @Test
+    @DisplayName("GET /api/members/{memberId} - success")
+    void getMember_success() throws Exception {
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .memId(300L)
+                .email("example@gmail.com")
+                .memName("EMA")
+                .memPhone("010-1234-1234")
+                .gender(Gender.M)
+                .birthDate(LocalDate.of(2000, 1, 2))
+                .memPostalCode("12345")
+                .memAddress("ADDR")
+                .memDetailAddress("DADDR")
+                .imgPath("http://localhost:8080/resources/files/img_01.png")
+                .role(Role.ROLE_CONS)
+                .bizName("BIZ")
+                .bizRegNum("123456-12356716")
+                .bankCode("001")
+                .bankName("MYBANK")
+                .accountNumber("31531124-24124")
+                .balance(60000L)
+                .build();
+        when(this.memberService.searchMember(anyLong()))
+                .thenReturn(responseDto);
+        
+        Map<String, Object> expectedDtoObj = Map.of(
+                "statusCode", 200,
+                "content", responseDto
+        );
+        
+        String expectedResponseBody = this.om.writeValueAsString(expectedDtoObj);
+        
+        this.mockMvc.perform(get("/api/members/{memId}", 300L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponseBody));
     }
 }
