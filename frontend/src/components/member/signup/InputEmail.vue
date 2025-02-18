@@ -47,8 +47,9 @@ export default{
             const requestDto = {
                 email: this.email
             }
-            // 인증 번호 전송 코드 작성
+            
             this.isCodeSent = true;
+            // 인증 번호 전송 코드 작성
             const response = await post("/members/send-validation-emails", requestDto);
             if(response.status === 200){
                 Swal.fire({
@@ -58,7 +59,6 @@ export default{
                     text: "인증코드를 입력해주세요!"
                 });
                 this.verificationCode = response.data.content;
-                this.isCodeSent = false;
             }else{
                 Swal.fire({
                     icon: "error",
@@ -66,6 +66,7 @@ export default{
                     title: "전송 실패",
                     text: "올바른 이메일인가요?"
                 });
+                this.isCodeSent = false;
             }
         },
         codeValidation(){

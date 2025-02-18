@@ -25,8 +25,8 @@ public class LocalFilenameResolver extends AbstractFilenameResolver {
     private final String commonFileUrlPrefix;
     
     public LocalFilenameResolver(@Value("${server.port}") int serverPort, @Value("${server-origin}") String serverOrigin) {
-        log.debug("server.port={}", serverPort);
-        this.commonFileUrlPrefix = "https://www.metaspaces.shop" + COMMON_FILE_PATH;
+        log.debug("serverOrigin={}", serverOrigin);
+        this.commonFileUrlPrefix = serverOrigin + COMMON_FILE_PATH;
         this.serverOrigin = serverOrigin;
     }
 

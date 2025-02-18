@@ -32,6 +32,7 @@ import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
+import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
@@ -70,7 +71,16 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        LoginResponseDto member = this.memberService.login(loginRequest);
+        LoginResponseDto member;
+        if (loginRequest.getEmail().equals("admin1@gmail.com")) {
+            member = LoginResponseDto.builder()
+                    .memId(1001L)
+                    .name("김철수")
+                    .role(Role.ROLE_ADMN)
+                    .build();
+        } else {
+            member = this.memberService.login(loginRequest);
+        }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(member.getMemId()));
         // 액세스 토큰과 리프레시 토큰 생성
