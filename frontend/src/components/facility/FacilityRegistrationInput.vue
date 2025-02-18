@@ -85,7 +85,7 @@
         </div>
         <div class="mb-4">
             <label>{{ $t('facility.facilityImage') }}</label>
-            <div class="image-upload-area" @click="onAddImageBtnClick">
+            <div class="image-upload-area" @click="onAddImageBtnClick" v-if="data.images.length < 5">
                 <p class="mb-0 mt-2">{{ $t("facility.addImage") }}</p>
                 <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>
             </div>

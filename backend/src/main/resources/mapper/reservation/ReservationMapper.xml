@@ -52,8 +52,8 @@
             FROM reservation r
             JOIN zone z ON r.zone_id = z.zone_id
             JOIN facility f ON z.fct_id = f.fct_id
-            <!-- JOIN payment p ON p.rvt_id = r.rvt_id
-            WHERE (p.pay_state = 'P' OR p.pay_state = 'Q') -->
+            JOIN payment p ON p.rvt_id = r.rvt_id
+            WHERE (p.pay_state = 'P' OR p.pay_state = 'Q')
             GROUP BY r.cons_id, f.fct_id
     </select>
     
@@ -85,6 +85,7 @@
 			    WHERE img.img_attached_to = 'F'
 			    AND img_display_order = 1
 			) img ON img.fct_id = f.fct_id
+			WHERE f.fct_state = 'REG_APPROVED'
 			ORDER BY COALESCE(r.totalCount, 0) DESC
 			FETCH FIRST 10 ROWS ONLY
         ]]>

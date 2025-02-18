@@ -174,7 +174,7 @@ public class DefaultFacilityService implements FacilityService {
     public void deleteFacility(Long fctId, Long memId) {
         Facility facility = this.facilityRepository.findById(fctId)
                 .orElseThrow(() -> new NoSuchElementException());
-        if(facility.getProvId() != memId) {
+        if(!facility.getProvId().equals(memId)) {
             throw new FacilityDeleteFailureException("본인의 시설만 삭제요청할 수 있습니다.");
         }
         facility.requestDelete();

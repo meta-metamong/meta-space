@@ -159,7 +159,7 @@ order by f.fct_id
     <!-- 삭제 요청 반려 쿼리 -->
     <update id="updateFacilityStateDelRejected" parameterType="map">
         UPDATE facility
-        SET fct_state = 'DEL_REJECTED'
+        SET fct_state = 'REG_APPROVED'
         WHERE fct_state = 'DEL_REQUESTED'
         AND fct_id = #{fctId}
     </update>
@@ -412,6 +412,7 @@ where pay_state='Q'
         reservation r ON p.rvt_id = r.rvt_id
     WHERE 
         r.rvt_date >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+        and p.pay_state IN ('P', 'N')
 )
 
 SELECT 

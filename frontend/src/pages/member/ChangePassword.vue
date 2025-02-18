@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import { put } from '../../apis/axios';
 export default {
     name: 'ChangePassword',

@@ -37,7 +37,7 @@
             </div>
             <div class="form-section">
                 <label>{{ $t('facility.zoneImage') }}</label>
-                <div class="image-upload-area" @click="() => onAddImageBtnClick(zoneIdx)">
+                <div class="image-upload-area" @click="() => onAddImageBtnClick(zoneIdx)" v-if="data[zoneIdx].images.length < 5">
                     <p class="mb-0 mt-2">{{ $t("facility.addImage") }}</p>
                     <p class="helper-text">{{ $t("facility.imageLimitDescription") }}</p>
                 </div>

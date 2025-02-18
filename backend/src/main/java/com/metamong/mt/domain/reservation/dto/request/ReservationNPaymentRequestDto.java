@@ -12,8 +12,13 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 public class ReservationNPaymentRequestDto {
-    
+
     ReservationRequestDto reservation;
     
     PaymentRequestDto payment;
+    
+    public ReservationNPaymentRequestDto(ReservationRequestDto reservation, PaymentRequestDto payment) {
+        this.reservation = reservation;
+        this.payment = payment;
+    }
 }
