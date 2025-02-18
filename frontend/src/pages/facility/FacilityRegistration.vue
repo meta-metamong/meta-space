@@ -177,7 +177,13 @@ export default {
                     })
                     this.$router.push('/facilities/my-facility-list');
                 }
-            });
+            }).catch((error) => {
+                Swal.fire({
+                    text: "시설 요청이 실패했습니다. 입력한 데이터를 다시 확인해 주세요",
+                    width: "300px",
+                    icon: "error"
+                });
+            })
         }
     }
 };
