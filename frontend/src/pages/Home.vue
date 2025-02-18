@@ -73,7 +73,7 @@ export default{
             }
         }, 
         async getCloseFct(){
-            const response = await get(`/facilities?center-latitude=${this.$store.state.loc.lat}&center-longitude=${this.$store.state.loc.lon}`);
+            const response = await get(`/facilities?center-latitude=${this.$store.state.loc.lat}&center-longitude=${this.$store.state.loc.lon}&is-only-registered=true`);
             this.closeFct = response.data.content.facilities;
             this.closeFct = this.closeFct.map(fct => ({...fct, distance: this.getDistance(fct.fctLatitude, fct.fctLongitude)}));
             this.closeFct.sort((a, b) => a.distance - b.distance);

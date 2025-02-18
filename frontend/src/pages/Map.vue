@@ -132,7 +132,7 @@ export default {
             this.map.setCenter(locPosition);
         },
         async getFctInfo() {
-            const response = await get(`/facilities?center-latitude=${this.lat}&center-longitude=${this.lon}&page-size=100`);
+            const response = await get(`/facilities?center-latitude=${this.lat}&center-longitude=${this.lon}&page-size=100&is-only-registered=true`);
             this.fctInfo = response.data.content.facilities;
             this.markerPositions = this.fctInfo.map(fct => [fct.fctLatitude, fct.fctLongitude]);
 
