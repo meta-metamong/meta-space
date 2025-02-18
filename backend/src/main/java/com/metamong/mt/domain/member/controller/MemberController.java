@@ -72,7 +72,7 @@ public class MemberController {
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
         LoginResponseDto member;
-        if (loginRequest.getEmail().equals("admin1@gmail.com")) {
+        if (loginRequest.getEmail().equals("admin1@example.com")) {
             member = LoginResponseDto.builder()
                     .memId(1001L)
                     .name("김철수")
