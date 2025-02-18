@@ -98,10 +98,7 @@ public class ReservationMapperMockTest {
         ReservationRequestDto requestDto = new ReservationRequestDto(
                 1L, 1L, LocalDate.of(2025, 2, 10), LocalTime.of(6, 0), LocalTime.of(9, 0), 1);  
         
-        HourlyUsageDto responseDto = new HourlyUsageDto();
-        responseDto.setTotalUsageCount(1);
-        responseDto.setUsageStartTime(LocalTime.of(6, 0));
-        responseDto.setUsageEndTime(LocalTime.of(9, 0));
+        HourlyUsageDto responseDto = new HourlyUsageDto(LocalTime.of(6, 0), LocalTime.of(9, 0), 1);
         
         when(reservationMapper.getHourlyUsageCounts(requestDto))
                 .thenReturn(Arrays.asList(responseDto));

@@ -57,7 +57,7 @@ export default{
                     text: '신고가 접수되었습니다.',
                     icon: 'success'
                 });
-                this.$router.push(`/reservation/${this.zoneId}`);
+                this.$router.push(`/reservation/list`);
             }else{
                 Swal.fire({
                     width: '300px',

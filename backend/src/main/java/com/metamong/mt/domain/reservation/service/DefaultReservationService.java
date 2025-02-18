@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Lock;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.metamong.mt.domain.facility.model.Facility;
@@ -33,6 +34,7 @@ import com.metamong.mt.domain.reservation.exception.ReservationNotFoundException
 import com.metamong.mt.domain.reservation.model.Reservation;
 import com.metamong.mt.domain.reservation.repository.jpa.ReservationRepository;
 import com.metamong.mt.domain.reservation.repository.mybatis.ReservationMapper;
+import com.metamong.mt.global.concurrency.SynchronizedOperation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,51 +115,47 @@ public class DefaultReservationService implements ReservationService {
         }
         return availableTimes;
     }
-
+    
+    @SynchronizedOperation
     @Override
     @Transactional
     public void saveReservation(ReservationNPaymentRequestDto dto) {
-        lock.lock();
-        try {
-            Reservation reservationDto = dto.getReservation().toEntity();
-            Payment paymentDto = dto.getPayment().toEntity();
+        Reservation reservationDto = dto.getReservation().toEntity();
+        Payment paymentDto = dto.getPayment().toEntity();
+        
+        // 각 시간대별 예약된 인원 조회
+        List<HourlyUsageDto> existingReservations = reservationMapper.getHourlyUsageCounts(dto.getReservation());
+        Map<LocalTime, Integer> reservedCountMap = new HashMap<>();
+        
+        for (HourlyUsageDto hourUsage : existingReservations) {
+            LocalTime startTime = hourUsage.getUsageStartTime();
+            LocalTime endTime = hourUsage.getUsageEndTime();
+            int reservedCount = hourUsage.getTotalUsageCount() > 0 ? 1 : 0;
             
-            // 각 시간대별 예약된 인원 조회
-            List<HourlyUsageDto> existingReservations = reservationMapper.getHourlyUsageCounts(dto.getReservation());
-            Map<LocalTime, Integer> reservedCountMap = new HashMap<>();
-            
-            for (HourlyUsageDto hourUsage : existingReservations) {
-                LocalTime startTime = hourUsage.getUsageStartTime();
-                LocalTime endTime = hourUsage.getUsageEndTime();
-                int reservedCount = hourUsage.getTotalUsageCount() > 0 ? 1 : 0;
-                
-                // 예약된 시간 동안 모든 단위 시간별 인원을 기록
-                LocalTime time = startTime;
-                while (time.isBefore(endTime)) {
-                    reservedCountMap.put(time, reservedCount);
-                    time = time.plusMinutes(dto.getReservation().getUnitUsageTime());
-                }
+            // 예약된 시간 동안 모든 단위 시간별 인원을 기록
+            LocalTime time = startTime;
+            while (time.isBefore(endTime)) {
+                reservedCountMap.put(time, reservedCount);
+                time = time.plusMinutes(dto.getReservation().getUnitUsageTime());
             }
-            
-            // 새로 예약하려는 시간대별 인원 체크
-            LocalTime checkTime = reservationDto.getUsageStartTime();
-            while (checkTime.isBefore(reservationDto.getUsageEndTime())) {
-                int currentReserved = reservedCountMap.getOrDefault(checkTime, 0);
-                if (currentReserved > 0) {
-                    throw new ReservationDuplicatedException("예약 가능한 인원 수를 초과하였습니다.");
-                }
-                
-                checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
-            }
-            Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
-            this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
-            
-            Long provIdOfFacility = this.reservationMapper.findProvIdByRvtId(savedReservation.getRvtId())
-                    .orElseThrow(NoSuchElementException::new);
-            this.notificationService.sendMessage(provIdOfFacility, NotificationMessage.NEW_RESERVATION);
-        } finally {
-            lock.unlock();
         }
+        
+        // 새로 예약하려는 시간대별 인원 체크
+        LocalTime checkTime = reservationDto.getUsageStartTime();
+        while (checkTime.isBefore(reservationDto.getUsageEndTime())) {
+            int currentReserved = reservedCountMap.getOrDefault(checkTime, 0);
+            if (currentReserved > 0) {
+                throw new ReservationDuplicatedException("예약 가능한 인원 수를 초과하였습니다.");
+            }
+            
+            checkTime = checkTime.plusMinutes(dto.getReservation().getUnitUsageTime());
+        }
+        Reservation savedReservation = this.reservationRepository.saveAndFlush(reservationDto);
+        this.paymentService.savePayment(savedReservation.getRvtId(), paymentDto);
+        
+        Long provIdOfFacility = this.reservationMapper.findProvIdByRvtId(savedReservation.getRvtId())
+                .orElseThrow(NoSuchElementException::new);
+        this.notificationService.sendMessage(provIdOfFacility, NotificationMessage.NEW_RESERVATION);
     }
 
     @Override
