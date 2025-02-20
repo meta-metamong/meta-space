@@ -256,8 +256,8 @@ export default {
                 orderId: 12345678,
                 orderName: this.zoneInfo.filter(info => info.zoneId = this.selectedZoneId)[0].zoneName,
                 customerName: this.$store.state.userName,
-                successUrl: 'http://localhost:3000/payment/result',
-                failUrl: 'http://localhost:3000/payment/result'
+                successUrl: `${import.meta.env.VITE_API_URL}/payment/result`,
+                failUrl: `${import.meta.env.VITE_API_URL}/payment/result`
             }
             tossPayments.requestPayment(this.payMethod, tossRequestObject);
         },

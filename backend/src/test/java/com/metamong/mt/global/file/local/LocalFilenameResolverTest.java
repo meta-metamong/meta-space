@@ -20,10 +20,11 @@ class LocalFilenameResolverTest {
     static final int VIRTUAL_SERVER_PORT = 8080;
     
     LocalFilenameResolver localFilenameResolver;
+    String serverOrigin = "http://localhost:8080";
     
     @BeforeEach
     void beforeEach() {
-        this.localFilenameResolver = new LocalFilenameResolver(VIRTUAL_SERVER_PORT);
+        this.localFilenameResolver = new LocalFilenameResolver(VIRTUAL_SERVER_PORT, serverOrigin);
     }
     
     @Test

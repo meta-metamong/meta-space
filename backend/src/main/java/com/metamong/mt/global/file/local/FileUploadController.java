@@ -18,7 +18,7 @@ import com.metamong.mt.global.file.FileUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Profile("!prod")
+//@Profile("!prod")
 @RestController
 @RequestMapping("/api/files")
 @RequiredArgsConstructor

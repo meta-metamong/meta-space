@@ -11,7 +11,7 @@ public class PasswordResetLinkMailMessageFormatter extends MailMessageFormatter 
     @Override
     protected String getMessageFormat() {
         return """
-                패스워드를 변경하시려면 다음 링크를 클릭하세요: {0}
+                패스워드를 변경하시려면 다음 링크로 들어가세요: {0}
                 """;
     }
 

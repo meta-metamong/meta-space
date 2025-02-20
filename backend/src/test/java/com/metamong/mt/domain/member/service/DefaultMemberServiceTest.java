@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -11,7 +12,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +31,13 @@ import com.metamong.mt.domain.member.exception.EmailAlreadyExistException;
 import com.metamong.mt.domain.member.exception.IllegalSignUpRequestException;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
 import com.metamong.mt.domain.member.exception.MemberNotFoundException;
+import com.metamong.mt.domain.member.model.Account;
+import com.metamong.mt.domain.member.model.FctProvider;
 import com.metamong.mt.domain.member.model.Member;
 import com.metamong.mt.domain.member.model.constant.Gender;
 import com.metamong.mt.domain.member.model.constant.Role;
+import com.metamong.mt.domain.member.repository.jpa.AccountRepository;
+import com.metamong.mt.domain.member.repository.jpa.FctProviderRepository;
 import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.mybatis.MemberMapper;
 import com.metamong.mt.global.constant.BooleanAlt;
@@ -54,6 +58,12 @@ class DefaultMemberServiceTest {
     
     @Mock
     EmailValidationService emailValidationService;
+    
+    @Mock
+    FctProviderRepository fctProviderRepository;
+    
+    @Mock
+    AccountRepository accountRepository;
     
     static Member testMember;
     
@@ -115,11 +125,9 @@ class DefaultMemberServiceTest {
         when(this.memberRepository.findByEmail(testMember.getEmail())).thenReturn(Optional.of(testMember));
         
         //Then
-        Exception exception = assertThrows(InvalidLoginRequestException.class, () -> {
+        assertThrows(InvalidLoginRequestException.class, () -> {
             this.memberService.login(new LoginRequestDto(testMember.getEmail(), "1234"));
         });
-        
-        System.out.println(exception.getMessage());
     }
     
     @Test
@@ -223,5 +231,147 @@ class DefaultMemberServiceTest {
         // Then
         this.memberService.saveConsumer(dto);
         verify(this.memberRepository, times(1)).save(any(Member.class)); 
+    }
+    
+    @Test
+    @DisplayName("매퍼로 회원 조회 실패 - 해당 아이디의 회원이 없다.")
+    void findMemberByNotExistIdTestWithMapper() {
+        // Given
+        Long memId = testMember.getMemId();
+        
+        // When
+        when(this.memberMapper.getMember(memId)).thenReturn(null);
+        
+        //Then
+        assertThrows(MemberNotFoundException.class, () -> {
+            this.memberService.getMemberByMapper(memId);
+        });
+    }
+    
+    @Test
+    @DisplayName("매퍼로 회원 조회 성공")
+    void findMemberByMapper() {
+        // Given
+        Long memId = testMember.getMemId();
+        
+        // When
+        when(this.memberMapper.getMember(memId)).thenReturn(testMember);
+        
+        // Then
+        Member member = this.memberService.getMemberByMapper(memId);
+        assertNotNull(member);
+    }
+    
+    @Test
+    @DisplayName("Jpa로 회원 조회 실패 - 없는 아이디의 회원")
+    void findMemberByNotExistIdTestWithRepository() {
+        // Given
+        Long memId = testMember.getMemId();
+        
+        // When
+        when(this.memberRepository.findById(memId)).thenReturn(Optional.empty());
+        
+        // Then
+        assertThrows(MemberNotFoundException.class, () -> {
+            this.memberService.getMemberByRepository(memId);
+        });
+    }
+    
+    @Test
+    @DisplayName("Jpa로 회원 조회 실패 - 탈퇴한 회원")
+    void findExitedMemberByIdTestWithRepository() {
+        // Given
+        Long memId = testMember.getMemId();
+        testMember.setIsDel(BooleanAlt.Y);
+        
+        // When
+        when(this.memberRepository.findById(memId)).thenReturn(Optional.of(testMember));
+        
+        // Then
+        assertThrows(MemberNotFoundException.class, () -> {
+            this.memberService.getMemberByRepository(memId);
+        });
+    }
+    
+    @Test
+    @DisplayName("Jpa로 회원 조회 성공")
+    void findMemberByRepository() {
+        // Given
+        Long memId = testMember.getMemId();
+        
+        // When
+        when(this.memberRepository.findById(memId)).thenReturn(Optional.of(testMember));
+        
+        // Then
+        Member member = this.memberService.getMemberByRepository(memId);
+        assertNotNull(member);
+    }
+    
+    @Test
+    @DisplayName("회원 ID로 시설 제공자 데이터 조회 실패 - 없는 회원")
+    void findFctProviderByNotExistedMemIdTest() {
+        // Given
+        Long memId = testMember.getMemId();
+        
+        // When
+        when(this.fctProviderRepository.findById(memId)).thenReturn(Optional.empty());
+        
+        // Then
+        assertThrows(MemberNotFoundException.class, () -> {
+            this.memberService.getProvider(memId);
+        });
+    }
+    
+    @Test
+    @DisplayName("회원 ID로 시설 제공자 데이터 조회 성공")
+    void findFctProviderByMemIdTest() {
+        // Given
+        Long memId = testMember.getMemId();
+        FctProvider testProvider = FctProvider.builder()
+                                              .provId(memId)
+                                              .bizName("테스트 사업자명")
+                                              .bizRegNum("테스트 사업자 등록번호")
+                                              .build();
+        
+        // When
+        when(this.fctProviderRepository.findById(memId)).thenReturn(Optional.of(testProvider));
+        
+        // Then
+        assertNotNull(this.memberService.getProvider(memId));
+    }
+    
+    @Test
+    @DisplayName("회원 ID로 계좌 데이터 조회 실패 - 없는 회원")
+    void findAccountByNotExistMemIdTest() {
+        // Given
+        Long memId = testMember.getMemId();
+        
+        // When
+        when(this.accountRepository.findById(memId)).thenReturn(Optional.empty());
+        
+        // Then
+        assertThrows(MemberNotFoundException.class, () -> {
+           this.memberService.getAccount(memId);
+        });
+    }
+    
+    @Test
+    @DisplayName("회원 ID로 계좌 데이터 조회 성공")
+    void findAccountByMemIdTet() {
+        // Given
+        Long memId = testMember.getMemId();
+        Account account = Account.builder()
+                .bankCode("001")
+                .provId(memId)
+                .accountNumber("계좌번호")
+                .balance(3000L)
+                .isAgreedInfo(BooleanAlt.Y)
+                .build();
+        
+        // When
+        when(this.accountRepository.findById(memId)).thenReturn(Optional.of(account));
+        
+        // Then
+        assertNotNull(this.memberService.getAccount(memId));
     }
 }

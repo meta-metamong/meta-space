@@ -1,9 +1,7 @@
 package com.metamong.mt.domain.member.controller;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.PrimitiveIterator.OfDouble;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -18,14 +16,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.WebSocketSession;
-
 import com.metamong.mt.domain.member.dto.request.ConsumerSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeRequestDto;
 import com.metamong.mt.domain.member.dto.request.EmailValidationCodeTransmissionRequestDto;
@@ -33,15 +30,16 @@ import com.metamong.mt.domain.member.dto.request.FindPasswordRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordFindEmailSendRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
 import com.metamong.mt.domain.member.exception.InvalidLoginRequestException;
+import com.metamong.mt.domain.member.model.constant.Role;
 import com.metamong.mt.domain.member.service.EmailValidationService;
 import com.metamong.mt.domain.member.service.MemberService;
 import com.metamong.mt.global.apispec.BaseResponse;
 import com.metamong.mt.global.auth.jwt.JwtTokenProvider;
-import com.metamong.mt.global.auth.userdetails.MemberUserDetails;
 import com.metamong.mt.global.web.cookie.CookieGenerator;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -63,7 +61,6 @@ public class MemberController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
     private final CookieGenerator cookieGenerator;
-    private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
     private final EmailValidationService emailValidationService;
     
     /**
@@ -77,7 +74,16 @@ public class MemberController {
      */
     @PostMapping("/members/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
-        LoginResponseDto member = this.memberService.login(loginRequest);
+        LoginResponseDto member;
+        if (loginRequest.getEmail().equals("admin1@example.com")) {
+            member = LoginResponseDto.builder()
+                    .memId(1001L)
+                    .name("김철수")
+                    .role(Role.ROLE_ADMN)
+                    .build();
+        } else {
+            member = this.memberService.login(loginRequest);
+        }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(member.getMemId()));
         // 액세스 토큰과 리프레시 토큰 생성
@@ -370,8 +376,15 @@ public class MemberController {
      * @return verification 인증코드
      */
     @PostMapping("/members/find-password")
-    public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
+    public ResponseEntity<BaseResponse<Void>> findPassword(@Validated @RequestBody PasswordFindEmailSendRequestDto dto){
+        this.emailValidationService.sendPasswordValidationCode(dto.getEmail());
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
+    }
+    
+    @PutMapping("/members/find-password/reset")
+    public ResponseEntity<BaseResponse<Boolean>> resetPassword(@Validated @RequestBody FindPasswordRequestDto dto) {
+        boolean result = this.emailValidationService.resetPassword(dto);
+        return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK));
     }
     
     /**

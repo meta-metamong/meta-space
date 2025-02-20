@@ -1,5 +1,6 @@
 package com.metamong.mt.domain.member.service;
 
+import com.metamong.mt.domain.member.dto.request.FindPasswordRequestDto;
 import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
 
 public interface EmailValidationService {
@@ -24,4 +25,8 @@ public interface EmailValidationService {
             throws InvalidEmailValidationCodeException;
     
     boolean isValidSignUpValidationCode(String email, String signUpValidationCode);
+    
+    void sendPasswordValidationCode(String email);
+    
+    boolean resetPassword(FindPasswordRequestDto dto);
 }

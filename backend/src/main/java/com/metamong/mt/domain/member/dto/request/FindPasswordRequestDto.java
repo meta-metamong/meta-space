@@ -12,4 +12,13 @@ public class FindPasswordRequestDto {
     
     @NotEmpty(message="이메일은 필수 입력 값입니다.")
     private String email;
+    
+    @NotEmpty
+    private String newPassword;
+    
+    @NotEmpty
+    private String newPasswordCheck;
+    
+    @NotEmpty
+    private String validationCode;
 }

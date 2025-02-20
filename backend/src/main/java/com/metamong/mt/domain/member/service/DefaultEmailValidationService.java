@@ -1,19 +1,24 @@
 package com.metamong.mt.domain.member.service;
 
+import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.metamong.mt.domain.member.dto.request.FindPasswordRequestDto;
 import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
+import com.metamong.mt.domain.member.model.Member;
+import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
 import com.metamong.mt.global.mail.MailType;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class DefaultEmailValidationService implements EmailValidationService {
     private static final char[] MAIL_VALIDATION_CODE_CHARACTERS;
@@ -35,6 +40,21 @@ public class DefaultEmailValidationService implements EmailValidationService {
     
     private final MailAgent mailAgent;
     private final MemberVolatileCodeRepository memberVolatileCodeRepository;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final String clientOrigin;
+
+    public DefaultEmailValidationService(MailAgent mailAgent,
+            MemberVolatileCodeRepository memberVolatileCodeRepository,
+            MemberRepository memberRepository,
+            PasswordEncoder passwordEncoder,
+            @Value("${client.origin}") String clientOrigin) {
+        this.mailAgent = mailAgent;
+        this.memberVolatileCodeRepository = memberVolatileCodeRepository;
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.clientOrigin = clientOrigin;
+    }
 
     @Override
     public String sendEmailValidationCode(String email) {
@@ -76,6 +96,41 @@ public class DefaultEmailValidationService implements EmailValidationService {
             return false;
         }
         this.memberVolatileCodeRepository.deleteByEmail(email);
+        return true;
+    }
+
+    @Override
+    public void sendPasswordValidationCode(String email) {
+        String code = generateRandomValue(15);
+        String url = this.clientOrigin + "/find-pw-reset?validation-code=" + code + "&email=" + email;
+        this.mailAgent.send(MailType.PASSWORD_RESET_LINK, "패스워드 재설정 링크", email, url);
+        this.memberVolatileCodeRepository.savePasswordValidationCode(email, code);
+    }
+
+    @Override
+    @Transactional
+    public boolean resetPassword(FindPasswordRequestDto dto) {
+        if (!dto.getNewPassword().equals(dto.getNewPasswordCheck())) {
+            return false;
+        }
+        
+        String codeFromStorage = this.memberVolatileCodeRepository.findPasswordValidationCodeByEmail(dto.getEmail());
+        log.debug("codeFromStorage={}", codeFromStorage);
+        log.debug("email={}", dto.getEmail());
+        if (codeFromStorage == null || !codeFromStorage.equals(dto.getValidationCode())) {
+            return false;
+        }
+        
+        Optional<Member> memberOp = this.memberRepository.findByEmail(dto.getEmail());
+        if (memberOp.isEmpty()) {
+            return false;
+        }
+        
+        this.memberVolatileCodeRepository.deleteByEmail(dto.getEmail());
+        
+        Member member = memberOp.get();
+        
+        member.changePassword(this.passwordEncoder.encode(dto.getNewPassword()));
         return true;
     }
 }

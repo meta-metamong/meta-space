@@ -10,8 +10,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.metamong.mt.domain.member.exception.InvalidEmailValidationCodeException;
+import com.metamong.mt.domain.member.repository.jpa.MemberRepository;
 import com.metamong.mt.domain.member.repository.redis.MemberEmailCodeRepository;
 import com.metamong.mt.domain.member.repository.redis.MemberVolatileCodeRepository;
 import com.metamong.mt.global.mail.MailAgent;
@@ -85,13 +89,33 @@ class DefaultEmailValidationServiceTest {
             store2.remove(email);
             return result;
         }
+
+        @Override
+        public void savePasswordValidationCode(String email, String code) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public String findPasswordValidationCodeByEmail(String email) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public boolean deletePasswordValidationCodeByEmail(String email) {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
     
     @BeforeEach
     void beforeEach() {
         this.memberVolatileCodeRepository = new MemberVolatileCodeRepositoryMock();
         this.mailAgent = new MailAgentMocking(memberVolatileCodeRepository);
-        this.defaultEmailValidationService = new DefaultEmailValidationService(this.mailAgent, this.memberVolatileCodeRepository);
+        MemberRepository memberRepository = Mockito.mock(MemberRepository.class);
+        PasswordEncoder passwordEncoder = NoOpPasswordEncoder.getInstance();
+        this.defaultEmailValidationService = new DefaultEmailValidationService(this.mailAgent, this.memberVolatileCodeRepository, memberRepository, passwordEncoder, "http://localhost:3000");
     }
 
     @Test

@@ -21,11 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 public class LocalFilenameResolver extends AbstractFilenameResolver {
     private static final String COMMON_FILE_PATH = "/resources/files/";
     
+    private final String serverOrigin;
     private final String commonFileUrlPrefix;
     
-    public LocalFilenameResolver(@Value("${server.port}") int serverPort) {
-        log.debug("server.port={}", serverPort);
-        this.commonFileUrlPrefix = "http://localhost:" + serverPort + COMMON_FILE_PATH;
+    public LocalFilenameResolver(@Value("${server.port}") int serverPort, @Value("${server-origin}") String serverOrigin) {
+        log.debug("serverOrigin={}", serverOrigin);
+        this.commonFileUrlPrefix = serverOrigin + COMMON_FILE_PATH;
+        this.serverOrigin = serverOrigin;
     }
 
     @Override

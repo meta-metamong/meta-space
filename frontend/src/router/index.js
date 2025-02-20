@@ -36,6 +36,7 @@ import FacilityReservationList from '../pages/facility/FacilityReservationList.v
 import NotificationList from '../pages/notification/NotificationList.vue';
 import Report from '../pages/report/Report.vue';
 import Error from '../pages/Error.vue';
+import FindPasswordReset from "../pages/member/FindPasswordReset.vue";
 
 
 const routes = [
@@ -51,6 +52,7 @@ const routes = [
 	{ path: '/confirm-pw/:type', component: ConfirmPassword, props: true },
 	{ path: '/change-pw', component: ChangePassword },
 	{ path: '/find-pw', component: FindPassword },
+	{ path: '/find-pw-reset', component: FindPasswordReset },
 	{ path: '/download', component: Download  },
 
 	{ path: '/facilities/register', component: FacilityRegistration },
