@@ -1,0 +1,84 @@
+<template>
+    <div class="container w-100 mt-4">
+      <h2 class="text-center mb-3" v-text="$t('member.changePw')"></h2>
+
+      <form @submit.prevent="handleSubmit">	
+          <!-- 비밀번호 입력 -->
+          <div class="mb-4">
+              <input type="password" id="password" name="password" class="form-control signup-input mb-2" v-model="newPassword" :placeholder="$t('member.password')" required />
+              <h3 class="error-message mb-2" v-if="newPassword !== '' && !isValidatedPassword" v-text="$t('signupError.notValidatedPassword')" />
+              <input type="password" id="passwordRe" name="passwordRe" class="form-control signup-input mb-2" v-model="newPasswordConfirm" :placeholder="$t('member.passwordRe')" required />
+              <h3 class="error-message mt-2" v-if="newPasswordConfirm !== '' && !isPasswordEqual" v-text="$t('signupError.passwordNotMatched')" />
+          </div>	
+          <button type="submit" :disabled="!isValidatedPassword || !isPasswordEqual" class="w-100 mb-3 signup-btn rounded-pill" v-text="$t('button.check')" />
+          <button type="button" class="signup-btn w-100 mb-3 rounded-pill" @click="$router.push('/profile')">{{ $t('button.cancel') }}</button>
+      </form>
+    </div>
+</template>
+
+<script>
+import Swal from 'sweetalert2';
+import { put } from '../../apis/axios';
+export default {
+    name: 'ChangePassword',
+    data() {
+        const validationCode = this.$route.query["validation-code"];
+        const email = this.$route.query["email"];
+        return {
+            email: email,
+            newPassword: "",
+            newPasswordConfirm: "",
+            validationCode: validationCode
+        }
+    },
+    methods: {
+      async handleSubmit(){
+          const requestDto = {
+                email: this.email,
+                newPassword: this.newPassword,
+                newPasswordCheck: this.newPasswordConfirm,
+                validationCode: this.validationCode
+          }
+          const response = await put("/members/find-password/reset", requestDto);
+          const isSuccess = response.data.content;
+          if(isSuccess){
+            Swal.fire({
+                width: "300px",
+                title: "변경 완료",
+                text: "비밀번호가 재설정되었습니다.",
+                icon: "success"
+            })
+            this.$router.push('/login')
+          }else{
+            Swal.fire({
+                width: "300px",
+                title: "변경 실패",
+                text: "비밀번호 재설정이 실패했습니다.",
+                icon: "error"
+            });
+          }
+      }
+    },
+    computed: {
+        isPasswordEqual(){
+            return this.newPassword === this.newPasswordConfirm;
+        },
+        isValidatedPassword(){
+            return /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/.test(this.newPassword);
+        }
+    }
+};
+</script>
+
+<style scoped>
+input{
+  border: none;
+  border-radius: 0px;
+  border-bottom: 1px solid #999;
+}
+
+.error-message {
+  font-size: 16px;
+  color: #ff0101;
+}
+</style>

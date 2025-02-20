@@ -1,6 +1,7 @@
 package com.metamong.mt.domain.member.controller;
 
 import java.util.List;
+import java.util.PrimitiveIterator.OfDouble;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,6 +30,7 @@ import com.metamong.mt.domain.member.dto.request.FindPasswordRequestDto;
 import com.metamong.mt.domain.member.dto.request.LoginRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordChangeRequestDto;
 import com.metamong.mt.domain.member.dto.request.PasswordConfirmRequestDto;
+import com.metamong.mt.domain.member.dto.request.PasswordFindEmailSendRequestDto;
 import com.metamong.mt.domain.member.dto.request.ProviderSignUpRequestDto;
 import com.metamong.mt.domain.member.dto.request.UpdateRequestDto;
 import com.metamong.mt.domain.member.dto.response.LoginResponseDto;
@@ -373,8 +376,15 @@ public class MemberController {
      * @return verification 인증코드
      */
     @PostMapping("/members/find-password")
-    public ResponseEntity<?> findPassword(@Validated @RequestBody FindPasswordRequestDto dto){
+    public ResponseEntity<BaseResponse<Void>> findPassword(@Validated @RequestBody PasswordFindEmailSendRequestDto dto){
+        this.emailValidationService.sendPasswordValidationCode(dto.getEmail());
         return ResponseEntity.ok(BaseResponse.of(HttpStatus.OK, "재설정 링크가 이메일로 전송되었습니다."));
+    }
+    
+    @PutMapping("/members/find-password/reset")
+    public ResponseEntity<BaseResponse<Boolean>> resetPassword(@Validated @RequestBody FindPasswordRequestDto dto) {
+        boolean result = this.emailValidationService.resetPassword(dto);
+        return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK));
     }
     
     /**
