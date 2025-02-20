@@ -4,17 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.metamong.mt.domain.notification.service.NotificationService;
 import com.metamong.mt.domain.payment.dto.request.PaymentRequestDto;
-import com.metamong.mt.domain.payment.model.Payment;
 import com.metamong.mt.domain.payment.service.PaymentService;
 import com.metamong.mt.domain.reservation.dto.request.ReservationNPaymentRequestDto;
 import com.metamong.mt.domain.reservation.dto.request.ReservationRequestDto;
@@ -96,7 +89,7 @@ public class DefaultReservaionServiceTest {
 
         // 첫 번째 예약 성공
         when(reservationMapper.getHourlyUsageCounts(dto.getReservation()))
-            .thenReturn(List.of(new HourlyUsageDto(LocalTime.of(10, 00), LocalTime.of(12, 00), 1)));
+            .thenReturn(List.of(new HourlyUsageDto(LocalTime.of(10, 0), LocalTime.of(12, 0), 1)));
 
         // 두 번째 예약(같은 시간대) 시 예외 발생 검증
         assertThrows(ReservationDuplicatedException.class, () -> {
