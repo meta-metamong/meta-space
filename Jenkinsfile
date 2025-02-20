@@ -132,19 +132,9 @@ pipeline {
                     sh "ssh ubuntu@${workerNodeIp} \"echo ${dockerHubAccesstoken} | sudo docker login --username hansoo0614 --password-stdin\""
                     sh "ssh ubuntu@${workerNodeIp} \"sudo docker pull hansoo0614/metamong-backend:latest\""
                     sh "ssh ubuntu@${workerNodeIp} \"sudo docker-compose --profile blue --env-file ~/envs up -d\""
-                    // sh "docker-compose -H 'ssh://ubuntu@${workerNodeIp}' up"
                 }
-                withCredentials([]) {
-    // some block
-}
             }
         }
-
-        // stage('Health Check') {
-        //     steps {
-        //         echo "Health Check new deployment"
-        //     }
-        // }
 
         stage('Convert Blue or Green') {
             steps {

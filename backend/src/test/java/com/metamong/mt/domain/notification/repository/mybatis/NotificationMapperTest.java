@@ -62,32 +62,6 @@ class NotificationMapperTest {
                 .build();
         this.sampleReceiver = this.memberRepository.save(this.sampleReceiver);
     }
-
-//    @Test
-//    @DisplayName("countNotReadNotificationsByReceiverId() - success")
-//    void countNotReadNotificationsByReceiverId_success() {
-//        // Given
-//        List<Notification> notifications = List.of(
-//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_ACCEPTED),
-//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.FACILITY_REGISTRATION_REJECTED),
-//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_ACCEPT),
-//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.RESERVATION_CANCELATION),
-//                new Notification(this.sampleReceiver.getMemId(), NotificationMessage.REFUND_REJECTED)
-//        );
-//        
-//        this.notificationRepository.saveAll(notifications);
-//        
-//        this.notificationRepository.flush();
-//        
-//        // When
-//        this.notificationMapper.readByNotificationIds(
-//                notifications.stream().map(Notification::getNotiId).toList()
-//        );
-//        
-//        // Then
-//        assertThat(this.notificationRepository.countNotReadNotificationsByReceiverId(this.sampleReceiver.getMemId()))
-//                .isZero();
-//    }
     
     @Test
     @DisplayName("findNotificationsByReceiverId() - includeRead")
